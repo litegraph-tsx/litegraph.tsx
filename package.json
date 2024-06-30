@@ -1,34 +1,47 @@
 {
-    "name": "litegraph.js",
-    "version": "0.7.14",
-    "description": "A graph node editor similar to PD or UDK Blueprints. It works in an HTML5 Canvas and allows to export graphs to be included in applications.",
-    "main": "build/litegraph.js",
+    "name": "litegraph.tsx",
+    "version": "0.4.1",
+    "description": "A flow graph node editor similar to LiteGraph.js, Blender Nodes, or ReactFlow.  It works in an HTML5 Canvas and allows to export graphs to be included in applications.",
+    "main": "build/litegraph.core.js",
     "types": "src/litegraph.d.ts",
-    "directories": {
-        "doc": "doc"
-    },
     "private": false,
     "scripts": {
-        "start": "nodemon utils/server.js",
+        "server": "nodemon utils/server.js",
         "test": "jest",
         "lint": "npx eslint src",
         "lint:fix": "npx eslint --fix src"
     },
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/jagenjo/litegraph.js.git"
+        "url": "git+https://github.com/litegraph-tsx/litegraph.tsx.git"
     },
-    "author": "jagenjo",
+    "author": "",
+    "contributors": [
+        {
+            "name": "Javi",
+            "url": "http://github.com/jagenjo"
+        },
+        {
+            "name": "Daniel Lewis",
+            "url": "http://github.com/daniel-lewis-ab"
+        },
+        {
+            "name": "Atlasan",
+            "url": "http://github.com/atlasan"
+        },
+        {
+            "name": "DrJKL",
+            "url": "http://github.com/DrJKL"
+        }
+    ],
     "license": "MIT",
     "files": [
         "build",
         "css/litegraph.css",
         "src/litegraph.d.ts"
     ],
-    "bugs": {
-        "url": "https://github.com/jagenjo/litegraph.js/issues"
-    },
-    "homepage": "https://github.com/jagenjo/litegraph.js#readme",
+    "bugs": { "url": "https://github.com/litegraph-tsx/litegraph.tsx/issues" },
+    "homepage": "https://github.com/litegraph-tsx/litegraph.tsx#readme",
     "devDependencies": {
         "@types/jest": "^28.1.3",
         "eslint": "^8.37.0 ",
