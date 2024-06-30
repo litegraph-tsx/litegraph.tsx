@@ -1,4 +1,9 @@
-# litegraph.js
+
+# ORIGINAL
+
+Do not modify this, this is legacy for reference only
+
+## litegraph.js
 
 A library in Javascript to create graphs in the browser similar to Unreal Blueprints. Nodes can be programmed easily and it includes an editor to construct and tests the graphs.
 
