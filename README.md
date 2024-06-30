@@ -1,3 +1,11 @@
+
+# litegraph.tsx
+
+A number of people have attempted to update litegraph to have *some* modern features over the years including myself.
+Recently there's been renewed interest, and we wanted to establish a new project and group for it so that it's cooperative.
+
+This repo has been created to modernize the popular flow graph library Litegraph so that it meets modern coding and tooling standards.  At a later date we may start adding features.
+
 # litegraph.js
 
 A library in Javascript to create graphs in the browser similar to Unreal Blueprints. Nodes can be programmed easily and it includes an editor to construct and tests the graphs.
