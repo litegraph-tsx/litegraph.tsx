@@ -4,19 +4,18 @@
     "target": "es2016",                                  /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */
 
     /* Modules */
-    "module": "ESNext",                                /* Specify what module code is generated. */
     "rootDir": "./src",                                  /* Specify the root folder within your source files. */
 
     /* JavaScript Support */
     "allowJs": true,                                  /* Allow JavaScript files to be a part of your program. Use the 'checkJS' option to get errors from these files. */
-    "checkJs": true,                                  /* Enable error reporting in type-checked JavaScript files. */
+    "checkJs": false,                                  /* Enable error reporting in type-checked JavaScript files. */
 
     /* Emit */
-    "noEmit": true,                                   /* Disable emitting files from a compilation. */
+    "noEmit": false,                                   /* Disable emitting files from a compilation. */
+    "outDir": "./build",
+    "outFile": "./build/litegraph.mini.js",
 
     /* Interop Constraints */
-    "isolatedModules": true,                          /* Ensure that each file can be safely transpiled without relying on other imports. */
-    "verbatimModuleSyntax": true,                     /* Do not transform or elide any imports or exports not marked as type-only, ensuring they are written in the output file's format based on the 'module' setting. */
     "esModuleInterop": true,                             /* Emit additional JavaScript to ease support for importing CommonJS modules. This enables 'allowSyntheticDefaultImports' for type compatibility. */
     "forceConsistentCasingInFileNames": true,            /* Ensure that casing is correct in imports. */
 
@@ -26,6 +25,13 @@
     "skipLibCheck": true                                 /* Skip type checking all .d.ts files. */
   },
   "include": [
-    "src"
+    "./src/litegraph.js",
+    "./src/nodes/base.js",
+    "./src/nodes/events.js",
+    "./src/nodes/input.js",
+    "./src/nodes/math.js",
+    "./src/nodes/strings.js",
+    "./src/nodes/logic.js",
+    "./src/nodes/network.js"
   ]
 }

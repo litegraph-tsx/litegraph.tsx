@@ -6,8 +6,14 @@
     "types": "src/litegraph.d.ts",
     "private": false,
     "scripts": {
+        "build:core": "tsc -p tsconfig.core.json",
+        "build:mini": "tsc -p tsconfig.mini.json",
+        "build:whole": "tsc -p tsconfig.whole.json",
+
         "doc": "jsdoc -c ./jsdocconfig.json -d ./doc -r --verbose --debug",
+
         "server": "nodemon utils/server.js",
+        
         "test": "jest",
         "lint": "npx eslint src",
         "lint:fix": "npx eslint --fix src"
