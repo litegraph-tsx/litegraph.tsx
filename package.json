@@ -12,7 +12,7 @@
 
         "doc": "jsdoc -c ./jsdocconfig.json -d ./doc -r --verbose --debug",
 
-        "server": "nodemon utils/server.js",
+        "server": "nodemon server.js",
         
         "test": "jest",
         "lint": "npx eslint src",
