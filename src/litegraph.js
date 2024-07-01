@@ -6179,6 +6179,9 @@ LGraphNode.prototype.executeAction = function(action)
                 //it wasn't clicked on the links boxes
                 if (!skip_action) {
                     var block_drag_node = false;
+                    if(node && node.flags && node.flags.pinned) {
+                        block_drag_node = true;
+                    }
 					var pos = [e.canvasX - node.pos[0], e.canvasY - node.pos[1]];
 
                     //widgets
