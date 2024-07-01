@@ -381,7 +381,7 @@ HTTPRequestNode.desc = "Fetch data through HTTP";
 
 HTTPRequestNode.prototype.fetch = function()
 {
-	var url = this.properties.url;
+    var url = this.getInputData(1) || this.properties.url;
 	if(!url)
 		return;
 
