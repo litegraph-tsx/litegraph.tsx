@@ -991,7 +991,7 @@
 
         this.addProperty("amplitude", 1);
         this.addProperty("offset", 0);
-        this.bgImageUrl = "nodes/imgs/icon-sin.png";
+        this.bgImageUrl = "assets/images/icon-sin.png";
     }
 
     MathTrigonometry.title = "Trigonometry";

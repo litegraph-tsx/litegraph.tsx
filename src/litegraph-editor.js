@@ -29,8 +29,8 @@ function Editor(container_id, options) {
 	graphcanvas.onDropItem = this.onDropItem.bind(this);
 
     //add stuff
-    //this.addToolsButton("loadsession_button","Load","imgs/icon-load.png", this.onLoadButton.bind(this), ".tools-left" );
-    //this.addToolsButton("savesession_button","Save","imgs/icon-save.png", this.onSaveButton.bind(this), ".tools-left" );
+    //this.addToolsButton("loadsession_button","Load","assets/images/icon-load.png", this.onLoadButton.bind(this), ".tools-left" );
+    //this.addToolsButton("savesession_button","Save","assets/images/icon-save.png", this.onSaveButton.bind(this), ".tools-left" );
     this.addLoadCounter();
     this.addToolsButton(
         "playnode_button",
@@ -221,7 +221,7 @@ Editor.prototype.addMiniWindow = function(w, h) {
 
     var graphcanvas = new LGraphCanvas( canvas, this.graph );
     graphcanvas.show_info = false;
-    graphcanvas.background_image = "imgs/grid.png";
+    graphcanvas.background_image = "assets/images/grid.png";
     graphcanvas.scale = 0.25;
     graphcanvas.allow_dragnodes = false;
     graphcanvas.allow_interaction = false;
@@ -275,7 +275,7 @@ Editor.prototype.addMultiview = function()
 	this.graphcanvas.viewport = [0,0,canvas.width*0.5-2,canvas.height];
 
 	var graphcanvas = new LGraphCanvas( canvas, this.graph );
-    graphcanvas.background_image = "imgs/grid.png";
+    graphcanvas.background_image = "assets/images/grid.png";
     this.graphcanvas2 = graphcanvas;
 	this.graphcanvas2.viewport = [canvas.width*0.5,0,canvas.width*0.5,canvas.height];
 }
