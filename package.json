@@ -6,15 +6,15 @@
     "types": "src/litegraph.d.ts",
     "private": false,
     "scripts": {
-        "build:core": "tsc -p tsconfig.core.json",
-        "build:mini": "tsc -p tsconfig.mini.json",
-        "build:whole": "tsc -p tsconfig.whole.json",
+        "build:core": "tsc -p ./tooling/tsconfig.core.json",
+        "build:mini": "tsc -p ./tooling/tsconfig.mini.json",
+        "build:whole": "tsc -p ./tooling/tsconfig.whole.json",
 
-        "doc": "jsdoc -c ./jsdoc.config.json -d ./documentation -r --verbose --debug",
+        "doc": "jsdoc -c ./tooling/jsdoc.config.json -d ./documentation -r --verbose --debug",
 
-        "server": "nodemon server.js",
+        "server": "nodemon ./tooling/server.js",
         
-        "test": "jest",
+        "test": "jest --config ./tooling/jest.config.js",
         "lint": "npx eslint src",
         "lint:fix": "npx eslint --fix src"
     },
