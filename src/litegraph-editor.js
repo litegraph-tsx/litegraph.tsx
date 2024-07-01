@@ -281,14 +281,32 @@ Editor.prototype.addMiniWindow = function(w, h) {
     this.root.querySelector(".content").appendChild(miniwindow);
 };
 
-Editor.prototype.addMultiview = function()
-{
-	var canvas = this.canvas;
+// We're hijacking this method, it's now a *toggle* Multiview
+Editor.prototype.addMultiview = function() {
+    var canvas = this.canvas;
+    var graphcanvas;
+
+    // Already multiview, we're actually toggling it
+    if (this.graphcanvas2) {
+
+        // @BUG: A bug in this section of code is triggered when you *play* the graph
+        this.graphcanvas2.setGraph(null, true);
+        this.graphcanvas2.viewport = null;
+        this.graphcanvas2 = null;
+        this.graphcanvas.viewport = null;
+        this.graphcanvas.setGraph(null, true);
+        this.graphcanvas = null;
+        graphcanvas = new LGraphCanvas( canvas, this.graph );
+        graphcanvas.background_image = "imgs/grid.png";
+        this.graphcanvas = graphcanvas;
+        window.graphcanvas = this.graphcanvas;
+        return;
+    }
 	this.graphcanvas.ctx.fillStyle = "black";
 	this.graphcanvas.ctx.fillRect(0,0,canvas.width,canvas.height);
 	this.graphcanvas.viewport = [0,0,canvas.width*0.5-2,canvas.height];
 
-	var graphcanvas = new LGraphCanvas( canvas, this.graph );
+    graphcanvas = new LGraphCanvas( canvas, this.graph );
     graphcanvas.background_image = "../assets/images/grid.png";
     this.graphcanvas2 = graphcanvas;
 	this.graphcanvas2.viewport = [canvas.width*0.5,0,canvas.width*0.5,canvas.height];
