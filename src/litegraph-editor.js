@@ -21,7 +21,7 @@ function Editor(container_id, options) {
     //create graph
     var graph = (this.graph = new LGraph());
     var graphcanvas = this.graphcanvas = new LGraphCanvas(canvas, graph);
-    graphcanvas.background_image = "imgs/grid.png";
+    graphcanvas.background_image = "assets/images/grid.png";
     graph.onAfterExecute = function() {
         graphcanvas.draw(true);
     };
@@ -35,14 +35,14 @@ function Editor(container_id, options) {
     this.addToolsButton(
         "playnode_button",
         "Play",
-        "imgs/icon-play.png",
+        "assets/images/icon-play.png",
         this.onPlayButton.bind(this),
         ".tools-right"
     );
     this.addToolsButton(
         "playstepnode_button",
         "Step",
-        "imgs/icon-playstep.png",
+        "assets/images/icon-playstep.png",
         this.onPlayStepButton.bind(this),
         ".tools-right"
     );
@@ -51,7 +51,7 @@ function Editor(container_id, options) {
         this.addToolsButton(
             "livemode_button",
             "Live",
-            "imgs/icon-record.png",
+            "assets/images/icon-record.png",
             this.onLiveButton.bind(this),
             ".tools-right"
         );
@@ -60,7 +60,7 @@ function Editor(container_id, options) {
         this.addToolsButton(
             "maximize_button",
             "",
-            "imgs/icon-maximize.png",
+            "assets/images/icon-maximize.png",
             this.onFullscreenButton.bind(this),
             ".tools-right"
         );
@@ -140,10 +140,10 @@ Editor.prototype.onPlayButton = function() {
     var button = this.root.querySelector("#playnode_button");
 
     if (graph.status == LGraph.STATUS_STOPPED) {
-        button.innerHTML = "<img src='imgs/icon-stop.png'/> Stop";
+        button.innerHTML = "<img src='/assets/images/icon-stop.png'/> Stop";
         graph.start();
     } else {
-        button.innerHTML = "<img src='imgs/icon-play.png'/> Play";
+        button.innerHTML = "<img src='/assets/images/icon-play.png'/> Play";
         graph.stop();
     }
 };
@@ -163,8 +163,8 @@ Editor.prototype.onLiveButton = function() {
         : "imgs/gauss_bg.jpg";
     var button = this.root.querySelector("#livemode_button");
     button.innerHTML = !is_live_mode
-        ? "<img src='imgs/icon-record.png'/> Live"
-        : "<img src='imgs/icon-gear.png'/> Edit";
+        ? "<img src='assets/images/icon-record.png'/> Live"
+        : "<img src='assets/images/icon-gear.png'/> Edit";
 };
 
 Editor.prototype.onDropItem = function(e)
