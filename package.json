@@ -10,7 +10,7 @@
         "build:mini": "tsc -p tsconfig.mini.json",
         "build:whole": "tsc -p tsconfig.whole.json",
 
-        "doc": "jsdoc -c ./jsdoc.config.json -d ./doc -r --verbose --debug",
+        "doc": "jsdoc -c ./jsdoc.config.json -d ./documentation -r --verbose --debug",
 
         "server": "nodemon server.js",
         
