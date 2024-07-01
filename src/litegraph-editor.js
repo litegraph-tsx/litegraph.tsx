@@ -28,6 +28,22 @@ function Editor(container_id, options) {
 
 	graphcanvas.onDropItem = this.onDropItem.bind(this);
 
+    var originalOnPlayEvent = graph.onPlayEvent;
+    graph.onPlayEvent = (function() {
+        if(originalOnPlayEvent)
+            originalOnPlayEvent();
+        const button = this.root.querySelector("#playnode_button");
+        button.innerHTML = `<img src="../assets/images/icon-stop.png"/> Stop`;
+    }).bind(this);
+
+    var originalOnStopEvent = graph.onStopEvent;
+    graph.onStopEvent = (function() {
+        if(originalOnStopEvent)
+            originalOnStopEvent();
+        const button = this.root.querySelector("#playnode_button");
+        button.innerHTML = `<img src="../assets/images/icon-play.png"/> Play`;
+    }).bind(this);
+
     //add stuff
     //this.addToolsButton("loadsession_button","Load","../assets/images/icon-load.png", this.onLoadButton.bind(this), ".tools-left" );
     //this.addToolsButton("savesession_button","Save","../assets/images/icon-save.png", this.onSaveButton.bind(this), ".tools-left" );
