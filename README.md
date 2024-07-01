@@ -183,7 +183,6 @@ Open your browser and point it to http://localhost:8000/. You can select a demo 
 
 - Daniel
 - atlasan
-- HCL
 - DrJKL
 
 (litegraph.js, from which this is forked)
