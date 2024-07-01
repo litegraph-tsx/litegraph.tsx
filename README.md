@@ -162,20 +162,19 @@ graph.start()
 
 ![MyNodes](assets/examples/mynodes.png "MyNodes")
 
-## Utils
------
+## Utilities
 
-It includes several commands in the utils folder to generate doc, check errors and build minifyed version.
+It includes several utilities available via npm run * which can be found in package.json
 
 ## Demo
 -----
 The demo includes some examples of graphs. In order to try them you can visit [demo site](https://litegraph-tsx.github.io/litegraph.tsx/editor/) or install it on your local computer, to do so you need `git`, `node` and `npm`. Given those dependencies are installed, run the following commands to try it out:
 ```sh
 $ git clone https://github.com/litegraph-tsx/litegraph.tsx.git
-$ cd litegraph.js
-$ npm install
-$ node utils/server.js
-Example app listening on port 80!
+$ cd litegraph.tsx
+$ npm i
+$ npm run server
+Example app listening on port 8000!
 ```
 Open your browser and point it to http://localhost:8000/. You can select a demo from the dropdown at the top of the page.
 
@@ -194,6 +193,3 @@ Open your browser and point it to http://localhost:8000/. You can select a demo 
 - coderofsalvation
 - ilyabesk
 - gausszhou
-
-
-
