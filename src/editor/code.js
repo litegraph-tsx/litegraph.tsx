@@ -97,14 +97,14 @@ function addDemo( name, url )
 }
 
 //some examples
-addDemo("Features", "assets/examples/features.json");
-addDemo("Benchmark", "assets/examples/benchmark.json");
-addDemo("Subgraph", "assets/examples/subgraph.json");
-addDemo("Audio", "assets/examples/audio.json");
-addDemo("Audio Delay", "assets/examples/audio_delay.json");
-addDemo("Audio Reverb", "assets/examples/audio_reverb.json");
-addDemo("MIDI Generation", "assets/examples/midi_generation.json");
-addDemo("Copy Paste", "assets/examples/copypaste.json");
+addDemo("Features", "../assets/examples/features.json");
+addDemo("Benchmark", "../assets/examples/benchmark.json");
+addDemo("Subgraph", "../assets/examples/subgraph.json");
+addDemo("Audio", "../assets/examples/audio.json");
+addDemo("Audio Delay", "../assets/examples/audio_delay.json");
+addDemo("Audio Reverb", "../assets/examples/audio_reverb.json");
+addDemo("MIDI Generation", "../assets/examples/midi_generation.json");
+addDemo("Copy Paste", "../assets/examples/copypaste.json");
 addDemo("autobackup", function(){
 	var data = localStorage.getItem("litegraphg demo backup");
 	if(!data)
