@@ -204,7 +204,21 @@ Editor.prototype.goFullscreen = function() {
 };
 
 Editor.prototype.onFullscreenButton = function() {
-    this.goFullscreen();
+    if(
+        document.fullscreenElement ||
+        document.mozRequestFullscreen ||
+        document.webkitRequestFullscreen
+    ) {
+        if(document.exitFullscreen) {
+            document.exitFullscreen();
+        } else if (document.mozCancelFullscreen) {
+            document.mozCancelFullscreen();
+        } else if (document.webkitExitFullscreen) {
+            document.webkitExitFullscreen();
+        }
+    } else {
+        this.goFullscreen();
+    }
 };
 
 Editor.prototype.addMiniWindow = function(w, h) {
