@@ -14,7 +14,7 @@ It can be integrated easily in any existing web applications and graphs can be r
 
 Try it in the [demo site](https://litegraph-tsx.github.io/litegraph.tsx/editor/).
 
-![Node Graph](imgs/node_graph_example.png "WebGLStudio")
+![Node Graph](assets/examples/node_graph_example.png "WebGLStudio")
 
 ## Features
 - Renders on Canvas2D (zoom in/out and panning, easy to render complex interfaces, can be used inside a WebGLTexture)
@@ -152,15 +152,15 @@ graph.start()
 
 ### [webglstudio.org](http://webglstudio.org)
 
-![WebGLStudio](imgs/webglstudio.gif "WebGLStudio")
+![WebGLStudio](assets/examples/webglstudio.gif "WebGLStudio")
 
 ### [MOI Elephant](http://moiscript.weebly.com/elephant-systegraveme-nodal.html)
 
-![MOI Elephant](imgs/elephant.gif "MOI Elephant")
+![MOI Elephant](assets/examples/elephant.gif "MOI Elephant")
 
 ### Mynodes
 
-![MyNodes](imgs/mynodes.png "MyNodes")
+![MyNodes](assets/examples/mynodes.png "MyNodes")
 
 ## Utils
 -----
