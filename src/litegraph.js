@@ -1201,10 +1201,7 @@
       }
     }
 
-    while (true) {
-      if (S.length == 0) {
-        break;
-      }
+    while (S.length != 0) {
 
       //get an starting node
       var node = S.shift();
@@ -3238,8 +3235,6 @@
         this.action_call = options.action_call; // if (param)
         this.graph.nodes_executedAction[this.id] = options.action_call;
       }
-    }
-    else {
     }
     this.execute_triggered = 2; // the nFrames it will be used (-- each step), means "how old" is the event
     if(this.onAfterExecuteNode) this.onAfterExecuteNode(param, options); // callback
@@ -12260,7 +12255,8 @@ LGraphNode.prototype.executeAction = function(action)
     if (options.checkForInput){
       var aI = [];
       var focused = false;
-      if (aI = dialog.querySelectorAll("input")){
+      aI = dialog.querySelectorAll("input");
+      if (aI){
         aI.forEach(function(iX) {
           iX.addEventListener("keydown",function(e){
             dialog.modified();
@@ -13322,13 +13318,12 @@ LGraphNode.prototype.executeAction = function(action)
         callback: LGraphCanvas.onMenuNodeClone
       });
     }
-
-    if(0) //TODO
+    /*
       options.push({
         content: "To Subgraph",
         callback: LGraphCanvas.onMenuNodeToSubgraph
       });
-
+    */
     if (Object.keys(this.selected_nodes).length > 1) {
       options.push({
         content: "Align Selected To",

@@ -331,8 +331,6 @@
 
   ImageFade.prototype.onExecute = function() {
     var ctx = this.canvas.getContext("2d");
-    this.canvas.width = this.canvas.width;
-
     var A = this.getInputData(0);
     if (A != null) {
       ctx.drawImage(A, 0, 0, this.canvas.width, this.canvas.height);

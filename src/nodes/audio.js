@@ -1147,7 +1147,9 @@ LiteGraph.registerNodeType("audio/waveShaper", LGAudioWaveShaper);
       this.audionode.started = true;
       try {
         this.audionode.start();
-      } catch (err) {}
+      } catch (err) {
+        console.log(err);
+      }
     }
   };
 

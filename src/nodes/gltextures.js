@@ -105,7 +105,6 @@
         break;
       case LGraphTexture.REUSE:
         return origin;
-        break;
       case LGraphTexture.COPY:
       default:
         tex_type = origin ? origin.type : gl.UNSIGNED_BYTE;

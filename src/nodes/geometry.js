@@ -829,12 +829,6 @@
       vertices[i*3] = x;
       vertices[i*3+1] = y;
       vertices[i*3+2] = z;
-
-      if(gen_uvs)
-      {
-                
-
-      }
     }
     this.geometry._id = ++this.geometry_id;
     this.geometry._version = ++this.version;

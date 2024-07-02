@@ -602,9 +602,6 @@
     {
       this.updateType();
     }
-    else if( name == "value" )
-    {
-    }
   }
 
   GraphInput.prototype.getTitle = function() {
@@ -719,8 +716,6 @@
     }
     else if (name == "type") {
       this.updateType();
-    }
-    else if (name == "value") {
     }
   }
      

@@ -4040,10 +4040,6 @@ Mesh.prototype.draw = function(shader, mode, range_start, range_length)
           new_data.set( temp, j );
         }
       }
-      else
-      {
-      }
-
       newmesh.addBuffer();
     }
 
@@ -9353,7 +9349,7 @@ Texture.cubemap_camera_parameters = [
 
     for(var i = 0; i < seq.length; ++i)
     {
-      try { gl = canvas.getContext( seq[i], context_options ); } catch (e) {}
+      try { gl = canvas.getContext( seq[i], context_options ); } catch (e) { console.log(e); }
       if(gl)
         break;
     }
@@ -10289,9 +10285,6 @@ Texture.cubemap_camera_parameters = [
     {
       this.dragging = true;
       //gl.mouse.buttons |= (1 << e.which); //enable
-    }
-    else if (e.type == "mousemove")
-    {
     }
     else if (e.type == "mouseup")
     {
