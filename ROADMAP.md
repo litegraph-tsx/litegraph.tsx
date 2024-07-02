@@ -3,9 +3,14 @@
 
 ## Catch-up
 
+- [*] Confirmed pnpm replaces npm successfully.  If the team agrees, we can remove package-lock.json
+
 - [ ] Move editor/* somewhere better?  Open to suggestions!
+
 - [ ] Move eslint.config.js into tooling and still have it work
+
 - [ ] Implement PRs
+
 - [ ] Correctly apply `reversion` commits from github.com/daniel-lewis-ab/litegraph.js without borking git history
 
 ## Make decision on PR
