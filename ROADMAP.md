@@ -11,7 +11,7 @@
 
 - [x] Implement PRs
 
-- [ ] Correctly apply `reversion` commits from github.com/daniel-lewis-ab/litegraph.js without borking git history
+- [x] Correctly apply `reversion` commits from github.com/daniel-lewis-ab/litegraph.js without borking git history
 
 ## Make decision on PRs
 
