@@ -11658,7 +11658,7 @@ LGraphNode.prototype.executeAction = function(action)
                 } else if (e.keyCode == 13) {
                     refreshHelper();
                     if (selected) {
-                        select(selected.innerHTML);
+                        select(unescape(selected.dataset["type"]));
                     } else if (first) {
                         select(first);
                     } else {
