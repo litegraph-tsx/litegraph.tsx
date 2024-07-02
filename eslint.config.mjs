@@ -39,8 +39,8 @@ export default [
         "@stylistic/function-call-spacing": [0, "never"],
         "@stylistic/function-paren-newline": [0, "multiline"],
         "@stylistic/implicit-arrow-linebreak": [0, "beside"],
-        "@stylistic/indent": [0, 2],
-        "@stylistic/indent-binary-ops":[0, 4],
+        "@stylistic/indent": [1, 2],
+        "@stylistic/indent-binary-ops":[0, 2],
         "@stylistic/key-spacing":[0, {
             "beforeColon":false,
             "afterColon":true,
