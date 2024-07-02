@@ -14365,22 +14365,28 @@ LGraphNode.prototype.executeAction = function(action)
     }
 
     switch(sEvent){
+
       //both pointer and move events
-      case "down": case "up": case "move": case "over": case "out": case "enter":
-      {
+      case "down":
+      case "up":
+      case "move":
+      case "over":
+      case "out":
+      case "enter":
         oDOM.addEventListener(sMethod+sEvent, fCall, capture);
-      }
+        return;
+
       // only pointerevents
-      case "leave": case "cancel": case "gotpointercapture": case "lostpointercapture":
-      {
+      case "leave":
+      case "cancel":
+      case "gotpointercapture":
+      case "lostpointercapture":
         if (sMethod!="mouse"){
-          return oDOM.addEventListener(sMethod+sEvent, fCall, capture);
+          oDOM.addEventListener(sMethod+sEvent, fCall, capture);
+          return;
         }
-      }
-      // not "pointer" || "mouse"
-      default:
-        return oDOM.addEventListener(sEvent, fCall, capture);
     }
+    oDOM.addEventListener(sEvent, fCall, capture);
   }
   LiteGraph.pointerListenerRemove = function(oDOM, sEvent, fCall, capture=false) {
     if (!oDOM || !oDOM.removeEventListener || !sEvent || typeof fCall!=="function"){
@@ -14389,23 +14395,29 @@ LGraphNode.prototype.executeAction = function(action)
     }
     switch(sEvent){
       //both pointer and move events
-      case "down": case "up": case "move": case "over": case "out": case "enter":
-      {
+      case "down":
+      case "up":
+      case "move":
+      case "over":
+      case "out":
+      case "enter":
         if (LiteGraph.pointerevents_method=="pointer" || LiteGraph.pointerevents_method=="mouse"){
           oDOM.removeEventListener(LiteGraph.pointerevents_method+sEvent, fCall, capture);
         }
-      }
+        return;
+
       // only pointerevents
-      case "leave": case "cancel": case "gotpointercapture": case "lostpointercapture":
-      {
+      case "leave":
+      case "cancel":
+      case "gotpointercapture":
+      case "lostpointercapture":
         if (LiteGraph.pointerevents_method=="pointer"){
-          return oDOM.removeEventListener(LiteGraph.pointerevents_method+sEvent, fCall, capture);
+          oDOM.removeEventListener(LiteGraph.pointerevents_method+sEvent, fCall, capture);
         }
-      }
-      // not "pointer" || "mouse"
-      default:
-        return oDOM.removeEventListener(sEvent, fCall, capture);
+        return;
     }
+    // not "pointer" || "mouse"
+    oDOM.removeEventListener(sEvent, fCall, capture);
   }
 
   function clamp(v, a, b) {
