@@ -6003,7 +6003,8 @@ LGraphNode.prototype.executeAction = function(action)
       // clone node ALT dragging
       if (LiteGraph.alt_drag_do_clone_nodes && e.altKey && node && this.allow_interaction && !skip_action && !this.read_only)
       {
-        if (cloned = node.clone()){
+        cloned = node.clone();
+        if (cloned){
           cloned.pos[0] += 5;
           cloned.pos[1] += 5;
           this.graph.add(cloned,false,{doCalcSize: false});
@@ -10229,7 +10230,9 @@ LGraphNode.prototype.executeAction = function(action)
                 if (/^[0-9+\-*/()\s]+|\d+\.\d+$/.test(v)) {
                   try {//solve the equation if possible
                     v = eval(v);
-                  } catch (e) { }
+                  } catch (e) {
+                    console.log(e);
+                  }
                 }    
                 this.value = Number(v);
                 inner_value_change(this, this.value);
@@ -11104,7 +11107,7 @@ LGraphNode.prototype.executeAction = function(action)
         // is not not connected
       }
       nodeNewType = false;
-      if(typeof slotTypesDefault[fromSlotType] == "object" || typeof slotTypesDefault[fromSlotType] == "array"){
+      if(typeof slotTypesDefault[fromSlotType] == "object" || Array.isArray(slotTypesDefault[fromSlotType])) {
         for(var typeX in slotTypesDefault[fromSlotType]){
           if (opts.nodeType == slotTypesDefault[fromSlotType][typeX] || opts.nodeType == "AUTO"){
             nodeNewType = slotTypesDefault[fromSlotType][typeX];
@@ -11244,7 +11247,7 @@ LGraphNode.prototype.executeAction = function(action)
     var fromSlotType = slotX.type==LiteGraph.EVENT?"_event_":slotX.type;
     var slotTypesDefault = isFrom ? LiteGraph.slot_types_default_out : LiteGraph.slot_types_default_in;
     if(slotTypesDefault && slotTypesDefault[fromSlotType]){
-      if(typeof slotTypesDefault[fromSlotType] == "object" || typeof slotTypesDefault[fromSlotType] == "array"){
+      if(typeof slotTypesDefault[fromSlotType] == "object" || Array.isArray(slotTypesDefault[fromSlotType])) {
         for(var typeX in slotTypesDefault[fromSlotType]){
           options.push(slotTypesDefault[fromSlotType][typeX]);
         }
