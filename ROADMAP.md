@@ -13,7 +13,9 @@
 
 - [ ] Correctly apply `reversion` commits from github.com/daniel-lewis-ab/litegraph.js without borking git history
 
-## Make decision on PR
+## Make decision on PRs
+
+These ones are not simple bugfixes, so warrant some discussion before pulling:
 
 1. `Move properties panel from double click to menu option.` https://github.com/jagenjo/litegraph.js/commit/adbbc53fa4dc60cb9073c8061fdc631a4934ce15
 
@@ -22,5 +24,6 @@
 3. `Increase maximum number of nodes to 10k.`
 https://github.com/jagenjo/litegraph.js/commit/6a0e0124751e433dc17cbbddb414308f017a9594
 
-
+4. `Show node title in search and also search title`
+https://github.com/jagenjo/litegraph.js/commit/5925961fa15f41dcf8f8265d051785b83b126645
 
