@@ -381,7 +381,7 @@
   LGraphTexture.replaceCode = function( code, context )
   {
     return code.replace(/\{\{[a-zA-Z0-9_]*\}\}/g, function(v){
-      v = v.replace( /[\{\}]/g, "" );
+      v = v.replace( /[{}]/g, "" );
       return context[v] || "";
     });
   }

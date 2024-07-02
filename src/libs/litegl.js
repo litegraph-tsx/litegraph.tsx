@@ -8603,7 +8603,7 @@ Texture.cubemap_camera_parameters = [
     }
 
     //return code.replace(/#import\s+\"(\w+)\"\s*\n/g, replace_import );
-    return code.replace(/#import\s+\"([a-zA-Z0-9_\.]+)\"\s*\n/g, replace_import );
+    return code.replace(/#import\s+"([a-zA-Z0-9_.]+)"\s*\n/g, replace_import );
   }
 
   Shader.dumpErrorToConsole = function(err, vscode, fscode)
@@ -8876,7 +8876,7 @@ Texture.cubemap_camera_parameters = [
   Shader.replaceCodeUsingContext = function( code_template, context )
   {
     return code_template.replace(/\{\{[a-zA-Z0-9_]*\}\}/g, function(v){
-      v = v.replace( /[\{\}]/g, "" );
+      v = v.replace( /[{}]/g, "" );
       return context[v] || "";
     });
   }
@@ -8886,7 +8886,7 @@ Texture.cubemap_camera_parameters = [
     if(!code)
       return "";
 
-    var rx = /(\/\*([^*]|[\r\n]|(\*+([^*\/]|[\r\n])))*\*+\/)|(\/\/.*)/g;
+    var rx = /(\/\*([^*]|[\r\n]|(\*+([^*/]|[\r\n])))*\*+\/)|(\/\/.*)/g;
     var code = code.replace( rx ,"");
     var lines = code.split("\n");
     var result = [];

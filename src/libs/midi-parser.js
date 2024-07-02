@@ -20,7 +20,7 @@
     // base64 character set, plus padding character (=)
     let b64 = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';
     // Regular expression to check formal correctness of base64 encoded strings
-    let b64re = /^(?:[A-Za-z\d+\/]{4})*?(?:[A-Za-z\d+\/]{2}(?:==)?|[A-Za-z\d+\/]{3}=?)?$/;
+    let b64re = /^(?:[A-Za-z\d+/]{4})*?(?:[A-Za-z\d+/]{2}(?:==)?|[A-Za-z\d+/]{3}=?)?$/;
     // remove data type signatures at the begining of the string
     // eg :  "data:audio/mid;base64,"
     string = string.replace( /^.*?base64,/ , '');
