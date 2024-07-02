@@ -206,19 +206,17 @@
     }
     switch(type)
     {
-      case 'float': return v.toFixed(n); break;
-      case 'vec2': return "vec2(" + v[0].toFixed(n) + "," + v[1].toFixed(n) + ")"; break;
+      case 'float': return v.toFixed(n);
+      case 'vec2': return "vec2(" + v[0].toFixed(n) + "," + v[1].toFixed(n) + ")";
       case 'color3':
-      case 'vec3': return "vec3(" + v[0].toFixed(n) + "," + v[1].toFixed(n) + "," + v[2].toFixed(n) + ")"; break;
+      case 'vec3': return "vec3(" + v[0].toFixed(n) + "," + v[1].toFixed(n) + "," + v[2].toFixed(n) + ")";
       case 'color4':
-      case 'vec4': return "vec4(" + v[0].toFixed(n) + "," + v[1].toFixed(n) + "," + v[2].toFixed(n) + "," + v[3].toFixed(n) + ")"; break;
-      case 'mat3': return "mat3(1.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0,1.0)"; break; //not fully supported yet
-      case 'mat4': return "mat4(1.0,0.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,1.0)"; break;//not fully supported yet
+      case 'vec4': return "vec4(" + v[0].toFixed(n) + "," + v[1].toFixed(n) + "," + v[2].toFixed(n) + "," + v[3].toFixed(n) + ")";
+      case 'mat3': return "mat3(1.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0,1.0)"; //not fully supported yet
+      case 'mat4': return "mat4(1.0,0.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,1.0)"; //not fully supported yet
       default:
         throw("unknown glsl type in valueToGLSL:", type);
     }
-
-    return "";
   }
 
   //makes sure that a var is of a type, and if not, it converts it
@@ -248,10 +246,8 @@
         case "vec3":
         case "vec4":
           return v + ".x";
-          break;
         default: //null
           return "0.0";
-          break;
       }
     }
     else if(output_type == "vec2")
@@ -478,8 +474,6 @@
       this._shader_error = true;
       return null;
     }
-
-    return null;//never here
   }
 
   LGShaderContext.prototype.getShader = function( graph )

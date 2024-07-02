@@ -7180,7 +7180,6 @@ Texture.cubemap_camera_parameters = [
   {
     if(!cubemap_texture || cubemap_texture.texture_type != gl.TEXTURE_CUBE_MAP) {
       throw("No cubemap in convert");
-      return null;
     }
 
     size = size || cubemap_texture.width;

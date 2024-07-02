@@ -164,37 +164,29 @@
       case "NOTE ON":
       case "NOTEON":
         return MIDIEvent.NOTEON;
-        break;
       case "NOTE OFF":
       case "NOTEOFF":
         return MIDIEvent.NOTEON;
-        break;
       case "KEY PRESSURE":
       case "KEYPRESSURE":
         return MIDIEvent.KEYPRESSURE;
-        break;
       case "CONTROLLER CHANGE":
       case "CONTROLLERCHANGE":
       case "CC":
         return MIDIEvent.CONTROLLERCHANGE;
-        break;
       case "PROGRAM CHANGE":
       case "PROGRAMCHANGE":
       case "PC":
         return MIDIEvent.PROGRAMCHANGE;
-        break;
       case "CHANNEL PRESSURE":
       case "CHANNELPRESSURE":
         return MIDIEvent.CHANNELPRESSURE;
-        break;
       case "PITCH BEND":
       case "PITCHBEND":
         return MIDIEvent.PITCHBEND;
-        break;
       case "TIME TICK":
       case "TIMETICK":
         return MIDIEvent.TIMETICK;
-        break;
       default:
         return Number(str); //assume its a hex code
     }

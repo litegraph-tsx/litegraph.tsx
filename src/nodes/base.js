@@ -1344,14 +1344,11 @@
         if(this.graph)
           return this.graph.vars;
         return {};
-        break;
       case Variable.GLOBALSCOPE:
         return global;
-        break;
       case Variable.LITEGRAPH:
       default:
         return LiteGraph.Globals;
-        break;
     }
   }
 
