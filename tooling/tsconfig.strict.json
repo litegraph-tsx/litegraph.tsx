@@ -1,0 +1,44 @@
+{
+  "compilerOptions": {
+    /* Language and Environment */
+    "target": "es2016",                                  /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */
+
+    /* Modules */
+    "rootDir": "../src",                                  /* Specify the root folder within your source files. */
+
+    /* JavaScript Support */
+    "allowJs": true,                                  /* Allow JavaScript files to be a part of your program. Use the 'checkJS' option to get errors from these files. */
+    "checkJs": true,                                  /* Enable error reporting in type-checked JavaScript files. */
+
+    /* Emit */
+    "noEmit": true,                                   /* Disable emitting files from a compilation. */
+
+    /* Interop Constraints */
+    "esModuleInterop": true,                             /* Emit additional JavaScript to ease support for importing CommonJS modules. This enables 'allowSyntheticDefaultImports' for type compatibility. */
+    "forceConsistentCasingInFileNames": true,            /* Ensure that casing is correct in imports. */
+
+    /* Type Checking */
+    "strict": false,                                      /* Enable all strict type-checking options. */
+
+    "skipLibCheck": true                                 /* Skip type checking all .d.ts files. */
+  },
+  "include": [
+    "../src/litegraph.js",
+    "../src/nodes/base.js",
+    "../src/nodes/events.js",
+    "../src/nodes/input.js",
+    "../src/nodes/interface.js",
+    "../src/nodes/math.js",
+    "../src/nodes/math3d.js",
+    "../src/nodes/strings.js",
+    "../src/nodes/logic.js",
+    "../src/nodes/graphics.js",
+    "../src/nodes/gltextures.js",
+    "../src/nodes/glshaders.js",
+    "../src/nodes/geometry.js",
+    "../src/nodes/glfx.js",
+    "../src/nodes/midi.js",
+    "../src/nodes/audio.js",
+    "../src/nodes/network.js"
+  ]
+}

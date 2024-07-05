@@ -15,6 +15,7 @@
         "server": "nodemon ./tooling/server.js",
         
         "test": "jest --config ./tooling/jest.config.js",
+        "typecheck": "tsc -p ./tooling/tsconfig.strict.json",
         "lint": "npx eslint src",
         "lint:fix": "npx eslint --fix src"
     },
