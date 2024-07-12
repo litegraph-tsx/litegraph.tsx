@@ -1,7 +1,7 @@
 
 # Roadmap
 
-## Catch-up
+## Catch-up (0.5)
 
 - [x] Confirmed pnpm replaces npm successfully.  If the team agrees, we can remove package-lock.json
 
@@ -12,6 +12,36 @@
 - [x] Implement PRs
 
 - [x] Correctly apply `reversion` commits from github.com/daniel-lewis-ab/litegraph.js without borking git history
+
+## Modularization Step (0.6)
+
+- [ ] Remove IIFE
+
+- [ ] Set imports and exports and window.* are present/shunted.
+
+- [ ] Split litegraph.js into class files
+
+## ES6 Class Step (0.7)
+
+- [ ] Enable ES6 classes in LiteGraph
+
+- [ ] Notify migration of ES6 classes along with version as it affects 3 spots in ComfyUI for ContextMenu
+
+- [ ] Automated class conversion using lebab
+
+- [ ] Manual class conversion and movement of methods and properties into classes
+
+- [ ] node/Math.js and length bug fixes
+
+- [ ] Migration of getters and setters to ES6 form
+
+## Debugger and Test Step (0.8)
+
+- [ ] Implement a Debug class, such that method calls are to be Condition Chained on level/target
+
+- [ ] Replace all commented out debug calls with Condition Chained method calls on the Debug class
+
+- [ ] Establish tests for code functionality using browser hooks and visible indications
 
 ## Make decision on PRs
 
