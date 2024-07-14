@@ -1,6 +1,7 @@
 import { LiteGraph } from "../litegraph.js";
 
 //basic nodes
+  var global = typeof(window) != "undefined" ? window : typeof(self) != "undefined" ? self : globalThis;
 
   //Constant
   function Time() {
@@ -1340,7 +1341,7 @@ import { LiteGraph } from "../litegraph.js";
           return this.graph.vars;
         return {};
       case Variable.GLOBALSCOPE:
-        return globalThis; // This likely doesn't have anything close to original scope 'globalThis' outside a module
+        return global;
       case Variable.LITEGRAPH:
       default:
         return LiteGraph.Globals;

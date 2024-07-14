@@ -1,5 +1,7 @@
 import { LiteGraph } from "../litegraph.js";
 
+  var global = typeof(window) != "undefined" ? window : typeof(self) != "undefined" ? self : globalThis;
+
   var view_matrix = new Float32Array(16);
   var projection_matrix = new Float32Array(16);
   var viewprojection_matrix = new Float32Array(16);
@@ -1897,6 +1899,5 @@ function LGraphGeometryDisplace() {
 
   }
 
-
-
+global.LGraphPoints3D = LGraphPoints3D;
 export { LGraphPoints3D };

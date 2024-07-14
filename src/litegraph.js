@@ -1,4 +1,6 @@
 
+var global = typeof(window) != "undefined" ? window : typeof(self) != "undefined" ? self : globalThis;
+
 (function(global) {
   // *************************************************************
   //   LiteGraph CLASS                                     *******
@@ -14433,8 +14435,8 @@ LGraphNode.prototype.executeAction = function(action)
               window.setTimeout(callback, 1000 / 60);
             };
   }
-})(globalThis);
+})(global);
 
-const { LiteGraph, LGraph, LLink, LGraphNode, LGraphGroup, DragAndScale, LGraphCanvas, ContextMenu, clamp } = globalThis;
+const { LiteGraph, LGraph, LLink, LGraphNode, LGraphGroup, DragAndScale, LGraphCanvas, ContextMenu, clamp } = global;
 export { LiteGraph, LGraph, LLink, LGraphNode, LGraphGroup, DragAndScale, LGraphCanvas, ContextMenu, clamp };
 

@@ -1,6 +1,9 @@
 import { LiteGraph } from "../litegraph.js";
 
+  var global = typeof(window) != "undefined" ? window : typeof(self) != "undefined" ? self : globalThis;
+
   var LGAudio = {};
+  global.LGAudio = LGAudio;
 
   LGAudio.getAudioContext = function() {
     if (!this._audio_context) {

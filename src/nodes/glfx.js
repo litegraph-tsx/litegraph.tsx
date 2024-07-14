@@ -1,8 +1,9 @@
 import { LiteGraph } from "../litegraph.js";
 import { LGraphTexture } from "./gltextures.js";
 
+  var global = typeof(window) != "undefined" ? window : typeof(self) != "undefined" ? self : globalThis;
+
   //Works with Litegl.js to create WebGL nodes
-  if (typeof GL != "undefined") {
     // Texture Lens *****************************************
     function LGraphFXLens() {
       this.addInput("Texture", "Texture");
@@ -565,7 +566,7 @@ import { LGraphTexture } from "./gltextures.js";
       gl.disable(gl.BLEND);
       gl.disable(gl.DEPTH_TEST);
       var mesh = Mesh.getScreenQuad();
-      var camera = globalThis.LS ? LS.Renderer._current_camera : null;
+      var camera = global.LS ? LS.Renderer._current_camera : null;
       var camera_planes;
       if (camera) {
         camera_planes = [
@@ -779,5 +780,10 @@ import { LGraphTexture } from "./gltextures.js";
             ";
 
     LiteGraph.registerNodeType("fx/vigneting", LGraphFXVigneting);
-  }
 
+global.LGraphFXLens = LGraphFXLens;
+global.LGraphFXBokeh = LGraphFXBokeh;
+global.LGraphFXGeneric = LGraphFXGeneric;
+global.LGraphFXVigneting = LGraphFXVigneting;
+
+export { LGraphFXLens, LGraphFXBokeh, LGraphFXGeneric, LGraphFXVigneting };

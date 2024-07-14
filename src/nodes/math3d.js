@@ -1,5 +1,7 @@
 import { LiteGraph } from "../litegraph.js";
 
+  var global = typeof(window) != "undefined" ? window : typeof(self) != "undefined" ? self : globalThis;
+
   function Math3DMat4()
   {
     this.addInput("T", "vec3");
@@ -307,7 +309,7 @@ import { LiteGraph } from "../litegraph.js";
   LiteGraph.registerNodeType("math3d/vec3-dot", Math3DVec3Dot);
 
   //if glMatrix is installed...
-  if (globalThis.glMatrix) {
+  if (global.glMatrix) {
     function Math3DQuaternion() {
       this.addOutput("quat", "quat");
       this.properties = { x: 0, y: 0, z: 0, w: 1, normalize: false };
