@@ -1,7 +1,6 @@
 import { LiteGraph } from "../litegraph.js";
 
 //widgets
-(function(global) {
 
   /* Button ****************/
 
@@ -796,4 +795,4 @@ import { LiteGraph } from "../litegraph.js";
   };
 
   LiteGraph.registerNodeType("widget/panel", WidgetPanel);
-})(this);
+

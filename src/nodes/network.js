@@ -1,7 +1,6 @@
 import { LiteGraph } from "../litegraph.js";
 
 //event related nodes
-(function(global) {
 
   function LGWebSocket() {
     this.size = [60, 20];
@@ -426,4 +425,3 @@ import { LiteGraph } from "../litegraph.js";
 
 
     
-})(this);

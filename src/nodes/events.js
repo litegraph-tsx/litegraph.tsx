@@ -1,7 +1,6 @@
 import { LiteGraph } from "../litegraph.js";
 
 //event related nodes
-(function(global) {
 
   //Show value inside the debug console
   function LogEvent() {
@@ -559,4 +558,4 @@ import { LiteGraph } from "../litegraph.js";
 
 
 
-})(this);
+

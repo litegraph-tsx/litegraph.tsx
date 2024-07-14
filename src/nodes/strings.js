@@ -1,7 +1,6 @@
 import { LiteGraph } from "../litegraph.js";
 
 //basic nodes
-(function(global) {
 
   function toString(a) {
     if(a && a.constructor === Object)
@@ -148,4 +147,4 @@ import { LiteGraph } from "../litegraph.js";
 
   LiteGraph.registerNodeType("string/toTable", StringToTable);
 
-})(this);
+

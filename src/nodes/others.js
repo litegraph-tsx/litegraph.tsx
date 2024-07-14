@@ -1,7 +1,5 @@
 import { LiteGraph } from "../litegraph.js";
 
-(function(global) {
-    
   /* in types :: run in console :: var s=""; LiteGraph.slot_types_in.forEach(function(el){s+=el+"\n";}); console.log(s); */
     
   if(typeof LiteGraph.slot_types_default_in == "undefined") LiteGraph.slot_types_default_in = {}; //[];
@@ -35,4 +33,3 @@ import { LiteGraph } from "../litegraph.js";
   LiteGraph.slot_types_default_out["vec3"] = "math3d/vec3-to-xyz";
   LiteGraph.slot_types_default_out["vec4"] = "math3d/vec4-to-xyzw";
     
-})(this);

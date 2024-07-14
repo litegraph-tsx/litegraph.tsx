@@ -1,7 +1,5 @@
 import { LiteGraph } from "../litegraph.js";
 
-(function(global) {
-
   function Selector() {
     this.addInput("sel", "number");
     this.addInput("A");
@@ -199,4 +197,4 @@ import { LiteGraph } from "../litegraph.js";
     }
   };
   LiteGraph.registerNodeType("logic/IF", logicBranch);
-})(this);
+

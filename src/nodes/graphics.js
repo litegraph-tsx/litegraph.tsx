@@ -1,7 +1,5 @@
 import { LiteGraph } from "../litegraph.js";
 
-(function(global) {
-
   function GraphicsPlot() {
     this.addInput("A", "Number");
     this.addInput("B", "Number");
@@ -892,4 +890,4 @@ import { LiteGraph } from "../litegraph.js";
   };
 
   LiteGraph.registerNodeType("graphics/webcam", ImageWebcam);
-})(this);
+

@@ -1,6 +1,5 @@
 import { LiteGraph } from "../litegraph.js";
 
-(function(global) {
   var MIDI_COLOR = "#243";
 
   function MIDIEvent(data) {
@@ -1576,4 +1575,4 @@ import { LiteGraph } from "../litegraph.js";
   function now() {
     return window.performance.now();
   }
-})(this);
+
