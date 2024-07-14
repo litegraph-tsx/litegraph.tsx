@@ -5,9 +5,8 @@
 
 - [x] Confirmed pnpm replaces npm successfully.  If the team agrees, we can remove package-lock.json
 
-- [ ] Move editor/* somewhere better?  Open to suggestions!
-
 - [ ] Move eslint.config.js into tooling and still have it work
+    Sluffing fix to "whenever"
 
 - [x] Implement PRs
 
@@ -17,11 +16,15 @@
 
 - [x] Switch Project to type:"module"
 
+- [x] Set imports and exports and window.* are present/shunted.
+
+- [x] Port litegraph.test.js forward to modules (depends on litegraph already being so)
+
+- [x] Provide a safe transition stage that doesn't harass
+
+- [ ] Provide a harassment stage to remove globals by using console.warn in getters
+
 - [ ] Remove IIFE
-
-- [ ] Set imports and exports and window.* are present/shunted.
-
-- [ ] Port litegraph.test.js forward to modules (depends on litegraph already being so)
 
 - [ ] Split litegraph.js into class files
 
