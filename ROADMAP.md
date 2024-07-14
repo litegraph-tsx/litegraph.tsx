@@ -22,7 +22,7 @@
 
 - [x] Provide a safe transition stage that doesn't harass
 
-- [ ] Provide a harassment stage to remove globals by using console.warn in getters
+- [x] Provide a harassment stage to remove globals by using console.warn in getters
 
 - [ ] Remove IIFE
 

@@ -1,6 +1,15 @@
 
 var global = typeof(window) != "undefined" ? window : typeof(self) != "undefined" ? self : globalThis;
 
+global = new Proxy(global, {
+  get: function(target, prop, receiver) {
+    // Log a warning whenever a property of 'global' is accessed
+    console.warn(`Accessing property '${prop}' of 'global'. Please migrate to ES6 imports.`);
+    return Reflect.get(target, prop, receiver);
+  },
+  // Add other traps as needed (set, deleteProperty, etc.)
+});
+
 (function(global) {
   // *************************************************************
   //   LiteGraph CLASS                                     *******
