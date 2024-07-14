@@ -1,6 +1,35 @@
+core:
 global.LiteGraph
 global.LGraph
 global.LGraphNode
 global.LGraphGroup
 global.LGraphCanvas
 global.clamp
+
+audio.js:
+global.LGAudio
+
+base.js L1344 'global' reference now modularized, globalThis
+
+geometry.js:
+  if (typeof GL != "undefined") { called half-way within module
+global.LGraphPoints3D
+
+glfx.js:
+if (typeof GL != "undefined") { called within module, needs to be before import, interferes with export by making it conditional
+global.LGraphFXLens
+global.LGraphFXBokeh
+LGraphFXGeneric.prototype.onExecute accesses global.LS
+global.LGraphFXGeneric
+global.LGraphFXVigneting
+
+gltextures.js:
+if (typeof GL != "undefined") called within module, needs to be before import, interferes with export by making it conditional
+global.LGraphTexture
+in executeDraw, L5299 'global' reference now modularized, globalThis.enableWebGLCanvas
+
+glshaders.js:
+if (typeof GL == "undefined") 
+
+math3d.js:
+if (global.glMatrix) { called within module

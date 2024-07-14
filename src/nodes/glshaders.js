@@ -1,7 +1,5 @@
 import { LiteGraph } from "../litegraph.js";
 
-(function(global) {
-
   if (typeof GL == "undefined")
     return;
 
@@ -1827,6 +1825,6 @@ float iqnoise( in vec2 x, float u, float v ){\n\
 
   registerShaderNode( "math/remap", LGraphShaderRemap );
 
-})(this);
+
 
 

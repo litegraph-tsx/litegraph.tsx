@@ -1,12 +1,6 @@
 import { LiteGraph, LGraphCanvas } from "../litegraph.js";
 
-(function(global) {
-
   //Works with Litegl.js to create WebGL nodes
-  global.LGraphTexture = null;
-
-  if (typeof GL == "undefined")
-    return;
 
   LGraphCanvas.link_type_colors["Texture"] = "#987";
 
@@ -19,8 +13,6 @@ import { LiteGraph, LGraphCanvas } from "../litegraph.js";
       LGraphTexture.image_preview_size
     ];
   }
-
-  global.LGraphTexture = LGraphTexture;
 
   LGraphTexture.title = "Texture";
   LGraphTexture.desc = "Texture";
@@ -5298,7 +5290,7 @@ void main(void){\n\
     var time = this.graph.getTime();
     var ctx = gl;
     var canvas = gl.canvas;
-    if( this.properties.use_html_canvas || !global.enableWebGLCanvas )
+    if( this.properties.use_html_canvas || !globalThis.enableWebGLCanvas )
     {
       if(!this._canvas)
       {
@@ -5484,4 +5476,6 @@ void main(void){\n\
   };
 
   LiteGraph.registerNodeType( "texture/cubemapToTexture2D", LGraphCubemapToTexture2D );
-})(this);
+
+
+export { LGraphTexture };

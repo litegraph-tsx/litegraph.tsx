@@ -1,7 +1,6 @@
 import { LiteGraph } from "../litegraph.js";
 
 //basic nodes
-(function(global) {
 
   //Constant
   function Time() {
@@ -1341,7 +1340,7 @@ import { LiteGraph } from "../litegraph.js";
           return this.graph.vars;
         return {};
       case Variable.GLOBALSCOPE:
-        return global;
+        return globalThis; // This likely doesn't have anything close to original scope 'globalThis' outside a module
       case Variable.LITEGRAPH:
       default:
         return LiteGraph.Globals;
@@ -1754,4 +1753,4 @@ import { LiteGraph } from "../litegraph.js";
 
   LiteGraph.registerNodeType("basic/CompareValues", GenericCompare);
     
-})(this);
+

@@ -1,9 +1,6 @@
 import { LiteGraph } from "../litegraph.js";
 
-(function(global) {
-
   var LGAudio = {};
-  global.LGAudio = LGAudio;
 
   LGAudio.getAudioContext = function() {
     if (!this._audio_context) {
@@ -443,7 +440,7 @@ import { LiteGraph } from "../litegraph.js";
       return;
     }
 
-    this._request = LGAudio.loadSound(url, inner);
+    this._request = LGAudio.loadSound(url, inner.bind(this));
 
     this._loading_audio = true;
     this.boxcolor = "#AA4";
@@ -1456,4 +1453,5 @@ LiteGraph.registerNodeType("audio/waveShaper", LGAudioWaveShaper);
   LGAudioDestination.title = "Destination";
   LGAudioDestination.desc = "Audio output";
   LiteGraph.registerNodeType("audio/destination", LGAudioDestination);
-})(this);
+
+export { LGAudio };

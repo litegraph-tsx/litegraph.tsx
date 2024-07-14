@@ -1,7 +1,5 @@
 import { LiteGraph } from "../litegraph.js";
 
-(function(global) {
-
   var view_matrix = new Float32Array(16);
   var projection_matrix = new Float32Array(16);
   var viewprojection_matrix = new Float32Array(16);
@@ -53,8 +51,6 @@ import { LiteGraph } from "../litegraph.js";
     this._old_obj = null;
     this._last_radius = null;
   }
-
-  global.LGraphPoints3D = LGraphPoints3D;
 
   LGraphPoints3D.RECTANGLE = 1;
   LGraphPoints3D.CIRCLE = 2;
@@ -1203,8 +1199,7 @@ function LGraphGeometryDisplace() {
   LiteGraph.registerNodeType( "geometry/connectPoints", LGraphConnectPoints );
 
   //Works with Litegl.js to create WebGL nodes
-  if (typeof GL == "undefined") //LiteGL RELATED **********************************************
-    return;
+  if (typeof GL != "undefined") { //LiteGL RELATED **********************************************
 
   function LGraphToGeometry() {
     this.addInput("mesh", "mesh");
@@ -1900,6 +1895,8 @@ function LGraphGeometryDisplace() {
     ';
     */
 
+  }
 
 
-})(this);
+
+export { LGraphPoints3D };

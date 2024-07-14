@@ -1,7 +1,5 @@
 import { LiteGraph } from "../litegraph.js";
-
-(function(global) {
-  var LGraphTexture = global.LGraphTexture;
+import { LGraphTexture } from "./gltextures.js";
 
   //Works with Litegl.js to create WebGL nodes
   if (typeof GL != "undefined") {
@@ -130,7 +128,6 @@ import { LiteGraph } from "../litegraph.js";
         */
 
     LiteGraph.registerNodeType("fx/lens", LGraphFXLens);
-    global.LGraphFXLens = LGraphFXLens;
 
     /* not working yet
     function LGraphDepthOfField()
@@ -489,7 +486,6 @@ import { LiteGraph } from "../litegraph.js";
             }\n";
 
     LiteGraph.registerNodeType("fx/bokeh", LGraphFXBokeh);
-    global.LGraphFXBokeh = LGraphFXBokeh;
 
     //************************************************
 
@@ -569,7 +565,7 @@ import { LiteGraph } from "../litegraph.js";
       gl.disable(gl.BLEND);
       gl.disable(gl.DEPTH_TEST);
       var mesh = Mesh.getScreenQuad();
-      var camera = global.LS ? LS.Renderer._current_camera : null;
+      var camera = globalThis.LS ? LS.Renderer._current_camera : null;
       var camera_planes;
       if (camera) {
         camera_planes = [
@@ -689,7 +685,6 @@ import { LiteGraph } from "../litegraph.js";
             }\n";
 
     LiteGraph.registerNodeType("fx/generic", LGraphFXGeneric);
-    global.LGraphFXGeneric = LGraphFXGeneric;
 
     // Vigneting ************************************
 
@@ -784,6 +779,5 @@ import { LiteGraph } from "../litegraph.js";
             ";
 
     LiteGraph.registerNodeType("fx/vigneting", LGraphFXVigneting);
-    global.LGraphFXVigneting = LGraphFXVigneting;
   }
-})(this);
+
