@@ -26,6 +26,8 @@
 
 - [x] Remove IIFE
 
+- [x] Clean up internal issues raised by upgradeShunt.js
+
 - [ ] Split litegraph.js into class files
 
 ## ES6 Class Step (0.7)

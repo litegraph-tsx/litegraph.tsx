@@ -1,3 +1,4 @@
+import { LiteGraph } from "../litegraph.js";
 
 function demo()
 {
