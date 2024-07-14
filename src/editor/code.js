@@ -123,24 +123,30 @@ function enableWebGL()
   }
 
   var libs = [
-    "js/libs/gl-matrix-min.js",
-    "js/libs/litegl.js",
-    "../src/nodes/gltextures.js",
-    "../src/nodes/glfx.js",
-    "../src/nodes/glshaders.js",
-    "../src/nodes/geometry.js"
+    "/src/libs/gl-matrix-min.js",
+  ];
+  var modlibs = [
+    "/src/libs/litegl.js",
+    "/src/nodes/gltextures.js",
+    "/src/nodes/glfx.js",
+    "/src/nodes/glshaders.js",
+    "/src/nodes/geometry.js"
   ];
 
   function fetchJS()
   {
     if(libs.length == 0)
-      return on_ready();
+      return on_ready.bind(this);
 
     var script = null;
     script = document.createElement("script");
     script.onload = fetchJS;
     script.src = libs.shift();
     document.head.appendChild(script);
+
+    modlibs.forEach((lib) => {
+      import(lib);
+    });
   }
 
   fetchJS();

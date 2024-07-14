@@ -1,7 +1,6 @@
 //packer version
 //litegl.js by Javi Agenjo 2014 @tamat (tamats.com)
 //forked from lightgl.js by Evan Wallace (madebyevan.com)
-"use strict";
 
 var global = typeof(window) != "undefined" ? window : (typeof(self) != "undefined" ? self : global );
 
