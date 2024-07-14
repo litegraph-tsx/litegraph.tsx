@@ -1,6 +1,6 @@
-(function(global) {
-  var LiteGraph = global.LiteGraph;
+import { LiteGraph } from "../litegraph.js";
 
+(function(global) {
 
   function Math3DMat4()
   {

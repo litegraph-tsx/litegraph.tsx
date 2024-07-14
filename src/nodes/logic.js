@@ -1,5 +1,6 @@
+import { LiteGraph } from "../litegraph.js";
+
 (function(global) {
-  var LiteGraph = global.LiteGraph;
 
   function Selector() {
     this.addInput("sel", "number");

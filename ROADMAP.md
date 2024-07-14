@@ -15,9 +15,13 @@
 
 ## Modularization Step (0.6)
 
+- [x] Switch Project to type:"module"
+
 - [ ] Remove IIFE
 
 - [ ] Set imports and exports and window.* are present/shunted.
+
+- [ ] Port litegraph.test.js forward to modules (depends on litegraph already being so)
 
 - [ ] Split litegraph.js into class files
 

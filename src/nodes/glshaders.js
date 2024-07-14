@@ -1,10 +1,9 @@
+import { LiteGraph } from "../litegraph.js";
+
 (function(global) {
 
   if (typeof GL == "undefined")
     return;
-
-  var LiteGraph = global.LiteGraph;
-  var LGraphCanvas = global.LGraphCanvas;
 
   var SHADERNODES_COLOR = "#345";
 

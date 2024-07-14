@@ -1,0 +1,6 @@
+global.LiteGraph
+global.LGraph
+global.LGraphNode
+global.LGraphGroup
+global.LGraphCanvas
+global.clamp

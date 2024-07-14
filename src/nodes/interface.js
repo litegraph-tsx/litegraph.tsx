@@ -1,6 +1,7 @@
+import { LiteGraph } from "../litegraph.js";
+
 //widgets
 (function(global) {
-  var LiteGraph = global.LiteGraph;
 
   /* Button ****************/
 

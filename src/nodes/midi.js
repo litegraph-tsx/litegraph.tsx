@@ -1,5 +1,6 @@
+import { LiteGraph } from "../litegraph.js";
+
 (function(global) {
-  var LiteGraph = global.LiteGraph;
   var MIDI_COLOR = "#243";
 
   function MIDIEvent(data) {

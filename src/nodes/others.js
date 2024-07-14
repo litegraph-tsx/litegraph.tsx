@@ -1,5 +1,6 @@
+import { LiteGraph } from "../litegraph.js";
+
 (function(global) {
-  var LiteGraph = global.LiteGraph;
     
   /* in types :: run in console :: var s=""; LiteGraph.slot_types_in.forEach(function(el){s+=el+"\n";}); console.log(s); */
     

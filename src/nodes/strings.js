@@ -1,6 +1,7 @@
+import { LiteGraph } from "../litegraph.js";
+
 //basic nodes
 (function(global) {
-  var LiteGraph = global.LiteGraph;
 
   function toString(a) {
     if(a && a.constructor === Object)

@@ -1,6 +1,7 @@
+import { LiteGraph } from "../litegraph.js";
+
 //basic nodes
 (function(global) {
-  var LiteGraph = global.LiteGraph;
 
   //Constant
   function Time() {

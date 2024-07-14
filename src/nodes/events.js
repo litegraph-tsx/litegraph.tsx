@@ -1,6 +1,7 @@
+import { LiteGraph } from "../litegraph.js";
+
 //event related nodes
 (function(global) {
-  var LiteGraph = global.LiteGraph;
 
   //Show value inside the debug console
   function LogEvent() {
