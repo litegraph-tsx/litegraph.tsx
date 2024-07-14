@@ -24,7 +24,7 @@
 
 - [x] Provide a harassment stage to remove globals by using console.warn in getters
 
-- [ ] Remove IIFE
+- [x] Remove IIFE
 
 - [ ] Split litegraph.js into class files
 
