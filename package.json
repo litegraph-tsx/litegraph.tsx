@@ -15,7 +15,7 @@
 
         "server": "nodemon ./tooling/server.js",
         
-        "test": "jest --config ./tooling/jest.config.cjs",
+        "test": "node --experimental-vm-modules node_modules/jest-cli/bin/jest.js",
         "lint": "npx eslint src",
         "lint:fix": "npx eslint --fix src"
     },
