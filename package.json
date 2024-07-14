@@ -3,6 +3,7 @@
     "version": "0.4.3",
     "description": "A flow graph node editor similar to LiteGraph.js, Blender Nodes, or ReactFlow.  It works in an HTML5 Canvas and allows to export graphs to be included in applications.",
     "main": "build/litegraph.core.js",
+    "type": "module",
     "types": "src/litegraph.d.ts",
     "private": false,
     "scripts": {
@@ -14,7 +15,7 @@
 
         "server": "nodemon ./tooling/server.js",
         
-        "test": "jest --config ./tooling/jest.config.js",
+        "test": "jest --config ./tooling/jest.config.cjs",
         "lint": "npx eslint src",
         "lint:fix": "npx eslint --fix src"
     },
