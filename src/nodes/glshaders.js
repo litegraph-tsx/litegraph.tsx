@@ -1,7 +1,7 @@
 import { LiteGraph } from "../litegraph.js";
 
-  var global = typeof(window) != "undefined" ? window : typeof(self) != "undefined" ? self : globalThis;
-  if (typeof global.GL != "undefined") {
+var global = typeof(window) != "undefined" ? window : typeof(self) != "undefined" ? self : globalThis;
+if (typeof global.GL != "undefined") {
 
   var SHADERNODES_COLOR = "#345";
 
@@ -1825,6 +1825,6 @@ float iqnoise( in vec2 x, float u, float v ){\n\
 
   registerShaderNode( "math/remap", LGraphShaderRemap );
 
-  }
+}
 
 
