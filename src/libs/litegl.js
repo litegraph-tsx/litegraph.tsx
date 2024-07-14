@@ -3,6 +3,8 @@
 //forked from lightgl.js by Evan Wallace (madebyevan.com)
 "use strict";
 
+var global = typeof(window) != "undefined" ? window : (typeof(self) != "undefined" ? self : global );
+
 (function(global){
 
   var GL = global.GL = {};
@@ -13421,4 +13423,7 @@ Texture.cubemap_camera_parameters = [
   }
 
 //footer.js
-})( typeof(window) != "undefined" ? window : (typeof(self) != "undefined" ? self : global ) );
+})(global);
+
+const GL = global.GL;
+export { GL };
