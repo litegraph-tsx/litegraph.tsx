@@ -1,6 +1,6 @@
 import { LiteGraph } from "../litegraph.js";
 import { LGraphTexture } from "./gltextures.js";
-import { GL } from "../libs/gl-matrix-min.js";
+import { GL } from "../libs/litegl.js";
 
 var global = typeof(window) != "undefined" ? window : typeof(self) != "undefined" ? self : globalThis;
 
