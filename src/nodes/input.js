@@ -1,4 +1,4 @@
-import { LiteGraph } from "../litegraph.js";
+import { LiteGraph } from "../core/litegraph.js";
 
 function GamepadInput() {
   this.addOutput("left_x_axis", "number");

@@ -1,5 +1,5 @@
 
-import { LiteGraph, LGraph, LLink, LGraphNode, LGraphGroup, DragAndScale, LGraphCanvas, ContextMenu, clamp } from "./litegraph.js";
+import { LiteGraph, LGraph, LLink, LGraphNode, LGraphGroup, DragAndScale, LGraphCanvas, ContextMenu, clamp } from "./core/litegraph.js";
 import { LGAudio } from './nodes/audio.js';
 import { LGraphPoints3D } from './nodes/geometry.js';
 import { LGraphFXLens, LGraphFXBokeh, LGraphFXGeneric, LGraphFXVigneting } from './nodes/glfx.js';
@@ -45,6 +45,9 @@ Object.entries(classesToProtect).forEach(([className, classReference]) => {
     get: function() {
       console.trace(`Accessing ${className} directly from window object is discouraged. Please import it properly.`);
       return classReference; // Provide the reference to the actual class/function here
+    },
+    set: function(newValue) {
+      classReference = newValue; // Update the class reference if needed
     },
     configurable: true // Allows redefinition
   });

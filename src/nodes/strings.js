@@ -1,4 +1,4 @@
-import { LiteGraph } from "../litegraph.js";
+import { LiteGraph } from "../core/litegraph.js";
 
 //basic nodes
 
