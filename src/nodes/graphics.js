@@ -1,4 +1,4 @@
-import { LiteGraph, clamp } from "../core/litegraph.js";
+import { LiteGraph, clamp } from "@/litegraph.js";
 
 function GraphicsPlot() {
   this.addInput("A", "Number");

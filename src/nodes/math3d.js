@@ -1,4 +1,4 @@
-import { LiteGraph } from "../core/litegraph.js";
+import { LiteGraph } from "@/litegraph.js";
 import { glMatrix, mat2, mat2d, mat3, mat4, quat, quat2, vec2, vec3, vec4 } from "../libs/gl-matrix-min.js";
 
 var global = typeof(window) != "undefined" ? window : typeof(self) != "undefined" ? self : globalThis;
