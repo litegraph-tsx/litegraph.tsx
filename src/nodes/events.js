@@ -1,4 +1,4 @@
-import { LiteGraph } from "../core/litegraph.js";
+import { LiteGraph } from "@/litegraph.js";
 
 //event related nodes
 
