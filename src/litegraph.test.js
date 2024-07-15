@@ -1,31 +1,14 @@
-import { jest } from "@jest/globals";
-import { LiteGraph, LGraphNode } from "../src/litegraph.js";
-
-// just for the Jest version number
-import path from 'path';
-import { fileURLToPath } from 'url';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { LGraphNode, LiteGraph } from "../src/litegraph.js";
 
 describe("register node types", () => {
   let Sum;
 
-  beforeAll(async () => {
-
-    const __filename = fileURLToPath(import.meta.url);
-    const __dirname = path.dirname(__filename);
-
-    // Resolve the path to the Jest package.json file
-    const jestPackagePath = path.resolve(__dirname, '../node_modules/@jest/core/package.json');
-    const jestPackage = await import(`file://${jestPackagePath}`);
-    const jestVersion = jestPackage.default.version;
-    console.info(`Jest version:${jestVersion}`);
-  });
-
   beforeEach(() => {
-    jest.clearAllMocks();
-    jest.resetModules();
+    vi.clearAllMocks();
+    vi.resetModules();
 
-    // attempt at resetting LiteGraph each time, because Jest can't just do that
-    // and neither can I.
+    // attempt at resetting LiteGraph each time
     LiteGraph.registered_node_types = {};
     LiteGraph.registered_slot_in_types = {};
     LiteGraph.registered_slot_in_types = {};
@@ -54,12 +37,12 @@ describe("register node types", () => {
   });
 
   test("callback triggers", () => {
-    const consoleSpy = jest
+    const consoleSpy = vi
       .spyOn(console, "log")
       .mockImplementation(() => {});
 
-    LiteGraph.onNodeTypeRegistered = jest.fn();
-    LiteGraph.onNodeTypeReplaced = jest.fn();
+    LiteGraph.onNodeTypeRegistered = vi.fn();
+    LiteGraph.onNodeTypeReplaced = vi.fn();
     LiteGraph.registerNodeType("math/sum", Sum);
     expect(LiteGraph.onNodeTypeRegistered).toHaveBeenCalled();
     expect(LiteGraph.onNodeTypeReplaced).not.toHaveBeenCalled();
@@ -107,7 +90,7 @@ describe("register node types", () => {
     expect(new node_type().shape).toBe("custom_shape");
 
     // Check that also works for replaced node types
-    jest.spyOn(console, "log").mockImplementation(() => {});
+    vi.spyOn(console, "log").mockImplementation(() => {});
     function NewCalcSum(a, b) {
       return a + b;
     }
@@ -118,7 +101,7 @@ describe("register node types", () => {
   });
 
   test("onPropertyChanged warning", () => {
-    const consoleSpy = jest
+    const consoleSpy = vi
       .spyOn(console, "warn")
       .mockImplementation(() => {});
 
@@ -197,7 +180,7 @@ describe("unregister node types", () => {
   let Sum;
 
   beforeEach(async () => {
-    jest.resetModules();
+    vi.resetModules();
     Sum = function Sum() {
       this.addInput("a", "number");
       this.addInput("b", "number");
@@ -209,7 +192,7 @@ describe("unregister node types", () => {
   });
 
   afterEach(() => {
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
   });
 
   test("remove by name", () => {
