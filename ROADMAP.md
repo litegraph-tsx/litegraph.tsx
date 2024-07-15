@@ -5,7 +5,7 @@
 
 - [x] Confirmed pnpm replaces npm successfully.  If the team agrees, we can remove package-lock.json
 
-- [ ] Move eslint.config.js into tooling and still have it work
+- [ ] Move eslint.config.js into tools and still have it work
     Sluffing fix to "whenever"
 
 - [x] Implement PRs
