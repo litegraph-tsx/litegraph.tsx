@@ -7,11 +7,9 @@
     "types": "src/litegraph.d.ts",
     "private": false,
     "scripts": {
-        "build:core": "npx tsc -p ./tooling/tsconfig.core.json",
-        "build:mini": "npx tsc -p ./tooling/tsconfig.mini.json",
-        "build:whole": "npx tsc -p ./tooling/tsconfig.whole.json",
-        "doc": "jsdoc -c ./tooling/jsdoc.config.json -d ./documentation -r --verbose --debug",
-        "server": "nodemon ./tooling/server.js",
+        "build": "npx tsc -p ./tools/tsconfig.json",
+        "doc": "jsdoc -c ./tools/jsdoc.config.json -d ./documentation -r --verbose --debug",
+        "server": "nodemon ./tools/server.js",
         "test": "node --experimental-vm-modules node_modules/jest-cli/bin/jest.js",
         "lint": "npx eslint src",
         "lint:fix": "npx eslint --fix src"
