@@ -28,6 +28,8 @@
 
 - [x] Clean up internal issues raised by upgradeShunt.js
 
+- [x] Shifted build over to vite, and drop espresso
+
 - [ ] Split litegraph.js into class files
 
 ## ES6 Class Step (0.7)
