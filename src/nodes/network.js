@@ -1,5 +1,5 @@
 import { LiteGraph } from "@/litegraph.js";
-import { SillyClient } from "../libs/sillyclient.js";
+import { SillyClient } from "@libs/sillyclient.js";
 
 //event related nodes
 
