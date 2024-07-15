@@ -1,4 +1,5 @@
 import { LiteGraph, LGraphCanvas } from "../litegraph.js";
+import { GL } from "../libs/gl-matrix-min.js";
 
 var global = typeof(window) != "undefined" ? window : typeof(self) != "undefined" ? self : globalThis;
 //Works with Litegl.js to create WebGL nodes

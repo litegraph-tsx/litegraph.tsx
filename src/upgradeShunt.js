@@ -4,7 +4,7 @@ import { LGAudio } from './nodes/audio.js';
 import { LGraphPoints3D } from './nodes/geometry.js';
 import { LGraphFXLens, LGraphFXBokeh, LGraphFXGeneric, LGraphFXVigneting } from './nodes/glfx.js';
 import { LGraphTexture } from "./nodes/gltextures.js";
-import { GL } from './libs/litegl.js';
+import { GL, gl } from './libs/litegl.js';
 
 var global = typeof(window) != "undefined" ? window : typeof(self) != "undefined" ? self : globalThis;
 
@@ -35,6 +35,7 @@ const classesToProtect = {
   'LGraphFXVigneting': LGraphFXVigneting,
   'LGraphTexture':LGraphTexture,
   'GL': GL,
+  'gl': gl,
 };
 
 // Loop over each pair in the object

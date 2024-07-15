@@ -13426,4 +13426,5 @@ Texture.cubemap_camera_parameters = [
 })(global);
 
 const GL = global.GL;
-export { GL };
+const gl = global.gl;
+export { GL, gl };

@@ -126,7 +126,7 @@ function enableWebGL()
 
   var libs = [];
   var modlibs = [
-    "/src/libs/gl-matrix.js",
+    "/src/libs/gl-matrix-min.js",
     "/src/libs/litegl.js",
     "/src/nodes/gltextures.js",
     "/src/nodes/glfx.js",

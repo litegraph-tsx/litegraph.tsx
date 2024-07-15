@@ -1,7 +1,8 @@
 import { LiteGraph } from "../litegraph.js";
+import { GL } from "../libs/gl-matrix-min.js";
 
 var global = typeof(window) != "undefined" ? window : typeof(self) != "undefined" ? self : globalThis;
-if (typeof global.GL != "undefined") {
+if (typeof GL != "undefined") {
 
   var SHADERNODES_COLOR = "#345";
 
