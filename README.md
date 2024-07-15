@@ -12,7 +12,7 @@ A library in Javascript to create graphs in the browser similar to Unreal Bluepr
 
 It can be integrated easily in any existing web applications and graphs can be run without the need of the editor.
 
-Try it in the [demo site](https://litegraph-tsx.github.io/litegraph.tsx/editor/).
+Try it in the [demo site](https://litegraph-tsx.github.io/litegraph.tsx/).
 
 ![Node Graph](assets/examples/node_graph_example.png "WebGLStudio")
 
@@ -168,7 +168,7 @@ It includes several utilities available via npm run * which can be found in pack
 
 ## Demo
 -----
-The demo includes some examples of graphs. In order to try them you can visit [demo site](https://litegraph-tsx.github.io/litegraph.tsx/editor/) or install it on your local computer, to do so you need `git`, `node` and `npm`. Given those dependencies are installed, run the following commands to try it out:
+The demo includes some examples of graphs. In order to try them you can visit [demo site](https://litegraph-tsx.github.io/litegraph.tsx/) or install it on your local computer, to do so you need `git`, `node` and `npm`. Given those dependencies are installed, run the following commands to try it out:
 ```sh
 $ git clone https://github.com/litegraph-tsx/litegraph.tsx.git
 $ cd litegraph.tsx
