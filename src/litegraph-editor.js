@@ -23,7 +23,7 @@ function Editor(container_id, options) {
   //create graph
   var graph = (this.graph = new LGraph());
   var graphcanvas = this.graphcanvas = new LGraphCanvas(canvas, graph);
-  graphcanvas.background_image = "../assets/images/grid.png";
+  graphcanvas.background_image = "./assets/images/grid.png";
   graph.onAfterExecute = function() {
     graphcanvas.draw(true);
   };
@@ -35,7 +35,7 @@ function Editor(container_id, options) {
     if(originalOnPlayEvent)
       originalOnPlayEvent();
     const button = this.root.querySelector("#playnode_button");
-    button.innerHTML = `<img src="../assets/images/icon-stop.png"/> Stop`;
+    button.innerHTML = `<img src="./assets/images/icon-stop.png"/> Stop`;
   }).bind(this);
 
   var originalOnStopEvent = graph.onStopEvent;
@@ -43,24 +43,24 @@ function Editor(container_id, options) {
     if(originalOnStopEvent)
       originalOnStopEvent();
     const button = this.root.querySelector("#playnode_button");
-    button.innerHTML = `<img src="../assets/images/icon-play.png"/> Play`;
+    button.innerHTML = `<img src="./assets/images/icon-play.png"/> Play`;
   }).bind(this);
 
   //add stuff
-  //this.addToolsButton("loadsession_button","Load","../assets/images/icon-load.png", this.onLoadButton.bind(this), ".tools-left" );
-  //this.addToolsButton("savesession_button","Save","../assets/images/icon-save.png", this.onSaveButton.bind(this), ".tools-left" );
+  //this.addToolsButton("loadsession_button","Load","./assets/images/icon-load.png", this.onLoadButton.bind(this), ".tools-left" );
+  //this.addToolsButton("savesession_button","Save","./assets/images/icon-save.png", this.onSaveButton.bind(this), ".tools-left" );
   this.addLoadCounter();
   this.addToolsButton(
     "playnode_button",
     "Play",
-    "../assets/images/icon-play.png",
+    "./assets/images/icon-play.png",
     this.onPlayButton.bind(this),
     ".tools-right"
   );
   this.addToolsButton(
     "playstepnode_button",
     "Step",
-    "../assets/images/icon-playstep.png",
+    "./assets/images/icon-playstep.png",
     this.onPlayStepButton.bind(this),
     ".tools-right"
   );
@@ -69,7 +69,7 @@ function Editor(container_id, options) {
     this.addToolsButton(
       "livemode_button",
       "Live",
-      "../assets/images/icon-record.png",
+      "./assets/images/icon-record.png",
       this.onLiveButton.bind(this),
       ".tools-right"
     );
@@ -78,7 +78,7 @@ function Editor(container_id, options) {
     this.addToolsButton(
       "maximize_button",
       "",
-      "../assets/images/icon-maximize.png",
+      "./assets/images/icon-maximize.png",
       this.onFullscreenButton.bind(this),
       ".tools-right"
     );
@@ -156,10 +156,10 @@ Editor.prototype.onPlayButton = function() {
   var button = this.root.querySelector("#playnode_button");
 
   if (graph.status == LGraph.STATUS_STOPPED) {
-    button.innerHTML = "<img src='../assets/images/icon-stop.png'/> Stop";
+    button.innerHTML = "<img src='./assets/images/icon-stop.png'/> Stop";
     graph.start();
   } else {
-    button.innerHTML = "<img src='../assets/images/icon-play.png'/> Play";
+    button.innerHTML = "<img src='./assets/images/icon-play.png'/> Play";
     graph.stop();
   }
 };
@@ -179,8 +179,8 @@ Editor.prototype.onLiveButton = function() {
     : "imgs/gauss_bg.jpg";
   var button = this.root.querySelector("#livemode_button");
   button.innerHTML = !is_live_mode
-    ? "<img src='../assets/images/icon-record.png'/> Live"
-    : "<img src='../assets/images/icon-gear.png'/> Edit";
+    ? "<img src='./assets/images/icon-record.png'/> Live"
+    : "<img src='./assets/images/icon-gear.png'/> Edit";
 };
 
 Editor.prototype.onDropItem = function(e)
@@ -251,7 +251,7 @@ Editor.prototype.addMiniWindow = function(w, h) {
 
   var graphcanvas = new LGraphCanvas( canvas, this.graph );
   graphcanvas.show_info = false;
-  graphcanvas.background_image = "../assets/images/grid.png";
+  graphcanvas.background_image = "./assets/images/grid.png";
   graphcanvas.scale = 0.25;
   graphcanvas.allow_dragnodes = false;
   graphcanvas.allow_interaction = false;
@@ -323,7 +323,7 @@ Editor.prototype.addMultiview = function() {
   this.graphcanvas.viewport = [0,0,canvas.width*0.5-2,canvas.height];
 
   graphcanvas = new LGraphCanvas( canvas, this.graph );
-  graphcanvas.background_image = "../assets/images/grid.png";
+  graphcanvas.background_image = "./assets/images/grid.png";
   this.graphcanvas2 = graphcanvas;
   this.graphcanvas2.viewport = [canvas.width*0.5,0,canvas.width*0.5,canvas.height];
 }
