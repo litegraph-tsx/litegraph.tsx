@@ -9,9 +9,9 @@
     "scripts": {
         "build": "npx tsc -p ./tools/tsconfig.json && vite build -c ./tools/vite.config.ts",
         "doc": "jsdoc -c ./tools/jsdoc.config.json -d ./documentation -r --verbose --debug",
-        "dev": "vite dev",
-        "preview": "vite preview",
-        "test": "vitest",
+        "dev": "vite dev -c ./tools/vite.config.ts",
+        "preview": "vite preview -c ./tools/vite.config.ts",
+        "test": "vitest -c ./tools/vite.config.ts",
         "lint": "npx eslint src",
         "lint:fix": "npx eslint --fix src"
     },

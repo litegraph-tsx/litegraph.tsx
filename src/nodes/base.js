@@ -1,4 +1,4 @@
-import { LiteGraph } from "../litegraph.js";
+import { LiteGraph } from "@/litegraph.js";
 
 //basic nodes
 var global = typeof(window) != "undefined" ? window : typeof(self) != "undefined" ? self : globalThis;
