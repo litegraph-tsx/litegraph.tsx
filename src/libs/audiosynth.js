@@ -1,3 +1,7 @@
+/*
+  https://github.com/keithwhor/audiosynth
+*/
+
 var Synth, AudioSynth, AudioSynthInstrument;
 !function(){
 
@@ -202,21 +206,23 @@ var Synth, AudioSynth, AudioSynthInstrument;
   setPriv('__init__', function(){
     this._resizeCache();
   });
-  setPub('loadSoundProfile', function() {
-    for(var i=0,len=arguments.length;i<len;i++) {
-      o = arguments[i];
-      if(!(o instanceof Object)) { throw new Error('Invalid sound profile.'); }
+  setPub('loadSoundProfile', function(...args) {
+    args.forEach(o => {
+      if (!(o instanceof Object)) {
+        throw new Error('Invalid sound profile.');
+      }
       this._sounds.push(o);
-    }
+    });
     this._resizeCache();
     return true;
   });
-  setPub('loadModulationFunction', function() {
-    for(var i=0,len=arguments.length;i<len;i++) {
-      f = arguments[i];
-      if(typeof(f)!='function') { throw new Error('Invalid modulation function.'); }
+  setPub('loadModulationFunction', function(...args) {
+    args.forEach(f => {
+      if (typeof f !== 'function') {
+        throw new Error('Invalid modulation function.');
+      }
       this._mod.push(f);
-    }
+    });
     return true;
   });
   AudioSynthInstance = new AudioSynth();
@@ -354,3 +360,5 @@ Synth.loadSoundProfile({
     );
   }
 });
+
+export { Synth, AudioSynth, AudioSynthInstrument };
