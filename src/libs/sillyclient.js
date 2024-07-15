@@ -433,3 +433,5 @@ SillyClient.prototype.findRooms = function( name_str, on_complete )
     req.send(null);
   });
 }
+
+export { SillyClient };
