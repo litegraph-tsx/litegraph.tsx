@@ -7,11 +7,11 @@
     "types": "src/litegraph.d.ts",
     "private": false,
     "scripts": {
-        "build": "npx tsc -p ./tools/tsconfig.json && vite build -c ./tools/vite.config.ts",
+        "build": "npx tsc -p ./tools/tsconfig.json && vite build",
         "doc": "jsdoc -c ./tools/jsdoc.config.json -d ./documentation -r --verbose --debug",
-        "dev": "vite dev -c ./tools/vite.config.ts",
-        "preview": "vite preview -c ./tools/vite.config.ts",
-        "test": "vitest -c ./tools/vite.config.ts",
+        "dev": "vite dev",
+        "preview": "vite preview",
+        "test": "vitest",
         "lint": "npx eslint src",
         "lint:fix": "npx eslint --fix src"
     },
