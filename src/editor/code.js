@@ -1,6 +1,6 @@
-import { LiteGraph } from "../core/litegraph.js";
+import { LiteGraph } from "@/litegraph.js";
 
-var webgl_canvas = null;
+let webgl_canvas = null;
 
 LiteGraph.node_images_path = "../nodes_data/";
 
