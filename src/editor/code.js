@@ -124,10 +124,9 @@ function enableWebGL()
     return;
   }
 
-  var libs = [
-    "/src/libs/gl-matrix-min.js",
-  ];
+  var libs = [];
   var modlibs = [
+    "/src/libs/gl-matrix.js",
     "/src/libs/litegl.js",
     "/src/nodes/gltextures.js",
     "/src/nodes/glfx.js",
@@ -137,15 +136,6 @@ function enableWebGL()
 
   function fetchJS()
   {
-    if(libs.length == 0)
-      return on_ready.bind(this);
-
-    var script = null;
-    script = document.createElement("script");
-    script.onload = fetchJS;
-    script.src = libs.shift();
-    document.head.appendChild(script);
-
     modlibs.forEach((lib) => {
       import(lib);
     });
