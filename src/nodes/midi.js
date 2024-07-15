@@ -1,4 +1,5 @@
 import { LiteGraph } from "../litegraph.js";
+import { MidiParser } from "../libs/midi-parser.js";
 
 var MIDI_COLOR = "#243";
 
