@@ -7,7 +7,7 @@
     "types": "src/litegraph.d.ts",
     "private": false,
     "scripts": {
-        "build": "npx tsc -p ./tools/tsconfig.json && vite build -c ./tools/vite.config.js",
+        "build": "npx tsc -p ./tools/tsconfig.json && vite build -c ./tools/vite.config.ts",
         "doc": "jsdoc -c ./tools/jsdoc.config.json -d ./documentation -r --verbose --debug",
         "dev": "vite dev",
         "preview": "vite preview",
