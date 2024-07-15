@@ -38,6 +38,7 @@ export default defineConfig({
   resolve: {
     alias: [
       { find: "@", replacement: path.resolve(__dirname, "src/core") },
+      { find: "@libs", replacement: path.resolve(__dirname, "src/libs") },
       { find: "@@", replacement: path.resolve(__dirname) },
     ],
   },
