@@ -1,7 +1,7 @@
 /// <reference types="vitest" />
 import path from "path";
 import { defineConfig } from "vite";
-import packageJson from "../package.json";
+import packageJson from "./package.json";
 
 const getPackageName = () => {
   return packageJson.name;
@@ -37,8 +37,8 @@ export default defineConfig({
   test: {},
   resolve: {
     alias: [
-      { find: "@", replacement: path.resolve(__dirname, "../src/core") },
-      { find: "@@", replacement: path.resolve(__dirname, "..") },
+      { find: "@", replacement: path.resolve(__dirname, "src/core") },
+      { find: "@@", replacement: path.resolve(__dirname) },
     ],
   },
 });
