@@ -12509,8 +12509,6 @@ LiteGraph.extendClass = function(target, origin) {
   }
 };
 
-LiteGraph.CurveEditor = CurveEditor;
-
 //used to create nodes from wrapping functions
 LiteGraph.getParameterNames = function(func) {
   return (func + "")
