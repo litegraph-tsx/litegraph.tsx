@@ -1,5 +1,7 @@
 import { LiteGraph } from "./litegraph.js";
 
+var global = typeof(window) != "undefined" ? window : typeof(self) != "undefined" ? self : globalThis;
+
 // *************************************************************
 //   Node CLASS                                          *******
 // *************************************************************
@@ -2550,4 +2552,5 @@ class LGraphNode {
   }
 }
 
+global.LGraphNode = LGraphNode;
 export { LGraphNode };

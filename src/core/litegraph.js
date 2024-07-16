@@ -809,7 +809,6 @@ const LiteGraph = {
     return null;
   }
 };
-global.LiteGraph = LiteGraph;
 
 //timer that works everywhere
 if (typeof performance != "undefined") {
@@ -1144,7 +1143,6 @@ LiteGraph.pointerListenerRemove = function(oDOM, sEvent, fCall, capture=false) {
 function clamp(v, a, b) {
   return a > v ? a : b < v ? b : v;
 }
-global.clamp = clamp;
 
 if (typeof window != "undefined" && !window["requestAnimationFrame"]) {
   window.requestAnimationFrame =
@@ -1155,19 +1153,26 @@ if (typeof window != "undefined" && !window["requestAnimationFrame"]) {
             };
 }
 
-LiteGraph.LGraph = LGraph;
-LiteGraph.CurveEditor = CurveEditor;
-LiteGraph.LLink = LLink;
-LiteGraph.ContextMenu = ContextMenu;
-LiteGraph.LGraphGroup = LGraphGroup;
-LiteGraph.DragAndScale = DragAndScale;
+// Bind things onto the LiteGraph object as necessary to match original:
+LiteGraph.LGraph = LGraph; // OG
+LiteGraph.CurveEditor = CurveEditor; // OG
+LiteGraph.LLink = LLink; // OG
+LiteGraph.ContextMenu = ContextMenu; // OG
+LiteGraph.LGraphGroup = LGraphGroup; // OG
+LiteGraph.DragAndScale = DragAndScale; // OG
 LiteGraph.LGraphCanvas = LGraphCanvas;
 
+// Bind things onto LiteGraph object as necessary to not break dep chains:
+
+// Bind this here because otherwise LiteGraph.EVENT_LINK_COLOR doesn't resolve:
 LGraphCanvas.link_type_colors = {
   "-1": LiteGraph.EVENT_LINK_COLOR,
   number: "#AAA",
   node: "#DCA"
 };
 
-export { LiteGraph, clamp };
+// Bind global.LiteGraph:
+global.LiteGraph = LiteGraph;
+global.clamp = clamp;
 
+export { LiteGraph, clamp };

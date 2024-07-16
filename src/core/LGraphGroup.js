@@ -1,6 +1,8 @@
 import { LGraphCanvas } from "./LGraphCanvas.js";
 import { LGraphNode } from "./LGraphNode.js";
 
+var global = typeof(window) != "undefined" ? window : typeof(self) != "undefined" ? self : globalThis;
+
 class LGraphGroup {
   constructor(title) {
     this._ctor(title);
@@ -103,4 +105,5 @@ class LGraphGroup {
 LGraphGroup.prototype.isPointInside = LGraphNode.prototype.isPointInside;
 LGraphGroup.prototype.setDirtyCanvas = LGraphNode.prototype.setDirtyCanvas;
 
+global.LGraphGroup = LGraphGroup; // OG
 export { LGraphGroup };
