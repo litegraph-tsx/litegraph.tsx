@@ -1,4 +1,10 @@
 import { LiteGraph } from "./litegraph.js";
+/*
+  Dependency cleanup:
+  Extracting LiteGraph.pointerListener* eliminates the dependency to LiteGraph altogether.
+  pointer* events are superior to mouse* events
+  wheel events are superior to obsolete mousewheel or DOMScrollWheel
+*/
 
 /**
      * ContextMenu from LiteGUI
