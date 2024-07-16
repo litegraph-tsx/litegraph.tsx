@@ -1,4 +1,4 @@
-import { LiteGraph, LGraphCanvas } from "./litegraph.js";
+import { LiteGraph, LGraphCanvas, LLink, LGraphGroup } from "./litegraph.js";
 
 //*********************************************************************************
 // LGraph CLASS

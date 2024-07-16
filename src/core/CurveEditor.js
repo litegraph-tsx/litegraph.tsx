@@ -169,4 +169,5 @@ class CurveEditor {
       return closest;
     }
   }
-  
+
+export { CurveEditor };
