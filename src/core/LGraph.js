@@ -1,4 +1,4 @@
-import { LiteGraph, LGraphCanvas, LLink, LGraphGroup } from "./litegraph.js";
+import { LiteGraph, LGraphCanvas, LGraphGroup } from "./litegraph.js";
 
 //*********************************************************************************
 // LGraph CLASS
@@ -1370,7 +1370,7 @@ class LGraph {
         console.warn(
           "weird LLink bug, link info is not a LLink but a regular object"
         );
-        var link2 = new LLink();
+        var link2 = new LiteGraph.LLink();
         for (var j in link) { 
           link2[j] = link[j];
         }
@@ -1430,7 +1430,7 @@ class LGraph {
           console.warn("serialized graph link data contains errors, skipping.");
           continue;
         }
-        var link = new LLink();
+        var link = new LiteGraph.LLink();
         link.configure(link_data);
         links[link.id] = link;
       }
