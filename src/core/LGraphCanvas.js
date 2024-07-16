@@ -1,8 +1,9 @@
 import { LiteGraph } from "./litegraph.js";
 import { DragAndScale } from "./DragAndScale.js";
 
-var temp = new Float32Array(4);
+var global = typeof(window) != "undefined" ? window : typeof(self) != "undefined" ? self : globalThis;
 
+var temp = new Float32Array(4);
 var temp_vec2 = new Float32Array(2);
 
 /**
@@ -8158,4 +8159,5 @@ LGraphCanvas.node_colors = {
   black: { color: "#222", bgcolor: "#000", groupcolor: "#444" }
 };
 
+global.LGraphCanvas = LGraphCanvas;
 export { LGraphCanvas };

@@ -404,6 +404,6 @@ class ContextMenu {
     return false;
   }
 }
-  
+
 export { ContextMenu };
   

@@ -1553,4 +1553,6 @@ LGraph.supported_types = ["number", "string", "boolean"];
 LGraph.STATUS_STOPPED = 1;
 LGraph.STATUS_RUNNING = 2;
 
+
+global.LGraph = LGraph; // OG
 export { LGraph };
