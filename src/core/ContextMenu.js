@@ -1,6 +1,5 @@
-import { LiteGraph } from "./litegraph.js";
 import { console } from "./Console.js";
-
+import { PointerSettings, pointerListenerAdd } from "./pointer_events.js";
 /*
   Dependency cleanup:
   Extracting LiteGraph.pointerListener* eliminates the dependency to LiteGraph altogether.
@@ -9,17 +8,17 @@ import { console } from "./Console.js";
 */
 
 /**
-     * ContextMenu from LiteGUI
-     *
-     * @class ContextMenu
-     * @constructor
-     * @param {Array} values (allows object { title: "Nice text", callback: function ... })
-     * @param {Object} options [optional] Some options:\
-     * - title: title to show on top of the menu
-     * - callback: function to call when an option is clicked, it receives the item information
-     * - ignore_item_callbacks: ignores the callback inside the item, it just calls the options.callback
-     * - event: you can pass a MouseEvent, this way the ContextMenu appears in that position
-     */
+ * ContextMenu from LiteGUI
+ *
+ * @class ContextMenu
+ * @constructor
+ * @param {Array} values (allows object { title: "Nice text", callback: function ... })
+ * @param {Object} options [optional] Some options:\
+ * - title: title to show on top of the menu
+ * - callback: function to call when an option is clicked, it receives the item information
+ * - ignore_item_callbacks: ignores the callback inside the item, it just calls the options.callback
+ * - event: you can pass a MouseEvent, this way the ContextMenu appears in that position
+ */
 export class ContextMenu {
   constructor(values, options) {
     options = options || {};
@@ -57,10 +56,10 @@ export class ContextMenu {
     root.style.pointerEvents = "none";
     setTimeout(function() {
       root.style.pointerEvents = "auto";
-    }, 100); // delay so the mouse up event is not caught by this element
-
-    // this prevents the default context browser menu to open in case this menu was created when pressing right button
-    LiteGraph.pointerListenerAdd(root, "up",
+    }, 100); //delay so the mouse up event is not caught by this element
+  
+    //this prevents the default context browser menu to open in case this menu was created when pressing right button
+    pointerListenerAdd(root,"up",
       function(e) {
         console.log("pointerevents: ContextMenu up root prevent");
         e.preventDefault();
@@ -80,8 +79,8 @@ export class ContextMenu {
       },
       true,
     );
-
-    LiteGraph.pointerListenerAdd(root, "down",
+  
+    pointerListenerAdd(root,"down",
       function(e) {
         console.log("pointerevents: ContextMenu down");
         if (e.button == 2) {
@@ -129,9 +128,9 @@ export class ContextMenu {
       this.addItem(name, value, options);
       num++;
     }
-
-    // close on leave? touch enabled devices won't work TODO use a global device detector and condition on that
-    /* LiteGraph.pointerListenerAdd(root,"leave", function(e) {
+  
+    //close on leave? touch enabled devices won't work TODO use a global device detector and condition on that
+    /*pointerListenerAdd(root,"leave", function(e) {
                   console.log("pointerevents: ContextMenu leave");
                 if (that.lock) {
                     return;
@@ -142,9 +141,9 @@ export class ContextMenu {
                 root.closing_timer = setTimeout(that.close.bind(that, e), 500);
                 //that.close(e);
             });*/
-
-    LiteGraph.pointerListenerAdd(root, "enter", function(e) {
-      console.log("pointerevents: ContextMenu enter");
+  
+    pointerListenerAdd(root,"enter", function(e) {
+      //console.log("pointerevents: ContextMenu enter");
       if (root.closing_timer) {
         clearTimeout(root.closing_timer);
       }
@@ -245,7 +244,7 @@ export class ContextMenu {
       element.addEventListener("click", inner_onclick);
     }
     if (!disabled && options.autoopen) {
-      LiteGraph.pointerListenerAdd(element, "enter", inner_over);
+      pointerListenerAdd(element,"enter",inner_over);
     }
 
     function inner_over(e) {
@@ -340,7 +339,7 @@ export class ContextMenu {
         e &&
                     !ContextMenu.isCursorOverElement(e, this.parentMenu.root)
       ) {
-        ContextMenu.trigger(this.parentMenu.root, LiteGraph.pointerevents_method+"leave", e);
+        ContextMenu.trigger(this.parentMenu.root, PointerSettings.pointerevents_method+"leave", e);
       }
     }
     if (this.current_submenu) {
