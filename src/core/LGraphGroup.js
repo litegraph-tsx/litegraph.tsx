@@ -1,4 +1,4 @@
-import { LGraphCanvas } from "./litegraph.js";
+import { LGraphCanvas } from "./LGraphCanvas.js";
 import { LGraphNode } from "./LGraphNode.js";
 
 class LGraphGroup {

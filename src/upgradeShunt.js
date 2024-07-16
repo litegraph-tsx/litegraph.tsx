@@ -1,5 +1,6 @@
 
-import { LiteGraph, LGraphCanvas, clamp } from "./core/litegraph.js";
+import { LiteGraph, clamp } from "@/litegraph.js";
+import { LGraphCanvas } from "@/LGraphCanvas.js";
 import { LGAudio } from './nodes/audio.js';
 import { LGraphPoints3D } from './nodes/geometry.js';
 import { LGraphFXLens, LGraphFXBokeh, LGraphFXGeneric, LGraphFXVigneting } from './nodes/glfx.js';

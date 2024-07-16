@@ -1,4 +1,5 @@
-import { LiteGraph, LGraphCanvas } from "@/litegraph.js";
+import { LiteGraph } from "@/litegraph.js";
+import { LGraphCanvas } from "@/LGraphCanvas.js";
 
 //Creates an interface to access extra features from a graph (like play, stop, live, etc)
 function Editor(container_id, options) {

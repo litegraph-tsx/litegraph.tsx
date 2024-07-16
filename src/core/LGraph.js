@@ -1,5 +1,6 @@
-import { LiteGraph, LGraphCanvas } from "./litegraph.js";
+import { LiteGraph } from "./litegraph.js";
 import { LGraphGroup } from "./LGraphGroup.js";
+import { LGraphCanvas } from "./LGraphCanvas.js";
 
 //*********************************************************************************
 // LGraph CLASS
