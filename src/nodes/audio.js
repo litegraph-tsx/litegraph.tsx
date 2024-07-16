@@ -1,4 +1,4 @@
-import { LiteGraph, LGraph } from "@/litegraph.js";
+import { LiteGraph } from "@/litegraph.js";
 
 var global = typeof(window) != "undefined" ? window : typeof(self) != "undefined" ? self : globalThis;
 
@@ -281,7 +281,7 @@ LGAudioSource["@src"] = { widget: "resource" };
 LGAudioSource.supported_extensions = ["wav", "ogg", "mp3"];
 
 LGAudioSource.prototype.onAdded = function(graph) {
-  if (graph.status === LGraph.STATUS_RUNNING) {
+  if (graph.status === LiteGraph.LGraph.STATUS_RUNNING) {
     this.onStart();
   }
 };
@@ -453,7 +453,7 @@ LGAudioSource.prototype.loadSound = function(url) {
     that._audiobuffer = buffer;
     that._loading_audio = false;
     //if is playing, then play it
-    if (that.graph && that.graph.status === LGraph.STATUS_RUNNING) {
+    if (that.graph && that.graph.status === LiteGraph.LGraph.STATUS_RUNNING) {
       that.onStart();
     } //this controls the autoplay already
   }
@@ -510,7 +510,7 @@ function LGAudioMediaSource() {
 }
 
 LGAudioMediaSource.prototype.onAdded = function(graph) {
-  if (graph.status === LGraph.STATUS_RUNNING) {
+  if (graph.status === LiteGraph.LGraph.STATUS_RUNNING) {
     this.onStart();
   }
 };
@@ -1362,7 +1362,7 @@ function LGAudioScript() {
 }
 
 LGAudioScript.prototype.onAdded = function(graph) {
-  if (graph.status == LGraph.STATUS_RUNNING) {
+  if (graph.status == LiteGraph.LGraph.STATUS_RUNNING) {
     this.audionode.onaudioprocess = this._callback;
   }
 };
@@ -1410,7 +1410,7 @@ LGAudioScript.prototype.onPropertyChanged = function(name, value) {
   if (name == "code") {
     this.properties.code = value;
     this.processCode();
-    if (this.graph && this.graph.status == LGraph.STATUS_RUNNING) {
+    if (this.graph && this.graph.status == LiteGraph.LGraph.STATUS_RUNNING) {
       this.audionode.onaudioprocess = this._callback;
     }
   }
