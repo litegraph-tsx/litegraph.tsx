@@ -1,5 +1,5 @@
 
-import { LiteGraph, LLink, LGraphNode, LGraphGroup, DragAndScale, LGraphCanvas, ContextMenu, clamp } from "./core/litegraph.js";
+import { LiteGraph, LGraphNode, LGraphGroup, DragAndScale, LGraphCanvas, ContextMenu, clamp } from "./core/litegraph.js";
 import { LGAudio } from './nodes/audio.js';
 import { LGraphPoints3D } from './nodes/geometry.js';
 import { LGraphFXLens, LGraphFXBokeh, LGraphFXGeneric, LGraphFXVigneting } from './nodes/glfx.js';
@@ -17,7 +17,7 @@ global = new Proxy(global, {
   // Add other traps as needed (set, deleteProperty, etc.)
 });
 
-const { LGraph } = LiteGraph;
+const { LGraph, LLink } = LiteGraph;
 
 const classesToProtect = {
   'LiteGraph': LiteGraph,
