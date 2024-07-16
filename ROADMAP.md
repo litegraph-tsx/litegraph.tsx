@@ -44,7 +44,7 @@
 
 - [ ] Ensure all of the previously global variables are in the correct module.
 
-- [ ] Shunt migration of ES6 classes along with version as it affects 3 spots in ComfyUI for ContextMenu
+- [ ] Shunt migration of ES6 classes along with version so calls to constructors doesn't bomb adopter's code
 
 - [ ] node/Math.js and length bug fixes
 
