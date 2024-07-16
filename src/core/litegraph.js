@@ -10,6 +10,7 @@ import { console } from "./Console.js";
 
 // this variable name is only overridden locally.
 console.level = 5;
+import { PointerSettings } from "./pointer_events.js";
 
 var global = typeof(window) != "undefined" ? window : typeof(self) != "undefined" ? self : globalThis;
 
@@ -147,12 +148,12 @@ export const LiteGraph = {
 
   allow_multi_output_for_events: true, // [false!] being events, it is strongly reccomended to use them sequentially, one by one
 
-  middle_click_slot_add_default_node: false, // [true!] allows to create and connect a ndoe clicking with the third button (wheel)
-
-  release_link_on_empty_shows_menu: false, // [true!] dragging a link to empty space will open a menu, add from list, search or defaults
-
-  pointerevents_method: "pointer", // "mouse"|"pointer" use mouse for retrocompatibility issues? (none found @ now)
-  // TODO implement pointercancel, gotpointercapture, lostpointercapture, (pointerover, pointerout if necessary)
+  middle_click_slot_add_default_node: false, //[true!] allows to create and connect a ndoe clicking with the third button (wheel)
+        
+  release_link_on_empty_shows_menu: false, //[true!] dragging a link to empty space will open a menu, add from list, search or defaults
+        
+  get pointerevents_method() { return PointerSettings.pointerevents_method; },
+  set pointerevents_method(newMethod) { PointerSettings.pointerevents_method = newMethod; },
 
   ctrl_shift_v_paste_connect_unselected_outputs: true, // [true!] allows ctrl + shift + v to paste nodes with the outputs of the unselected nodes connected with the inputs of the newly pasted nodes
 
@@ -1137,6 +1138,217 @@ if (typeof performance != "undefined") {
   };
 }
 
-// Bind global.LiteGraph:
-global.LiteGraph = LiteGraph;
+//API *************************************************
+function compareObjects(a, b) {
+  for (var i in a) {
+    if (a[i] != b[i]) {
+      return false;
+    }
+  }
+  return true;
+}
+LiteGraph.compareObjects = compareObjects;
+
+function distance(a, b) {
+  return Math.sqrt(
+    (b[0] - a[0]) * (b[0] - a[0]) + (b[1] - a[1]) * (b[1] - a[1])
+  );
+}
+LiteGraph.distance = distance;
+
+function colorToString(c) {
+  return (
+    "rgba(" +
+            Math.round(c[0] * 255).toFixed() +
+            "," +
+            Math.round(c[1] * 255).toFixed() +
+            "," +
+            Math.round(c[2] * 255).toFixed() +
+            "," +
+            (c.length == 4 ? c[3].toFixed(2) : "1.0") +
+            ")"
+  );
+}
+LiteGraph.colorToString = colorToString;
+
+function isInsideRectangle(x, y, left, top, width, height) {
+  if (left < x && left + width > x && top < y && top + height > y) {
+    return true;
+  }
+  return false;
+}
+LiteGraph.isInsideRectangle = isInsideRectangle;
+
+//[minx,miny,maxx,maxy]
+function growBounding(bounding, x, y) {
+  if (x < bounding[0]) {
+    bounding[0] = x;
+  } else if (x > bounding[2]) {
+    bounding[2] = x;
+  }
+
+  if (y < bounding[1]) {
+    bounding[1] = y;
+  } else if (y > bounding[3]) {
+    bounding[3] = y;
+  }
+}
+LiteGraph.growBounding = growBounding;
+
+//point inside bounding box
+function isInsideBounding(p, bb) {
+  if (
+    p[0] < bb[0][0] ||
+            p[1] < bb[0][1] ||
+            p[0] > bb[1][0] ||
+            p[1] > bb[1][1]
+  ) {
+    return false;
+  }
+  return true;
+}
+LiteGraph.isInsideBounding = isInsideBounding;
+
+//bounding overlap, format: [ startx, starty, width, height ]
+function overlapBounding(a, b) {
+  var A_end_x = a[0] + a[2];
+  var A_end_y = a[1] + a[3];
+  var B_end_x = b[0] + b[2];
+  var B_end_y = b[1] + b[3];
+
+  if (
+    a[0] > B_end_x ||
+            a[1] > B_end_y ||
+            A_end_x < b[0] ||
+            A_end_y < b[1]
+  ) {
+    return false;
+  }
+  return true;
+}
+LiteGraph.overlapBounding = overlapBounding;
+
+//Convert a hex value to its decimal value - the inputted hex must be in the
+//    format of a hex triplet - the kind we use for HTML colours. The function
+//    will return an array with three values.
+function hex2num(hex) {
+  if (hex.charAt(0) == "#") {
+    hex = hex.slice(1);
+  } //Remove the '#' char - if there is one.
+  hex = hex.toUpperCase();
+  var hex_alphabets = "0123456789ABCDEF";
+  var value = new Array(3);
+  var k = 0;
+  var int1, int2;
+  for (var i = 0; i < 6; i += 2) {
+    int1 = hex_alphabets.indexOf(hex.charAt(i));
+    int2 = hex_alphabets.indexOf(hex.charAt(i + 1));
+    value[k] = int1 * 16 + int2;
+    k++;
+  }
+  return value;
+}
+
+LiteGraph.hex2num = hex2num;
+
+//Give a array with three values as the argument and the function will return
+//    the corresponding hex triplet.
+function num2hex(triplet) {
+  var hex_alphabets = "0123456789ABCDEF";
+  var hex = "#";
+  var int1, int2;
+  for (var i = 0; i < 3; i++) {
+    int1 = triplet[i] / 16;
+    int2 = triplet[i] % 16;
+
+    hex += hex_alphabets.charAt(int1) + hex_alphabets.charAt(int2);
+  }
+  return hex;
+}
+
+LiteGraph.num2hex = num2hex;
+
+/* LiteGraph GUI elements used for canvas editing *************************************/
+
+LiteGraph.closeAllContextMenus = function(ref_window) {
+  ref_window = ref_window || window;
+
+  var elements = ref_window.document.querySelectorAll(".litecontextmenu");
+  if (!elements.length) {
+    return;
+  }
+
+  var result = [];
+  for (var i = 0; i < elements.length; i++) {
+    result.push(elements[i]);
+  }
+
+  for (var i=0; i < result.length; i++) {
+    if (result[i].close) {
+      result[i].close();
+    } else if (result[i].parentNode) {
+      result[i].parentNode.removeChild(result[i]);
+    }
+  }
+};
+
+LiteGraph.extendClass = function(target, origin) {
+  for (var i in origin) {
+    //copy class properties
+    if (target.hasOwnProperty(i)) {
+      continue;
+    }
+    target[i] = origin[i];
+  }
+
+  if (origin.prototype) {
+    //copy prototype properties
+    for (var i in origin.prototype) {
+      //only enumerable
+      if (!origin.prototype.hasOwnProperty(i)) {
+        continue;
+      }
+
+      if (target.prototype.hasOwnProperty(i)) {
+        //avoid overwriting existing ones
+        continue;
+      }
+
+      //copy getters
+      if (origin.prototype.__lookupGetter__(i)) {
+        target.prototype.__defineGetter__(
+          i,
+          origin.prototype.__lookupGetter__(i)
+        );
+      } else {
+        target.prototype[i] = origin.prototype[i];
+      }
+
+      //and setters
+      if (origin.prototype.__lookupSetter__(i)) {
+        target.prototype.__defineSetter__(
+          i,
+          origin.prototype.__lookupSetter__(i)
+        );
+      }
+    }
+  }
+};
+
+//used to create nodes from wrapping functions
+LiteGraph.getParameterNames = function(func) {
+  return (func + "")
+    .replace(/[/][/].*$/gm, "") // strip single-line comments
+    .replace(/\s+/g, "") // strip white space
+    .replace(/[/][*][^/*]*[*][/]/g, "") // strip multi-line comments  /**/
+    .split("){", 1)[0]
+    .replace(/^[^(]*[(]/, "") // extract the parameters
+    .replace(/=[^,]+/g, "") // strip any ES6 defaults
+    .split(",")
+    .filter(Boolean); // split & filter [""]
+};
+
+function clamp(v, a, b) {
+  return a > v ? a : b < v ? b : v;
+}
 global.clamp = clamp;
