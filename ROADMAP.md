@@ -32,13 +32,13 @@
 
 ## ES6 Class Step (0.7)
 
-- [ ] Enable ES6 classes in LiteGraph
-
-- [ ] Notify migration of ES6 classes along with version as it affects 3 spots in ComfyUI for ContextMenu
+- [x] Enable ES6 classes in LiteGraph
 
 - [ ] Automated class conversion using lebab
 
 - [ ] Manual class conversion and movement of methods and properties into classes
+
+- [ ] Shunt migration of ES6 classes along with version as it affects 3 spots in ComfyUI for ContextMenu
 
 - [ ] node/Math.js and length bug fixes
 
