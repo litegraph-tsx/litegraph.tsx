@@ -34,9 +34,15 @@
 
 - [x] Enable ES6 classes in LiteGraph
 
-- [ ] Automated class conversion using lebab
+- [x] Automated class conversion using lebab
 
 - [ ] Manual class conversion and movement of methods and properties into classes
+
+- [ ] Clean up global.X, LiteGraph.X class attachments
+
+- [ ] Ensure all cases of previously globally available methods are bound to LiteGraph.method()
+
+- [ ] Ensure all of the previously global variables are in the correct module.
 
 - [ ] Shunt migration of ES6 classes along with version as it affects 3 spots in ComfyUI for ContextMenu
 
@@ -44,7 +50,7 @@
 
 - [ ] Migration of getters and setters to ES6 form
 
-- [ ] Split litegraph.js into class files
+- [x] Split litegraph.js into class files
 
 ## Debugger and Test Step (0.8)
 
