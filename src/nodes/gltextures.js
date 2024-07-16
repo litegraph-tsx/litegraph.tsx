@@ -1,4 +1,5 @@
-import { LiteGraph, LGraphCanvas } from "@/litegraph.js";
+import { LiteGraph } from "@/litegraph.js";
+import { LGraphCanvas } from "@/LGraphCanvas.js";
 import { GL } from "@libs/litegl.js";
 
 var global = typeof(window) != "undefined" ? window : typeof(self) != "undefined" ? self : globalThis;
