@@ -14,6 +14,7 @@
         "test": "vitest",
         "lint": "npx eslint src",
         "lint:fix": "npx eslint --fix src",
+        "madge:png": "npx madge --image graph.png --ts-config ./tools/tsconfig.json src",
         "typecheck": "tsc -p ./tools/tsconfig.strict.json"
     },
     "repository": {
@@ -55,6 +56,7 @@
         "eslint-plugin-jest": "^27.9.0",
         "@types/eslint__js": "^8.42.3",
         "jsdoc": "^4.0.3",
+        "madge": "^7.0.0",
         "pnpm": "^9.5.0",
         "typescript": "^5.5.3",
         "vite": "^5.3.3",
