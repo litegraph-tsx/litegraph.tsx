@@ -1,4 +1,4 @@
-import { LiteGraph, LGraph, LGraphCanvas } from "@/litegraph.js";
+import { LiteGraph, LGraphCanvas } from "@/litegraph.js";
 
 //Creates an interface to access extra features from a graph (like play, stop, live, etc)
 function Editor(container_id, options) {
@@ -21,7 +21,7 @@ function Editor(container_id, options) {
   var canvas = this.canvas = root.querySelector(".graphcanvas");
 
   //create graph
-  var graph = (this.graph = new LGraph());
+  var graph = (this.graph = new LiteGraph.LGraph());
   var graphcanvas = this.graphcanvas = new LGraphCanvas(canvas, graph);
   graphcanvas.background_image = "./assets/images/grid.png";
   graph.onAfterExecute = function() {
@@ -112,7 +112,7 @@ Editor.prototype.addLoadCounter = function() {
 
   setInterval(function() {
     meter.querySelector(".cpuload .fgload").style.width = ((2 * self.graph.execution_time * 90)||0) + "px";
-    if (self.graph.status == LGraph.STATUS_RUNNING) {
+    if (self.graph.status == LiteGraph.LGraph.STATUS_RUNNING) {
       meter.querySelector(".gpuload .fgload").style.width = ((self.graphcanvas.render_time * 10 * 90)||0) + "px";
     } else {
       meter.querySelector(".gpuload .fgload").style.width = "4px";
@@ -155,7 +155,7 @@ Editor.prototype.onPlayButton = function() {
   var graph = this.graph;
   var button = this.root.querySelector("#playnode_button");
 
-  if (graph.status == LGraph.STATUS_STOPPED) {
+  if (graph.status == LiteGraph.LGraph.STATUS_STOPPED) {
     button.innerHTML = "<img src='./assets/images/icon-stop.png'/> Stop";
     graph.start();
   } else {
