@@ -12,3 +12,6 @@ temp/*
 !/.vscode/extensions.json
 *.bak
 .project
+
+# Development artifacts
+graph.png
