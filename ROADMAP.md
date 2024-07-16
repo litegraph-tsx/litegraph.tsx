@@ -30,8 +30,6 @@
 
 - [x] Shifted build over to vite, and drop espresso
 
-- [ ] Split litegraph.js into class files
-
 ## ES6 Class Step (0.7)
 
 - [ ] Enable ES6 classes in LiteGraph
@@ -45,6 +43,8 @@
 - [ ] node/Math.js and length bug fixes
 
 - [ ] Migration of getters and setters to ES6 form
+
+- [ ] Split litegraph.js into class files
 
 ## Debugger and Test Step (0.8)
 
