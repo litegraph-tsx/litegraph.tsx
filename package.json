@@ -14,7 +14,7 @@
         "test": "vitest",
         "lint": "npx eslint src",
         "lint:fix": "npx eslint --fix src",
-        "madge:png": "npx madge --image graph.png --ts-config ./tools/tsconfig.json src",
+        "madge:png": "npx madge --image assets/dev/dep_graph.png --ts-config ./tools/tsconfig.json src",
         "typecheck": "tsc -p ./tools/tsconfig.strict.json"
     },
     "repository": {
