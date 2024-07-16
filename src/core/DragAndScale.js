@@ -1,4 +1,10 @@
 import { LiteGraph } from "./litegraph.js";
+/*
+  Dependency cleanup:
+  Extracting LiteGraph.pointerListener* eliminates the dependency to LiteGraph altogether.
+  pointer* events are superior to mouse* events
+  wheel events are superior to obsolete mousewheel or DOMScrollWheel
+*/
 
 //Scale and Offset
 class DragAndScale {
@@ -30,11 +36,7 @@ class DragAndScale {
     LiteGraph.pointerListenerAdd(element,"move", this._binded_mouse_callback);
     LiteGraph.pointerListenerAdd(element,"up", this._binded_mouse_callback);
   
-    element.addEventListener(
-      "mousewheel",
-      this._binded_mouse_callback,
-      false
-    );
+    element.addEventListener("mousewheel", this._binded_mouse_callback, false);
     element.addEventListener("wheel", this._binded_mouse_callback, false);
   }
   
