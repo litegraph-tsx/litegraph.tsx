@@ -295,16 +295,16 @@ class ImageFrame {
       showElement(this.frame);
     }
   }
+
+  static title = "Frame";
+  static desc = "Frame viewerew";
+  static widgets = [
+    { name: "resize", text: "Resize box", type: "button" },
+    { name: "view", text: "View Image", type: "button" }
+  ];
 }
-
-ImageFrame.title = "Frame";
-ImageFrame.desc = "Frame viewerew";
-ImageFrame.widgets = [
-  { name: "resize", text: "Resize box", type: "button" },
-  { name: "view", text: "View Image", type: "button" }
-];
-
 LiteGraph.registerNodeType("graphics/frame", ImageFrame);
+
 
 class ImageFade {
   constructor() {
@@ -354,16 +354,16 @@ class ImageFade {
     this.setOutputData(0, this.canvas);
     this.setDirtyCanvas(true);
   }
+
+  static title = "Image fade";
+  static desc = "Fades between images";
+  static widgets = [
+    { name: "resizeA", text: "Resize to A", type: "button" },
+    { name: "resizeB", text: "Resize to B", type: "button" }
+  ];
 }
-
-ImageFade.title = "Image fade";
-ImageFade.desc = "Fades between images";
-ImageFade.widgets = [
-  { name: "resizeA", text: "Resize to A", type: "button" },
-  { name: "resizeB", text: "Resize to B", type: "button" }
-];
-
 LiteGraph.registerNodeType("graphics/imagefade", ImageFade);
+
 
 class ImageCrop {
   constructor() {
@@ -441,15 +441,14 @@ class ImageCrop {
 
     return true;
   }
+
+  static title = "Crop";
+  static desc = "Crop Image";
 }
-
-ImageCrop.title = "Crop";
-ImageCrop.desc = "Crop Image";
-
 LiteGraph.registerNodeType("graphics/cropImage", ImageCrop);
 
-//CANVAS stuff
 
+//CANVAS stuff
 class CanvasNode {
   constructor() {
     this.addInput("clear", LiteGraph.ACTION);
@@ -482,12 +481,12 @@ class CanvasNode {
       this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     }
   }
+
+  static title = "Canvas";
+  static desc = "Canvas to render stuff";
 }
-
-CanvasNode.title = "Canvas";
-CanvasNode.desc = "Canvas to render stuff";
-
 LiteGraph.registerNodeType("graphics/canvas", CanvasNode);
+
 
 class DrawImageNode {
   constructor() {
@@ -514,12 +513,12 @@ class DrawImageNode {
     var ctx = canvas.getContext("2d");
     ctx.drawImage(img, x, y);
   }
+
+  static title = "DrawImage";
+  static desc = "Draws image into a canvas";
 }
-
-DrawImageNode.title = "DrawImage";
-DrawImageNode.desc = "Draws image into a canvas";
-
 LiteGraph.registerNodeType("graphics/drawImage", DrawImageNode);
+
 
 class DrawRectangleNode {
   constructor() {
@@ -551,12 +550,12 @@ class DrawRectangleNode {
     var ctx = canvas.getContext("2d");
     ctx.fillRect(x, y, w, h);
   }
+
+  static title = "DrawRectangle";
+  static desc = "Draws rectangle in canvas";
 }
-
-DrawRectangleNode.title = "DrawRectangle";
-DrawRectangleNode.desc = "Draws rectangle in canvas";
-
 LiteGraph.registerNodeType("graphics/drawRectangle", DrawRectangleNode);
+
 
 class ImageVideo {
   constructor() {
@@ -735,18 +734,18 @@ class ImageVideo {
       }
       */
   }
+
+  static title = "Video";
+  static desc = "Video playback";
+  static widgets = [
+    { name: "play", text: "PLAY", type: "minibutton" },
+    { name: "stop", text: "STOP", type: "minibutton" },
+    { name: "demo", text: "Demo video", type: "button" },
+    { name: "mute", text: "Mute video", type: "button" }
+  ];
 }
-
-ImageVideo.title = "Video";
-ImageVideo.desc = "Video playback";
-ImageVideo.widgets = [
-  { name: "play", text: "PLAY", type: "minibutton" },
-  { name: "stop", text: "STOP", type: "minibutton" },
-  { name: "demo", text: "Demo video", type: "button" },
-  { name: "mute", text: "Mute video", type: "button" }
-];
-
 LiteGraph.registerNodeType("graphics/video", ImageVideo);
+
 
 // Texture Webcam *****************************************
 class ImageWebcam {
@@ -905,11 +904,9 @@ class ImageWebcam {
       ["stream_error", LiteGraph.EVENT]
     ];
   }
+
+  static title = "Webcam";
+  static desc = "Webcam image";
+  static is_webcam_open = false;
 }
-
-ImageWebcam.title = "Webcam";
-ImageWebcam.desc = "Webcam image";
-ImageWebcam.is_webcam_open = false;
-
 LiteGraph.registerNodeType("graphics/webcam", ImageWebcam);
-
