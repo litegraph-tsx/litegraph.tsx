@@ -20,7 +20,7 @@ var global = typeof(window) != "undefined" ? window : typeof(self) != "undefined
      * @param {Object} o data from previous serialization [optional]
      */
 
-class LGraph {
+export class LGraph {
   constructor(o) {
     if (LiteGraph.debug) {
       console.log("Graph created");
@@ -1547,14 +1547,12 @@ class LGraph {
   onNodeTrace(node, msg, color) {
     //TODO
   }
+
+  //default supported types
+  static supported_types = ["number", "string", "boolean"];
+
+  static STATUS_STOPPED = 1;
+  static STATUS_RUNNING = 2;
 }
 
-//default supported types
-LGraph.supported_types = ["number", "string", "boolean"];
-
-LGraph.STATUS_STOPPED = 1;
-LGraph.STATUS_RUNNING = 2;
-
-
 global.LGraph = LGraph; // OG
-export { LGraph };
