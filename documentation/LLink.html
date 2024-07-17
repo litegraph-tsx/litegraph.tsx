@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Class: Shader</title>
+    <title>JSDoc: Class: LLink</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Class: Shader</h1>
+    <h1 class="page-title">Class: LLink</h1>
 
     
 
@@ -28,9 +28,9 @@
 
 <header>
     
-        <h2><span class="attribs"><span class="type-signature"></span></span>Shader<span class="signature">(vertexSource, fragmentSource, macros)</span><span class="type-signature"></span></h2>
+        <h2><span class="attribs"><span class="type-signature"></span></span>LLink<span class="signature">(id, type, origin_id, origin_slot, target_id, target_slot)</span><span class="type-signature"></span></h2>
         
-            <div class="class-description">Shader</div>
+            <div class="class-description">Class representing a link between nodes, storing connection information.</div>
         
     
 </header>
@@ -45,16 +45,12 @@
     
 
     
-    <h4 class="name" id="Shader"><span class="type-signature"></span>new Shader<span class="signature">(vertexSource, fragmentSource, macros)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="LLink"><span class="type-signature"></span>new LLink<span class="signature">(id, type, origin_id, origin_slot, target_id, target_slot)</span><span class="type-signature"></span></h4>
     
 
     
 
 
-
-<div class="description">
-    Shader class to upload programs to the GPU
-</div>
 
 
 
@@ -89,13 +85,13 @@
 
         <tr>
             
-                <td class="name"><code>vertexSource</code></td>
+                <td class="name"><code>id</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">String</span>
+<span class="param-type">string</span>
 
 
             
@@ -105,20 +101,20 @@
 
             
 
-            <td class="description last">(it also allows to pass a compiled vertex shader)</td>
+            <td class="description last">Unique identifier for the link.</td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>fragmentSource</code></td>
+                <td class="name"><code>type</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">String</span>
+<span class="param-type">string</span>
 
 
             
@@ -128,20 +124,20 @@
 
             
 
-            <td class="description last">(it also allows to pass a compiled fragment shader)</td>
+            <td class="description last">Type of the link.</td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>macros</code></td>
+                <td class="name"><code>origin_id</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">Object</span>
+<span class="param-type">string</span>
 
 
             
@@ -151,7 +147,76 @@
 
             
 
-            <td class="description last">(optional) precompiler macros to be applied when compiling</td>
+            <td class="description last">ID of the node from which the link originates.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>origin_slot</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Slot index on the origin node where the link starts.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>target_id</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">ID of the node where the link terminates.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>target_slot</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Slot index on the target node where the link ends.</td>
         </tr>
 
     
@@ -192,7 +257,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="libs_litegl.js.html">libs/litegl.js</a>, <a href="libs_litegl.js.html#line7782">line 7782</a>
+        <a href="core_LLink.js.html">core/LLink.js</a>, <a href="core_LLink.js.html#line11">line 11</a>
     </li></ul></dd>
     
 
@@ -230,6 +295,108 @@
     
 
     
+        <h3 class="subsection-title">Classes</h3>
+
+        <dl>
+            <dt><a href="LLink.html">LLink</a></dt>
+            <dd></dd>
+        </dl>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="configure"><span class="type-signature"></span>configure<span class="signature">(o)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Configures the link object with provided data.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>o</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+|
+
+<span class="param-type">Array</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Either an object with properties {id, type, origin_id, origin_slot, target_id, target_slot},
+                          or an array with these values in order.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
 
     
 
@@ -239,6 +406,166 @@
 
     
 
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core_LLink.js.html">core/LLink.js</a>, <a href="core_LLink.js.html#line29">line 29</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="serialize"><span class="type-signature"></span>serialize<span class="signature">()</span><span class="type-signature"> &rarr; {Array}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Serializes the link object into an array representation.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core_LLink.js.html">core/LLink.js</a>, <a href="core_LLink.js.html#line51">line 51</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    Serialized array representation of the link object.
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Array</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
     
 
     

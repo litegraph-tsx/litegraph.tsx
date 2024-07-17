@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Class: Shader</title>
+    <title>JSDoc: Source: core/LLink.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,236 +17,79 @@
 
 <div id="main">
 
-    <h1 class="page-title">Class: Shader</h1>
+    <h1 class="page-title">Source: core/LLink.js</h1>
 
     
 
 
 
-
-<section>
-
-<header>
     
-        <h2><span class="attribs"><span class="type-signature"></span></span>Shader<span class="signature">(vertexSource, fragmentSource, macros)</span><span class="type-signature"></span></h2>
-        
-            <div class="class-description">Shader</div>
-        
-    
-</header>
-
-<article>
-    <div class="container-overview">
-    
-        
-
-    
-    <h2>Constructor</h2>
-    
-
-    
-    <h4 class="name" id="Shader"><span class="type-signature"></span>new Shader<span class="signature">(vertexSource, fragmentSource, macros)</span><span class="type-signature"></span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    Shader class to upload programs to the GPU
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>vertexSource</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">String</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">(it also allows to pass a compiled vertex shader)</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>fragmentSource</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">String</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">(it also allows to pass a compiled fragment shader)</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>macros</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">(optional) precompiler macros to be applied when compiling</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="libs_litegl.js.html">libs/litegl.js</a>, <a href="libs_litegl.js.html#line7782">line 7782</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
-    </div>
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</article>
-
-</section>
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * Class representing a link between nodes, storing connection information.
+ * @constructor
+ * @param {string} id - Unique identifier for the link.
+ * @param {string} type - Type of the link.
+ * @param {string} origin_id - ID of the node from which the link originates.
+ * @param {number} origin_slot - Slot index on the origin node where the link starts.
+ * @param {string} target_id - ID of the node where the link terminates.
+ * @param {number} target_slot - Slot index on the target node where the link ends.
+ */
+export class LLink {
+  constructor(id, type, origin_id, origin_slot, target_id, target_slot) {
+    this.id = id;
+    this.type = type;
+    this.origin_id = origin_id;
+    this.origin_slot = origin_slot;
+    this.target_id = target_id;
+    this.target_slot = target_slot;
+
+    this._data = null;
+    this._pos = new Float32Array(2); // center
+  }
+
+  /**
+   * Configures the link object with provided data.
+   * @param {object|Array} o - Either an object with properties {id, type, origin_id, origin_slot, target_id, target_slot},
+   *                           or an array with these values in order.
+   */
+  configure(o) {
+    if (o.constructor === Array) {
+      this.id = o[0];
+      this.origin_id = o[1];
+      this.origin_slot = o[2];
+      this.target_id = o[3];
+      this.target_slot = o[4];
+      this.type = o[5];
+    } else {
+      this.id = o.id;
+      this.type = o.type;
+      this.origin_id = o.origin_id;
+      this.origin_slot = o.origin_slot;
+      this.target_id = o.target_id;
+      this.target_slot = o.target_slot;
+    }
+  }
+
+  /**
+   * Serializes the link object into an array representation.
+   * @returns {Array} Serialized array representation of the link object.
+   */
+  serialize() {
+    return [
+      this.id,
+      this.origin_id,
+      this.origin_slot,
+      this.target_id,
+      this.target_slot,
+      this.type,
+    ];
+  }
+}
+</code></pre>
+        </article>
+    </section>
 
 
 
