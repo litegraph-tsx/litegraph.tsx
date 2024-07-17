@@ -35,7 +35,7 @@
     or UInt8 Arrays, and outputs as a readable and structured JS object.
 */
 
-(function(){
+(function() {
   'use strict';
 
   /**
@@ -51,7 +51,7 @@
     let b64re = /^(?:[A-Za-z\d+/]{4})*?(?:[A-Za-z\d+/]{2}(?:==)?|[A-Za-z\d+/]{3}=?)?$/;
     // remove data type signatures at the begining of the string
     // eg :  "data:audio/mid;base64,"
-    string = string.replace( /^.*?base64,/ , '');
+    string = string.replace( /^.*?base64,/, '');
     // atob can work with strings with whitespaces, even inside the encoded part,
     // but only \t, \n, \f, \r and ' ', which can be stripped.
     string = String(string).replace(/[\t\n\f\r ]+/g, '');
@@ -78,7 +78,7 @@
      * [MidiParser description]
      * @type {Object}
      */
-  const MidiParser  = {
+  const MidiParser = {
     // debug (bool), when enabled will log in console unimplemented events
     // warnings and internal handled errors.
     debug: false,
@@ -89,10 +89,10 @@
          * @param  {[type]} _callback [description]
          * @return {[type]}           [description]
          */
-    parse: function(input, _callback){
-      if(input instanceof Uint8Array) return MidiParser.Uint8(input);
-      else if(typeof input === 'string') return MidiParser.Base64(input);
-      else if(input instanceof HTMLElement &amp;&amp; input.type === 'file') return MidiParser.addListener(input , _callback);
+    parse: function(input, _callback) {
+      if (input instanceof Uint8Array) return MidiParser.Uint8(input);
+      else if (typeof input === 'string') return MidiParser.Base64(input);
+      else if (input instanceof HTMLElement &amp;&amp; input.type === 'file') return MidiParser.addListener(input, _callback);
       else throw new Error('MidiParser.parse() : Invalid input provided');
     },
 
@@ -101,27 +101,27 @@
          * that will provide the binary data automating the conversion, and returning
          * the structured data to the provided callback function.
          */
-    addListener: function(_fileElement, _callback){
-      if(!File || !FileReader) throw new Error('The File|FileReader APIs are not supported in this browser. Use instead MidiParser.Base64() or MidiParser.Uint8()');
+    addListener: function(_fileElement, _callback) {
+      if (!File || !FileReader) throw new Error('The File|FileReader APIs are not supported in this browser. Use instead MidiParser.Base64() or MidiParser.Uint8()');
 
       // validate provided element
-      if( _fileElement === undefined ||
+      if ( _fileElement === undefined ||
                 !(_fileElement instanceof HTMLElement) ||
                 _fileElement.tagName !== 'INPUT' ||
-                _fileElement.type.toLowerCase() !== 'file' 
-      ){
+                _fileElement.type.toLowerCase() !== 'file'
+      ) {
         console.warn('MidiParser.addListener() : Provided element is not a valid FILE INPUT element');
         return false;
       }
-      _callback = _callback || function(){};
+      _callback = _callback || function() {};
 
-      _fileElement.addEventListener('change', function(InputEvt){             // set the 'file selected' event handler
-        if (!InputEvt.target.files.length) return false;                    // return false if no elements where selected
+      _fileElement.addEventListener('change', function(InputEvt) { // set the 'file selected' event handler
+        if (!InputEvt.target.files.length) return false; // return false if no elements where selected
         console.log('MidiParser.addListener() : File detected in INPUT ELEMENT processing data..');
-        let reader = new FileReader();                                      // prepare the file Reader
-        reader.readAsArrayBuffer(InputEvt.target.files[0]);                 // read the binary data
-        reader.onload =  function(e){
-          _callback( MidiParser.Uint8(new Uint8Array(e.target.result)));  // encode data with Uint8Array and call the parser
+        let reader = new FileReader(); // prepare the file Reader
+        reader.readAsArrayBuffer(InputEvt.target.files[0]); // read the binary data
+        reader.onload = function(e) {
+          _callback( MidiParser.Uint8(new Uint8Array(e.target.result))); // encode data with Uint8Array and call the parser
         };
       });
     },
@@ -130,15 +130,15 @@
          * Base64() : convert baset4 string into uint8 array buffer, before performing the
          * parsing subroutine.
          */
-    Base64 : function(b64String){
+    Base64: function(b64String) {
       b64String = String(b64String);
 
       let raw = _atob(b64String);
       let rawLength = raw.length;
       let t_array = new Uint8Array(new ArrayBuffer(rawLength));
 
-      for(let i=0; i&lt;rawLength; i++) t_array[i] = raw.charCodeAt(i);
-      return  MidiParser.Uint8(t_array) ;
+      for (let i=0; i&lt;rawLength; i++) t_array[i] = raw.charCodeAt(i);
+      return MidiParser.Uint8(t_array) ;
     },
 
     /**
@@ -146,20 +146,20 @@
          * and parsing it to a structured Object. When job is finised returns the object
          * or 'false' if any error was generated.
          */
-    Uint8: function(FileAsUint8Array){
+    Uint8: function(FileAsUint8Array) {
       let file = {
         data: null,
         pointer: 0,
-        movePointer: function(_bytes){                                      // move the pointer negative and positive direction
+        movePointer: function(_bytes) { // move the pointer negative and positive direction
           this.pointer += _bytes;
           return this.pointer;
         },
-        readInt: function(_bytes){                                          // get integer from next _bytes group (big-endian)
+        readInt: function(_bytes) { // get integer from next _bytes group (big-endian)
           _bytes = Math.min(_bytes, this.data.byteLength-this.pointer);
-          if (_bytes &lt; 1) return -1;                                                                      // EOF
+          if (_bytes &lt; 1) return -1; // EOF
           let value = 0;
-          if(_bytes > 1){
-            for(let i=1; i&lt;= (_bytes-1); i++){
+          if (_bytes > 1) {
+            for (let i=1; i&lt;= (_bytes-1); i++) {
               value += this.data.getUint8(this.pointer) * Math.pow(256, (_bytes - i));
               this.pointer++;
             }
@@ -168,112 +168,112 @@
           this.pointer++;
           return value;
         },
-        readStr: function(_bytes){                                          // read as ASCII chars, the followoing _bytes
+        readStr: function(_bytes) { // read as ASCII chars, the followoing _bytes
           let text = '';
-          for(let char=1; char &lt;= _bytes; char++) text +=  String.fromCharCode(this.readInt(1));
+          for (let char=1; char &lt;= _bytes; char++) text += String.fromCharCode(this.readInt(1));
           return text;
         },
-        readIntVLV: function(){                                             // read a variable length value
+        readIntVLV: function() { // read a variable length value
           let value = 0;
-          if ( this.pointer >= this.data.byteLength ){
-            return -1;                                                  // EOF
-          }else if(this.data.getUint8(this.pointer) &lt; 128){               // ...value in a single byte
+          if ( this.pointer >= this.data.byteLength ) {
+            return -1; // EOF
+          } else if (this.data.getUint8(this.pointer) &lt; 128) { // ...value in a single byte
             value = this.readInt(1);
-          }else{                                                          // ...value in multiple bytes
+          } else { // ...value in multiple bytes
             let FirstBytes = [];
-            while(this.data.getUint8(this.pointer) >= 128){
+            while (this.data.getUint8(this.pointer) >= 128) {
               FirstBytes.push(this.readInt(1) - 128);
             }
-            let lastByte  = this.readInt(1);
-            for(let dt = 1; dt &lt;= FirstBytes.length; dt++){
+            let lastByte = this.readInt(1);
+            for (let dt = 1; dt &lt;= FirstBytes.length; dt++) {
               value += FirstBytes[FirstBytes.length - dt] * Math.pow(128, dt);
             }
             value += lastByte;
           }
           return value;
-        }
+        },
       };
 
-      file.data = new DataView(FileAsUint8Array.buffer, FileAsUint8Array.byteOffset, FileAsUint8Array.byteLength);                                            // 8 bits bytes file data array
+      file.data = new DataView(FileAsUint8Array.buffer, FileAsUint8Array.byteOffset, FileAsUint8Array.byteLength); // 8 bits bytes file data array
       //  ** read FILE HEADER
-      if(file.readInt(4) !== 0x4D546864){
+      if (file.readInt(4) !== 0x4D546864) {
         console.warn('Header validation failed (not MIDI standard or file corrupt.)');
-        return false;                                                       // Header validation failed (not MIDI standard or file corrupt.)
+        return false; // Header validation failed (not MIDI standard or file corrupt.)
       }
-      let headerSize          = file.readInt(4);                              // header size (unused var), getted just for read pointer movement
-      let MIDI                = {};                                           // create new midi object
-      MIDI.formatType         = file.readInt(2);                              // get MIDI Format Type
-      MIDI.tracks             = file.readInt(2);                              // get ammount of track chunks
-      MIDI.track              = [];                                           // create array key for track data storing
-      let timeDivisionByte1   = file.readInt(1);                              // get Time Division first byte
-      let timeDivisionByte2   = file.readInt(1);                              // get Time Division second byte
-      if(timeDivisionByte1 >= 128){                                           // discover Time Division mode (fps or tpf)
-        MIDI.timeDivision    = [];
-        MIDI.timeDivision[0] = timeDivisionByte1 - 128;                     // frames per second MODE  (1st byte)
-        MIDI.timeDivision[1] = timeDivisionByte2;                           // ticks in each frame     (2nd byte)
-      }else MIDI.timeDivision  = (timeDivisionByte1 * 256) + timeDivisionByte2;// else... ticks per beat MODE  (2 bytes value)
+      let headerSize = file.readInt(4); // header size (unused var), getted just for read pointer movement
+      let MIDI = {}; // create new midi object
+      MIDI.formatType = file.readInt(2); // get MIDI Format Type
+      MIDI.tracks = file.readInt(2); // get ammount of track chunks
+      MIDI.track = []; // create array key for track data storing
+      let timeDivisionByte1 = file.readInt(1); // get Time Division first byte
+      let timeDivisionByte2 = file.readInt(1); // get Time Division second byte
+      if (timeDivisionByte1 >= 128) { // discover Time Division mode (fps or tpf)
+        MIDI.timeDivision = [];
+        MIDI.timeDivision[0] = timeDivisionByte1 - 128; // frames per second MODE  (1st byte)
+        MIDI.timeDivision[1] = timeDivisionByte2; // ticks in each frame     (2nd byte)
+      } else MIDI.timeDivision = (timeDivisionByte1 * 256) + timeDivisionByte2;// else... ticks per beat MODE  (2 bytes value)
 
       //  ** read TRACK CHUNK
-      for(let t=1; t &lt;= MIDI.tracks; t++){
-        MIDI.track[t-1]     = {event: []};                                  // create new Track entry in Array
+      for (let t=1; t &lt;= MIDI.tracks; t++) {
+        MIDI.track[t-1] = {event: []}; // create new Track entry in Array
         let headerValidation = file.readInt(4);
-        if ( headerValidation === -1 ) break;                               // EOF
-        if(headerValidation !== 0x4D54726B) return false;                   // Track chunk header validation failed.
-        file.readInt(4);                                                    // move pointer. get chunk size (bytes length)
-        let e               = 0;                                            // init event counter
-        let endOfTrack      = false;                                        // FLAG for track reading secuence breaking
+        if ( headerValidation === -1 ) break; // EOF
+        if (headerValidation !== 0x4D54726B) return false; // Track chunk header validation failed.
+        file.readInt(4); // move pointer. get chunk size (bytes length)
+        let e = 0; // init event counter
+        let endOfTrack = false; // FLAG for track reading secuence breaking
         // ** read EVENT CHUNK
         let statusByte;
         let laststatusByte;
-        while(!endOfTrack){
-          e++;                                                            // increase by 1 event counter
-          MIDI.track[t-1].event[e-1] = {};                                // create new event object, in events array
-          MIDI.track[t-1].event[e-1].deltaTime  = file.readIntVLV();      // get DELTA TIME OF MIDI event (Variable Length Value)
-          statusByte = file.readInt(1);                                   // read EVENT TYPE (STATUS BYTE)
-          if(statusByte === -1) break;                                    // EOF
-          else if(statusByte >= 128) laststatusByte = statusByte;         // NEW STATUS BYTE DETECTED
-          else{                                                           // 'RUNNING STATUS' situation detected
-            statusByte = laststatusByte;                                // apply last loop, Status Byte
-            file.movePointer(-1);                                       // move back the pointer (cause readed byte is not status byte)
+        while (!endOfTrack) {
+          e++; // increase by 1 event counter
+          MIDI.track[t-1].event[e-1] = {}; // create new event object, in events array
+          MIDI.track[t-1].event[e-1].deltaTime = file.readIntVLV(); // get DELTA TIME OF MIDI event (Variable Length Value)
+          statusByte = file.readInt(1); // read EVENT TYPE (STATUS BYTE)
+          if (statusByte === -1) break; // EOF
+          else if (statusByte >= 128) laststatusByte = statusByte; // NEW STATUS BYTE DETECTED
+          else { // 'RUNNING STATUS' situation detected
+            statusByte = laststatusByte; // apply last loop, Status Byte
+            file.movePointer(-1); // move back the pointer (cause readed byte is not status byte)
           }
 
 
           //
           // ** IS META EVENT
           //
-          if(statusByte === 0xFF){                                        // Meta Event type
-            MIDI.track[t-1].event[e-1].type = 0xFF;                     // assign metaEvent code to array
-            MIDI.track[t-1].event[e-1].metaType =  file.readInt(1);     // assign metaEvent subtype
-            let metaEventLength = file.readIntVLV();                    // get the metaEvent length
-            switch(MIDI.track[t-1].event[e-1].metaType){
-              case 0x2F:                                              // end of track, has no data byte
-              case -1:                                                // EOF
-                endOfTrack = true;                                  // change FLAG to force track reading loop breaking
+          if (statusByte === 0xFF) { // Meta Event type
+            MIDI.track[t-1].event[e-1].type = 0xFF; // assign metaEvent code to array
+            MIDI.track[t-1].event[e-1].metaType = file.readInt(1); // assign metaEvent subtype
+            let metaEventLength = file.readIntVLV(); // get the metaEvent length
+            switch (MIDI.track[t-1].event[e-1].metaType) {
+              case 0x2F: // end of track, has no data byte
+              case -1: // EOF
+                endOfTrack = true; // change FLAG to force track reading loop breaking
                 break;
-              case 0x01:                                              // Text Event
-              case 0x02:                                              // Copyright Notice
+              case 0x01: // Text Event
+              case 0x02: // Copyright Notice
               case 0x03:
-              case 0x04:                                              // Instrument Name
-              case 0x05:                                              // Lyrics)
-              case 0x07:                                              // Cue point                                         // Sequence/Track Name (documentation: http://www.ta7.de/txt/musik/musi0006.htm)
-              case 0x06:                                              // Marker
+              case 0x04: // Instrument Name
+              case 0x05: // Lyrics)
+              case 0x07: // Cue point                                         // Sequence/Track Name (documentation: http://www.ta7.de/txt/musik/musi0006.htm)
+              case 0x06: // Marker
                 MIDI.track[t-1].event[e-1].data = file.readStr(metaEventLength);
                 break;
-              case 0x21:                                              // MIDI PORT
-              case 0x59:                                              // Key Signature
-              case 0x51:                                              // Set Tempo
+              case 0x21: // MIDI PORT
+              case 0x59: // Key Signature
+              case 0x51: // Set Tempo
                 MIDI.track[t-1].event[e-1].data = file.readInt(metaEventLength);
                 break;
-              case 0x54:                                              // SMPTE Offset
-                MIDI.track[t-1].event[e-1].data    = [];
+              case 0x54: // SMPTE Offset
+                MIDI.track[t-1].event[e-1].data = [];
                 MIDI.track[t-1].event[e-1].data[0] = file.readInt(1);
                 MIDI.track[t-1].event[e-1].data[1] = file.readInt(1);
                 MIDI.track[t-1].event[e-1].data[2] = file.readInt(1);
                 MIDI.track[t-1].event[e-1].data[3] = file.readInt(1);
                 MIDI.track[t-1].event[e-1].data[4] = file.readInt(1);
                 break;
-              case 0x58:                                              // Time Signature
-                MIDI.track[t-1].event[e-1].data    = [];
+              case 0x58: // Time Signature
+                MIDI.track[t-1].event[e-1].data = [];
                 MIDI.track[t-1].event[e-1].data[0] = file.readInt(1);
                 MIDI.track[t-1].event[e-1].data[1] = file.readInt(1);
                 MIDI.track[t-1].event[e-1].data[2] = file.readInt(1);
@@ -282,12 +282,12 @@
               default :
                 // if user provided a custom interpreter, call it
                 // and assign to event the returned data
-                if( this.customInterpreter !== null){
+                if ( this.customInterpreter !== null) {
                   MIDI.track[t-1].event[e-1].data = this.customInterpreter( MIDI.track[t-1].event[e-1].metaType, file, metaEventLength);
                 }
                 // if no customInterpretr is provided, or returned
                 // false (=apply default), perform default action
-                if(this.customInterpreter === null || MIDI.track[t-1].event[e-1].data === false){
+                if (this.customInterpreter === null || MIDI.track[t-1].event[e-1].data === false) {
                   file.readInt(metaEventLength);
                   MIDI.track[t-1].event[e-1].data = file.readInt(metaEventLength);
                   if (this.debug) console.info('Unimplemented 0xFF meta event! data block readed as Integer');
@@ -298,55 +298,55 @@
           //
           // IS REGULAR EVENT
           //
-          else{                                                           // MIDI Control Events OR System Exclusive Events
-            statusByte = statusByte.toString(16).split('');             // split the status byte HEX representation, to obtain 4 bits values
-            if(!statusByte[1]) statusByte.unshift('0');                 // force 2 digits
+          else { // MIDI Control Events OR System Exclusive Events
+            statusByte = statusByte.toString(16).split(''); // split the status byte HEX representation, to obtain 4 bits values
+            if (!statusByte[1]) statusByte.unshift('0'); // force 2 digits
             MIDI.track[t-1].event[e-1].type = parseInt(statusByte[0], 16);// first byte is EVENT TYPE ID
             MIDI.track[t-1].event[e-1].channel = parseInt(statusByte[1], 16);// second byte is channel
-            switch(MIDI.track[t-1].event[e-1].type){
-              case 0xF:{                                              // System Exclusive Events
+            switch (MIDI.track[t-1].event[e-1].type) {
+              case 0xF:{ // System Exclusive Events
 
                 // if user provided a custom interpreter, call it
                 // and assign to event the returned data
-                if( this.customInterpreter !== null){
-                  MIDI.track[t-1].event[e-1].data = this.customInterpreter( MIDI.track[t-1].event[e-1].type, file , false);
+                if ( this.customInterpreter !== null) {
+                  MIDI.track[t-1].event[e-1].data = this.customInterpreter( MIDI.track[t-1].event[e-1].type, file, false);
                 }
 
                 // if no customInterpretr is provided, or returned
                 // false (=apply default), perform default action
-                if(this.customInterpreter === null || MIDI.track[t-1].event[e-1].data === false){
+                if (this.customInterpreter === null || MIDI.track[t-1].event[e-1].data === false) {
                   let event_length = file.readIntVLV();
                   MIDI.track[t-1].event[e-1].data = file.readInt(event_length);
                   if (this.debug) console.info('Unimplemented 0xF exclusive events! data block readed as Integer');
                 }
                 break;
               }
-              case 0xA:                                               // Note Aftertouch
-              case 0xB:                                               // Controller
-              case 0xE:                                               // Pitch Bend Event
-              case 0x8:                                               // Note off
-              case 0x9:                                               // Note On
+              case 0xA: // Note Aftertouch
+              case 0xB: // Controller
+              case 0xE: // Pitch Bend Event
+              case 0x8: // Note off
+              case 0x9: // Note On
                 MIDI.track[t-1].event[e-1].data = [];
                 MIDI.track[t-1].event[e-1].data[0] = file.readInt(1);
                 MIDI.track[t-1].event[e-1].data[1] = file.readInt(1);
                 break;
-              case 0xC:                                               // Program Change
-              case 0xD:                                               // Channel Aftertouch
+              case 0xC: // Program Change
+              case 0xD: // Channel Aftertouch
                 MIDI.track[t-1].event[e-1].data = file.readInt(1);
                 break;
-              case -1:                                                // EOF
-                endOfTrack = true;                                  // change FLAG to force track reading loop breaking
+              case -1: // EOF
+                endOfTrack = true; // change FLAG to force track reading loop breaking
                 break;
               default:
                 // if user provided a custom interpreter, call it
                 // and assign to event the returned data
-                if( this.customInterpreter !== null){
-                  MIDI.track[t-1].event[e-1].data = this.customInterpreter( MIDI.track[t-1].event[e-1].metaType, file , false);
+                if ( this.customInterpreter !== null) {
+                  MIDI.track[t-1].event[e-1].data = this.customInterpreter( MIDI.track[t-1].event[e-1].metaType, file, false);
                 }
 
                 // if no customInterpretr is provided, or returned
                 // false (=apply default), perform default action
-                if(this.customInterpreter === null || MIDI.track[t-1].event[e-1].data === false){
+                if (this.customInterpreter === null || MIDI.track[t-1].event[e-1].data === false) {
                   console.log('Unknown EVENT detected... reading cancelled!');
                   return false;
                 }
@@ -364,13 +364,13 @@
          * to be manually increased
          * If you want default action to be performed, return false
          */
-    customInterpreter : null // function( e_type , arrayByffer, metaEventLength){ return e_data_int }
+    customInterpreter: null, // function( e_type , arrayByffer, metaEventLength){ return e_data_int }
   };
 
 
   // if running in NODE export module
-  if(typeof module !== 'undefined') module.exports = MidiParser;
-  else{
+  if (typeof module !== 'undefined') module.exports = MidiParser;
+  else {
     // if running in Browser, set a global variable.
     let _global = typeof window === 'object' &amp;&amp; window.self === window &amp;&amp; window ||
                     typeof self === 'object' &amp;&amp; self.self === self &amp;&amp; self ||
@@ -380,8 +380,23 @@
   }
 
 
-    
-})();</code></pre>
+
+})();
+
+// identify the global scope
+let _global = typeof window === 'object' &amp;&amp; window.self === window &amp;&amp; window ||
+            typeof self === 'object' &amp;&amp; self.self === self &amp;&amp; self ||
+            typeof global === 'object' &amp;&amp; global.global === global &amp;&amp; global;
+
+// retrieve a copy of the MidiParser reference and store it
+let _MidiParser = _global.MidiParser;
+
+// delete the global scope reference
+delete _global.MidiParser;
+
+// export the stored MidiParser reference
+export { _MidiParser as MidiParser };
+</code></pre>
         </article>
     </section>
 
@@ -391,13 +406,13 @@
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Namespaces</h3><ul><li><a href="GL.html">GL</a></li></ul><h3>Classes</h3><ul><li><a href="-_anonymous_-GL.Buffer.html">Buffer</a></li><li><a href="-_anonymous_-GL.Indexer.html">Indexer</a></li><li><a href="BBox.html">BBox</a></li><li><a href="ContextMenu.html">ContextMenu</a></li><li><a href="LGraph.html">LGraph</a></li><li><a href="LGraphCanvas.html">LGraphCanvas</a></li><li><a href="LGraphNode.html">LGraphNode</a></li><li><a href="LiteGraph.html">LiteGraph</a></li><li><a href="Mesh.html">Mesh</a></li><li><a href="geo.html">geo</a></li><li><a href="gl_.html">gl</a></li><li><a href="global.Mesh.html">Mesh</a></li><li><a href="global.Octree.html">Octree</a></li><li><a href="global.Shader.html">Shader</a></li><li><a href="global.Texture.html">Texture</a></li></ul><h3>Global</h3><ul><li><a href="global.html#actionDo">actionDo</a></li><li><a href="global.html#add">add</a></li><li><a href="global.html#addBuffer">addBuffer</a></li><li><a href="global.html#addBuffers">addBuffers</a></li><li><a href="global.html#addConnection">addConnection</a></li><li><a href="global.html#addGlobalInput">addGlobalInput</a></li><li><a href="global.html#addInput">addInput</a></li><li><a href="global.html#addInputs">addInputs</a></li><li><a href="global.html#addNodeMethod">addNodeMethod</a></li><li><a href="global.html#addOutput">addOutput</a></li><li><a href="global.html#addOutputs">addOutputs</a></li><li><a href="global.html#addProperty">addProperty</a></li><li><a href="global.html#addWidget">addWidget</a></li><li><a href="global.html#adjustMouseEvent">adjustMouseEvent</a></li><li><a href="global.html#animate">animate</a></li><li><a href="global.html#applyBlur">applyBlur</a></li><li><a href="global.html#applyTransform">applyTransform</a></li><li><a href="global.html#arrange">arrange</a></li><li><a href="global.html#attachCanvas">attachCanvas</a></li><li><a href="global.html#bind">bind</a></li><li><a href="global.html#bindEvents">bindEvents</a></li><li><a href="global.html#blend">blend</a></li><li><a href="global.html#blit">blit</a></li><li><a href="global.html#bringToFront">bringToFront</a></li><li><a href="global.html#buildNodeClassFromObject">buildNodeClassFromObject</a></li><li><a href="global.html#captureGamepads">captureGamepads</a></li><li><a href="global.html#captureKeys">captureKeys</a></li><li><a href="global.html#captureMouse">captureMouse</a></li><li><a href="global.html#cartesianToPolar">cartesianToPolar</a></li><li><a href="global.html#centerOnNode">centerOnNode</a></li><li><a href="global.html#changeInputType">changeInputType</a></li><li><a href="global.html#changeOutputType">changeOutputType</a></li><li><a href="global.html#checkNodeTypes">checkNodeTypes</a></li><li><a href="global.html#clear">clear</a></li><li><a href="global.html#clearTriggeredSlot">clearTriggeredSlot</a></li><li><a href="global.html#clearTriggeredSlots">clearTriggeredSlots</a></li><li><a href="global.html#clone">clone</a></li><li><a href="global.html#cloneObject">cloneObject</a></li><li><a href="global.html#closeSubgraph">closeSubgraph</a></li><li><a href="global.html#collapse">collapse</a></li><li><a href="global.html#computeGroupsBoundingBoxes">computeGroupsBoundingBoxes</a></li><li><a href="global.html#computeIndices">computeIndices</a></li><li><a href="global.html#computeNormals">computeNormals</a></li><li><a href="global.html#computeSize">computeSize</a></li><li><a href="global.html#computeTangents">computeTangents</a></li><li><a href="global.html#computeTextureCoordinates">computeTextureCoordinates</a></li><li><a href="global.html#computeVisibleNodes">computeVisibleNodes</a></li><li><a href="global.html#computeWireframe">computeWireframe</a></li><li><a href="global.html#configure">configure</a></li><li><a href="global.html#connect">connect</a></li><li><a href="global.html#connectByType">connectByType</a></li><li><a href="global.html#convertCanvasToOffset">convertCanvasToOffset</a></li><li><a href="global.html#convertOffsetToCanvas">convertOffsetToCanvas</a></li><li><a href="global.html#copy">copy</a></li><li><a href="global.html#copyTo">copyTo</a></li><li><a href="global.html#create">create</a></li><li><a href="global.html#createIndexBuffer">createIndexBuffer</a></li><li><a href="global.html#createNode">createNode</a></li><li><a href="global.html#createPlane">createPlane</a></li><li><a href="global.html#createVertexBuffer">createVertexBuffer</a></li><li><a href="global.html#delete">delete</a></li><li><a href="global.html#deleteSelectedNodes">deleteSelectedNodes</a></li><li><a href="global.html#deselectAllNodes">deselectAllNodes</a></li><li><a href="global.html#deselectNode">deselectNode</a></li><li><a href="global.html#destroy">destroy</a></li><li><a href="global.html#detachCanvas">detachCanvas</a></li><li><a href="global.html#disconnectInput">disconnectInput</a></li><li><a href="global.html#disconnectOutput">disconnectOutput</a></li><li><a href="global.html#distance2PointToPlane">distance2PointToPlane</a></li><li><a href="global.html#distancePointToPlane">distancePointToPlane</a></li><li><a href="global.html#doExecute">doExecute</a></li><li><a href="global.html#draw">draw</a></li><li><a href="global.html#drawBackCanvas">drawBackCanvas</a></li><li><a href="global.html#drawBuffers">drawBuffers</a></li><li><a href="global.html#drawConnections">drawConnections</a></li><li><a href="global.html#drawFrontCanvas">drawFrontCanvas</a></li><li><a href="global.html#drawGroups">drawGroups</a></li><li><a href="global.html#drawNode">drawNode</a></li><li><a href="global.html#drawNodeShape">drawNodeShape</a></li><li><a href="global.html#drawNodeWidgets">drawNodeWidgets</a></li><li><a href="global.html#drawRange">drawRange</a></li><li><a href="global.html#drawSubgraphPanel">drawSubgraphPanel</a></li><li><a href="global.html#drawTexture">drawTexture</a></li><li><a href="global.html#drawTo">drawTo</a></li><li><a href="global.html#drawToColorAndDepth">drawToColorAndDepth</a></li><li><a href="global.html#enableWebGL">enableWebGL</a></li><li><a href="global.html#encode">encode</a></li><li><a href="global.html#execute">execute</a></li><li><a href="global.html#executePendingActions">executePendingActions</a></li><li><a href="global.html#explodeIndices">explodeIndices</a></li><li><a href="global.html#extractPlanes">extractPlanes</a></li><li><a href="global.html#extractShaderInfo">extractShaderInfo</a></li><li><a href="global.html#fetchFile">fetchFile</a></li><li><a href="global.html#fill">fill</a></li><li><a href="global.html#findInputSlot">findInputSlot</a></li><li><a href="global.html#findInputSlotFree">findInputSlotFree</a></li><li><a href="global.html#findNodeByTitle">findNodeByTitle</a></li><li><a href="global.html#findNodesByClass">findNodesByClass</a></li><li><a href="global.html#findNodesByTitle">findNodesByTitle</a></li><li><a href="global.html#findNodesByType">findNodesByType</a></li><li><a href="global.html#findOutputSlot">findOutputSlot</a></li><li><a href="global.html#findOutputSlotFree">findOutputSlotFree</a></li><li><a href="global.html#findSlotByType">findSlotByType</a></li><li><a href="global.html#flipNormals">flipNormals</a></li><li><a href="global.html#forEach">forEach</a></li><li><a href="global.html#freeData">freeData</a></li><li><a href="global.html#fromCenterHalfsize">fromCenterHalfsize</a></li><li><a href="global.html#fromMinMax">fromMinMax</a></li><li><a href="global.html#fromPoint">fromPoint</a></li><li><a href="global.html#fromPoints">fromPoints</a></li><li><a href="global.html#frustumTestBox">frustumTestBox</a></li><li><a href="global.html#frustumTestSphere">frustumTestSphere</a></li><li><a href="global.html#fullscreen">fullscreen</a></li><li><a href="global.html#generateMetadata">generateMetadata</a></li><li><a href="global.html#getAncestors">getAncestors</a></li><li><a href="global.html#getBounding">getBounding</a></li><li><a href="global.html#getBoundingBox">getBoundingBox</a></li><li><a href="global.html#getBuffer">getBuffer</a></li><li><a href="global.html#getCanvasWindow">getCanvasWindow</a></li><li><a href="global.html#getConnectionPos">getConnectionPos</a></li><li><a href="global.html#getCorners">getCorners</a></li><li><a href="global.html#getCubemapPixels">getCubemapPixels</a></li><li><a href="global.html#getCurrentGraph">getCurrentGraph</a></li><li><a href="global.html#getElapsedTime">getElapsedTime</a></li><li><a href="global.html#getFixedTime">getFixedTime</a></li><li><a href="global.html#getGamepads">getGamepads</a></li><li><a href="global.html#getGroupOnPos">getGroupOnPos</a></li><li><a href="global.html#getIndexBuffer">getIndexBuffer</a></li><li><a href="global.html#getInputData">getInputData</a></li><li><a href="global.html#getInputDataByName">getInputDataByName</a></li><li><a href="global.html#getInputDataType">getInputDataType</a></li><li><a href="global.html#getInputInfo">getInputInfo</a></li><li><a href="global.html#getInputLink">getInputLink</a></li><li><a href="global.html#getInputNode">getInputNode</a></li><li><a href="global.html#getInputOrProperty">getInputOrProperty</a></li><li><a href="global.html#getLocation">getLocation</a></li><li><a href="global.html#getMemory">getMemory</a></li><li><a href="global.html#getNodeById">getNodeById</a></li><li><a href="global.html#getNodeOnPos">getNodeOnPos</a></li><li><a href="global.html#getNodeType">getNodeType</a></li><li><a href="global.html#getNodeTypesCategories">getNodeTypesCategories</a></li><li><a href="global.html#getNumTriangles">getNumTriangles</a></li><li><a href="global.html#getOutputData">getOutputData</a></li><li><a href="global.html#getOutputInfo">getOutputInfo</a></li><li><a href="global.html#getOutputNodes">getOutputNodes</a></li><li><a href="global.html#getPixels">getPixels</a></li><li><a href="global.html#getPropertyInfo">getPropertyInfo</a></li><li><a href="global.html#getScreenQuad">getScreenQuad</a></li><li><a href="global.html#getSlotInPosition">getSlotInPosition</a></li><li><a href="global.html#getTime">getTime</a></li><li><a href="global.html#getTitle">getTitle</a></li><li><a href="global.html#getTopGraph">getTopGraph</a></li><li><a href="global.html#getVertexBuffer">getVertexBuffer</a></li><li><a href="global.html#getVertexNumber">getVertexNumber</a></li><li><a href="global.html#hasAttribute">hasAttribute</a></li><li><a href="global.html#hasUniform">hasUniform</a></li><li><a href="global.html#isAnyOutputConnected">isAnyOutputConnected</a></li><li><a href="global.html#isDepthSupported">isDepthSupported</a></li><li><a href="global.html#isInputConnected">isInputConnected</a></li><li><a href="global.html#isLive">isLive</a></li><li><a href="global.html#isMobile">isMobile</a></li><li><a href="global.html#isOutputConnected">isOutputConnected</a></li><li><a href="global.html#isOverNodeBox">isOverNodeBox</a></li><li><a href="global.html#isOverNodeInput">isOverNodeInput</a></li><li><a href="global.html#isOverNodeOuput">isOverNodeOuput</a></li><li><a href="global.html#isPointInside">isPointInside</a></li><li><a href="global.html#isPowerOfTwo">isPowerOfTwo</a></li><li><a href="global.html#isValidConnection">isValidConnection</a></li><li><a href="global.html#loadTexture">loadTexture</a></li><li><a href="global.html#makeCurrent">makeCurrent</a></li><li><a href="global.html#openSubgraph">openSubgraph</a></li><li><a href="global.html#parse">parse</a></li><li><a href="global.html#pin">pin</a></li><li><a href="global.html#polarToCartesian">polarToCartesian</a></li><li><a href="global.html#processDrop">processDrop</a></li><li><a href="global.html#processKey">processKey</a></li><li><a href="global.html#processMouseMove">processMouseMove</a></li><li><a href="global.html#processMouseUp">processMouseUp</a></li><li><a href="global.html#processMouseWheel">processMouseWheel</a></li><li><a href="global.html#processNodeWidgets">processNodeWidgets</a></li><li><a href="global.html#project2DPointOnLine">project2DPointOnLine</a></li><li><a href="global.html#projectPointOnLine">projectPointOnLine</a></li><li><a href="global.html#projectPointOnPlane">projectPointOnPlane</a></li><li><a href="global.html#reflectPointInPlane">reflectPointInPlane</a></li><li><a href="global.html#registerNodeType">registerNodeType</a></li><li><a href="global.html#registerSearchboxExtra">registerSearchboxExtra</a></li><li><a href="global.html#registerSlotType">registerSlotType</a></li><li><a href="global.html#remove">remove</a></li><li><a href="global.html#removeIndexBuffer">removeIndexBuffer</a></li><li><a href="global.html#removeInput">removeInput</a></li><li><a href="global.html#removeLink">removeLink</a></li><li><a href="global.html#removeOutput">removeOutput</a></li><li><a href="global.html#removeVertexBuffer">removeVertexBuffer</a></li><li><a href="global.html#renameInput">renameInput</a></li><li><a href="global.html#renameOutput">renameOutput</a></li><li><a href="global.html#renderInfo">renderInfo</a></li><li><a href="global.html#renderLink">renderLink</a></li><li><a href="global.html#renderQuad">renderQuad</a></li><li><a href="global.html#resize">resize</a></li><li><a href="global.html#runStep">runStep</a></li><li><a href="global.html#selectNode">selectNode</a></li><li><a href="global.html#selectNodes">selectNodes</a></li><li><a href="global.html#sendEventToAllNodes">sendEventToAllNodes</a></li><li><a href="global.html#sendToBack">sendToBack</a></li><li><a href="global.html#serialize">serialize</a></li><li><a href="global.html#setBoundingBox">setBoundingBox</a></li><li><a href="global.html#setCanvas">setCanvas</a></li><li><a href="global.html#setCenterHalfsize">setCenterHalfsize</a></li><li><a href="global.html#setCubemapPixels">setCubemapPixels</a></li><li><a href="global.html#setData">setData</a></li><li><a href="global.html#setDirty">setDirty</a></li><li><a href="global.html#setFromPoints">setFromPoints</a></li><li><a href="global.html#setGlobalInputData">setGlobalInputData</a></li><li><a href="global.html#setGraph">setGraph</a></li><li><a href="global.html#setMinMax">setMinMax</a></li><li><a href="global.html#setOutputData">setOutputData</a></li><li><a href="global.html#setOutputDataType">setOutputDataType</a></li><li><a href="global.html#setPixels">setPixels</a></li><li><a href="global.html#setProperty">setProperty</a></li><li><a href="global.html#setSize">setSize</a></li><li><a href="global.html#setTextures">setTextures</a></li><li><a href="global.html#setUniform">setUniform</a></li><li><a href="global.html#setZoom">setZoom</a></li><li><a href="global.html#simplify">simplify</a></li><li><a href="global.html#snapshot">snapshot</a></li><li><a href="global.html#start">start</a></li><li><a href="global.html#startRendering">startRendering</a></li><li><a href="global.html#stopexecution">stop execution</a></li><li><a href="global.html#stopRendering">stopRendering</a></li><li><a href="global.html#switchLiveMode">switchLiveMode</a></li><li><a href="global.html#testBBoxBBox">testBBoxBBox</a></li><li><a href="global.html#testPoint2DInPolygon">testPoint2DInPolygon</a></li><li><a href="global.html#testPointBBox">testPointBBox</a></li><li><a href="global.html#testRay">testRay</a></li><li><a href="global.html#testRayBBox">testRayBBox</a></li><li><a href="global.html#testRayBox">testRayBox</a></li><li><a href="global.html#testRayCylinder">testRayCylinder</a></li><li><a href="global.html#testRayPlane">testRayPlane</a></li><li><a href="global.html#testRaySphere">testRaySphere</a></li><li><a href="global.html#testSegmentPlane">testSegmentPlane</a></li><li><a href="global.html#testSphere">testSphere</a></li><li><a href="global.html#testSphereBBox">testSphereBBox</a></li><li><a href="global.html#toBase64">toBase64</a></li><li><a href="global.html#toBinary">toBinary</a></li><li><a href="global.html#toBlob">toBlob</a></li><li><a href="global.html#toCanvas">toCanvas</a></li><li><a href="global.html#toObject">toObject</a></li><li><a href="global.html#toString">toString</a></li><li><a href="global.html#toViewport">toViewport</a></li><li><a href="global.html#transformMat4">transformMat4</a></li><li><a href="global.html#trigger">trigger</a></li><li><a href="global.html#triggerSlot">triggerSlot</a></li><li><a href="global.html#unbind">unbind</a></li><li><a href="global.html#unbindEvents">unbindEvents</a></li><li><a href="global.html#uniforms">uniforms</a></li><li><a href="global.html#unregisterNodeType">unregisterNodeType</a></li><li><a href="global.html#update">update</a></li><li><a href="global.html#updateBoundingBox">updateBoundingBox</a></li><li><a href="global.html#updateExecutionOrder">updateExecutionOrder</a></li><li><a href="global.html#updateShader">updateShader</a></li><li><a href="global.html#updateVertexBuffer">updateVertexBuffer</a></li><li><a href="global.html#upload">upload</a></li><li><a href="global.html#uploadData">uploadData</a></li><li><a href="global.html#uploadImage">uploadImage</a></li><li><a href="global.html#uploadRange">uploadRange</a></li><li><a href="global.html#wrapFunctionAsNode">wrapFunctionAsNode</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Namespaces</h3><ul><li><a href="GL.html">GL</a></li></ul><h3>Classes</h3><ul><li><a href="-_anonymous_-GL.Buffer.html">Buffer</a></li><li><a href="-_anonymous_-GL.Indexer.html">Indexer</a></li><li><a href="BBox.html">BBox</a></li><li><a href="ContextMenu.html">ContextMenu</a></li><li><a href="CurveEditor.html">CurveEditor</a></li><li><a href="DragAndScale.html">DragAndScale</a></li><li><a href="LGraph.html">LGraph</a></li><li><a href="LGraphCanvas.html">LGraphCanvas</a></li><li><a href="LGraphNode.html">LGraphNode</a></li><li><a href="LLink.html">LLink</a></li><li><a href="LiteGraph.html">LiteGraph</a></li><li><a href="Mesh.html">Mesh</a></li><li><a href="geo.html">geo</a></li><li><a href="gl_.html">gl</a></li><li><a href="global.Mesh.html">Mesh</a></li><li><a href="global.Octree.html">Octree</a></li><li><a href="global.Shader.html">Shader</a></li><li><a href="global.Texture.html">Texture</a></li></ul><h3>Global</h3><ul><li><a href="global.html#actionDo">actionDo</a></li><li><a href="global.html#add">add</a></li><li><a href="global.html#addBuffer">addBuffer</a></li><li><a href="global.html#addBuffers">addBuffers</a></li><li><a href="global.html#addConnection">addConnection</a></li><li><a href="global.html#addGlobalInput">addGlobalInput</a></li><li><a href="global.html#addInput">addInput</a></li><li><a href="global.html#addInputs">addInputs</a></li><li><a href="global.html#addNodeMethod">addNodeMethod</a></li><li><a href="global.html#addOutput">addOutput</a></li><li><a href="global.html#addOutputs">addOutputs</a></li><li><a href="global.html#addProperty">addProperty</a></li><li><a href="global.html#addWidget">addWidget</a></li><li><a href="global.html#adjustMouseEvent">adjustMouseEvent</a></li><li><a href="global.html#animate">animate</a></li><li><a href="global.html#applyBlur">applyBlur</a></li><li><a href="global.html#applyTransform">applyTransform</a></li><li><a href="global.html#arrange">arrange</a></li><li><a href="global.html#attachCanvas">attachCanvas</a></li><li><a href="global.html#bind">bind</a></li><li><a href="global.html#bindEvents">bindEvents</a></li><li><a href="global.html#blend">blend</a></li><li><a href="global.html#blit">blit</a></li><li><a href="global.html#bringToFront">bringToFront</a></li><li><a href="global.html#buildNodeClassFromObject">buildNodeClassFromObject</a></li><li><a href="global.html#captureGamepads">captureGamepads</a></li><li><a href="global.html#captureKeys">captureKeys</a></li><li><a href="global.html#captureMouse">captureMouse</a></li><li><a href="global.html#cartesianToPolar">cartesianToPolar</a></li><li><a href="global.html#centerOnNode">centerOnNode</a></li><li><a href="global.html#changeInputType">changeInputType</a></li><li><a href="global.html#changeOutputType">changeOutputType</a></li><li><a href="global.html#checkNodeTypes">checkNodeTypes</a></li><li><a href="global.html#clear">clear</a></li><li><a href="global.html#clearTriggeredSlot">clearTriggeredSlot</a></li><li><a href="global.html#clearTriggeredSlots">clearTriggeredSlots</a></li><li><a href="global.html#clone">clone</a></li><li><a href="global.html#cloneObject">cloneObject</a></li><li><a href="global.html#closeSubgraph">closeSubgraph</a></li><li><a href="global.html#collapse">collapse</a></li><li><a href="global.html#computeGroupsBoundingBoxes">computeGroupsBoundingBoxes</a></li><li><a href="global.html#computeIndices">computeIndices</a></li><li><a href="global.html#computeNormals">computeNormals</a></li><li><a href="global.html#computeSize">computeSize</a></li><li><a href="global.html#computeTangents">computeTangents</a></li><li><a href="global.html#computeTextureCoordinates">computeTextureCoordinates</a></li><li><a href="global.html#computeVisibleNodes">computeVisibleNodes</a></li><li><a href="global.html#computeWireframe">computeWireframe</a></li><li><a href="global.html#configure">configure</a></li><li><a href="global.html#connect">connect</a></li><li><a href="global.html#connectByType">connectByType</a></li><li><a href="global.html#convertCanvasToOffset">convertCanvasToOffset</a></li><li><a href="global.html#convertOffsetToCanvas">convertOffsetToCanvas</a></li><li><a href="global.html#copy">copy</a></li><li><a href="global.html#copyTo">copyTo</a></li><li><a href="global.html#create">create</a></li><li><a href="global.html#createIndexBuffer">createIndexBuffer</a></li><li><a href="global.html#createNode">createNode</a></li><li><a href="global.html#createPlane">createPlane</a></li><li><a href="global.html#createVertexBuffer">createVertexBuffer</a></li><li><a href="global.html#delete">delete</a></li><li><a href="global.html#deleteSelectedNodes">deleteSelectedNodes</a></li><li><a href="global.html#deselectAllNodes">deselectAllNodes</a></li><li><a href="global.html#deselectNode">deselectNode</a></li><li><a href="global.html#destroy">destroy</a></li><li><a href="global.html#detachCanvas">detachCanvas</a></li><li><a href="global.html#disconnectInput">disconnectInput</a></li><li><a href="global.html#disconnectOutput">disconnectOutput</a></li><li><a href="global.html#distance2PointToPlane">distance2PointToPlane</a></li><li><a href="global.html#distancePointToPlane">distancePointToPlane</a></li><li><a href="global.html#doExecute">doExecute</a></li><li><a href="global.html#draw">draw</a></li><li><a href="global.html#drawBackCanvas">drawBackCanvas</a></li><li><a href="global.html#drawBuffers">drawBuffers</a></li><li><a href="global.html#drawConnections">drawConnections</a></li><li><a href="global.html#drawFrontCanvas">drawFrontCanvas</a></li><li><a href="global.html#drawGroups">drawGroups</a></li><li><a href="global.html#drawNode">drawNode</a></li><li><a href="global.html#drawNodeShape">drawNodeShape</a></li><li><a href="global.html#drawNodeWidgets">drawNodeWidgets</a></li><li><a href="global.html#drawRange">drawRange</a></li><li><a href="global.html#drawSubgraphPanel">drawSubgraphPanel</a></li><li><a href="global.html#drawTexture">drawTexture</a></li><li><a href="global.html#drawTo">drawTo</a></li><li><a href="global.html#drawToColorAndDepth">drawToColorAndDepth</a></li><li><a href="global.html#enableWebGL">enableWebGL</a></li><li><a href="global.html#encode">encode</a></li><li><a href="global.html#execute">execute</a></li><li><a href="global.html#executePendingActions">executePendingActions</a></li><li><a href="global.html#explodeIndices">explodeIndices</a></li><li><a href="global.html#extractPlanes">extractPlanes</a></li><li><a href="global.html#extractShaderInfo">extractShaderInfo</a></li><li><a href="global.html#fetchFile">fetchFile</a></li><li><a href="global.html#fill">fill</a></li><li><a href="global.html#findInputSlot">findInputSlot</a></li><li><a href="global.html#findInputSlotFree">findInputSlotFree</a></li><li><a href="global.html#findNodeByTitle">findNodeByTitle</a></li><li><a href="global.html#findNodesByClass">findNodesByClass</a></li><li><a href="global.html#findNodesByTitle">findNodesByTitle</a></li><li><a href="global.html#findNodesByType">findNodesByType</a></li><li><a href="global.html#findOutputSlot">findOutputSlot</a></li><li><a href="global.html#findOutputSlotFree">findOutputSlotFree</a></li><li><a href="global.html#findSlotByType">findSlotByType</a></li><li><a href="global.html#flipNormals">flipNormals</a></li><li><a href="global.html#forEach">forEach</a></li><li><a href="global.html#freeData">freeData</a></li><li><a href="global.html#fromCenterHalfsize">fromCenterHalfsize</a></li><li><a href="global.html#fromMinMax">fromMinMax</a></li><li><a href="global.html#fromPoint">fromPoint</a></li><li><a href="global.html#fromPoints">fromPoints</a></li><li><a href="global.html#frustumTestBox">frustumTestBox</a></li><li><a href="global.html#frustumTestSphere">frustumTestSphere</a></li><li><a href="global.html#fullscreen">fullscreen</a></li><li><a href="global.html#generateMetadata">generateMetadata</a></li><li><a href="global.html#getAncestors">getAncestors</a></li><li><a href="global.html#getBounding">getBounding</a></li><li><a href="global.html#getBoundingBox">getBoundingBox</a></li><li><a href="global.html#getBuffer">getBuffer</a></li><li><a href="global.html#getCanvasWindow">getCanvasWindow</a></li><li><a href="global.html#getConnectionPos">getConnectionPos</a></li><li><a href="global.html#getCorners">getCorners</a></li><li><a href="global.html#getCubemapPixels">getCubemapPixels</a></li><li><a href="global.html#getCurrentGraph">getCurrentGraph</a></li><li><a href="global.html#getElapsedTime">getElapsedTime</a></li><li><a href="global.html#getFixedTime">getFixedTime</a></li><li><a href="global.html#getGamepads">getGamepads</a></li><li><a href="global.html#getGroupOnPos">getGroupOnPos</a></li><li><a href="global.html#getIndexBuffer">getIndexBuffer</a></li><li><a href="global.html#getInputData">getInputData</a></li><li><a href="global.html#getInputDataByName">getInputDataByName</a></li><li><a href="global.html#getInputDataType">getInputDataType</a></li><li><a href="global.html#getInputInfo">getInputInfo</a></li><li><a href="global.html#getInputLink">getInputLink</a></li><li><a href="global.html#getInputNode">getInputNode</a></li><li><a href="global.html#getInputOrProperty">getInputOrProperty</a></li><li><a href="global.html#getLocation">getLocation</a></li><li><a href="global.html#getMemory">getMemory</a></li><li><a href="global.html#getNodeById">getNodeById</a></li><li><a href="global.html#getNodeOnPos">getNodeOnPos</a></li><li><a href="global.html#getNodeType">getNodeType</a></li><li><a href="global.html#getNodeTypesCategories">getNodeTypesCategories</a></li><li><a href="global.html#getNumTriangles">getNumTriangles</a></li><li><a href="global.html#getOutputData">getOutputData</a></li><li><a href="global.html#getOutputInfo">getOutputInfo</a></li><li><a href="global.html#getOutputNodes">getOutputNodes</a></li><li><a href="global.html#getPixels">getPixels</a></li><li><a href="global.html#getPropertyInfo">getPropertyInfo</a></li><li><a href="global.html#getScreenQuad">getScreenQuad</a></li><li><a href="global.html#getSlotInPosition">getSlotInPosition</a></li><li><a href="global.html#getTime">getTime</a></li><li><a href="global.html#getTitle">getTitle</a></li><li><a href="global.html#getTopGraph">getTopGraph</a></li><li><a href="global.html#getVertexBuffer">getVertexBuffer</a></li><li><a href="global.html#getVertexNumber">getVertexNumber</a></li><li><a href="global.html#hasAttribute">hasAttribute</a></li><li><a href="global.html#hasUniform">hasUniform</a></li><li><a href="global.html#isAnyOutputConnected">isAnyOutputConnected</a></li><li><a href="global.html#isDepthSupported">isDepthSupported</a></li><li><a href="global.html#isInputConnected">isInputConnected</a></li><li><a href="global.html#isLive">isLive</a></li><li><a href="global.html#isMobile">isMobile</a></li><li><a href="global.html#isOutputConnected">isOutputConnected</a></li><li><a href="global.html#isOverNodeBox">isOverNodeBox</a></li><li><a href="global.html#isOverNodeInput">isOverNodeInput</a></li><li><a href="global.html#isOverNodeOuput">isOverNodeOuput</a></li><li><a href="global.html#isPointInside">isPointInside</a></li><li><a href="global.html#isPowerOfTwo">isPowerOfTwo</a></li><li><a href="global.html#isValidConnection">isValidConnection</a></li><li><a href="global.html#loadTexture">loadTexture</a></li><li><a href="global.html#makeCurrent">makeCurrent</a></li><li><a href="global.html#openSubgraph">openSubgraph</a></li><li><a href="global.html#parse">parse</a></li><li><a href="global.html#pin">pin</a></li><li><a href="global.html#polarToCartesian">polarToCartesian</a></li><li><a href="global.html#processDrop">processDrop</a></li><li><a href="global.html#processKey">processKey</a></li><li><a href="global.html#processMouseMove">processMouseMove</a></li><li><a href="global.html#processMouseUp">processMouseUp</a></li><li><a href="global.html#processMouseWheel">processMouseWheel</a></li><li><a href="global.html#processNodeWidgets">processNodeWidgets</a></li><li><a href="global.html#project2DPointOnLine">project2DPointOnLine</a></li><li><a href="global.html#projectPointOnLine">projectPointOnLine</a></li><li><a href="global.html#projectPointOnPlane">projectPointOnPlane</a></li><li><a href="global.html#reflectPointInPlane">reflectPointInPlane</a></li><li><a href="global.html#registerNodeType">registerNodeType</a></li><li><a href="global.html#registerSearchboxExtra">registerSearchboxExtra</a></li><li><a href="global.html#registerSlotType">registerSlotType</a></li><li><a href="global.html#remove">remove</a></li><li><a href="global.html#removeIndexBuffer">removeIndexBuffer</a></li><li><a href="global.html#removeInput">removeInput</a></li><li><a href="global.html#removeLink">removeLink</a></li><li><a href="global.html#removeOutput">removeOutput</a></li><li><a href="global.html#removeVertexBuffer">removeVertexBuffer</a></li><li><a href="global.html#renameInput">renameInput</a></li><li><a href="global.html#renameOutput">renameOutput</a></li><li><a href="global.html#renderInfo">renderInfo</a></li><li><a href="global.html#renderLink">renderLink</a></li><li><a href="global.html#renderQuad">renderQuad</a></li><li><a href="global.html#resize">resize</a></li><li><a href="global.html#runStep">runStep</a></li><li><a href="global.html#selectNode">selectNode</a></li><li><a href="global.html#selectNodes">selectNodes</a></li><li><a href="global.html#sendEventToAllNodes">sendEventToAllNodes</a></li><li><a href="global.html#sendToBack">sendToBack</a></li><li><a href="global.html#serialize">serialize</a></li><li><a href="global.html#setBoundingBox">setBoundingBox</a></li><li><a href="global.html#setCanvas">setCanvas</a></li><li><a href="global.html#setCenterHalfsize">setCenterHalfsize</a></li><li><a href="global.html#setCubemapPixels">setCubemapPixels</a></li><li><a href="global.html#setData">setData</a></li><li><a href="global.html#setDirty">setDirty</a></li><li><a href="global.html#setFromPoints">setFromPoints</a></li><li><a href="global.html#setGlobalInputData">setGlobalInputData</a></li><li><a href="global.html#setGraph">setGraph</a></li><li><a href="global.html#setMinMax">setMinMax</a></li><li><a href="global.html#setOutputData">setOutputData</a></li><li><a href="global.html#setOutputDataType">setOutputDataType</a></li><li><a href="global.html#setPixels">setPixels</a></li><li><a href="global.html#setProperty">setProperty</a></li><li><a href="global.html#setSize">setSize</a></li><li><a href="global.html#setTextures">setTextures</a></li><li><a href="global.html#setUniform">setUniform</a></li><li><a href="global.html#setZoom">setZoom</a></li><li><a href="global.html#simplify">simplify</a></li><li><a href="global.html#snapshot">snapshot</a></li><li><a href="global.html#start">start</a></li><li><a href="global.html#startRendering">startRendering</a></li><li><a href="global.html#stopexecution">stop execution</a></li><li><a href="global.html#stopRendering">stopRendering</a></li><li><a href="global.html#switchLiveMode">switchLiveMode</a></li><li><a href="global.html#testBBoxBBox">testBBoxBBox</a></li><li><a href="global.html#testPoint2DInPolygon">testPoint2DInPolygon</a></li><li><a href="global.html#testPointBBox">testPointBBox</a></li><li><a href="global.html#testRay">testRay</a></li><li><a href="global.html#testRayBBox">testRayBBox</a></li><li><a href="global.html#testRayBox">testRayBox</a></li><li><a href="global.html#testRayCylinder">testRayCylinder</a></li><li><a href="global.html#testRayPlane">testRayPlane</a></li><li><a href="global.html#testRaySphere">testRaySphere</a></li><li><a href="global.html#testSegmentPlane">testSegmentPlane</a></li><li><a href="global.html#testSphere">testSphere</a></li><li><a href="global.html#testSphereBBox">testSphereBBox</a></li><li><a href="global.html#toBase64">toBase64</a></li><li><a href="global.html#toBinary">toBinary</a></li><li><a href="global.html#toBlob">toBlob</a></li><li><a href="global.html#toCanvas">toCanvas</a></li><li><a href="global.html#toObject">toObject</a></li><li><a href="global.html#toString">toString</a></li><li><a href="global.html#toViewport">toViewport</a></li><li><a href="global.html#transformMat4">transformMat4</a></li><li><a href="global.html#trigger">trigger</a></li><li><a href="global.html#triggerSlot">triggerSlot</a></li><li><a href="global.html#unbind">unbind</a></li><li><a href="global.html#unbindEvents">unbindEvents</a></li><li><a href="global.html#uniforms">uniforms</a></li><li><a href="global.html#unregisterNodeType">unregisterNodeType</a></li><li><a href="global.html#update">update</a></li><li><a href="global.html#updateBoundingBox">updateBoundingBox</a></li><li><a href="global.html#updateExecutionOrder">updateExecutionOrder</a></li><li><a href="global.html#updateShader">updateShader</a></li><li><a href="global.html#updateVertexBuffer">updateVertexBuffer</a></li><li><a href="global.html#upload">upload</a></li><li><a href="global.html#uploadData">uploadData</a></li><li><a href="global.html#uploadImage">uploadImage</a></li><li><a href="global.html#uploadRange">uploadRange</a></li><li><a href="global.html#wrapFunctionAsNode">wrapFunctionAsNode</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.3</a> on Sun Jul 14 2024 16:24:54 GMT-0600 (Mountain Daylight Saving Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.3</a> on Tue Jul 16 2024 22:37:14 GMT-0600 (Mountain Daylight Saving Time)
 </footer>
 
 <script> prettyPrint(); </script>
