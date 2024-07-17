@@ -14,7 +14,7 @@
         "test": "vitest",
         "lint": "npx eslint src",
         "lint:fix": "npx eslint --fix src",
-        "typecheck": "tsc -p ./tooling/tsconfig.strict.json"
+        "typecheck": "tsc -p ./tools/tsconfig.strict.json"
     },
     "repository": {
         "type": "git",

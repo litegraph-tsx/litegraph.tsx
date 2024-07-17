@@ -32,7 +32,7 @@
     "skipLibCheck": true                                 /* Skip type checking all .d.ts files. */
   },
   "include": [
-    "../src/core/litegraph.js",
+    "../src/core/**/*",
     "../src/nodes/audio.js",
     "../src/nodes/base.js",
     "../src/nodes/events.js",
