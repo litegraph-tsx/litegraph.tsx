@@ -1,5 +1,6 @@
 import js from "@eslint/js";
-import stylistic from '@stylistic/eslint-plugin'
+import stylistic from '@stylistic/eslint-plugin';
+import stylisticJs from '@stylistic/eslint-plugin-js';
 
 export default [
   js.configs.recommended,
@@ -11,6 +12,7 @@ export default [
     },
     "plugins": {
       "@stylistic": stylistic,
+      "@stylistic/js": stylisticJs,
     },
     "rules": {
 
@@ -53,6 +55,7 @@ export default [
         "ignoreRegExpLiterals": true,
       }],
       "@stylistic/max-statements-per-line": [0, {"max": 1} ],
+      "@stylistic/js/multiline-comment-style": [0, "starred-block"],
       "@stylistic/new-parens": [0, "always"],
       "@stylistic/no-extra-semi": [1],
       "@stylistic/no-floating-decimal": [2],
