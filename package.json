@@ -13,7 +13,8 @@
         "preview": "vite preview",
         "test": "vitest",
         "lint": "npx eslint src",
-        "lint:fix": "npx eslint --fix src"
+        "lint:fix": "npx eslint --fix src",
+        "typecheck": "tsc -p ./tooling/tsconfig.strict.json"
     },
     "repository": {
         "type": "git",
@@ -52,6 +53,7 @@
         "@stylistic/eslint-plugin": "^2.3.0",
         "eslint": "^8.57.0",
         "eslint-plugin-jest": "^27.9.0",
+        "@types/eslint__js": "^8.42.3",
         "jsdoc": "^4.0.3",
         "pnpm": "^9.5.0",
         "typescript": "^5.5.3",
