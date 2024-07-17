@@ -1,5 +1,13 @@
-
-// this is the class in charge of storing link information
+/**
+ * Class representing a link between nodes, storing connection information.
+ * @constructor
+ * @param {string} id - Unique identifier for the link.
+ * @param {string} type - Type of the link.
+ * @param {string} origin_id - ID of the node from which the link originates.
+ * @param {number} origin_slot - Slot index on the origin node where the link starts.
+ * @param {string} target_id - ID of the node where the link terminates.
+ * @param {number} target_slot - Slot index on the target node where the link ends.
+ */
 export class LLink {
   constructor(id, type, origin_id, origin_slot, target_id, target_slot) {
     this.id = id;
@@ -13,6 +21,11 @@ export class LLink {
     this._pos = new Float32Array(2); // center
   }
 
+  /**
+   * Configures the link object with provided data.
+   * @param {object|Array} o - Either an object with properties {id, type, origin_id, origin_slot, target_id, target_slot},
+   *                           or an array with these values in order.
+   */
   configure(o) {
     if (o.constructor === Array) {
       this.id = o[0];
@@ -31,6 +44,10 @@ export class LLink {
     }
   }
 
+  /**
+   * Serializes the link object into an array representation.
+   * @returns {Array} Serialized array representation of the link object.
+   */
   serialize() {
     return [
       this.id,
