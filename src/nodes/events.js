@@ -12,11 +12,10 @@ class LogEvent {
   onAction(action, param, options) {
     console.log(action, param);
   }
+
+  static title = "Log Event";
+  static desc = "Log event in console";
 }
-
-LogEvent.title = "Log Event";
-LogEvent.desc = "Log event in console";
-
 LiteGraph.registerNodeType("events/log", LogEvent);
 
 //convert to Event if the value is true
@@ -45,12 +44,12 @@ class TriggerEvent {
       this.triggerSlot(1, param, null, options);
     this.prev = v;
   }
+
+  static title = "TriggerEvent";
+  static desc = "Triggers event if input evaluates to true";
 }
-
-TriggerEvent.title = "TriggerEvent";
-TriggerEvent.desc = "Triggers event if input evaluates to true";
-
 LiteGraph.registerNodeType("events/trigger", TriggerEvent);
+
 
 //Sequence of events
 class Sequence {
@@ -88,11 +87,10 @@ class Sequence {
       }
     }
   }
+
+  static title = "Sequence";
+  static desc = "Triggers a sequence of events when an event arrives";
 }
-
-Sequence.title = "Sequence";
-Sequence.desc = "Triggers a sequence of events when an event arrives";
-
 LiteGraph.registerNodeType("events/sequence", Sequence);
 
 
@@ -145,11 +143,10 @@ class WaitAll {
   reset() {
     this.ready.length = 0;
   }
+
+  static title = "WaitAll";
+  static desc = "Wait until all input events arrive then triggers output";
 }
-
-WaitAll.title = "WaitAll";
-WaitAll.desc = "Wait until all input events arrive then triggers output";
-
 LiteGraph.registerNodeType("events/waitAll", WaitAll);
 
 
@@ -213,12 +210,12 @@ class Stepper {
       this.properties.index = (this.properties.index + 1) % n;
     }
   }
+
+  static title = "Stepper";
+  static desc = "Trigger events sequentially when an tick arrives";
 }
-
-Stepper.title = "Stepper";
-Stepper.desc = "Trigger events sequentially when an tick arrives";
-
 LiteGraph.registerNodeType("events/stepper", Stepper);
+
 
 //Filter events
 class FilterEvent {
@@ -258,11 +255,10 @@ class FilterEvent {
 
     this.triggerSlot(0, param, null, options);
   }
+
+  static title = "Filter Event";
+  static desc = "Blocks events that do not match the filter";
 }
-
-FilterEvent.title = "Filter Event";
-FilterEvent.desc = "Blocks events that do not match the filter";
-
 LiteGraph.registerNodeType("events/filter", FilterEvent);
 
 
@@ -284,12 +280,12 @@ class EventBranch {
     this._value = this.getInputData(1);
     this.triggerSlot(this._value ? 0 : 1, param, null, options);
   }
+
+  static title = "Branch";
+  static desc = "If condition is true, outputs triggers true, otherwise false";
 }
-
-EventBranch.title = "Branch";
-EventBranch.desc = "If condition is true, outputs triggers true, otherwise false";
-
 LiteGraph.registerNodeType("events/branch", EventBranch);
+
 
 //Show value inside the debug console
 class EventCounter {
@@ -341,12 +337,12 @@ class EventCounter {
     }
     this.setOutputData(1, this.num);
   }
+
+  static title = "Counter";
+  static desc = "Counts events";
 }
-
-EventCounter.title = "Counter";
-EventCounter.desc = "Counts events";
-
 LiteGraph.registerNodeType("events/counter", EventCounter);
+
 
 //Show value inside the debug console
 class DelayEvent {
@@ -394,12 +390,12 @@ class DelayEvent {
   onGetInputs() {
     return [["event", LiteGraph.ACTION], ["time_in_ms", "number"]];
   }
+
+  static title = "Delay";
+  static desc = "Delays one event";
 }
-
-DelayEvent.title = "Delay";
-DelayEvent.desc = "Delays one event";
-
 LiteGraph.registerNodeType("events/delay", DelayEvent);
+
 
 //Show value inside the debug console
 class TimerEvent {
@@ -463,16 +459,13 @@ class TimerEvent {
   onGetOutputs() {
     return [["tick", "boolean"]];
   }
+
+  static title = "Timer";
+  static desc = "Sends an event every N milliseconds";
+  static on_color = "#AAA";
+  static off_color = "#222";
 }
-
-TimerEvent.title = "Timer";
-TimerEvent.desc = "Sends an event every N milliseconds";
-
-TimerEvent.on_color = "#AAA";
-TimerEvent.off_color = "#222";
-
 LiteGraph.registerNodeType("events/timer", TimerEvent);
-
 
 
 class SemaphoreEvent {
@@ -504,12 +497,12 @@ class SemaphoreEvent {
     else if( action == "red" )
       this._ready = false;
   }
+
+  static title = "Semaphore Event";
+  static desc = "Until both events are not triggered, it doesnt continue.";
 }
-
-SemaphoreEvent.title = "Semaphore Event";
-SemaphoreEvent.desc = "Until both events are not triggered, it doesnt continue.";
-
 LiteGraph.registerNodeType("events/semaphore", SemaphoreEvent);
+
 
 class OnceEvent {
   constructor() {
@@ -533,12 +526,12 @@ class OnceEvent {
     else if( action == "reset" )
       this._once = false;
   }
+
+  static title = "Once";
+  static desc = "Only passes an event once, then gets locked";
 }
-
-OnceEvent.title = "Once";
-OnceEvent.desc = "Only passes an event once, then gets locked";
-
 LiteGraph.registerNodeType("events/once", OnceEvent);
+
 
 class DataStore {
   constructor() {
@@ -568,13 +561,8 @@ class DataStore {
     if(this.properties.serialize == false || (o.data.constructor !== String && o.data.constructor !== Number && o.data.constructor !== Boolean && o.data.constructor !== Array && o.data.constructor !== Object ))
       o.data = null;
   }
+
+  static title = "Data Store";
+  static desc = "Stores data and only changes when event is received";
 }
-
-DataStore.title = "Data Store";
-DataStore.desc = "Stores data and only changes when event is received";
-
 LiteGraph.registerNodeType("basic/data_store", DataStore);
-
-
-
-
