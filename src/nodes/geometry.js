@@ -11,11 +11,11 @@ var global_uniforms = {
   u_view: view_matrix,
   u_projection: projection_matrix,
   u_viewprojection: viewprojection_matrix,
-  u_model: model_matrix
+  u_model: model_matrix,
 };
 
 LiteGraph.LGraphRender = {
-  onRequestCameraMatrices: null // overwrite with your 3D engine specifics, it will receive (view_matrix, projection_matrix,viewprojection_matrix) and must be filled
+  onRequestCameraMatrices: null, // overwrite with your 3D engine specifics, it will receive (view_matrix, projection_matrix,viewprojection_matrix) and must be filled
 };
 
 function generateGeometryId() {
@@ -37,7 +37,7 @@ class LGraphPoints3D {
       generate_normals: true,
       regular: false,
       mode: LGraphPoints3D.SPHERE,
-      force_update: false
+      force_update: false,
     };
 
     this.points = new Float32Array( this.properties.num_points * 3 );
@@ -46,11 +46,11 @@ class LGraphPoints3D {
     this.version = 0;
 
     var that = this;
-    this.addWidget("button","update",null, function() { that.must_update = true; });
+    this.addWidget("button", "update", null, function() { that.must_update = true; });
 
     this.geometry = {
       vertices: null,
-      _id: generateGeometryId()
+      _id: generateGeometryId(),
     }
 
     this._old_obj = null;
@@ -125,7 +125,7 @@ class LGraphPoints3D {
     if (!points || points.length != size)
       points = new Float32Array( size );
     var temp = new Float32Array(3);
-    var UP = new Float32Array([0,1,0]);
+    var UP = new Float32Array([0, 1, 0]);
 
     if (regular)
     {
@@ -140,7 +140,7 @@ class LGraphPoints3D {
             points[pos+1] = 0;
             points[pos+2] = ((j/side) - 0.5) * radius * 2;
           }
-        points = new Float32Array( points.subarray(0,side*side*3) );
+        points = new Float32Array( points.subarray(0, side*side*3) );
         if (normals)
         {
           for (var i = 0; i < normals.length; i+=3)
@@ -159,7 +159,7 @@ class LGraphPoints3D {
             points[pos+1] = temp[1];
             points[pos+2] = temp[2];
           }
-        points = new Float32Array( points.subarray(0,side*side*3) );
+        points = new Float32Array( points.subarray(0, side*side*3) );
         if (normals)
           LGraphPoints3D.generateSphericalNormals( points, normals );
       }
@@ -261,8 +261,8 @@ class LGraphPoints3D {
       temp[0] = points[i];
       temp[1] = points[i+1];
       temp[2] = points[i+2];
-      vec3.normalize(temp,temp);
-      normals.set(temp,i);
+      vec3.normalize(temp, temp);
+      normals.set(temp, i);
     }
   }
 
@@ -364,9 +364,9 @@ class LGraphPoints3D {
           b = i*9+3;
           c = i*9+6;
         }
-        var P1 = vertices.subarray(a,a+3);
-        var P2 = vertices.subarray(b,b+3);
-        var P3 = vertices.subarray(c,c+3);
+        var P1 = vertices.subarray(a, a+3);
+        var P2 = vertices.subarray(b, b+3);
+        var P3 = vertices.subarray(c, c+3);
         var aL = vec3.distance( P1, P2 );
         var bL = vec3.distance( P2, P3 );
         var cL = vec3.distance( P3, P1 );
@@ -412,8 +412,8 @@ class LGraphPoints3D {
         normals[i] = af * mesh_normals[a] + bf*mesh_normals[b] + cf*mesh_normals[c];
         normals[i+1] = af * mesh_normals[a+1] + bf*mesh_normals[b+1] + cf*mesh_normals[c+1];
         normals[i+2] = af * mesh_normals[a+2] + bf*mesh_normals[b+2] + cf*mesh_normals[c+2];
-        var N = normals.subarray(i,i+3);
-        vec3.normalize(N,N);
+        var N = normals.subarray(i, i+3);
+        vec3.normalize(N, N);
       }
     }
   }
@@ -427,7 +427,7 @@ class LGraphPoints3D {
       mesh.octree = new GL.Octree( mesh );
     var octree = mesh.octree;
     var origin = vec3.create();
-    var direction = vec3.fromValues(1,0,0);
+    var direction = vec3.fromValues(1, 0, 0);
     var temp = vec3.create();
     var i = 0;
     var tries = 0;
@@ -460,19 +460,19 @@ class LGraphPoints3D {
   static OBJECT_UNIFORMLY = 21;
   static OBJECT_INSIDE = 22;
   static MODE_VALUES = {
-    "rectangle":LGraphPoints3D.RECTANGLE,
-    "circle":LGraphPoints3D.CIRCLE,
-    "cube":LGraphPoints3D.CUBE,
-    "sphere":LGraphPoints3D.SPHERE,
-    "hemisphere":LGraphPoints3D.HEMISPHERE,
-    "inside_sphere":LGraphPoints3D.INSIDE_SPHERE,
-    "object":LGraphPoints3D.OBJECT,
-    "object_uniformly":LGraphPoints3D.OBJECT_UNIFORMLY,
-    "object_inside":LGraphPoints3D.OBJECT_INSIDE
+    "rectangle": LGraphPoints3D.RECTANGLE,
+    "circle": LGraphPoints3D.CIRCLE,
+    "cube": LGraphPoints3D.CUBE,
+    "sphere": LGraphPoints3D.SPHERE,
+    "hemisphere": LGraphPoints3D.HEMISPHERE,
+    "inside_sphere": LGraphPoints3D.INSIDE_SPHERE,
+    "object": LGraphPoints3D.OBJECT,
+    "object_uniformly": LGraphPoints3D.OBJECT_UNIFORMLY,
+    "object_inside": LGraphPoints3D.OBJECT_INSIDE,
   };
 
   static widgets_info = {
-    mode: { widget: "combo", values: LGraphPoints3D.MODE_VALUES }
+    mode: { widget: "combo", values: LGraphPoints3D.MODE_VALUES },
   };
 }
 
@@ -514,7 +514,7 @@ class LGraphPointsToInstances {
     this.addOutput("instances", "[mat4]");
     this.properties = {
       mode: 1,
-      autoupdate: true
+      autoupdate: true,
     };
 
     this.must_update = true;
@@ -526,7 +526,7 @@ class LGraphPointsToInstances {
     var geo = this.getInputData(0);
     if ( !geo )
     {
-      this.setOutputData(0,null);
+      this.setOutputData(0, null);
       return;
     }
 
@@ -557,9 +557,9 @@ class LGraphPointsToInstances {
     var identity = mat4.create();
     var temp = vec3.create();
     var zero = vec3.create();
-    var UP = vec3.fromValues(0,1,0);
-    var FRONT = vec3.fromValues(0,0,-1);
-    var RIGHT = vec3.fromValues(1,0,0);
+    var UP = vec3.fromValues(0, 1, 0);
+    var FRONT = vec3.fromValues(0, 0, -1);
+    var RIGHT = vec3.fromValues(1, 0, 0);
     var R = quat.create();
 
     var front = vec3.create();
@@ -573,7 +573,7 @@ class LGraphPointsToInstances {
       if (!m)
         m = matrices[index] = mat4.create();
       m.set( identity );
-      var point = vertices.subarray(i,i+3);
+      var point = vertices.subarray(i, i+3);
 
       switch (this.properties.mode)
       {
@@ -581,16 +581,16 @@ class LGraphPointsToInstances {
           mat4.setTranslation( m, point );
           if (normals)
           {
-            var normal = normals.subarray(i,i+3);
+            var normal = normals.subarray(i, i+3);
             top.set( normal );
             vec3.normalize( top, top );
             vec3.cross( right, FRONT, top );
             vec3.normalize( right, right );
             vec3.cross( front, right, top );
             vec3.normalize( front, front );
-            m.set(right,0);
-            m.set(top,4);
-            m.set(front,8);
+            m.set(right, 0);
+            m.set(top, 4);
+            m.set(front, 8);
             mat4.setTranslation( m, point );
           }
           break;
@@ -604,9 +604,9 @@ class LGraphPointsToInstances {
           vec3.normalize( right, right );
           vec3.cross( top, front, right );
           vec3.normalize( top, top );
-          m.set(right,0);
-          m.set(top,4);
-          m.set(front,8);
+          m.set(right, 0);
+          m.set(top, 4);
+          m.set(front, 8);
           mat4.setTranslation( m, point );
           break;
         case LGraphPointsToInstances.RANDOM:
@@ -638,9 +638,9 @@ class LGraphPointsToInstances {
   static SPHERICAL = 2;
   static RANDOM = 3;
   static RANDOM_VERTICAL = 4;
-  static modes = {"normal":0,"vertical":1,"spherical":2,"random":3,"random_vertical":4};
+  static modes = {"normal": 0, "vertical": 1, "spherical": 2, "random": 3, "random_vertical": 4};
   static widgets_info = {
-    mode: { widget: "combo", values: LGraphPointsToInstances.modes }
+    mode: { widget: "combo", values: LGraphPointsToInstances.modes },
   };
 }
 LiteGraph.registerNodeType( "geometry/points_to_instances", LGraphPointsToInstances );
@@ -657,7 +657,7 @@ class LGraphGeometryTransform {
       type: "triangles",
       vertices: null,
       _id: generateGeometryId(),
-      _version: 0
+      _version: 0,
     };
 
     this._last_geometry_id = -1;
@@ -686,7 +686,7 @@ class LGraphGeometryTransform {
 
       if (!model)
       {
-        this.setOutputData(0,input);
+        this.setOutputData(0, input);
         return;
       }
 
@@ -699,9 +699,9 @@ class LGraphGeometryTransform {
         var m = this._output[i];
         if (!m)
           m = this._output[i] = mat4.create();
-        mat4.multiply(m,input[i],model);
+        mat4.multiply(m, input[i], model);
       }
-      this.setOutputData(0,this._output);
+      this.setOutputData(0, this._output);
       return;
     }
 
@@ -714,7 +714,7 @@ class LGraphGeometryTransform {
       return;
     if (!model)
     {
-      this.setOutputData(0,geo);
+      this.setOutputData(0, geo);
       return;
     }
 
@@ -729,7 +729,7 @@ class LGraphGeometryTransform {
       this.must_update = false;
     }
 
-    this.setOutputData(0,this.geometry);
+    this.setOutputData(0, this.geometry);
   }
 
   updateGeometry(geometry, model) {
@@ -783,7 +783,7 @@ class LGraphGeometryPolygon {
     this.geometry = {
       type: "line_loop",
       vertices: null,
-      _id: generateGeometryId()
+      _id: generateGeometryId(),
     };
     this.geometry_id = -1;
     this.version = -1;
@@ -799,13 +799,13 @@ class LGraphGeometryPolygon {
 
     var sides = this.getInputOrProperty("sides");
     var radius = this.getInputOrProperty("radius");
-    sides = Math.max(3,sides)|0;
+    sides = Math.max(3, sides)|0;
 
     // update
     if ( this.last_info.sides != sides || this.last_info.radius != radius )
       this.updateGeometry(sides, radius);
 
-    this.setOutputData(0,this.geometry);
+    this.setOutputData(0, this.geometry);
   }
 
   updateGeometry(sides, radius) {
@@ -848,7 +848,7 @@ class LGraphGeometryExtrude {
 
     this.addInput("", "geometry");
     this.addOutput("", "geometry");
-    this.properties = { top_cap: true, bottom_cap: true, offset: [0,100,0] };
+    this.properties = { top_cap: true, bottom_cap: true, offset: [0, 100, 0] };
     this.version = -1;
 
     this._last_geo_version = -1;
@@ -919,7 +919,7 @@ class LGraphGeometryExtrude {
     var out_geo = {
       _id: generateGeometryId(),
       type: "triangles",
-      vertices: new_vertices
+      vertices: new_vertices,
     };
 
     return out_geo;
@@ -938,7 +938,7 @@ class LGraphGeometryEval {
 
     this.properties = {
       code: "V[1] += 0.01 * Math.sin(I + T*0.001);",
-      execute_every_frame: false
+      execute_every_frame: false,
     };
 
     this.geometry = null;
@@ -960,7 +960,7 @@ class LGraphGeometryEval {
 
     try
     {
-      this.func = new Function("V","I","T", this.properties.code);
+      this.func = new Function("V", "I", "T", this.properties.code);
       this.boxcolor = "#AFA";
       this.must_update = true;
     }
@@ -985,7 +985,7 @@ class LGraphGeometryEval {
 
     if (!this.func)
     {
-      this.setOutputData(0,geometry);
+      this.setOutputData(0, geometry);
       return;
     }
 
@@ -1029,7 +1029,7 @@ class LGraphGeometryEval {
         V[0] = vertices[i];
         V[1] = vertices[i+1];
         V[2] = vertices[i+2];
-        func(V,i/3,T);
+        func(V, i/3, T);
         vertices[i] = V[0];
         vertices[i+1] = V[1];
         vertices[i+2] = V[2];
@@ -1037,14 +1037,14 @@ class LGraphGeometryEval {
       this.geometry.vertices = vertices;
     }
 
-    this.setOutputData(0,this.geometry);
+    this.setOutputData(0, this.geometry);
   }
 
   static title = "geoeval";
   static desc = "eval code";
 
   static widgets_info = {
-    code: { widget: "code" }
+    code: { widget: "code" },
   };
 }
 LiteGraph.registerNodeType( "geometry/eval", LGraphGeometryEval );
@@ -1128,7 +1128,7 @@ class LGraphConnectPoints {
       min_dist: 0.4,
       max_dist: 0.5,
       max_connections: 0,
-      probability: 1
+      probability: 1,
     };
 
     this.geometry_id = -1;
@@ -1181,7 +1181,7 @@ class LGraphConnectPoints {
           var dist = Math.sqrt( (x-x2)*(x-x2) + (y-y2)*(y-y2) + (z-z2)*(z-z2));
           if (dist > max_dist || dist < min_dist || (probability < 1 && probability < Math.random()) )
             continue;
-          indices.push(i/3,j/3);
+          indices.push(i/3, j/3);
           connections += 1;
           if (max_connections && connections > max_connections)
             break;
@@ -1239,9 +1239,9 @@ if (typeof GL != "undefined") {
         this.geometry._version = 0;
       }
 
-      this.setOutputData(0,this.geometry);
+      this.setOutputData(0, this.geometry);
       if (this.geometry)
-        this.setOutputData(1,this.geometry.vertices);
+        this.setOutputData(1, this.geometry.vertices);
     }
 
     static title = "to geometry";
@@ -1291,7 +1291,7 @@ if (typeof GL != "undefined") {
 
       if (this.mesh.vertexBuffers.normals &&this.mesh.vertexBuffers.normals.data.length != this.mesh.vertexBuffers.vertices.data.length )
       {
-        var n = new Float32Array([0,1,0]);
+        var n = new Float32Array([0, 1, 0]);
         var normals = new Float32Array( this.mesh.vertexBuffers.vertices.data.length );
         for (var i = 0; i < normals.length; i+= 3)
           normals.set( n, i );
@@ -1330,15 +1330,15 @@ if (typeof GL != "undefined") {
         enabled: true,
         primitive: GL.TRIANGLES,
         additive: false,
-        color: [1,1,1],
-        opacity: 1
+        color: [1, 1, 1],
+        opacity: 1,
       };
 
-      this.color = vec4.create([1,1,1,1]);
+      this.color = vec4.create([1, 1, 1, 1]);
       this.model_matrix = mat4.create();
       this.uniforms = {
         u_color: this.color,
-        u_model: this.model_matrix
+        u_model: this.model_matrix,
       };
     }
 
@@ -1357,14 +1357,14 @@ if (typeof GL != "undefined") {
         return;
       }
 
-      LiteGraph.LGraphRender.onRequestCameraMatrices( view_matrix, projection_matrix,viewprojection_matrix );
+      LiteGraph.LGraphRender.onRequestCameraMatrices( view_matrix, projection_matrix, viewprojection_matrix );
       var shader = null;
       var texture = this.getInputData(2);
       if (texture)
       {
         shader = gl.shaders["textured"];
         if (!shader)
-          shader = gl.shaders["textured"] = new GL.Shader( LGraphRenderPoints.vertex_shader_code, LGraphRenderPoints.fragment_shader_code, { USE_TEXTURE:"" });
+          shader = gl.shaders["textured"] = new GL.Shader( LGraphRenderPoints.vertex_shader_code, LGraphRenderPoints.fragment_shader_code, { USE_TEXTURE: "" });
       }
       else
       {
@@ -1414,18 +1414,18 @@ if (typeof GL != "undefined") {
     static desc = "renders a mesh flat";
 
     static PRIMITIVE_VALUES = {
-      "points":GL.POINTS,
-      "lines":GL.LINES,
-      "line_loop":GL.LINE_LOOP,
-      "line_strip":GL.LINE_STRIP,
-      "triangles":GL.TRIANGLES,
-      "triangle_fan":GL.TRIANGLE_FAN,
-      "triangle_strip":GL.TRIANGLE_STRIP
+      "points": GL.POINTS,
+      "lines": GL.LINES,
+      "line_loop": GL.LINE_LOOP,
+      "line_strip": GL.LINE_STRIP,
+      "triangles": GL.TRIANGLES,
+      "triangle_fan": GL.TRIANGLE_FAN,
+      "triangle_strip": GL.TRIANGLE_STRIP,
     };
 
     static widgets_info = {
       primitive: { widget: "combo", values: LGraphRenderMesh.PRIMITIVE_VALUES },
-      color: { widget: "color" }
+      color: { widget: "color" },
     };
   }
   LiteGraph.registerNodeType( "geometry/render_mesh", LGraphRenderMesh );
@@ -1452,40 +1452,40 @@ if (typeof GL != "undefined") {
       if ( this.last_info.type != this.properties.type || this.last_info.size != size || this.last_info.subdivisions != this.properties.subdivisions )
         this.updateMesh( this.properties.type, size, this.properties.subdivisions );
 
-      this.setOutputData(0,this._mesh);
+      this.setOutputData(0, this._mesh);
     }
 
     updateMesh(type, size, subdivisions) {
-      subdivisions = Math.max(0,subdivisions)|0;
+      subdivisions = Math.max(0, subdivisions)|0;
 
       switch (type)
       {
         case 1: // CUBE:
-          this._mesh = GL.Mesh.cube({size: size, normals:true,coords:true});
+          this._mesh = GL.Mesh.cube({size: size, normals: true, coords: true});
           break;
         case 2: // PLANE:
-          this._mesh = GL.Mesh.plane({size: size, xz: true, detail: subdivisions, normals:true,coords:true});
+          this._mesh = GL.Mesh.plane({size: size, xz: true, detail: subdivisions, normals: true, coords: true});
           break;
         case 3: // CYLINDER:
-          this._mesh = GL.Mesh.cylinder({size: size, subdivisions: subdivisions, normals:true,coords:true});
+          this._mesh = GL.Mesh.cylinder({size: size, subdivisions: subdivisions, normals: true, coords: true});
           break;
         case 4: // SPHERE:
-          this._mesh = GL.Mesh.sphere({size: size, "long": subdivisions, lat: subdivisions, normals:true,coords:true});
+          this._mesh = GL.Mesh.sphere({size: size, "long": subdivisions, lat: subdivisions, normals: true, coords: true});
           break;
         case 5: // CIRCLE:
-          this._mesh = GL.Mesh.circle({size: size, slices: subdivisions, normals:true, coords:true});
+          this._mesh = GL.Mesh.circle({size: size, slices: subdivisions, normals: true, coords: true});
           break;
         case 6: // HEMISPHERE:
-          this._mesh = GL.Mesh.sphere({size: size, "long": subdivisions, lat: subdivisions, normals:true, coords:true, hemi: true});
+          this._mesh = GL.Mesh.sphere({size: size, "long": subdivisions, lat: subdivisions, normals: true, coords: true, hemi: true});
           break;
         case 7: // ICOSAHEDRON:
-          this._mesh = GL.Mesh.icosahedron({size: size, subdivisions:subdivisions });
+          this._mesh = GL.Mesh.icosahedron({size: size, subdivisions: subdivisions });
           break;
         case 8: // CONE:
-          this._mesh = GL.Mesh.cone({radius: size, height: size, subdivisions:subdivisions });
+          this._mesh = GL.Mesh.cone({radius: size, height: size, subdivisions: subdivisions });
           break;
         case 9: // QUAD:
-          this._mesh = GL.Mesh.plane({size: size, xz: false, detail: subdivisions, normals:true, coords:true });
+          this._mesh = GL.Mesh.plane({size: size, xz: false, detail: subdivisions, normals: true, coords: true });
           break;
       }
 
@@ -1496,9 +1496,9 @@ if (typeof GL != "undefined") {
     }
 
     static title = "Primitive";
-    static VALID = { "CUBE":1, "PLANE":2, "CYLINDER":3, "SPHERE":4, "CIRCLE":5, "HEMISPHERE":6, "ICOSAHEDRON":7, "CONE":8, "QUAD":9 };
+    static VALID = { "CUBE": 1, "PLANE": 2, "CYLINDER": 3, "SPHERE": 4, "CIRCLE": 5, "HEMISPHERE": 6, "ICOSAHEDRON": 7, "CONE": 8, "QUAD": 9 };
     static widgets_info = {
-      type: { widget: "combo", values: LGraphGeometryPrimitive.VALID }
+      type: { widget: "combo", values: LGraphGeometryPrimitive.VALID },
     };
   }
   LiteGraph.registerNodeType( "geometry/mesh_primitive", LGraphGeometryPrimitive );
@@ -1514,17 +1514,17 @@ if (typeof GL != "undefined") {
         point_size: 0.1,
         fixed_size: false,
         additive: true,
-        color: [1,1,1],
-        opacity: 1
+        color: [1, 1, 1],
+        opacity: 1,
       };
 
-      this.color = vec4.create([1,1,1,1]);
+      this.color = vec4.create([1, 1, 1, 1]);
 
       this.uniforms = {
         u_point_size: 1,
         u_perspective: 1,
         u_point_perspective: 1,
-        u_color: this.color
+        u_color: this.color,
       };
 
       this.geometry_id = -1;
@@ -1535,7 +1535,7 @@ if (typeof GL != "undefined") {
     updateMesh(geometry) {
       var buffer = this.buffer;
       if (!this.buffer || !this.buffer.data || this.buffer.data.length != geometry.vertices.length)
-        this.buffer = new GL.Buffer( GL.ARRAY_BUFFER, geometry.vertices,3,GL.DYNAMIC_DRAW);
+        this.buffer = new GL.Buffer( GL.ARRAY_BUFFER, geometry.vertices, 3, GL.DYNAMIC_DRAW);
       else
       {
         this.buffer.data.set( geometry.vertices );
@@ -1545,7 +1545,7 @@ if (typeof GL != "undefined") {
       if (!this.mesh)
         this.mesh = new GL.Mesh();
 
-      this.mesh.addBuffer("vertices",this.buffer);
+      this.mesh.addBuffer("vertices", this.buffer);
       this.geometry_id = this.mesh.id = geometry._id;
       this.version = this.mesh.version = geometry._version;
     }
@@ -1567,7 +1567,7 @@ if (typeof GL != "undefined") {
         return;
       }
 
-      LiteGraph.LGraphRender.onRequestCameraMatrices( view_matrix, projection_matrix,viewprojection_matrix );
+      LiteGraph.LGraphRender.onRequestCameraMatrices( view_matrix, projection_matrix, viewprojection_matrix );
       var shader = null;
 
       var texture = this.getInputData(2);
@@ -1576,7 +1576,7 @@ if (typeof GL != "undefined") {
       {
         shader = gl.shaders["textured_points"];
         if (!shader)
-          shader = gl.shaders["textured_points"] = new GL.Shader( LGraphRenderPoints.vertex_shader_code, LGraphRenderPoints.fragment_shader_code, { USE_TEXTURED_POINTS:"" });
+          shader = gl.shaders["textured_points"] = new GL.Shader( LGraphRenderPoints.vertex_shader_code, LGraphRenderPoints.fragment_shader_code, { USE_TEXTURED_POINTS: "" });
       }
       else
       {
@@ -1625,7 +1625,7 @@ if (typeof GL != "undefined") {
     static desc = "render points with a texture";
 
     static widgets_info = {
-      color: { widget: "color" }
+      color: { widget: "color" },
     };
 
     static vertex_shader_code = '\

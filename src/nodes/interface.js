@@ -22,14 +22,14 @@ class WidgetButton {
       margin + 1,
       margin + 1,
       this.size[0] - margin * 2,
-      this.size[1] - margin * 2
+      this.size[1] - margin * 2,
     );
     ctx.fillStyle = "#AAF";
     ctx.fillRect(
       margin - 1,
       margin - 1,
       this.size[0] - margin * 2,
-      this.size[1] - margin * 2
+      this.size[1] - margin * 2,
     );
     ctx.fillStyle = this.clicked
       ? "white"
@@ -40,7 +40,7 @@ class WidgetButton {
       margin,
       margin,
       this.size[0] - margin * 2,
-      this.size[1] - margin * 2
+      this.size[1] - margin * 2,
     );
 
     if (this.properties.text || this.properties.text === 0) {
@@ -51,7 +51,7 @@ class WidgetButton {
       ctx.fillText(
         this.properties.text,
         this.size[0] * 0.5,
-        this.size[1] * 0.5 + font_size * 0.3
+        this.size[1] * 0.5 + font_size * 0.3,
       );
       ctx.textAlign = "left";
     }
@@ -116,7 +116,7 @@ class WidgetToggle {
       x + size * margin,
       h - size + size * margin,
       size * (1 - margin * 2),
-      size * (1 - margin * 2)
+      size * (1 - margin * 2),
     );
 
     ctx.textAlign = "left";
@@ -195,7 +195,7 @@ class WidgetNumber {
     ctx.fillText(
       this.properties.value.toFixed(this._precision),
       x,
-      h * 0.75
+      h * 0.75,
     );
   }
 
@@ -241,7 +241,7 @@ class WidgetNumber {
     var v = clamp(
       this.properties.value + steps * this.properties.step,
       this.properties.min,
-      this.properties.max
+      this.properties.max,
     );
     this.properties.value = v;
     this.graph._version++;
@@ -254,7 +254,7 @@ class WidgetNumber {
       this.properties.value = clamp(
         this.properties.value + steps * this.properties.step,
         this.properties.min,
-        this.properties.max
+        this.properties.max,
       );
       this.graph._version++;
       this.setDirtyCanvas(true);
@@ -280,13 +280,13 @@ class WidgetCombo {
     this.addOutput("", "string");
     this.addOutput("change", LiteGraph.EVENT);
     this.size = [80, 60];
-    this.properties = { value: "A", values:"A;B;C" };
+    this.properties = { value: "A", values: "A;B;C" };
     this.old_y = -1;
     this.mouse_captured = false;
     this._values = this.properties.values.split(";");
     var that = this;
     this.widgets_up = true;
-    this.widget = this.addWidget("combo","", this.properties.value, function(v) {
+    this.widget = this.addWidget("combo", "", this.properties.value, function(v) {
       that.properties.value = v;
       that.triggerSlot(1, v);
     }, { property: "value", values: this._values } );
@@ -323,7 +323,7 @@ class WidgetKnob {
       max: 1,
       value: 0.5,
       color: "#7AF",
-      precision: 2
+      precision: 2,
     };
     this.value = -1;
   }
@@ -367,7 +367,7 @@ class WidgetKnob {
       0,
       radius - 4,
       0,
-      Math.PI * 1.5 * Math.max(0.01, this.value)
+      Math.PI * 1.5 * Math.max(0.01, this.value),
     );
     ctx.closePath();
     ctx.fill();
@@ -392,7 +392,7 @@ class WidgetKnob {
       radius * 0.05,
       0,
       Math.PI * 2,
-      true
+      true,
     );
     ctx.fill();
 
@@ -403,7 +403,7 @@ class WidgetKnob {
     ctx.fillText(
       this.properties.value.toFixed(this.properties.precision),
       center_x,
-      center_y + radius * 0.15
+      center_y + radius * 0.15,
     );
   }
 
@@ -412,7 +412,7 @@ class WidgetKnob {
     this.boxcolor = LiteGraph.colorToString([
       this.value,
       this.value,
-      this.value
+      this.value,
     ]);
   }
 
@@ -423,7 +423,7 @@ class WidgetKnob {
       e.canvasY - this.pos[1] < 20 ||
               LiteGraph.distance(
                 [e.canvasX, e.canvasY],
-                [this.pos[0] + this.center[0], this.pos[1] + this.center[1]]
+                [this.pos[0] + this.center[0], this.pos[1] + this.center[1]],
               ) > this.radius
     ) {
       return false;
@@ -484,7 +484,7 @@ class WidgetSliderGUI {
       value: 0.5,
       min: 0,
       max: 1,
-      text: "V"
+      text: "V",
     };
     var that = this;
     this.size = [140, 40];
@@ -495,7 +495,7 @@ class WidgetSliderGUI {
       function(v) {
         that.properties.value = v;
       },
-      this.properties
+      this.properties,
     );
     this.widgets_up = true;
   }
@@ -550,7 +550,7 @@ class WidgetHSlider {
     this.boxcolor = LiteGraph.colorToString([
       this.value,
       this.value,
-      this.value
+      this.value,
     ]);
   }
 
@@ -643,7 +643,7 @@ class WidgetText {
       color: "#AAA",
       align: "left",
       glowSize: 0,
-      decimals: 1
+      decimals: 1,
     };
   }
 
@@ -675,7 +675,7 @@ class WidgetText {
         ctx.fillText(
           lines[i],
           this.properties["align"] == "left" ? 15 : this.size[0] - 15,
-          fontsize * -0.15 + fontsize * (parseInt(i) + 1)
+          fontsize * -0.15 + fontsize * (parseInt(i) + 1),
         );
       }
     }
@@ -726,7 +726,7 @@ class WidgetText {
   static widgets = [
     { name: "resize", text: "Resize box", type: "button" },
     { name: "led_text", text: "LED", type: "minibutton" },
-    { name: "normal_text", text: "Normal", type: "minibutton" }
+    { name: "normal_text", text: "Normal", type: "minibutton" },
   ];
 }
 LiteGraph.registerNodeType("widget/text", WidgetText);
@@ -740,7 +740,7 @@ class WidgetPanel {
       bgcolorTop: "#f0f0f0",
       bgcolorBottom: "#e0e0e0",
       shadowSize: 2,
-      borderRadius: 3
+      borderRadius: 3,
     };
   }
 
@@ -790,7 +790,7 @@ class WidgetPanel {
       0,
       this.size[0] - 1,
       this.size[1] - 1,
-      this.properties["shadowSize"]
+      this.properties["shadowSize"],
     );
     ctx.fill();
     ctx.shadowColor = "transparent";

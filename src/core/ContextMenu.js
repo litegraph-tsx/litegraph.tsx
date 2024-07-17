@@ -28,7 +28,7 @@ export class ContextMenu {
     if (options.parentMenu) {
       if (options.parentMenu.constructor !== this.constructor) {
         console.error(
-          "parentMenu must be of class ContextMenu, ignoring it"
+          "parentMenu must be of class ContextMenu, ignoring it",
         );
         options.parentMenu = null;
       } else {
@@ -46,7 +46,7 @@ export class ContextMenu {
                 eventClass !== "PointerEvent"
     ) {
       console.error(
-        "Event passed to ContextMenu is not of type MouseEvent or CustomEvent. Ignoring it. ("+eventClass+")"
+        "Event passed to ContextMenu is not of type MouseEvent or CustomEvent. Ignoring it. ("+eventClass+")",
       );
       options.event = null;
     }
@@ -62,13 +62,13 @@ export class ContextMenu {
     }, 100); // delay so the mouse up event is not caught by this element
 
     // this prevents the default context browser menu to open in case this menu was created when pressing right button
-    LiteGraph.pointerListenerAdd(root,"up",
+    LiteGraph.pointerListenerAdd(root, "up",
       function(e) {
         // console.log("pointerevents: ContextMenu up root prevent");
         e.preventDefault();
         return true;
       },
-      true
+      true,
     );
     root.addEventListener(
       "contextmenu",
@@ -80,10 +80,10 @@ export class ContextMenu {
         e.preventDefault();
         return false;
       },
-      true
+      true,
     );
 
-    LiteGraph.pointerListenerAdd(root,"down",
+    LiteGraph.pointerListenerAdd(root, "down",
       function(e) {
         // console.log("pointerevents: ContextMenu down");
         if (e.button == 2) {
@@ -92,7 +92,7 @@ export class ContextMenu {
           return true;
         }
       },
-      true
+      true,
     );
 
     function on_mouse_wheel(e) {
@@ -145,7 +145,7 @@ export class ContextMenu {
                 //that.close(e);
             });*/
 
-    LiteGraph.pointerListenerAdd(root,"enter", function(e) {
+    LiteGraph.pointerListenerAdd(root, "enter", function(e) {
       // console.log("pointerevents: ContextMenu enter");
       if (root.closing_timer) {
         clearTimeout(root.closing_timer);
@@ -247,7 +247,7 @@ export class ContextMenu {
       element.addEventListener("click", inner_onclick);
     }
     if (!disabled && options.autoopen) {
-      LiteGraph.pointerListenerAdd(element,"enter",inner_over);
+      LiteGraph.pointerListenerAdd(element, "enter", inner_over);
     }
 
     function inner_over(e) {
@@ -276,7 +276,7 @@ export class ContextMenu {
           options,
           e,
           that,
-          options.node
+          options.node,
         );
         if (r === true) {
           close_parent = false;
@@ -297,7 +297,7 @@ export class ContextMenu {
             options,
             e,
             that,
-            options.extra
+            options.extra,
           );
           if (r === true) {
             close_parent = false;
@@ -315,7 +315,7 @@ export class ContextMenu {
                                 value.submenu.ignore_item_callbacks,
             title: value.submenu.title,
             extra: value.submenu.extra,
-            autoopen: options.autoopen
+            autoopen: options.autoopen,
           });
           close_parent = false;
         }

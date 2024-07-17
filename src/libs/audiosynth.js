@@ -14,19 +14,19 @@ var Synth, AudioSynth, AudioSynthInstrument;
 
   var _encapsulated = false;
   var AudioSynthInstance = null;
-  var pack = function(c,arg) { return [new Uint8Array([arg, arg >> 8]), new Uint8Array([arg, arg >> 8, arg >> 16, arg >> 24])][c]; };
-  var setPrivateVar = function(n,v,w,e) {Object.defineProperty(this,n,{value:v,writable:!!w,enumerable:!!e});};
-  var setPublicVar = function(n,v,w) {setPrivateVar.call(this,n,v,w,true);};
-  AudioSynthInstrument = function AudioSynthInstrument() {this.__init__.apply(this,arguments);};
+  var pack = function(c, arg) { return [new Uint8Array([arg, arg >> 8]), new Uint8Array([arg, arg >> 8, arg >> 16, arg >> 24])][c]; };
+  var setPrivateVar = function(n, v, w, e) {Object.defineProperty(this, n, {value: v, writable: !!w, enumerable: !!e});};
+  var setPublicVar = function(n, v, w) {setPrivateVar.call(this, n, v, w, true);};
+  AudioSynthInstrument = function AudioSynthInstrument() {this.__init__.apply(this, arguments);};
   var setPriv = setPrivateVar.bind(AudioSynthInstrument.prototype);
   var setPub = setPublicVar.bind(AudioSynthInstrument.prototype);
-  setPriv('__init__', function(a,b,c) {
+  setPriv('__init__', function(a, b, c) {
     if (!_encapsulated) { throw new Error('AudioSynthInstrument can only be instantiated from the createInstrument method of the AudioSynth object.'); }
     setPrivateVar.call(this, '_parent', a);
     setPublicVar.call(this, 'name', b);
     setPrivateVar.call(this, '_soundID', c);
   });
-  setPub('play', function(note, octave, duration,volume) {
+  setPub('play', function(note, octave, duration, volume) {
     return this._parent.play(this._soundID, note, octave, duration, volume);
   });
   setPub('generate', function(note, octave, duration) {
@@ -35,30 +35,30 @@ var Synth, AudioSynth, AudioSynthInstrument;
   AudioSynth = function AudioSynth() {if (AudioSynthInstance instanceof AudioSynth) {return AudioSynthInstance;} else { this.__init__(); return this; }};
   setPriv = setPrivateVar.bind(AudioSynth.prototype);
   setPub = setPublicVar.bind(AudioSynth.prototype);
-  setPriv('_debug',false,true);
-  setPriv('_bitsPerSample',16);
-  setPriv('_channels',1);
-  setPriv('_sampleRate',44100,true);
+  setPriv('_debug', false, true);
+  setPriv('_bitsPerSample', 16);
+  setPriv('_channels', 1);
+  setPriv('_sampleRate', 44100, true);
   setPub('setSampleRate', function(v) {
-    this._sampleRate = Math.max(Math.min(v|0,44100), 4000);
+    this._sampleRate = Math.max(Math.min(v|0, 44100), 4000);
     this._clearCache();
     return this._sampleRate;
   });
   setPub('getSampleRate', function() { return this._sampleRate; });
-  setPriv('_volume',32768,true);
+  setPriv('_volume', 32768, true);
   setPub('setVolume', function(v) {
     v = parseFloat(v); if (isNaN(v)) { v = 0; }
     v = Math.round(v*32768);
-    this._volume = Math.max(Math.min(v|0,32768), 0);
+    this._volume = Math.max(Math.min(v|0, 32768), 0);
     this._clearCache();
     return this._volume;
   });
   setPub('getVolume', function() { return Math.round(this._volume/32768*10000)/10000; });
-  setPriv('_notes',{'C':261.63,'C#':277.18,'D':293.66,'D#':311.13,'E':329.63,'F':346.23,'F#':369.99,'G':392.00,'G#':415.30,'A':440.00,'A#':466.16,'B':493.88});
-  setPriv('_fileCache',[],true);
-  setPriv('_temp',{},true);
-  setPriv('_sounds',[],true);
-  setPriv('_mod',[function(i,s,f,x) {return Math.sin((2 * Math.PI)*(i/s)*f+x);}]);
+  setPriv('_notes', {'C': 261.63, 'C#': 277.18, 'D': 293.66, 'D#': 311.13, 'E': 329.63, 'F': 346.23, 'F#': 369.99, 'G': 392.00, 'G#': 415.30, 'A': 440.00, 'A#': 466.16, 'B': 493.88});
+  setPriv('_fileCache', [], true);
+  setPriv('_temp', {}, true);
+  setPriv('_sounds', [], true);
+  setPriv('_mod', [function(i, s, f, x) {return Math.sin((2 * Math.PI)*(i/s)*f+x);}]);
   setPriv('_resizeCache', function() {
     var f = this._fileCache;
     var l = this._sounds.length;
@@ -100,7 +100,7 @@ var Synth, AudioSynth, AudioSynthInstrument;
       if (this._debug) { console.log((new Date).valueOf() - t, 'ms to retrieve (cached)'); }
       return this._fileCache[sound][octave-1][note][time];
     } else {
-      var frequency = this._notes[note] * Math.pow(2,octave-4);
+      var frequency = this._notes[note] * Math.pow(2, octave-4);
       var sampleRate = this._sampleRate;
       var volume = this._volume;
       var channels = this._channels;
@@ -127,7 +127,7 @@ var Synth, AudioSynth, AudioSynthInstrument;
 
       for (; i !== decayLen; i++) {
 
-        val = volume * Math.pow((1-((i-(sampleRate*attack))/(sampleRate*(time-attack)))),dampen) * waveFunc.call(waveBind, i, sampleRate, frequency, volume);
+        val = volume * Math.pow((1-((i-(sampleRate*attack))/(sampleRate*(time-attack)))), dampen) * waveFunc.call(waveBind, i, sampleRate, frequency, volume);
 
         data[i << 1] = val;
         data[(i << 1) + 1] = val >> 8;
@@ -150,7 +150,7 @@ var Synth, AudioSynth, AudioSynthInstrument;
         // chunk 2
         'data', // Sub-chunk identifier
         pack(1, data.length * channels * bitsPerSample / 8), // Chunk length
-        data
+        data,
       ];
       var blob = new Blob(out, {type: 'audio/wav'});
       var dataURI = URL.createObjectURL(blob);
@@ -239,14 +239,14 @@ Synth.loadModulationFunction(
   function(i, sampleRate, frequency, x) { return 0.5 * Math.sin(4 * Math.PI * ((i / sampleRate) * frequency) + x); },
   function(i, sampleRate, frequency, x) { return 0.5 * Math.sin(8 * Math.PI * ((i / sampleRate) * frequency) + x); },
   function(i, sampleRate, frequency, x) { return 0.5 * Math.sin(0.5 * Math.PI * ((i / sampleRate) * frequency) + x); },
-  function(i, sampleRate, frequency, x) { return 0.5 * Math.sin(0.25 * Math.PI * ((i / sampleRate) * frequency) + x); }
+  function(i, sampleRate, frequency, x) { return 0.5 * Math.sin(0.25 * Math.PI * ((i / sampleRate) * frequency) + x); },
 );
 
 Synth.loadSoundProfile({
   name: 'piano',
   attack: function() { return 0.002; },
   dampen: function(sampleRate, frequency, volume) {
-    return Math.pow(0.5*Math.log((frequency*volume)/sampleRate),2);
+    return Math.pow(0.5*Math.log((frequency*volume)/sampleRate), 2);
   },
   wave: function(i, sampleRate, frequency, volume) {
     var base = this.modulate[0];
@@ -256,9 +256,9 @@ Synth.loadSoundProfile({
       frequency,
       Math.pow(base(i, sampleRate, frequency, 0), 2) +
                 (0.75 * base(i, sampleRate, frequency, 0.25)) +
-                (0.1 * base(i, sampleRate, frequency, 0.5))
+                (0.1 * base(i, sampleRate, frequency, 0.5)),
     );
-  }
+  },
 },
 {
   name: 'organ',
@@ -272,13 +272,13 @@ Synth.loadSoundProfile({
       frequency,
       base(i, sampleRate, frequency, 0) +
                 0.5*base(i, sampleRate, frequency, 0.25) +
-                0.25*base(i, sampleRate, frequency, 0.5)
+                0.25*base(i, sampleRate, frequency, 0.5),
     );
-  }
+  },
 },
 {
   name: 'acoustic',
-  attack:    function() { return 0.002; },
+  attack: function() { return 0.002; },
   dampen: function() { return 1; },
   wave: function(i, sampleRate, frequency) {
 
@@ -325,11 +325,11 @@ Synth.loadSoundProfile({
       return _return;
 
     }
-  }
+  },
 },
 {
   name: 'edm',
-  attack:    function() { return 0.002; },
+  attack: function() { return 0.002; },
   dampen: function() { return 1; },
   wave: function(i, sampleRate, frequency) {
     var base = this.modulate[0];
@@ -348,17 +348,17 @@ Synth.loadSoundProfile({
           frequency,
           Math.pow(base(i, sampleRate, frequency, 0), 3) +
                         Math.pow(base(i, sampleRate, frequency, 0.5), 5) +
-                        Math.pow(base(i, sampleRate, frequency, 1), 7)
-        )
+                        Math.pow(base(i, sampleRate, frequency, 1), 7),
+        ),
       ) +
                 mod[8](
                   i,
                   sampleRate,
                   frequency,
-                  base(i, sampleRate, frequency, 1.75)
-                )
+                  base(i, sampleRate, frequency, 1.75),
+                ),
     );
-  }
+  },
 });
 
 export { Synth, AudioSynth, AudioSynthInstrument };

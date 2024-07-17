@@ -41,20 +41,20 @@ THE SOFTWARE.
       var e = n[a] = {
         i: a,
         l: !1,
-        exports: {}
+        exports: {},
       };
       return t[a].call(e.exports, e, e.exports, r), e.l = !0, e.exports
     }
     return r.m = t, r.c = n, r.d = function(t, n, a) {
       r.o(t, n) || Object.defineProperty(t, n, {
         enumerable: !0,
-        get: a
+        get: a,
       })
     }, r.r = function(t) {
       "undefined" != typeof Symbol && Symbol.toStringTag && Object.defineProperty(t, Symbol.toStringTag, {
-        value: "Module"
+        value: "Module",
       }), Object.defineProperty(t, "__esModule", {
-        value: !0
+        value: !0,
       })
     }, r.t = function(t, n) {
       if (1 & n && (t = r(t)), 8 & n) return t;
@@ -62,7 +62,7 @@ THE SOFTWARE.
       var a = Object.create(null);
       if (r.r(a), Object.defineProperty(a, "default", {
         enumerable: !0,
-        value: t
+        value: t,
       }), 2 & n && "string" != typeof t)
         for (var e in t) r.d(a, e, function(n) {
           return t[n]
@@ -81,7 +81,7 @@ THE SOFTWARE.
   }([function(t, n, r) {
     "use strict";
     Object.defineProperty(n, "__esModule", {
-      value: !0
+      value: !0,
     }), n.setMatrixArrayType = function(t) {
       n.ARRAY_TYPE = t
     }, n.toRadian = function(t) {
@@ -95,7 +95,7 @@ THE SOFTWARE.
   }, function(t, n, r) {
     "use strict";
     Object.defineProperty(n, "__esModule", {
-      value: !0
+      value: !0,
     }), n.forEach = n.sqrLen = n.len = n.sqrDist = n.dist = n.div = n.mul = n.sub = void 0, n.create = e, n.clone = function(t) {
       var n = new a.ARRAY_TYPE(4);
       return n[0] = t[0], n[1] = t[1], n[2] = t[2], n[3] = t[3], n
@@ -255,7 +255,7 @@ THE SOFTWARE.
   }, function(t, n, r) {
     "use strict";
     Object.defineProperty(n, "__esModule", {
-      value: !0
+      value: !0,
     }), n.forEach = n.sqrLen = n.len = n.sqrDist = n.dist = n.div = n.mul = n.sub = void 0, n.create = e, n.clone = function(t) {
       var n = new a.ARRAY_TYPE(3);
       return n[0] = t[0], n[1] = t[1], n[2] = t[2], n
@@ -457,7 +457,7 @@ THE SOFTWARE.
   }, function(t, n, r) {
     "use strict";
     Object.defineProperty(n, "__esModule", {
-      value: !0
+      value: !0,
     }), n.setAxes = n.sqlerp = n.rotationTo = n.equals = n.exactEquals = n.normalize = n.sqrLen = n.squaredLength = n.len = n.length = n.lerp = n.dot = n.scale = n.mul = n.add = n.set = n.copy = n.fromValues = n.clone = void 0, n.create = s, n.identity = function(t) {
       return t[0] = 0, t[1] = 0, t[2] = 0, t[3] = 1, t
     }, n.setAxisAngle = c, n.getAxisAngle = function(t, n) {
@@ -466,7 +466,7 @@ THE SOFTWARE.
       e > a.EPSILON ? (t[0] = n[0] / e, t[1] = n[1] / e, t[2] = n[2] / e) : (t[0] = 1, t[1] = 0, t[2] = 0);
       return r
     }, n.multiply = f, n.rotateX = function(t, n, r) {
-      r *= .5;
+      r *= 0.5;
       var a = n[0],
         e = n[1],
         u = n[2],
@@ -475,7 +475,7 @@ THE SOFTWARE.
         s = Math.cos(r);
       return t[0] = a * s + o * i, t[1] = e * s + u * i, t[2] = u * s - e * i, t[3] = o * s - a * i, t
     }, n.rotateY = function(t, n, r) {
-      r *= .5;
+      r *= 0.5;
       var a = n[0],
         e = n[1],
         u = n[2],
@@ -484,7 +484,7 @@ THE SOFTWARE.
         s = Math.cos(r);
       return t[0] = a * s - u * i, t[1] = e * s + o * i, t[2] = u * s + a * i, t[3] = o * s - e * i, t
     }, n.rotateZ = function(t, n, r) {
-      r *= .5;
+      r *= 0.5;
       var a = n[0],
         e = n[1],
         u = n[2],
@@ -515,7 +515,7 @@ THE SOFTWARE.
     }, n.conjugate = function(t, n) {
       return t[0] = -n[0], t[1] = -n[1], t[2] = -n[2], t[3] = n[3], t
     }, n.fromMat3 = h, n.fromEuler = function(t, n, r, a) {
-      var e = .5 * Math.PI / 180;
+      var e = 0.5 * Math.PI / 180;
       n *= e, r *= e, a *= e;
       var u = Math.sin(n),
         o = Math.cos(n),
@@ -546,7 +546,7 @@ THE SOFTWARE.
     }
 
     function c(t, n, r) {
-      r *= .5;
+      r *= 0.5;
       var a = Math.sin(r);
       return t[0] = a * n[0], t[1] = a * n[1], t[2] = a * n[2], t[3] = Math.cos(r), t
     }
@@ -583,13 +583,13 @@ THE SOFTWARE.
     function h(t, n) {
       var r = n[0] + n[4] + n[8],
         a = void 0;
-      if (r > 0) a = Math.sqrt(r + 1), t[3] = .5 * a, a = .5 / a, t[0] = (n[5] - n[7]) * a, t[1] = (n[6] - n[2]) * a, t[2] = (n[1] - n[3]) * a;
+      if (r > 0) a = Math.sqrt(r + 1), t[3] = 0.5 * a, a = 0.5 / a, t[0] = (n[5] - n[7]) * a, t[1] = (n[6] - n[2]) * a, t[2] = (n[1] - n[3]) * a;
       else {
         var e = 0;
         n[4] > n[0] && (e = 1), n[8] > n[3 * e + e] && (e = 2);
         var u = (e + 1) % 3,
           o = (e + 2) % 3;
-        a = Math.sqrt(n[3 * e + e] - n[3 * u + u] - n[3 * o + o] + 1), t[e] = .5 * a, a = .5 / a, t[3] = (n[3 * u + o] - n[3 * o + u]) * a, t[u] = (n[3 * u + e] + n[3 * e + u]) * a, t[o] = (n[3 * o + e] + n[3 * e + o]) * a
+        a = Math.sqrt(n[3 * e + e] - n[3 * u + u] - n[3 * o + o] + 1), t[e] = 0.5 * a, a = 0.5 / a, t[3] = (n[3 * u + o] - n[3 * o + u]) * a, t[u] = (n[3 * u + e] + n[3 * e + u]) * a, t[o] = (n[3 * o + e] + n[3 * e + o]) * a
       }
       return t
     }
@@ -603,7 +603,7 @@ THE SOFTWARE.
         r = u.fromValues(0, 1, 0);
       return function(a, e, o) {
         var i = u.dot(e, o);
-        return i < -.999999 ? (u.cross(t, n, e), u.len(t) < 1e-6 && u.cross(t, r, e), u.normalize(t, t), c(a, t, Math.PI), a) : i > .999999 ? (a[0] = 0, a[1] = 0, a[2] = 0, a[3] = 1, a) : (u.cross(t, e, o), a[0] = t[0], a[1] = t[1], a[2] = t[2], a[3] = 1 + i, d(a, a))
+        return i < -0.999999 ? (u.cross(t, n, e), u.len(t) < 1e-6 && u.cross(t, r, e), u.normalize(t, t), c(a, t, Math.PI), a) : i > 0.999999 ? (a[0] = 0, a[1] = 0, a[2] = 0, a[3] = 1, a) : (u.cross(t, e, o), a[0] = t[0], a[1] = t[1], a[2] = t[2], a[3] = 1 + i, d(a, a))
       }
     }(), n.sqlerp = function() {
       var t = s(),
@@ -620,7 +620,7 @@ THE SOFTWARE.
   }, function(t, n, r) {
     "use strict";
     Object.defineProperty(n, "__esModule", {
-      value: !0
+      value: !0,
     }), n.sub = n.mul = void 0, n.create = function() {
       var t = new a.ARRAY_TYPE(16);
       a.ARRAY_TYPE != Float32Array && (t[1] = 0, t[2] = 0, t[3] = 0, t[4] = 0, t[6] = 0, t[7] = 0, t[8] = 0, t[9] = 0, t[11] = 0, t[12] = 0, t[13] = 0, t[14] = 0);
@@ -863,7 +863,7 @@ THE SOFTWARE.
     }, n.getRotation = function(t, n) {
       var r = n[0] + n[5] + n[10],
         a = 0;
-      r > 0 ? (a = 2 * Math.sqrt(r + 1), t[3] = .25 * a, t[0] = (n[6] - n[9]) / a, t[1] = (n[8] - n[2]) / a, t[2] = (n[1] - n[4]) / a) : n[0] > n[5] && n[0] > n[10] ? (a = 2 * Math.sqrt(1 + n[0] - n[5] - n[10]), t[3] = (n[6] - n[9]) / a, t[0] = .25 * a, t[1] = (n[1] + n[4]) / a, t[2] = (n[8] + n[2]) / a) : n[5] > n[10] ? (a = 2 * Math.sqrt(1 + n[5] - n[0] - n[10]), t[3] = (n[8] - n[2]) / a, t[0] = (n[1] + n[4]) / a, t[1] = .25 * a, t[2] = (n[6] + n[9]) / a) : (a = 2 * Math.sqrt(1 + n[10] - n[0] - n[5]), t[3] = (n[1] - n[4]) / a, t[0] = (n[8] + n[2]) / a, t[1] = (n[6] + n[9]) / a, t[2] = .25 * a);
+      r > 0 ? (a = 2 * Math.sqrt(r + 1), t[3] = 0.25 * a, t[0] = (n[6] - n[9]) / a, t[1] = (n[8] - n[2]) / a, t[2] = (n[1] - n[4]) / a) : n[0] > n[5] && n[0] > n[10] ? (a = 2 * Math.sqrt(1 + n[0] - n[5] - n[10]), t[3] = (n[6] - n[9]) / a, t[0] = 0.25 * a, t[1] = (n[1] + n[4]) / a, t[2] = (n[8] + n[2]) / a) : n[5] > n[10] ? (a = 2 * Math.sqrt(1 + n[5] - n[0] - n[10]), t[3] = (n[8] - n[2]) / a, t[0] = (n[1] + n[4]) / a, t[1] = 0.25 * a, t[2] = (n[6] + n[9]) / a) : (a = 2 * Math.sqrt(1 + n[10] - n[0] - n[5]), t[3] = (n[1] - n[4]) / a, t[0] = (n[8] + n[2]) / a, t[1] = (n[6] + n[9]) / a, t[2] = 0.25 * a);
       return t
     }, n.fromRotationTranslationScale = function(t, n, r, a) {
       var e = n[0],
@@ -954,7 +954,7 @@ THE SOFTWARE.
         i = Math.tan(n.rightDegrees * Math.PI / 180),
         s = 2 / (o + i),
         c = 2 / (e + u);
-      return t[0] = s, t[1] = 0, t[2] = 0, t[3] = 0, t[4] = 0, t[5] = c, t[6] = 0, t[7] = 0, t[8] = -(o - i) * s * .5, t[9] = (e - u) * c * .5, t[10] = a / (r - a), t[11] = -1, t[12] = 0, t[13] = 0, t[14] = a * r / (r - a), t[15] = 0, t
+      return t[0] = s, t[1] = 0, t[2] = 0, t[3] = 0, t[4] = 0, t[5] = c, t[6] = 0, t[7] = 0, t[8] = -(o - i) * s * 0.5, t[9] = (e - u) * c * 0.5, t[10] = a / (r - a), t[11] = -1, t[12] = 0, t[13] = 0, t[14] = a * r / (r - a), t[15] = 0, t
     }, n.ortho = function(t, n, r, a, e, u, o) {
       var i = 1 / (n - r),
         s = 1 / (a - e),
@@ -1111,7 +1111,7 @@ THE SOFTWARE.
   }, function(t, n, r) {
     "use strict";
     Object.defineProperty(n, "__esModule", {
-      value: !0
+      value: !0,
     }), n.sub = n.mul = void 0, n.create = function() {
       var t = new a.ARRAY_TYPE(9);
       a.ARRAY_TYPE != Float32Array && (t[1] = 0, t[2] = 0, t[3] = 0, t[5] = 0, t[6] = 0, t[7] = 0);
@@ -1338,7 +1338,7 @@ THE SOFTWARE.
   }, function(t, n, r) {
     "use strict";
     Object.defineProperty(n, "__esModule", {
-      value: !0
+      value: !0,
     }), n.forEach = n.sqrLen = n.sqrDist = n.dist = n.div = n.mul = n.sub = n.len = void 0, n.create = e, n.clone = function(t) {
       var n = new a.ARRAY_TYPE(2);
       return n[0] = t[0], n[1] = t[1], n
@@ -1492,7 +1492,7 @@ THE SOFTWARE.
   }, function(t, n, r) {
     "use strict";
     Object.defineProperty(n, "__esModule", {
-      value: !0
+      value: !0,
     }), n.sqrLen = n.squaredLength = n.len = n.length = n.dot = n.mul = n.setReal = n.getReal = void 0, n.create = function() {
       var t = new a.ARRAY_TYPE(8);
       a.ARRAY_TYPE != Float32Array && (t[0] = 0, t[1] = 0, t[2] = 0, t[4] = 0, t[5] = 0, t[6] = 0, t[7] = 0);
@@ -1506,12 +1506,12 @@ THE SOFTWARE.
     }, n.fromRotationTranslationValues = function(t, n, r, e, u, o, i) {
       var s = new a.ARRAY_TYPE(8);
       s[0] = t, s[1] = n, s[2] = r, s[3] = e;
-      var c = .5 * u,
-        f = .5 * o,
-        M = .5 * i;
+      var c = 0.5 * u,
+        f = 0.5 * o,
+        M = 0.5 * i;
       return s[4] = c * e + f * r - M * n, s[5] = f * e + M * t - c * r, s[6] = M * e + c * n - f * t, s[7] = -c * t - f * n - M * r, s
     }, n.fromRotationTranslation = i, n.fromTranslation = function(t, n) {
-      return t[0] = 0, t[1] = 0, t[2] = 0, t[3] = 1, t[4] = .5 * n[0], t[5] = .5 * n[1], t[6] = .5 * n[2], t[7] = 0, t
+      return t[0] = 0, t[1] = 0, t[2] = 0, t[3] = 1, t[4] = 0.5 * n[0], t[5] = 0.5 * n[1], t[6] = 0.5 * n[2], t[7] = 0, t
     }, n.fromRotation = function(t, n) {
       return t[0] = n[0], t[1] = n[1], t[2] = n[2], t[3] = n[3], t[4] = 0, t[5] = 0, t[6] = 0, t[7] = 0, t
     }, n.fromMat4 = function(t, n) {
@@ -1542,9 +1542,9 @@ THE SOFTWARE.
         e = n[1],
         u = n[2],
         o = n[3],
-        i = .5 * r[0],
-        s = .5 * r[1],
-        c = .5 * r[2],
+        i = 0.5 * r[0],
+        s = 0.5 * r[1],
+        c = 0.5 * r[2],
         f = n[4],
         M = n[5],
         h = n[6],
@@ -1615,7 +1615,7 @@ THE SOFTWARE.
     }, n.rotateAroundAxis = function(t, n, r, e) {
       if (Math.abs(e) < a.EPSILON) return s(t, n);
       var u = Math.sqrt(r[0] * r[0] + r[1] * r[1] + r[2] * r[2]);
-      e *= .5;
+      e *= 0.5;
       var o = Math.sin(e),
         i = o * r[0] / u,
         c = o * r[1] / u,
@@ -1696,9 +1696,9 @@ THE SOFTWARE.
     }
 
     function i(t, n, r) {
-      var a = .5 * r[0],
-        e = .5 * r[1],
-        u = .5 * r[2],
+      var a = 0.5 * r[0],
+        e = 0.5 * r[1],
+        u = 0.5 * r[2],
         o = n[0],
         i = n[1],
         s = n[2],
@@ -1739,7 +1739,7 @@ THE SOFTWARE.
   }, function(t, n, r) {
     "use strict";
     Object.defineProperty(n, "__esModule", {
-      value: !0
+      value: !0,
     }), n.sub = n.mul = void 0, n.create = function() {
       var t = new a.ARRAY_TYPE(6);
       a.ARRAY_TYPE != Float32Array && (t[1] = 0, t[2] = 0, t[4] = 0, t[5] = 0);
@@ -1864,7 +1864,7 @@ THE SOFTWARE.
   }, function(t, n, r) {
     "use strict";
     Object.defineProperty(n, "__esModule", {
-      value: !0
+      value: !0,
     }), n.sub = n.mul = void 0, n.create = function() {
       var t = new a.ARRAY_TYPE(4);
       a.ARRAY_TYPE != Float32Array && (t[1] = 0, t[2] = 0);
@@ -1974,7 +1974,7 @@ THE SOFTWARE.
   }, function(t, n, r) {
     "use strict";
     Object.defineProperty(n, "__esModule", {
-      value: !0
+      value: !0,
     }), n.vec4 = n.vec3 = n.vec2 = n.quat2 = n.quat = n.mat4 = n.mat3 = n.mat2d = n.mat2 = n.glMatrix = void 0;
     var a = l(r(0)),
       e = l(r(9)),

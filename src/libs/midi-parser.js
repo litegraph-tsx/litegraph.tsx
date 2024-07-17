@@ -23,7 +23,7 @@
     let b64re = /^(?:[A-Za-z\d+/]{4})*?(?:[A-Za-z\d+/]{2}(?:==)?|[A-Za-z\d+/]{3}=?)?$/;
     // remove data type signatures at the begining of the string
     // eg :  "data:audio/mid;base64,"
-    string = string.replace( /^.*?base64,/ , '');
+    string = string.replace( /^.*?base64,/, '');
     // atob can work with strings with whitespaces, even inside the encoded part,
     // but only \t, \n, \f, \r and ' ', which can be stripped.
     string = String(string).replace(/[\t\n\f\r ]+/g, '');
@@ -64,7 +64,7 @@
     parse: function(input, _callback) {
       if (input instanceof Uint8Array) return MidiParser.Uint8(input);
       else if (typeof input === 'string') return MidiParser.Base64(input);
-      else if (input instanceof HTMLElement && input.type === 'file') return MidiParser.addListener(input , _callback);
+      else if (input instanceof HTMLElement && input.type === 'file') return MidiParser.addListener(input, _callback);
       else throw new Error('MidiParser.parse() : Invalid input provided');
     },
 
@@ -102,7 +102,7 @@
          * Base64() : convert baset4 string into uint8 array buffer, before performing the
          * parsing subroutine.
          */
-    Base64 : function(b64String) {
+    Base64: function(b64String) {
       b64String = String(b64String);
 
       let raw = _atob(b64String);
@@ -163,7 +163,7 @@
             value += lastByte;
           }
           return value;
-        }
+        },
       };
 
       file.data = new DataView(FileAsUint8Array.buffer, FileAsUint8Array.byteOffset, FileAsUint8Array.byteLength); // 8 bits bytes file data array
@@ -281,7 +281,7 @@
                 // if user provided a custom interpreter, call it
                 // and assign to event the returned data
                 if ( this.customInterpreter !== null) {
-                  MIDI.track[t-1].event[e-1].data = this.customInterpreter( MIDI.track[t-1].event[e-1].type, file , false);
+                  MIDI.track[t-1].event[e-1].data = this.customInterpreter( MIDI.track[t-1].event[e-1].type, file, false);
                 }
 
                 // if no customInterpretr is provided, or returned
@@ -313,7 +313,7 @@
                 // if user provided a custom interpreter, call it
                 // and assign to event the returned data
                 if ( this.customInterpreter !== null) {
-                  MIDI.track[t-1].event[e-1].data = this.customInterpreter( MIDI.track[t-1].event[e-1].metaType, file , false);
+                  MIDI.track[t-1].event[e-1].data = this.customInterpreter( MIDI.track[t-1].event[e-1].metaType, file, false);
                 }
 
                 // if no customInterpretr is provided, or returned
@@ -336,7 +336,7 @@
          * to be manually increased
          * If you want default action to be performed, return false
          */
-    customInterpreter : null // function( e_type , arrayByffer, metaEventLength){ return e_data_int }
+    customInterpreter: null, // function( e_type , arrayByffer, metaEventLength){ return e_data_int }
   };
 
 

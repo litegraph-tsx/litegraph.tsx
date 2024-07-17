@@ -17,20 +17,20 @@ class LGraphFXLens {
       aberration: 1.0,
       distortion: 1.0,
       blur: 1.0,
-      precision: LGraphTexture.DEFAULT
+      precision: LGraphTexture.DEFAULT,
     };
 
     if (!LGraphFXLens._shader) {
       LGraphFXLens._shader = new GL.Shader(
         GL.Shader.SCREEN_VERTEX_SHADER,
-        LGraphFXLens.pixel_shader
+        LGraphFXLens.pixel_shader,
       );
       LGraphFXLens._texture = new GL.Texture(3, 1, {
         format: gl.RGB,
         wrap: gl.CLAMP_TO_EDGE,
         magFilter: gl.LINEAR,
         minFilter: gl.LINEAR,
-        pixel_data: [255, 0, 0, 0, 255, 0, 0, 0, 255]
+        pixel_data: [255, 0, 0, 0, 255, 0, 0, 0, 255],
       });
     }
   }
@@ -49,7 +49,7 @@ class LGraphFXLens {
     this._tex = LGraphTexture.getTargetTexture(
       tex,
       this._tex,
-      this.properties.precision
+      this.properties.precision,
     );
 
     var aberration = this.properties.aberration;
@@ -83,7 +83,7 @@ class LGraphFXLens {
           u_texture: 0,
           u_aberration: aberration,
           u_distortion: distortion,
-          u_blur: blur
+          u_blur: blur,
         })
         .draw(mesh);
     });
@@ -95,7 +95,7 @@ class LGraphFXLens {
 LGraphFXLens.title = "Lens";
 LGraphFXLens.desc = "Camera Lens distortion";
 LGraphFXLens.widgets_info = {
-  precision: { widget: "combo", values: LGraphTexture.MODE_VALUES }
+  precision: { widget: "combo", values: LGraphTexture.MODE_VALUES },
 };
 
 LGraphFXLens.pixel_shader =
@@ -260,7 +260,7 @@ class LGraphFXBokeh {
       size: 10,
       alpha: 1.0,
       threshold: 1.0,
-      high_precision: false
+      high_precision: false,
     };
   }
 
@@ -301,7 +301,7 @@ class LGraphFXBokeh {
       this._temp_texture = new GL.Texture(tex.width, tex.height, {
         type: precision,
         format: gl.RGBA,
-        filter: gl.LINEAR
+        filter: gl.LINEAR,
       });
     }
 
@@ -312,7 +312,7 @@ class LGraphFXBokeh {
     if (!first_shader) {
       first_shader = LGraphFXBokeh._first_shader = new GL.Shader(
         Shader.SCREEN_VERTEX_SHADER,
-        LGraphFXBokeh._first_pixel_shader
+        LGraphFXBokeh._first_pixel_shader,
       );
     }
 
@@ -320,7 +320,7 @@ class LGraphFXBokeh {
     if (!second_shader) {
       second_shader = LGraphFXBokeh._second_shader = new GL.Shader(
         LGraphFXBokeh._second_vertex_shader,
-        LGraphFXBokeh._second_pixel_shader
+        LGraphFXBokeh._second_pixel_shader,
       );
     }
 
@@ -352,7 +352,7 @@ class LGraphFXBokeh {
           u_texture: 0,
           u_texture_blur: 1,
           u_mask: 2,
-          u_texsize: [tex.width, tex.height]
+          u_texsize: [tex.width, tex.height],
         })
         .draw(screen_mesh);
     });
@@ -374,7 +374,7 @@ class LGraphFXBokeh {
           u_alpha: alpha,
           u_threshold: threshold,
           u_pointSize: point_size,
-          u_itexsize: [1.0 / tex.width, 1.0 / tex.height]
+          u_itexsize: [1.0 / tex.width, 1.0 / tex.height],
         })
         .draw(points_mesh, gl.POINTS);
     });
@@ -501,7 +501,7 @@ class LGraphFXGeneric {
       fx: "halftone",
       value1: 1,
       value2: 1,
-      precision: LGraphTexture.DEFAULT
+      precision: LGraphTexture.DEFAULT,
     };
   }
 
@@ -523,7 +523,7 @@ class LGraphFXGeneric {
     this._tex = LGraphTexture.getTargetTexture(
       tex,
       this._tex,
-      this.properties.precision
+      this.properties.precision,
     );
 
     // iterations
@@ -549,7 +549,7 @@ class LGraphFXGeneric {
 
       shader = LGraphFXGeneric.shaders[fx] = new GL.Shader(
         Shader.SCREEN_VERTEX_SHADER,
-        pixel_shader_code
+        pixel_shader_code,
       );
     }
 
@@ -561,7 +561,7 @@ class LGraphFXGeneric {
     if (camera) {
       camera_planes = [
         LS.Renderer._current_camera.near,
-        LS.Renderer._current_camera.far
+        LS.Renderer._current_camera.far,
       ];
     } else {
       camera_planes = [1, 100];
@@ -586,7 +586,7 @@ class LGraphFXGeneric {
           u_rand: [Math.random(), Math.random()],
           u_value1: value1,
           u_value2: value2,
-          u_camera_planes: camera_planes
+          u_camera_planes: camera_planes,
         })
         .draw(mesh);
     });
@@ -601,9 +601,9 @@ LGraphFXGeneric.desc = "applies an FX from a list";
 LGraphFXGeneric.widgets_info = {
   fx: {
     widget: "combo",
-    values: ["halftone", "pixelate", "lowpalette", "noise", "gamma"]
+    values: ["halftone", "pixelate", "lowpalette", "noise", "gamma"],
   },
-  precision: { widget: "combo", values: LGraphTexture.MODE_VALUES }
+  precision: { widget: "combo", values: LGraphTexture.MODE_VALUES },
 };
 LGraphFXGeneric.shaders = {};
 
@@ -701,13 +701,13 @@ class LGraphFXVigneting {
     this.properties = {
       intensity: 1,
       invert: false,
-      precision: LGraphTexture.DEFAULT
+      precision: LGraphTexture.DEFAULT,
     };
 
     if (!LGraphFXVigneting._shader) {
       LGraphFXVigneting._shader = new GL.Shader(
         Shader.SCREEN_VERTEX_SHADER,
-        LGraphFXVigneting.pixel_shader
+        LGraphFXVigneting.pixel_shader,
       );
     }
   }
@@ -727,7 +727,7 @@ class LGraphFXVigneting {
     this._tex = LGraphTexture.getTargetTexture(
       tex,
       this._tex,
-      this.properties.precision
+      this.properties.precision,
     );
 
     var intensity = this.properties.intensity;
@@ -750,7 +750,7 @@ class LGraphFXVigneting {
           u_texture: 0,
           u_intensity: intensity,
           u_isize: [1 / tex.width, 1 / tex.height],
-          u_invert: invert ? 1 : 0
+          u_invert: invert ? 1 : 0,
         })
         .draw(mesh);
     });
@@ -763,7 +763,7 @@ LGraphFXVigneting.title = "Vigneting";
 LGraphFXVigneting.desc = "Vigneting";
 
 LGraphFXVigneting.widgets_info = {
-  precision: { widget: "combo", values: LGraphTexture.MODE_VALUES }
+  precision: { widget: "combo", values: LGraphTexture.MODE_VALUES },
 };
 
 LGraphFXVigneting.pixel_shader =

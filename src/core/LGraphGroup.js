@@ -31,7 +31,7 @@ export class LGraphGroup {
       get: function() {
         return this._pos;
       },
-      enumerable: true
+      enumerable: true,
     });
 
     Object.defineProperty(this, "size", {
@@ -45,7 +45,7 @@ export class LGraphGroup {
       get: function() {
         return this._size;
       },
-      enumerable: true
+      enumerable: true,
     });
   }
 
@@ -66,10 +66,10 @@ export class LGraphGroup {
         Math.round(b[0]),
         Math.round(b[1]),
         Math.round(b[2]),
-        Math.round(b[3])
+        Math.round(b[3]),
       ],
       color: this.color,
-      font_size: this.font_size
+      font_size: this.font_size,
     };
   }
 

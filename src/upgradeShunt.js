@@ -36,7 +36,7 @@ const classesToProtect = {
   'LGraphFXBokeh': LGraphFXBokeh,
   'LGraphFXGeneric': LGraphFXGeneric,
   'LGraphFXVigneting': LGraphFXVigneting,
-  'LGraphTexture':LGraphTexture,
+  'LGraphTexture': LGraphTexture,
   'GL': GL,
   'gl': gl,
 };
@@ -52,6 +52,6 @@ Object.entries(classesToProtect).forEach(([className, classReference]) => {
     set: function(newValue) {
       classReference = newValue; // Update the class reference if needed
     },
-    configurable: true // Allows redefinition
+    configurable: true, // Allows redefinition
   });
 });

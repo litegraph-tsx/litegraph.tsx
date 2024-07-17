@@ -32,9 +32,9 @@ export class DragAndScale {
 
     this._binded_mouse_callback = this.onMouse.bind(this);
 
-    LiteGraph.pointerListenerAdd(element,"down", this._binded_mouse_callback);
-    LiteGraph.pointerListenerAdd(element,"move", this._binded_mouse_callback);
-    LiteGraph.pointerListenerAdd(element,"up", this._binded_mouse_callback);
+    LiteGraph.pointerListenerAdd(element, "down", this._binded_mouse_callback);
+    LiteGraph.pointerListenerAdd(element, "move", this._binded_mouse_callback);
+    LiteGraph.pointerListenerAdd(element, "up", this._binded_mouse_callback);
 
     element.addEventListener("mousewheel", this._binded_mouse_callback, false);
     element.addEventListener("wheel", this._binded_mouse_callback, false);
@@ -88,9 +88,9 @@ export class DragAndScale {
 
     if (e.type == LiteGraph.pointerevents_method+"down" && is_inside) {
       this.dragging = true;
-      LiteGraph.pointerListenerRemove(canvas,"move",this._binded_mouse_callback);
-      LiteGraph.pointerListenerAdd(document,"move",this._binded_mouse_callback);
-      LiteGraph.pointerListenerAdd(document,"up",this._binded_mouse_callback);
+      LiteGraph.pointerListenerRemove(canvas, "move", this._binded_mouse_callback);
+      LiteGraph.pointerListenerAdd(document, "move", this._binded_mouse_callback);
+      LiteGraph.pointerListenerAdd(document, "up", this._binded_mouse_callback);
     } else if (e.type == LiteGraph.pointerevents_method+"move") {
       if (!ignore) {
         var deltax = x - this.last_mouse[0];
@@ -101,9 +101,9 @@ export class DragAndScale {
       }
     } else if (e.type == LiteGraph.pointerevents_method+"up") {
       this.dragging = false;
-      LiteGraph.pointerListenerRemove(document,"move",this._binded_mouse_callback);
-      LiteGraph.pointerListenerRemove(document,"up",this._binded_mouse_callback);
-      LiteGraph.pointerListenerAdd(canvas,"move",this._binded_mouse_callback);
+      LiteGraph.pointerListenerRemove(document, "move", this._binded_mouse_callback);
+      LiteGraph.pointerListenerRemove(document, "up", this._binded_mouse_callback);
+      LiteGraph.pointerListenerAdd(canvas, "move", this._binded_mouse_callback);
     } else if ( is_inside &&
                 (e.type == "mousewheel" ||
                 e.type == "wheel" ||
@@ -146,7 +146,7 @@ export class DragAndScale {
     // return [pos[0] / this.scale - this.offset[0], pos[1] / this.scale - this.offset[1]];
     return [
       (pos[0] + this.offset[0]) * this.scale,
-      (pos[1] + this.offset[1]) * this.scale
+      (pos[1] + this.offset[1]) * this.scale,
     ];
   }
 
@@ -188,7 +188,7 @@ export class DragAndScale {
 
     zooming_center = zooming_center || [
       rect.width * 0.5,
-      rect.height * 0.5
+      rect.height * 0.5,
     ];
     var center = this.convertCanvasToOffset(zooming_center);
     this.scale = value;
@@ -199,7 +199,7 @@ export class DragAndScale {
     var new_center = this.convertCanvasToOffset(zooming_center);
     var delta_offset = [
       new_center[0] - center[0],
-      new_center[1] - center[1]
+      new_center[1] - center[1],
     ];
 
     this.offset[0] += delta_offset[0];

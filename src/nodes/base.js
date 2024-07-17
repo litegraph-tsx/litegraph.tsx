@@ -149,9 +149,9 @@ class Subgraph {
     }
     else {
       if (overleft) {
-        ctx.roundRect(0, y, this.size[0] / 2 + 1, LiteGraph.NODE_TITLE_HEIGHT, [0,0, 8,8]);
+        ctx.roundRect(0, y, this.size[0] / 2 + 1, LiteGraph.NODE_TITLE_HEIGHT, [0, 0, 8, 8]);
       } else {
-        ctx.roundRect(this.size[0] / 2, y, this.size[0] / 2 + 1, LiteGraph.NODE_TITLE_HEIGHT, [0,0, 8,8]);
+        ctx.roundRect(this.size[0] / 2, y, this.size[0] / 2 + 1, LiteGraph.NODE_TITLE_HEIGHT, [0, 0, 8, 8]);
       }
     }
     if (over) {
@@ -192,7 +192,7 @@ class Subgraph {
   computeSize() {
     var num_inputs = this.inputs ? this.inputs.length : 0;
     var num_outputs = this.outputs ? this.outputs.length : 0;
-    return [ 200, Math.max(num_inputs,num_outputs) * LiteGraph.NODE_SLOT_HEIGHT + LiteGraph.NODE_TITLE_HEIGHT ];
+    return [ 200, Math.max(num_inputs, num_outputs) * LiteGraph.NODE_SLOT_HEIGHT + LiteGraph.NODE_TITLE_HEIGHT ];
   }
 
   //* *** INPUTS ***********************************
@@ -280,8 +280,8 @@ class Subgraph {
         content: "Open",
         callback: function() {
           graphcanvas.openSubgraph(that.subgraph);
-        }
-      }
+        },
+      },
     ];
   }
 
@@ -429,7 +429,7 @@ class Subgraph {
           if ( ids[ link.origin_id ] )
             continue;
             // this.addInput(input.name,link.type);
-          this.subgraph.addInput(input.name,link.type);
+          this.subgraph.addInput(input.name, link.type);
           /*
                       var input_node = LiteGraph.createNode("graph/input");
                       this.subgraph.add( input_node );
@@ -495,7 +495,7 @@ class GraphInput {
     this.properties = {
       name: "",
       type: "number",
-      value: 0
+      value: 0,
     };
 
     var that = this;
@@ -508,16 +508,16 @@ class GraphInput {
         if (!v) {
           return;
         }
-        that.setProperty("name",v);
-      }
+        that.setProperty("name", v);
+      },
     );
     this.type_widget = this.addWidget(
       "text",
       "Type",
       this.properties.type,
       function(v) {
-        that.setProperty("type",v);
-      }
+        that.setProperty("type", v);
+      },
     );
 
     this.value_widget = this.addWidget(
@@ -525,8 +525,8 @@ class GraphInput {
       "Value",
       this.properties.value,
       function(v) {
-        that.setProperty("value",v);
-      }
+        that.setProperty("value", v);
+      },
     );
 
     this.widgets_up = true;
@@ -545,7 +545,7 @@ class GraphInput {
     // update output
     if (this.outputs[0].type != type)
     {
-      if (!LiteGraph.isValidConnection(this.outputs[0].type,type))
+      if (!LiteGraph.isValidConnection(this.outputs[0].type, type))
         this.disconnectOutput(0);
       this.outputs[0].type = type;
     }
@@ -694,8 +694,8 @@ class GraphOutput {
     //     enumerable: true
     // });
 
-    this.name_widget = this.addWidget("text","Name",this.properties.name,"name");
-    this.type_widget = this.addWidget("text","Type",this.properties.type,"type");
+    this.name_widget = this.addWidget("text", "Name", this.properties.name, "name");
+    this.type_widget = this.addWidget("text", "Type", this.properties.type, "type");
     this.widgets_up = true;
     this.size = [180, 60];
   }
@@ -778,7 +778,7 @@ class ConstantNumber {
   constructor() {
     this.addOutput("value", "number");
     this.addProperty("value", 1.0);
-    this.widget = this.addWidget("number","value",1,"value");
+    this.widget = this.addWidget("number", "value", 1, "value");
     this.widgets_up = true;
     this.size = [180, 30];
   }
@@ -795,7 +795,7 @@ class ConstantNumber {
   }
 
   setValue(v) {
-    this.setProperty("value",v);
+    this.setProperty("value", v);
   }
 
   onDrawBackground(ctx) {
@@ -813,7 +813,7 @@ class ConstantBoolean {
   constructor() {
     this.addOutput("bool", "boolean");
     this.addProperty("value", true);
-    this.widget = this.addWidget("toggle","value",true,"value");
+    this.widget = this.addWidget("toggle", "value", true, "value");
     this.serialize_widgets = true;
     this.widgets_up = true;
     this.size = [140, 30];
@@ -845,7 +845,7 @@ class ConstantString {
   constructor() {
     this.addOutput("string", "string");
     this.addProperty("value", "");
-    this.widget = this.addWidget("text","value","","value"); // link to property value
+    this.widget = this.addWidget("text", "value", "", "value"); // link to property value
     this.widgets_up = true;
     this.size = [180, 30];
   }
@@ -859,7 +859,7 @@ class ConstantString {
     var reader = new FileReader();
     reader.onload = function(e)
     {
-      that.setProperty("value",e.target.result);
+      that.setProperty("value", e.target.result);
     }
     reader.readAsText(file);
   }
@@ -896,7 +896,7 @@ class ConstantFile {
     this.addOutput("file", "string");
     this.addProperty("url", "");
     this.addProperty("type", "text");
-    this.widget = this.addWidget("text","url","","url");
+    this.widget = this.addWidget("text", "url", "", "url");
     this._data = null;
   }
 
@@ -954,7 +954,7 @@ class ConstantFile {
       .catch(function(error) {
         that._data = null;
         that.boxcolor = "red";
-        console.error("error fetching file:",url);
+        console.error("error fetching file:", url);
       });
   }
 
@@ -984,7 +984,7 @@ class ConstantFile {
 
   static title = "Const File";
   static desc = "Fetches a file from an url";
-  static "@type" = { type: "enum", values: ["text","arraybuffer","blob","json"] };
+  static "@type" = { type: "enum", values: ["text", "arraybuffer", "blob", "json"] };
 }
 LiteGraph.registerNodeType("basic/file", ConstantFile);
 
@@ -996,7 +996,7 @@ class JSONParse {
     this.addInput("json", "string");
     this.addOutput("done", LiteGraph.EVENT);
     this.addOutput("object", "object");
-    this.widget = this.addWidget("button","parse","",this.parse.bind(this));
+    this.widget = this.addWidget("button", "parse", "", this.parse.bind(this));
     this._str = null;
     this._obj = null;
   }
@@ -1036,7 +1036,7 @@ class ConstantData {
   constructor() {
     this.addOutput("data", "object");
     this.addProperty("value", "");
-    this.widget = this.addWidget("text","json","","value");
+    this.widget = this.addWidget("text", "json", "", "value");
     this.widgets_up = true;
     this.size = [140, 30];
     this._value = null;
@@ -1076,7 +1076,7 @@ class ConstantArray {
     this.addOutput("arrayOut", "array");
     this.addOutput("length", "number");
     this.addProperty("value", "[]");
-    this.widget = this.addWidget("text","array",this.properties.value,"value");
+    this.widget = this.addWidget("text", "array", this.properties.value, "value");
     this.widgets_up = true;
     this.size = [140, 50];
   }
@@ -1125,7 +1125,7 @@ class SetArray {
     this.addInput("value", "");
     this.addOutput("arr", "array");
     this.properties = { index: 0 };
-    this.widget = this.addWidget("number","i",this.properties.index,"index",{precision: 0, step: 10, min: 0});
+    this.widget = this.addWidget("number", "i", this.properties.index, "index", {precision: 0, step: 10, min: 0});
   }
 
   onExecute() {
@@ -1137,7 +1137,7 @@ class SetArray {
       return;
     if (this.properties.index)
       arr[ Math.floor(this.properties.index) ] = v;
-    this.setOutputData(0,arr);
+    this.setOutputData(0, arr);
   }
 
   static title = "Set Array";
@@ -1151,7 +1151,7 @@ class ArrayElement {
     this.addInput("array", "array,table,string");
     this.addInput("index", "number");
     this.addOutput("value", "");
-    this.addProperty("index",0);
+    this.addProperty("index", 0);
   }
 
   onExecute() {
@@ -1176,8 +1176,8 @@ class TableElement {
     this.addInput("row", "number");
     this.addInput("col", "number");
     this.addOutput("value", "");
-    this.addProperty("row",0);
-    this.addProperty("column",0);
+    this.addProperty("row", 0);
+    this.addProperty("column", 0);
   }
 
   onExecute() {
@@ -1208,7 +1208,7 @@ class ObjectProperty {
     this.addInput("obj", "object");
     this.addOutput("property", 0);
     this.addProperty("value", 0);
-    this.widget = this.addWidget("text","prop.","",this.setValue.bind(this) );
+    this.widget = this.addWidget("text", "prop.", "", this.setValue.bind(this) );
     this.widgets_up = true;
     this.size = [140, 30];
     this._value = null;
@@ -1269,7 +1269,7 @@ class SetObject {
     this.addInput("value", "");
     this.addOutput("obj", "");
     this.properties = { property: "" };
-    this.name_widget = this.addWidget("text","prop.",this.properties.property,"property");
+    this.name_widget = this.addWidget("text", "prop.", this.properties.property, "property");
   }
 
   onExecute() {
@@ -1281,7 +1281,7 @@ class SetObject {
       return;
     if (this.properties.property)
       obj[ this.properties.property ] = v;
-    this.setOutputData(0,obj);
+    this.setOutputData(0, obj);
   }
 
   static title = "Set Object";
@@ -1297,7 +1297,7 @@ class MergeObjects {
     this.addOutput("out", "object");
     this._result = {};
     var that = this;
-    this.addWidget("button","clear","",function() {
+    this.addWidget("button", "clear", "", function() {
       that._result = {};
     });
     this.size = this.computeSize();
@@ -1313,7 +1313,7 @@ class MergeObjects {
     if (B)
       for (var i in B)
         C[i] = B[i];
-    this.setOutputData(0,C);
+    this.setOutputData(0, C);
   }
 
   static title = "Merge Objects";
@@ -1370,7 +1370,7 @@ class Variable {
   static LITEGRAPH = 0; // between all graphs
   static GRAPH = 1; // only inside this graph
   static GLOBALSCOPE = 2; // attached to Window
-  static "@container" = { type: "enum", values: {"litegraph":Variable.LITEGRAPH, "graph":Variable.GRAPH,"global": Variable.GLOBALSCOPE} };
+  static "@container" = { type: "enum", values: {"litegraph": Variable.LITEGRAPH, "graph": Variable.GRAPH, "global": Variable.GLOBALSCOPE} };
 }
 LiteGraph.registerNodeType("basic/variable", Variable);
 
@@ -1385,14 +1385,14 @@ LiteGraph.wrapFunctionAsNode(
   "basic/length",
   length,
   [""],
-  "number"
+  "number",
 );
 
 LiteGraph.wrapFunctionAsNode(
   "basic/not",
   function(a) { return !a; },
   [""],
-  "boolean"
+  "boolean",
 );
 
 
@@ -1404,7 +1404,7 @@ class DownloadData {
     this.properties = { filename: "data.json" };
     this.value = null;
     var that = this;
-    this.addWidget("button","Download","", function(v) {
+    this.addWidget("button", "Download", "", function(v) {
       if (!that.value)
         return;
       that.downloadAsFile();
@@ -1562,7 +1562,7 @@ class Console {
     return [
       ["log", LiteGraph.ACTION],
       ["warn", LiteGraph.ACTION],
-      ["error", LiteGraph.ACTION]
+      ["error", LiteGraph.ACTION],
     ];
   }
 
@@ -1641,7 +1641,7 @@ class NodeScript {
         "document",
         "eval",
         "nodescript",
-        "function"
+        "function",
       ]; // bad security solution
       for (var i = 0; i < forbidden_words.length; ++i) {
         if (code_low.indexOf(forbidden_words[i]) != -1) {
@@ -1681,7 +1681,7 @@ class NodeScript {
   static title = "Script";
   static desc = "executes a code (max 256 characters)";
   static widgets_info = {
-    onExecute: { type: "code" }
+    onExecute: { type: "code" },
   };
 }
 LiteGraph.registerNodeType("basic/script", NodeScript);
@@ -1696,7 +1696,7 @@ class GenericCompare {
     this.addProperty("A", 1);
     this.addProperty("B", 1);
     this.addProperty("OP", "==", "enum", { values: GenericCompare.values });
-    this.addWidget("combo","Op.",this.properties.OP,{ property: "OP", values: GenericCompare.values } );
+    this.addWidget("combo", "Op.", this.properties.OP, { property: "OP", values: GenericCompare.values } );
 
     this.size = [80, 60];
   }
@@ -1778,7 +1778,7 @@ class GenericCompare {
   static "@OP" = {
     type: "enum",
     title: "operation",
-    values: GenericCompare.values
+    values: GenericCompare.values,
   };
 }
 LiteGraph.registerNodeType("basic/CompareValues", GenericCompare);

@@ -6,7 +6,7 @@ function SillyClient()
   this.url = "";
   this.socket = null;
   this.is_connected = false;
-  this.room = { name: "", clients:[], updated: false };
+  this.room = { name: "", clients: [], updated: false };
   this.clients = {};
   this.num_clients = 0;
   this.info_transmitted = 0;
@@ -58,7 +58,7 @@ SillyClient.prototype.connect = function( url, room_name, on_connect, on_message
     params = "?feedback=1";
 
   var protocol = "";
-  if ( url.substr(0,3) != "ws:" && url.substr(0,4) != "wss:" )
+  if ( url.substr(0, 3) != "ws:" && url.substr(0, 4) != "wss:" )
   {
     protocol = location.protocol == "http:" ? "ws://" : "wss://"; // default protocol
   }
@@ -72,7 +72,7 @@ SillyClient.prototype.connect = function( url, room_name, on_connect, on_message
     that.is_connected = true;
     that.room = {
       name: room_name,
-      clients: []
+      clients: [],
     };
     if (SillyClient.verbose)
       console.log("SillyClient socket opened");
@@ -125,7 +125,7 @@ SillyClient.prototype.connect = function( url, room_name, on_connect, on_message
   function processArrayBuffer( buffer )
   {
     var buffer_array = new Uint8Array( buffer );
-    var header = buffer_array.subarray(0,32);
+    var header = buffer_array.subarray(0, 32);
     var data = buffer.slice(32);
     var header_str = SillyClient.arrayToString( new Uint8Array(header) );
     var tokens = header_str.split("|"); // author id | cmd | data
@@ -270,7 +270,7 @@ SillyClient.prototype.getBaseURL = function()
     url = url.substr(5);
 
   var index = url.indexOf("/");
-  var domain = url.substr(0,index);
+  var domain = url.substr(0, index);
   var subaddress = url.substr(index);
   var port_index = domain.indexOf(":");
   var has_port = port_index != -1;
@@ -283,7 +283,7 @@ SillyClient.prototype.getBaseURL = function()
   // HACK for redirection
   var wsindex = subaddress.indexOf("/ws");
   if (wsindex != -1)
-    subaddress = subaddress.substr(0,wsindex+1);
+    subaddress = subaddress.substr(0, wsindex+1);
 
   return protocol + domain + "/" + subaddress
 }
@@ -295,7 +295,7 @@ SillyClient.prototype.storeData = function(key, value, on_complete)
     throw ("Cannot storeData if not connected to the server");
   var base_url = this.getBaseURL();
 
-  return new Promise(function(resolve,fail) {
+  return new Promise(function(resolve, fail) {
     var req = new XMLHttpRequest();
     req.open('GET', base_url + "/data?action=set&key="+key + ((value !== undefined && value !== null) ? "&value="+value : ""), true);
     req.onreadystatechange = function (aEvt) {
@@ -320,7 +320,7 @@ SillyClient.prototype.loadData = function(key, on_complete)
     throw ("Cannot loadData if not connected to the server");
   var base_url = this.getBaseURL();
   var req = new XMLHttpRequest();
-  return new Promise(function(resolve,fail) {
+  return new Promise(function(resolve, fail) {
     req.open('GET', base_url + "/data?action=get&key="+key, true);
     req.onreadystatechange = function (aEvt) {
       if (req.readyState == 4) {
@@ -341,7 +341,7 @@ SillyClient.prototype.loadData = function(key, on_complete)
 SillyClient.prototype.getReport = function( on_complete )
 {
   var base_url = this.getBaseURL();
-  return new Promise(function(resolve,fail) {
+  return new Promise(function(resolve, fail) {
     var req = new XMLHttpRequest();
     req.open('GET', base_url + "/info", true);
     req.onreadystatechange = function (aEvt) {
@@ -362,7 +362,7 @@ SillyClient.prototype.getReport = function( on_complete )
 // Returns a report with information about clients connected and rooms open
 SillyClient.getReport = function( url, on_complete )
 {
-  return new Promise(function(resolve,fail) {
+  return new Promise(function(resolve, fail) {
     var req = new XMLHttpRequest();
     var protocol = location.protocol + "//";
     if ( url.indexOf("wss://") != -1)
@@ -371,7 +371,7 @@ SillyClient.getReport = function( url, on_complete )
       url = url.substr(6);
     }
     var index = url.indexOf("/");
-    var host = url.substr(0,index);
+    var host = url.substr(0, index);
     req.open('GET', protocol + host + "/info", true);
     req.onreadystatechange = function (aEvt) {
       if (req.readyState == 4) {
@@ -393,7 +393,7 @@ SillyClient.getReport = function( url, on_complete )
 SillyClient.prototype.getRoomInfo = function( name, on_complete )
 {
   var base_url = this.getBaseURL();
-  return new Promise(function(resolve,fail) {
+  return new Promise(function(resolve, fail) {
     var req = new XMLHttpRequest();
     req.open('GET', base_url + "/room/" + name, true);
     req.onreadystatechange = function (aEvt) {
@@ -416,7 +416,7 @@ SillyClient.prototype.findRooms = function( name_str, on_complete )
 {
   name_str = name_str || "";
   var base_url = this.getBaseURL();
-  return new Promise(function(resolve,fail) {
+  return new Promise(function(resolve, fail) {
     var req = new XMLHttpRequest();
     req.open('GET', base_url + "/find?name=" + name_str, true);
     req.onreadystatechange = function (aEvt) {

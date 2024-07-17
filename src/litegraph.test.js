@@ -33,7 +33,7 @@ describe("register node types", () => {
     expect(node.title).toBe("Sum");
     expect(node.category).toBe("math");
     expect(node.prototype.configure).toBe(
-      LGraphNode.prototype.configure
+      LGraphNode.prototype.configure,
     );
   });
 
@@ -50,10 +50,10 @@ describe("register node types", () => {
     LiteGraph.registerNodeType("math/sum", Sum);
     expect(LiteGraph.onNodeTypeReplaced).toHaveBeenCalled();
     expect(consoleSpy).toHaveBeenCalledWith(
-      expect.stringMatching("replacing node type")
+      expect.stringMatching("replacing node type"),
     );
     expect(consoleSpy).toHaveBeenCalledWith(
-      expect.stringMatching("math/sum")
+      expect.stringMatching("math/sum"),
     );
   });
 
@@ -67,7 +67,7 @@ describe("register node types", () => {
 
   test("handle error simple object", () => {
     expect(() =>
-      LiteGraph.registerNodeType("math/sum", { simple: "type" })
+      LiteGraph.registerNodeType("math/sum", { simple: "type" }),
     ).toThrow("Cannot register a simple object");
   });
 
@@ -110,7 +110,7 @@ describe("register node types", () => {
     LiteGraph.registerNodeType("math/sum", Sum);
     expect(consoleSpy).toBeCalledTimes(1);
     expect(consoleSpy).toBeCalledWith(
-      expect.stringContaining("has onPropertyChange method")
+      expect.stringContaining("has onPropertyChange method"),
     );
     expect(consoleSpy).toBeCalledWith(expect.stringContaining("math/sum"));
   });
@@ -133,7 +133,7 @@ describe("register node types", () => {
     LiteGraph.registerNodeType("math/times", Times);
 
     expect(
-      Object.keys(LiteGraph.node_types_by_file_extension).length
+      Object.keys(LiteGraph.node_types_by_file_extension).length,
     ).toBe(3);
     expect(LiteGraph.node_types_by_file_extension).toHaveProperty("pdf");
     expect(LiteGraph.node_types_by_file_extension).toHaveProperty("exe");
@@ -214,7 +214,7 @@ describe("unregister node types", () => {
 
   test("try removing with wrong name", () => {
     expect(() => LiteGraph.unregisterNodeType("missing/type")).toThrow(
-      "node type not found: missing/type"
+      "node type not found: missing/type",
     );
   });
 
