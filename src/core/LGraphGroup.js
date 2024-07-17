@@ -7,7 +7,7 @@ export class LGraphGroup {
   constructor(title) {
     this._ctor(title);
   }
-  
+
   _ctor(title) {
     this.title = title || "Group";
     this.font_size = 24;
@@ -19,7 +19,7 @@ export class LGraphGroup {
     this._size = this._bounding.subarray(2, 4);
     this._nodes = [];
     this.graph = null;
-  
+
     Object.defineProperty(this, "pos", {
       set: function(v) {
         if (!v || v.length < 2) {
@@ -33,7 +33,7 @@ export class LGraphGroup {
       },
       enumerable: true
     });
-  
+
     Object.defineProperty(this, "size", {
       set: function(v) {
         if (!v || v.length < 2) {
@@ -48,7 +48,7 @@ export class LGraphGroup {
       enumerable: true
     });
   }
-  
+
   configure(o) {
     this.title = o.title;
     this._bounding.set(o.bounding);
@@ -57,7 +57,7 @@ export class LGraphGroup {
       this.font_size = o.font_size;
     }
   }
-  
+
   serialize() {
     var b = this._bounding;
     return {
@@ -72,7 +72,7 @@ export class LGraphGroup {
       font_size: this.font_size
     };
   }
-  
+
   move(deltax, deltay, ignore_nodes) {
     this._pos[0] += deltax;
     this._pos[1] += deltay;
@@ -85,23 +85,23 @@ export class LGraphGroup {
       node.pos[1] += deltay;
     }
   }
-  
+
   recomputeInsideNodes() {
     this._nodes.length = 0;
     var nodes = this.graph._nodes;
     var node_bounding = new Float32Array(4);
-  
+
     for (var i = 0; i < nodes.length; ++i) {
       var node = nodes[i];
       node.getBounding(node_bounding);
       if (!LiteGraph.overlapBounding(this._bounding, node_bounding)) {
         continue;
-      } //out of the visible area
+      } // out of the visible area
       this._nodes.push(node);
     }
   }
 }
-    
+
 LGraphGroup.prototype.isPointInside = LGraphNode.prototype.isPointInside;
 LGraphGroup.prototype.setDirtyCanvas = LGraphNode.prototype.setDirtyCanvas;
 

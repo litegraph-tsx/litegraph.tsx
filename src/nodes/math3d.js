@@ -34,14 +34,14 @@ class Math3DMat4 {
     var R = this.getInputData(1);
     var S = this.getInputData(2);
 
-    if( this._must_update || T || R || S )
+    if ( this._must_update || T || R || S )
     {
       T = T || this.properties.T;
       R = R || this.properties.R;
       S = S || this.properties.S;
       mat4.identity( M );
       mat4.translate( M, M, T );
-      if(this.properties.R_in_degrees)
+      if (this.properties.R_in_degrees)
       {
         temp_vec3.set( R );
         vec3.scale(temp_vec3,temp_vec3,DEG2RAD);
@@ -54,7 +54,7 @@ class Math3DMat4 {
       mat4.scale( M, M, S );
     }
 
-    this.setOutputData(0, M);        
+    this.setOutputData(0, M);
   }
 
   static title = "mat4";
@@ -75,7 +75,7 @@ class Math3DOperation {
   }
 
   getTitle() {
-    if(this.properties.OP == "max" || this.properties.OP == "min" )
+    if (this.properties.OP == "max" || this.properties.OP == "min" )
       return this.properties.OP + "(A,B)";
     return "A " + this.properties.OP + " B";
   }
@@ -83,11 +83,11 @@ class Math3DOperation {
   onExecute() {
     var A = this.getInputData(0);
     var B = this.getInputData(1);
-    if(A == null || B == null)
+    if (A == null || B == null)
       return;
-    if(A.constructor === Number)
+    if (A.constructor === Number)
       A = [A,A,A];
-    if(B.constructor === Number)
+    if (B.constructor === Number)
       B = [B,B,B];
 
     var result = this._result;
@@ -318,7 +318,7 @@ class Math3DVec3Dot {
 LiteGraph.registerNodeType("math3d/vec3-dot", Math3DVec3Dot);
 
 
-//if glMatrix is installed...
+// if glMatrix is installed...
 if (global.glMatrix) {
 
 
@@ -399,7 +399,7 @@ if (global.glMatrix) {
         euler = this.properties.euler;
       }
       vec3.scale( this._degs, euler, DEG2RAD );
-      if(this.properties.use_yaw_pitch_roll)
+      if (this.properties.use_yaw_pitch_roll)
         this._degs = [this._degs[2],this._degs[0],this._degs[1]];
       var R = quat.fromEuler(this._value, this._degs);
       this.setOutputData(0, R);
@@ -420,7 +420,7 @@ if (global.glMatrix) {
 
     onExecute() {
       var q = this.getInputData(0);
-      if(!q)
+      if (!q)
         return;
       var R = quat.toEuler(this._value, q);
       vec3.scale( this._value, this._value, DEG2RAD );
@@ -539,14 +539,14 @@ if (global.glMatrix) {
 
     onExecute() {
       var vec = this.getInputData(0);
-      if(vec)
+      if (vec)
         this._value.set(vec);
       var range_min = this.properties.range_min;
       var range_max = this.properties.range_max;
       var target_min = this.properties.target_min;
       var target_max = this.properties.target_max;
 
-      //swap to avoid errors
+      // swap to avoid errors
       /*
               if(range_min > range_max)
               {
@@ -561,18 +561,18 @@ if (global.glMatrix) {
               }
               */
 
-      for(var i = 0; i < 3; ++i)
+      for (var i = 0; i < 3; ++i)
       {
         var r = range_max[i] - range_min[i];
         this._clamped[i] = clamp( this._value[i], range_min[i], range_max[i] );
-        if(r == 0)
+        if (r == 0)
         {
           this._value[i] = (target_min[i] + target_max[i]) * 0.5;
           continue;
         }
 
         var n = (this._value[i] - range_min[i]) / r;
-        if(this.properties.clamp)
+        if (this.properties.clamp)
           n = clamp(n,0,1);
         var t = target_max[i] - target_min[i];
         this._value[i] = target_min[i] + n * t;
@@ -588,7 +588,7 @@ if (global.glMatrix) {
   LiteGraph.registerNodeType("math3d/remap_range", Math3DRemapRange);
 
 
-} //glMatrix
+} // glMatrix
 else if (LiteGraph.debug) {
   console.warn("No glmatrix found, some Math3D nodes may not work");
 }

@@ -37,6 +37,7 @@
 - [x] Automated class conversion using lebab
 
 - [ ] Manual class conversion and movement of methods and properties into classes
+    * Currently only nodes/gl*.js files left, reached my patience copy and pasting title and desc's up for today.
 
 - [x] Clean up global.X, LiteGraph.X class attachments
 

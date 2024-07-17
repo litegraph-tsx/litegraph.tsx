@@ -174,7 +174,7 @@ class MathRange {
   }
 
   onDrawBackground(ctx) {
-    //show the current value
+    // show the current value
     if (this._last_v) {
       this.outputs[0].label = this._last_v.toFixed(3);
     } else {
@@ -224,7 +224,7 @@ class MathRand {
   }
 
   onDrawBackground(ctx) {
-    //show the current value
+    // show the current value
     this.outputs[0].label = (this._last_v || 0).toFixed(3);
   }
 
@@ -238,7 +238,7 @@ class MathRand {
 LiteGraph.registerNodeType("math/rand", MathRand);
 
 
-//basic continuous noise
+// basic continuous noise
 class MathNoise {
   constructor() {
     this.addInput("in", "number");
@@ -283,12 +283,12 @@ class MathNoise {
     f += seed;
     var speed = this.properties.speed || 1;
     var total_amp = 0;
-    for(var i = 0; i < iterations; ++i)
+    for (var i = 0; i < iterations; ++i)
     {
       r += MathNoise.getValue(f * (1+i) * speed, this.properties.smooth) * amp;
       total_amp += amp;
       amp *= this.properties.persistence;
-      if(amp < 0.001)
+      if (amp < 0.001)
         break;
     }
     r /= total_amp;
@@ -299,7 +299,7 @@ class MathNoise {
   }
 
   onDrawBackground(ctx) {
-    //show the current value
+    // show the current value
     this.outputs[0].label = (this._last_v || 0).toFixed(3);
   }
 
@@ -310,7 +310,7 @@ class MathNoise {
 LiteGraph.registerNodeType("math/noise", MathNoise);
 
 
-//generates spikes every random time
+// generates spikes every random time
 class MathSpikes {
   constructor() {
     this.addOutput("out", "number");
@@ -323,7 +323,7 @@ class MathSpikes {
   }
 
   onExecute() {
-    var dt = this.graph.elapsed_time; //in secs
+    var dt = this.graph.elapsed_time; // in secs
 
     this._remaining_time -= dt;
     this._blink_time -= dt;
@@ -362,7 +362,7 @@ class MathClamp {
     this.addProperty("max", 1);
   }
 
-  //MathClamp.filter = "shader";
+  // MathClamp.filter = "shader";
 
   onExecute() {
     var v = this.getInputData(0);
@@ -663,11 +663,11 @@ class MathOperation {
     this.addProperty("B", 1);
     this.addProperty("OP", "+", "enum", { values: MathOperation.values });
     this._func = MathOperation.funcs[this.properties.OP];
-    this._result = []; //only used for arrays
+    this._result = []; // only used for arrays
   }
 
   getTitle() {
-    if(this.properties.OP == "max" || this.properties.OP == "min")
+    if (this.properties.OP == "max" || this.properties.OP == "min")
       return this.properties.OP + "(A,B)";
     return "A " + this.properties.OP + " B";
   }
@@ -683,7 +683,7 @@ class MathOperation {
     if (name != "OP")
       return;
     this._func = MathOperation.funcs[this.properties.OP];
-    if(!this._func)
+    if (!this._func)
     {
       console.warn("Unknown operation: " + this.properties.OP);
       this._func = function(A) { return A; };
@@ -694,7 +694,7 @@ class MathOperation {
     var A = this.getInputData(0);
     var B = this.getInputData(1);
     if ( A != null ) {
-      if( A.constructor === Number )
+      if ( A.constructor === Number )
         this.properties["A"] = A;
     } else {
       A = this.properties["A"];
@@ -709,22 +709,22 @@ class MathOperation {
     var func = MathOperation.funcs[this.properties.OP];
 
     var result;
-    if(A.constructor === Number)
+    if (A.constructor === Number)
     {
       result = 0;
       result = func(A,B);
     }
-    else if(A.constructor === Array)
+    else if (A.constructor === Array)
     {
       result = this._result;
       result.length = A.length;
-      for(var i = 0; i < A.length; ++i)
+      for (var i = 0; i < A.length; ++i)
         result[i] = func(A[i],B);
     }
     else
     {
       result = {};
-      for(var i in A)
+      for (var i in A)
         result[i] = func(A[i],B);
     }
     this.setOutputData(0, result);
@@ -748,7 +748,7 @@ class MathOperation {
 
   static title = "Operation";
   static desc = "Easy math operators";
-  
+
   static values = ["+", "-", "*", "/", "%", "^", "max", "min"];
   static funcs = {
     "+": function(A,B) { return A + B; },
@@ -973,7 +973,7 @@ class MathBranch {
     var V = this.getInputData(0);
     var cond = this.getInputData(1);
 
-    if(cond)
+    if (cond)
     {
       this.setOutputData(0, V);
       this.setOutputData(1, null);
@@ -1029,7 +1029,7 @@ class MathTrigonometry {
     this.bgImageUrl = "assets/images/icon-sin.png";
   }
 
-  //MathTrigonometry.filter = "shader";
+  // MathTrigonometry.filter = "shader";
 
   onExecute() {
     var v = this.getInputData(0);
@@ -1109,7 +1109,7 @@ LiteGraph.registerSearchboxExtra("math/trigonometry", "TAN()", {
 });
 
 
-//math library for safe math operations without eval
+// math library for safe math operations without eval
 class MathFormula {
   constructor() {
     this.addInput("x", "number");

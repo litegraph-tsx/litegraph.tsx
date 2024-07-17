@@ -1,9 +1,9 @@
 import { LiteGraph } from "@/litegraph.js";
 
-//basic nodes
+// basic nodes
 var global = typeof(window) != "undefined" ? window : typeof(self) != "undefined" ? self : globalThis;
 
-//Constant
+// Constant
 class Time {
   constructor() {
     this.addOutput("in ms", "number");
@@ -21,7 +21,7 @@ class Time {
 LiteGraph.registerNodeType("basic/time", Time);
 
 
-//Subgraph: a node that contains a graph
+// Subgraph: a node that contains a graph
 class Subgraph {
   constructor() {
     var that = this;
@@ -29,14 +29,14 @@ class Subgraph {
     this.properties = { enabled: true };
     this.enabled = true;
 
-    //create inner graph
+    // create inner graph
     this.subgraph = new LiteGraph.LGraph();
     this.subgraph._subgraph_node = this;
     this.subgraph._is_subgraph = true;
 
     this.subgraph.onTrigger = this.onSubgraphTrigger.bind(this);
 
-    //nodes input node added inside
+    // nodes input node added inside
     this.subgraph.onInputAdded = this.onSubgraphNewInput.bind(this);
     this.subgraph.onInputRenamed = this.onSubgraphRenamedInput.bind(this);
     this.subgraph.onInputTypeChanged = this.onSubgraphTypeChangeInput.bind(this);
@@ -103,7 +103,7 @@ class Subgraph {
       return;
     }
 
-    //send inputs to subgraph global inputs
+    // send inputs to subgraph global inputs
     if (this.inputs) {
       for (var i = 0; i < this.inputs.length; i++) {
         var input = this.inputs[i];
@@ -112,10 +112,10 @@ class Subgraph {
       }
     }
 
-    //execute
+    // execute
     this.subgraph.runStep();
 
-    //send subgraph global outputs to outputs
+    // send subgraph global outputs to outputs
     if (this.outputs) {
       for (var i = 0; i < this.outputs.length; i++) {
         var output = this.outputs[i];
@@ -195,7 +195,7 @@ class Subgraph {
     return [ 200, Math.max(num_inputs,num_outputs) * LiteGraph.NODE_SLOT_HEIGHT + LiteGraph.NODE_TITLE_HEIGHT ];
   }
 
-  //**** INPUTS ***********************************
+  //* *** INPUTS ***********************************
   onSubgraphTrigger(event, param) {
     var slot = this.findOutputSlot(event);
     if (slot != -1) {
@@ -206,7 +206,7 @@ class Subgraph {
   onSubgraphNewInput(name, type) {
     var slot = this.findInputSlot(name);
     if (slot == -1) {
-      //add input to the node
+      // add input to the node
       this.addInput(name, type);
     }
   }
@@ -237,7 +237,7 @@ class Subgraph {
     this.removeInput(slot);
   }
 
-  //**** OUTPUTS ***********************************
+  //* *** OUTPUTS ***********************************
   onSubgraphNewOutput(name, type) {
     var slot = this.findOutputSlot(name);
     if (slot == -1) {
@@ -295,7 +295,7 @@ class Subgraph {
     return data;
   }
 
-  //no need to define node.configure, the default method detects node.subgraph and passes the object to node.subgraph.configure()
+  // no need to define node.configure, the default method detects node.subgraph and passes the object to node.subgraph.configure()
 
   reassignSubgraphUUIDs(graph) {
     const idMap = { nodeIDs: {}, linkIDs: {} }
@@ -391,44 +391,44 @@ class Subgraph {
   }
 
   buildFromNodes(nodes) {
-    //clear all?
-    //TODO
+    // clear all?
+    // TODO
 
-    //nodes that connect data between parent graph and subgraph
+    // nodes that connect data between parent graph and subgraph
     var subgraph_inputs = [];
     var subgraph_outputs = [];
 
-    //mark inner nodes
+    // mark inner nodes
     var ids = {};
     var min_x = 0;
     var max_x = 0;
-    for(var i = 0; i < nodes.length; ++i)
+    for (var i = 0; i < nodes.length; ++i)
     {
       var node = nodes[i];
       ids[ node.id ] = node;
       min_x = Math.min( node.pos[0], min_x );
       max_x = Math.max( node.pos[0], min_x );
     }
-          
+
     var last_input_y = 0;
     var last_output_y = 0;
 
-    for(var i = 0; i < nodes.length; ++i)
+    for (var i = 0; i < nodes.length; ++i)
     {
       var node = nodes[i];
-      //check inputs
-      if( node.inputs )
-        for(var j = 0; j < node.inputs.length; ++j)
+      // check inputs
+      if ( node.inputs )
+        for (var j = 0; j < node.inputs.length; ++j)
         {
           var input = node.inputs[j];
-          if( !input || !input.link )
+          if ( !input || !input.link )
             continue;
           var link = node.graph.links[ input.link ];
-          if(!link)
+          if (!link)
             continue;
-          if( ids[ link.origin_id ] )
+          if ( ids[ link.origin_id ] )
             continue;
-            //this.addInput(input.name,link.type);
+            // this.addInput(input.name,link.type);
           this.subgraph.addInput(input.name,link.type);
           /*
                       var input_node = LiteGraph.createNode("graph/input");
@@ -438,27 +438,27 @@ class Subgraph {
                       */
         }
 
-      //check outputs
-      if( node.outputs )
-        for(var j = 0; j < node.outputs.length; ++j)
+      // check outputs
+      if ( node.outputs )
+        for (var j = 0; j < node.outputs.length; ++j)
         {
           var output = node.outputs[j];
-          if( !output || !output.links || !output.links.length )
+          if ( !output || !output.links || !output.links.length )
             continue;
           var is_external = false;
-          for(var k = 0; k < output.links.length; ++k)
+          for (var k = 0; k < output.links.length; ++k)
           {
             var link = node.graph.links[ output.links[k] ];
-            if(!link)
+            if (!link)
               continue;
-            if( ids[ link.target_id ] )
+            if ( ids[ link.target_id ] )
               continue;
             is_external = true;
             break;
           }
-          if(!is_external)
+          if (!is_external)
             continue;
-            //this.addOutput(output.name,output.type);
+            // this.addOutput(output.name,output.type);
             /*
                       var output_node = LiteGraph.createNode("graph/output");
                       this.subgraph.add( output_node );
@@ -468,14 +468,14 @@ class Subgraph {
         }
     }
 
-    //detect inputs and outputs
-    //split every connection in two data_connection nodes
-    //keep track of internal connections
-    //connect external connections
+    // detect inputs and outputs
+    // split every connection in two data_connection nodes
+    // keep track of internal connections
+    // connect external connections
 
-    //clone nodes inside subgraph and try to reconnect them
+    // clone nodes inside subgraph and try to reconnect them
 
-    //connect edge subgraph nodes to extarnal connections nodes
+    // connect edge subgraph nodes to extarnal connections nodes
   }
 
   static title = "Subgraph";
@@ -486,7 +486,7 @@ LiteGraph.Subgraph = Subgraph;
 LiteGraph.registerNodeType("graph/subgraph", Subgraph);
 
 
-//Input for a subgraph
+// Input for a subgraph
 class GraphInput {
   constructor() {
     this.addOutput("", "number");
@@ -496,7 +496,7 @@ class GraphInput {
       name: "",
       type: "number",
       value: 0
-    }; 
+    };
 
     var that = this;
 
@@ -537,31 +537,31 @@ class GraphInput {
     this.updateType();
   }
 
-  //ensures the type in the node output and the type in the associated graph input are the same
+  // ensures the type in the node output and the type in the associated graph input are the same
   updateType() {
     var type = this.properties.type;
     this.type_widget.value = type;
 
-    //update output
-    if(this.outputs[0].type != type)
+    // update output
+    if (this.outputs[0].type != type)
     {
       if (!LiteGraph.isValidConnection(this.outputs[0].type,type))
         this.disconnectOutput(0);
       this.outputs[0].type = type;
     }
 
-    //update widget
-    if(type == "number")
+    // update widget
+    if (type == "number")
     {
       this.value_widget.type = "number";
       this.value_widget.value = 0;
     }
-    else if(type == "boolean")
+    else if (type == "boolean")
     {
       this.value_widget.type = "toggle";
       this.value_widget.value = true;
     }
-    else if(type == "string")
+    else if (type == "string")
     {
       this.value_widget.type = "text";
       this.value_widget.value = "";
@@ -573,32 +573,32 @@ class GraphInput {
     }
     this.properties.value = this.value_widget.value;
 
-    //update graph
+    // update graph
     if (this.graph && this.name_in_graph) {
       this.graph.changeInputType(this.name_in_graph, type);
     }
   }
 
-  //this is executed AFTER the property has changed
+  // this is executed AFTER the property has changed
   onPropertyChanged(name, v) {
-    if( name == "name" )
+    if ( name == "name" )
     {
       if (v == "" || v == this.name_in_graph || v == "enabled") {
         return false;
       }
-      if(this.graph)
+      if (this.graph)
       {
         if (this.name_in_graph) {
-          //already added
+          // already added
           this.graph.renameInput( this.name_in_graph, v );
         } else {
           this.graph.addInput( v, this.properties.type );
         }
-      } //what if not?!
+      } // what if not?!
       this.name_widget.value = v;
       this.name_in_graph = v;
     }
-    else if( name == "type" )
+    else if ( name == "type" )
     {
       this.updateType();
     }
@@ -619,7 +619,7 @@ class GraphInput {
 
   onExecute() {
     var name = this.properties.name;
-    //read from global input
+    // read from global input
     var data = this.graph.inputs[name];
     if (!data) {
       this.setOutputData(0, this.properties.value );
@@ -642,7 +642,7 @@ LiteGraph.GraphInput = GraphInput;
 LiteGraph.registerNodeType("graph/input", GraphInput);
 
 
-//Output for a subgraph
+// Output for a subgraph
 class GraphOutput {
   constructor() {
     this.addInput("", "");
@@ -707,12 +707,12 @@ class GraphOutput {
       }
       if (this.graph) {
         if (this.name_in_graph) {
-          //already added
+          // already added
           this.graph.renameOutput(this.name_in_graph, v);
         } else {
           this.graph.addOutput(v, this.properties.type);
         }
-      } //what if not?!
+      } // what if not?!
       this.name_widget.value = v;
       this.name_in_graph = v;
     }
@@ -726,7 +726,7 @@ class GraphOutput {
     if (this.type_widget)
       this.type_widget.value = type;
 
-    //update output
+    // update output
     if (this.inputs[0].type != type) {
 
       if ( type == "action" || type == "event")
@@ -736,7 +736,7 @@ class GraphOutput {
       this.inputs[0].type = type;
     }
 
-    //update graph
+    // update graph
     if (this.graph && this.name_in_graph) {
       this.graph.changeOutputType(this.name_in_graph, type);
     }
@@ -773,7 +773,7 @@ LiteGraph.GraphOutput = GraphOutput;
 LiteGraph.registerNodeType("graph/output", GraphOutput);
 
 
-//Constant
+// Constant
 class ConstantNumber {
   constructor() {
     this.addOutput("value", "number");
@@ -799,7 +799,7 @@ class ConstantNumber {
   }
 
   onDrawBackground(ctx) {
-    //show the current value
+    // show the current value
     this.outputs[0].label = this.properties["value"].toFixed(3);
   }
 
@@ -845,7 +845,7 @@ class ConstantString {
   constructor() {
     this.addOutput("string", "string");
     this.addProperty("value", "");
-    this.widget = this.addWidget("text","value","","value");  //link to property value
+    this.widget = this.addWidget("text","value","","value"); // link to property value
     this.widgets_up = true;
     this.size = [180, 30];
   }
@@ -903,7 +903,7 @@ class ConstantFile {
   onPropertyChanged(name, value) {
     if (name == "url")
     {
-      if( value == null || value == "")
+      if ( value == null || value == "")
         this._data = null;
       else
       {
@@ -914,14 +914,14 @@ class ConstantFile {
 
   onExecute() {
     var url = this.getInputData(0) || this.properties.url;
-    if(url && (url != this._url || this._type != this.properties.type))
+    if (url && (url != this._url || this._type != this.properties.type))
       this.fetchFile(url);
     this.setOutputData(0, this._data );
   }
 
   fetchFile(url) {
     var that = this;
-    if(!url || url.constructor !== String)
+    if (!url || url.constructor !== String)
     {
       that._data = null;
       that.boxcolor = null;
@@ -935,16 +935,16 @@ class ConstantFile {
     }
     fetch(url)
       .then(function(response) {
-        if(!response.ok)
+        if (!response.ok)
           throw new Error("File not found");
 
-        if(that.properties.type == "arraybuffer")
+        if (that.properties.type == "arraybuffer")
           return response.arrayBuffer();
-        else if(that.properties.type == "text")
+        else if (that.properties.type == "text")
           return response.text();
-        else if(that.properties.type == "json")
+        else if (that.properties.type == "json")
           return response.json();
-        else if(that.properties.type == "blob")
+        else if (that.properties.type == "blob")
           return response.blob();
       })
       .then(function(data) {
@@ -968,15 +968,15 @@ class ConstantFile {
     {
       that.boxcolor = "#AEA";
       var v = e.target.result;
-      if( that.properties.type == "json" )
+      if ( that.properties.type == "json" )
         v = JSON.parse(v);
       that._data = v;
     }
-    if(that.properties.type == "arraybuffer")
+    if (that.properties.type == "arraybuffer")
       reader.readAsArrayBuffer(file);
-    else if(that.properties.type == "text" || that.properties.type == "json")
+    else if (that.properties.type == "text" || that.properties.type == "json")
       reader.readAsText(file);
-    else if(that.properties.type == "blob")
+    else if (that.properties.type == "blob")
       return reader.readAsBinaryString(file);
   }
 
@@ -989,7 +989,7 @@ class ConstantFile {
 LiteGraph.registerNodeType("basic/file", ConstantFile);
 
 
-//to store json objects
+// to store json objects
 class JSONParse {
   constructor() {
     this.addInput("parse", LiteGraph.ACTION);
@@ -1002,7 +1002,7 @@ class JSONParse {
   }
 
   parse() {
-    if(!this._str)
+    if (!this._str)
       return;
 
     try {
@@ -1021,7 +1021,7 @@ class JSONParse {
   }
 
   onAction(name) {
-    if(name == "parse")
+    if (name == "parse")
       this.parse();
   }
 
@@ -1031,7 +1031,7 @@ class JSONParse {
 LiteGraph.registerNodeType("basic/jsonparse", JSONParse);
 
 
-//to store json objects
+// to store json objects
 class ConstantData {
   constructor() {
     this.addOutput("data", "object");
@@ -1068,7 +1068,7 @@ class ConstantData {
 LiteGraph.registerNodeType("basic/data", ConstantData);
 
 
-//to store json objects
+// to store json objects
 class ConstantArray {
   constructor() {
     this._value = [];
@@ -1088,7 +1088,7 @@ class ConstantArray {
     }
 
     try {
-      if(value[0] != "[")
+      if (value[0] != "[")
         this._value = JSON.parse("[" + value + "]");
       else
         this._value = JSON.parse(value);
@@ -1100,12 +1100,12 @@ class ConstantArray {
 
   onExecute() {
     var v = this.getInputData(0);
-    if(v && v.length) //clone
+    if (v && v.length) // clone
     {
-      if(!this._value)
+      if (!this._value)
         this._value = new Array();
       this._value.length = v.length;
-      for(var i = 0; i < v.length; ++i)
+      for (var i = 0; i < v.length; ++i)
         this._value[i] = v[i];
     }
     this.setOutputData(0, this._value);
@@ -1130,12 +1130,12 @@ class SetArray {
 
   onExecute() {
     var arr = this.getInputData(0);
-    if(!arr)
+    if (!arr)
       return;
     var v = this.getInputData(1);
-    if(v === undefined )
+    if (v === undefined )
       return;
-    if(this.properties.index)
+    if (this.properties.index)
       arr[ Math.floor(this.properties.index) ] = v;
     this.setOutputData(0,arr);
   }
@@ -1157,9 +1157,9 @@ class ArrayElement {
   onExecute() {
     var array = this.getInputData(0);
     var index = this.getInputData(1);
-    if(index == null)
+    if (index == null)
       index = this.properties.index;
-    if(array == null || index == null )
+    if (array == null || index == null )
       return;
     this.setOutputData(0, array[Math.floor(Number(index))] );
   }
@@ -1184,14 +1184,14 @@ class TableElement {
     var table = this.getInputData(0);
     var row = this.getInputData(1);
     var col = this.getInputData(2);
-    if(row == null)
+    if (row == null)
       row = this.properties.row;
-    if(col == null)
+    if (col == null)
       col = this.properties.column;
-    if(table == null || row == null || col == null)
+    if (table == null || row == null || col == null)
       return;
     var row = table[Math.floor(Number(row))];
-    if(row)
+    if (row)
       this.setOutputData(0, row[Math.floor(Number(col))] );
     else
       this.setOutputData(0, null );
@@ -1274,12 +1274,12 @@ class SetObject {
 
   onExecute() {
     var obj = this.getInputData(0);
-    if(!obj)
+    if (!obj)
       return;
     var v = this.getInputData(1);
-    if(v === undefined )
+    if (v === undefined )
       return;
-    if(this.properties.property)
+    if (this.properties.property)
       obj[ this.properties.property ] = v;
     this.setOutputData(0,obj);
   }
@@ -1297,7 +1297,7 @@ class MergeObjects {
     this.addOutput("out", "object");
     this._result = {};
     var that = this;
-    this.addWidget("button","clear","",function(){
+    this.addWidget("button","clear","",function() {
       that._result = {};
     });
     this.size = this.computeSize();
@@ -1307,11 +1307,11 @@ class MergeObjects {
     var A = this.getInputData(0);
     var B = this.getInputData(1);
     var C = this._result;
-    if(A)
-      for(var i in A)
+    if (A)
+      for (var i in A)
         C[i] = A[i];
-    if(B)
-      for(var i in B)
+    if (B)
+      for (var i in B)
         C[i] = B[i];
     this.setOutputData(0,C);
   }
@@ -1322,7 +1322,7 @@ class MergeObjects {
 LiteGraph.registerNodeType("basic/merge_objects", MergeObjects );
 
 
-//Store as variable
+// Store as variable
 class Variable {
   constructor() {
     this.size = [60, 30];
@@ -1335,7 +1335,7 @@ class Variable {
   onExecute() {
     var container = this.getContainer();
 
-    if(this.isInputConnected(0))
+    if (this.isInputConnected(0))
     {
       this.value = this.getInputData(0);
       container[ this.properties.varname ] = this.value;
@@ -1347,10 +1347,10 @@ class Variable {
   }
 
   getContainer() {
-    switch(this.properties.container)
+    switch (this.properties.container)
     {
       case Variable.GRAPH:
-        if(this.graph)
+        if (this.graph)
           return this.graph.vars;
         return {};
       case Variable.GLOBALSCOPE:
@@ -1367,16 +1367,16 @@ class Variable {
 
   static title = "Variable";
   static desc = "store/read variable value";
-  static LITEGRAPH = 0; //between all graphs
-  static GRAPH = 1;    //only inside this graph
-  static GLOBALSCOPE = 2;    //attached to Window
+  static LITEGRAPH = 0; // between all graphs
+  static GRAPH = 1; // only inside this graph
+  static GLOBALSCOPE = 2; // attached to Window
   static "@container" = { type: "enum", values: {"litegraph":Variable.LITEGRAPH, "graph":Variable.GRAPH,"global": Variable.GLOBALSCOPE} };
 }
 LiteGraph.registerNodeType("basic/variable", Variable);
 
 
 function length(v) {
-  if(v && v.length != null)
+  if (v && v.length != null)
     return Number(v.length);
   return 0;
 }
@@ -1390,7 +1390,7 @@ LiteGraph.wrapFunctionAsNode(
 
 LiteGraph.wrapFunctionAsNode(
   "basic/not",
-  function(a){ return !a; },
+  function(a) { return !a; },
   [""],
   "boolean"
 );
@@ -1404,19 +1404,19 @@ class DownloadData {
     this.properties = { filename: "data.json" };
     this.value = null;
     var that = this;
-    this.addWidget("button","Download","", function(v){
-      if(!that.value)
+    this.addWidget("button","Download","", function(v) {
+      if (!that.value)
         return;
       that.downloadAsFile();
     });
   }
 
   downloadAsFile() {
-    if(this.value == null)
+    if (this.value == null)
       return;
 
     var str = null;
-    if(this.value.constructor === String)
+    if (this.value.constructor === String)
       str = this.value;
     else
       str = JSON.stringify(this.value);
@@ -1430,12 +1430,12 @@ class DownloadData {
     document.body.appendChild(element);
     element.click();
     document.body.removeChild(element);
-    setTimeout( function(){ URL.revokeObjectURL( url ); }, 1000*60 ); //wait one minute to revoke url
+    setTimeout( function() { URL.revokeObjectURL( url ); }, 1000*60 ); // wait one minute to revoke url
   }
 
   onAction(action, param) {
     var that = this;
-    setTimeout( function(){ that.downloadAsFile(); }, 100); //deferred to avoid blocking the renderer with the popup
+    setTimeout( function() { that.downloadAsFile(); }, 100); // deferred to avoid blocking the renderer with the popup
   }
 
   onExecute() {
@@ -1457,7 +1457,7 @@ class DownloadData {
 LiteGraph.registerNodeType("basic/download", DownloadData);
 
 
-//Watch a value in the editor
+// Watch a value in the editor
 class Watch {
   constructor() {
     this.size = [60, 30];
@@ -1496,7 +1496,7 @@ class Watch {
   }
 
   onDrawBackground(ctx) {
-    //show the current value
+    // show the current value
     this.inputs[0].label = Watch.toString(this.value);
   }
 
@@ -1506,7 +1506,7 @@ class Watch {
 LiteGraph.registerNodeType("basic/watch", Watch);
 
 
-//in case one type doesnt match other type but you want to connect them anyway
+// in case one type doesnt match other type but you want to connect them anyway
 class Cast {
   constructor() {
     this.addInput("in", 0);
@@ -1524,7 +1524,7 @@ class Cast {
 LiteGraph.registerNodeType("basic/cast", Cast);
 
 
-//Show value inside the debug console
+// Show value inside the debug console
 class Console {
   constructor() {
     this.mode = LiteGraph.ON_EVENT;
@@ -1536,8 +1536,8 @@ class Console {
 
   onAction(action, param) {
     // param is the action
-    var msg = this.getInputData(1); //getInputDataByName("msg");
-    //if (msg == null || typeof msg == "undefined") return;
+    var msg = this.getInputData(1); // getInputDataByName("msg");
+    // if (msg == null || typeof msg == "undefined") return;
     if (!msg) msg = this.properties.msg;
     if (!msg) msg = "Event: "+param; // msg is undefined if the slot is lost?
     if (action == "log") {
@@ -1550,7 +1550,7 @@ class Console {
   }
 
   onExecute() {
-    var msg = this.getInputData(1); //getInputDataByName("msg");
+    var msg = this.getInputData(1); // getInputDataByName("msg");
     if (!msg) msg = this.properties.msg;
     if (msg != null && typeof msg != "undefined") {
       this.properties.msg = msg;
@@ -1572,7 +1572,7 @@ class Console {
 LiteGraph.registerNodeType("basic/console", Console);
 
 
-//Show value inside the debug console
+// Show value inside the debug console
 class Alert {
   constructor() {
     this.mode = LiteGraph.ON_EVENT;
@@ -1602,7 +1602,7 @@ class Alert {
 LiteGraph.registerNodeType("basic/alert", Alert);
 
 
-//Execites simple code
+// Execites simple code
 class NodeScript {
   constructor() {
     this.size = [60, 30];
@@ -1642,7 +1642,7 @@ class NodeScript {
         "eval",
         "nodescript",
         "function"
-      ]; //bad security solution
+      ]; // bad security solution
       for (var i = 0; i < forbidden_words.length; ++i) {
         if (code_low.indexOf(forbidden_words[i]) != -1) {
           console.warn("invalid script");
@@ -1721,17 +1721,17 @@ class GenericCompare {
     }
 
     var result = false;
-    if (typeof A == typeof B){
+    if (typeof A == typeof B) {
       switch (this.properties.OP) {
         case "==":
         case "!=":
           // traverse both objects.. consider that this is not a true deep check! consider underscore or other library for thath :: _isEqual()
           result = true;
-          switch(typeof A){
+          switch (typeof A) {
             case "object":
               var aProps = Object.getOwnPropertyNames(A);
               var bProps = Object.getOwnPropertyNames(B);
-              if (aProps.length != bProps.length){
+              if (aProps.length != bProps.length) {
                 result = false;
                 break;
               }
@@ -1748,7 +1748,7 @@ class GenericCompare {
           }
           if (this.properties.OP == "!=") result = !result;
           break;
-                  /*case ">":
+                  /* case ">":
                       result = A > B;
                       break;
                   case "<":
@@ -1774,7 +1774,7 @@ class GenericCompare {
 
   static title = "Compare *";
   static desc = "evaluates condition between A and B";
-  static values = ["==", "!="]; //[">", "<", "==", "!=", "<=", ">=", "||", "&&" ];
+  static values = ["==", "!="]; // [">", "<", "==", "!=", "<=", ">=", "||", "&&" ];
   static "@OP" = {
     type: "enum",
     title: "operation",

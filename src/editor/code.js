@@ -8,19 +8,19 @@ var editor = new LiteGraph.Editor("main",{miniwindow:false});
 window.graphcanvas = editor.graphcanvas;
 window.graph = editor.graph;
 updateEditorHiPPICanvas();
-window.addEventListener("resize", function() { 
+window.addEventListener("resize", function() {
   editor.graphcanvas.resize();
   updateEditorHiPPICanvas();
 } );
-//window.addEventListener("keydown", editor.graphcanvas.processKey.bind(editor.graphcanvas) );
-window.onbeforeunload = function(){
+// window.addEventListener("keydown", editor.graphcanvas.processKey.bind(editor.graphcanvas) );
+window.onbeforeunload = function() {
   var data = JSON.stringify( graph.serialize() );
   localStorage.setItem("litegraphg demo backup", data );
 }
 
 function updateEditorHiPPICanvas() {
   const ratio = window.devicePixelRatio;
-  if(ratio == 1) { return }
+  if (ratio == 1) { return }
   const rect = editor.canvas.parentNode.getBoundingClientRect();
   const { width, height } = rect;
   editor.canvas.width = width * ratio;
@@ -31,13 +31,13 @@ function updateEditorHiPPICanvas() {
   return editor.canvas;
 }
 
-//enable scripting
+// enable scripting
 LiteGraph.allow_scripts = true;
 
-//test
-//editor.graphcanvas.viewport = [200,200,400,400];
+// test
+// editor.graphcanvas.viewport = [200,200,400,400];
 
-//create scene selector
+// create scene selector
 var elem = document.createElement("span");
 elem.id = "LGEditorTopBarSelector";
 elem.className = "selector";
@@ -45,31 +45,31 @@ elem.innerHTML = "";
 elem.innerHTML += "Demo <select><option>Empty</option></select> <button class='btn' id='save'>Save</button><button class='btn' id='load'>Load</button><button class='btn' id='download'>Download</button> | <button class='btn' id='webgl'>WebGL</button> <button class='btn' id='multiview'>Multiview</button>";
 editor.tools.appendChild(elem);
 var select = elem.querySelector("select");
-select.addEventListener("change", function(e){
+select.addEventListener("change", function(e) {
   var option = this.options[this.selectedIndex];
   var url = option.dataset["url"];
-	
-  if(url)
+
+  if (url)
     graph.load( url );
-  else if(option.callback)
+  else if (option.callback)
     option.callback();
   else
     graph.clear();
 });
 
-elem.querySelector("#save").addEventListener("click",function(){
+elem.querySelector("#save").addEventListener("click",function() {
   console.log("saved");
   localStorage.setItem( "graphdemo_save", JSON.stringify( graph.serialize() ) );
 });
 
-elem.querySelector("#load").addEventListener("click",function(){
+elem.querySelector("#load").addEventListener("click",function() {
   var data = localStorage.getItem( "graphdemo_save" );
-  if(data)
+  if (data)
     graph.configure( JSON.parse( data ) );
   console.log("loaded");
 });
 
-elem.querySelector("#download").addEventListener("click",function(){
+elem.querySelector("#download").addEventListener("click",function() {
   var data = JSON.stringify( graph.serialize() );
   var file = new Blob( [ data ] );
   var url = URL.createObjectURL( file );
@@ -80,17 +80,17 @@ elem.querySelector("#download").addEventListener("click",function(){
   document.body.appendChild(element);
   element.click();
   document.body.removeChild(element);
-  setTimeout( function(){ URL.revokeObjectURL( url ); }, 1000*60 ); //wait one minute to revoke url	
+  setTimeout( function() { URL.revokeObjectURL( url ); }, 1000*60 ); // wait one minute to revoke url
 });
 
 elem.querySelector("#webgl").addEventListener("click", enableWebGL );
-elem.querySelector("#multiview").addEventListener("click", function(){ editor.addMultiview()  } );
+elem.querySelector("#multiview").addEventListener("click", function() { editor.addMultiview() } );
 
 
 function addDemo( name, url )
 {
   var option = document.createElement("option");
-  if(url.constructor === String)
+  if (url.constructor === String)
     option.dataset["url"] = url;
   else
     option.callback = url;
@@ -98,7 +98,7 @@ function addDemo( name, url )
   select.appendChild( option );
 }
 
-//some examples
+// some examples
 addDemo("Features", "./assets/examples/features.json");
 addDemo("Benchmark", "./assets/examples/benchmark.json");
 addDemo("Subgraph", "./assets/examples/subgraph.json");
@@ -107,18 +107,18 @@ addDemo("Audio Delay", "./assets/examples/audio_delay.json");
 addDemo("Audio Reverb", "./assets/examples/audio_reverb.json");
 addDemo("MIDI Generation", "./assets/examples/midi_generation.json");
 addDemo("Copy Paste", "./assets/examples/copypaste.json");
-addDemo("autobackup", function(){
+addDemo("autobackup", function() {
   var data = localStorage.getItem("litegraphg demo backup");
-  if(!data)
+  if (!data)
     return;
   var graph_data = JSON.parse(data);
   graph.configure( graph_data );
 });
 
-//allows to use the WebGL nodes like textures
+// allows to use the WebGL nodes like textures
 function enableWebGL()
 {
-  if( webgl_canvas )
+  if ( webgl_canvas )
   {
     webgl_canvas.style.display = (webgl_canvas.style.display == "none" ? "block" : "none");
     return;
@@ -146,7 +146,7 @@ function enableWebGL()
   function on_ready()
   {
     console.log(this.src);
-    if(!window.GL)
+    if (!window.GL)
       return;
     webgl_canvas = document.createElement("canvas");
     webgl_canvas.width = 400;
@@ -156,9 +156,9 @@ function enableWebGL()
     webgl_canvas.style.right = "0px";
     webgl_canvas.style.border = "1px solid #AAA";
 
-    webgl_canvas.addEventListener("click", function(){
+    webgl_canvas.addEventListener("click", function() {
       var rect = webgl_canvas.parentNode.getBoundingClientRect();
-      if( webgl_canvas.width != rect.width )
+      if ( webgl_canvas.width != rect.width )
       {
         webgl_canvas.width = rect.width;
         webgl_canvas.height = rect.height;
@@ -173,7 +173,7 @@ function enableWebGL()
     var parent = document.querySelector(".editor-area");
     parent.appendChild( webgl_canvas );
     var gl = GL.create({ canvas: webgl_canvas });
-    if(!gl)
+    if (!gl)
       return;
 
     editor.graph.onBeforeStep = ondraw;
