@@ -14,7 +14,7 @@ class LGraphTexture {
     this.properties = { name: "", filter: true };
     this.size = [
       LGraphTexture.image_preview_size,
-      LGraphTexture.image_preview_size
+      LGraphTexture.image_preview_size,
     ];
   }
 
@@ -87,7 +87,7 @@ class LGraphTexture {
       target = new GL.Texture(origin.width, origin.height, {
         type: tex_type,
         format: origin.format,
-        filter: gl.LINEAR
+        filter: gl.LINEAR,
       });
     }
 
@@ -116,7 +116,7 @@ class LGraphTexture {
       1,
       1,
       [255, 255, 255, 255],
-      { format: gl.RGBA, wrap: gl.REPEAT, filter: gl.NEAREST }
+      { format: gl.RGBA, wrap: gl.REPEAT, filter: gl.NEAREST },
     ));
     return texture;
   }
@@ -134,7 +134,7 @@ class LGraphTexture {
     var texture = GL.Texture.fromMemory(512, 512, noise, {
       format: gl.RGBA,
       wrap: gl.REPEAT,
-      filter: gl.NEAREST
+      filter: gl.NEAREST,
     });
     this._noise_texture = texture;
     return texture;
@@ -172,8 +172,8 @@ class LGraphTexture {
         callback: function() {
           that._drop_texture = null;
           that.properties.name = "";
-        }
-      }
+        },
+      },
     ];
   }
 
@@ -242,7 +242,7 @@ class LGraphTexture {
         0,
         0,
         this.size[0],
-        this.size[1]
+        this.size[1],
       );
       // this._drop_texture.renderQuad(this.pos[0],this.pos[1],this.size[0],this.size[1]);
       return;
@@ -254,7 +254,7 @@ class LGraphTexture {
         this._canvas = this._last_tex;
       } else {
         var tex_canvas = LGraphTexture.generateLowResTexturePreview(
-          this._last_tex
+          this._last_tex,
         );
         if (!tex_canvas) {
           return;
@@ -298,7 +298,7 @@ class LGraphTexture {
       temp_tex = this._preview_temp_tex;
       if (!this._preview_temp_tex) {
         temp_tex = new GL.Texture(size, size, {
-          minFilter: gl.NEAREST
+          minFilter: gl.NEAREST,
         });
         this._preview_temp_tex = temp_tex;
       }
@@ -335,7 +335,7 @@ class LGraphTexture {
     return [
       ["width", "number"],
       ["height", "number"],
-      ["aspect", "number"]
+      ["aspect", "number"],
     ];
   }
 
@@ -352,7 +352,7 @@ LGraphTexture.title = "Texture";
 LGraphTexture.desc = "Texture";
 LGraphTexture.widgets_info = {
   name: { widget: "texture" },
-  filter: { widget: "checkbox" }
+  filter: { widget: "checkbox" },
 };
 
 // REPLACE THIS TO INTEGRATE WITH YOUR FRAMEWORK
@@ -375,7 +375,7 @@ LGraphTexture.MODE_VALUES = {
   low: LGraphTexture.LOW,
   high: LGraphTexture.HIGH,
   reuse: LGraphTexture.REUSE,
-  default: LGraphTexture.DEFAULT
+  default: LGraphTexture.DEFAULT,
 };
 
 LiteGraph.registerNodeType("texture/texture", LGraphTexture);
@@ -387,7 +387,7 @@ class LGraphTexturePreview {
     this.properties = { flipY: false };
     this.size = [
       LGraphTexture.image_preview_size,
-      LGraphTexture.image_preview_size
+      LGraphTexture.image_preview_size,
     ];
   }
 
@@ -493,7 +493,7 @@ class LGraphTextureOperation {
       value: 1,
       pixelcode: "color + colorB * value",
       uvcode: "",
-      precision: LGraphTexture.DEFAULT
+      precision: LGraphTexture.DEFAULT,
     };
 
     this.has_error = false;
@@ -507,8 +507,8 @@ class LGraphTextureOperation {
         content: txt,
         callback: function() {
           that.properties.show = !that.properties.show;
-        }
-      }
+        },
+      },
     ];
   }
 
@@ -601,14 +601,14 @@ class LGraphTextureOperation {
 
     if ( !this.has_error && (!shader || this._shader_code != uvcode + "|" + pixelcode) ) {
 
-      var final_pixel_code = LGraphTexture.replaceCode( LGraphTextureOperation.pixel_shader, { UV_CODE:uvcode, PIXEL_CODE:pixelcode });
+      var final_pixel_code = LGraphTexture.replaceCode( LGraphTextureOperation.pixel_shader, { UV_CODE: uvcode, PIXEL_CODE: pixelcode });
 
       try {
         shader = new GL.Shader( Shader.SCREEN_VERTEX_SHADER, final_pixel_code );
         this.boxcolor = "#00FF00";
       } catch (err) {
         // console.log("Error compiling shader: ", err, final_pixel_code );
-        GL.Shader.dumpErrorToConsole(err,Shader.SCREEN_VERTEX_SHADER, final_pixel_code);
+        GL.Shader.dumpErrorToConsole(err, Shader.SCREEN_VERTEX_SHADER, final_pixel_code);
         this.boxcolor = "#FF0000";
         this.has_error = true;
         return;
@@ -645,8 +645,8 @@ class LGraphTextureOperation {
           u_texture: 0,
           u_textureB: 1,
           value: value,
-          texSize: [width, height,1/width,1/height],
-          time: time
+          texSize: [width, height, 1/width, 1/height],
+          time: time,
         })
         .draw(mesh);
     });
@@ -661,11 +661,11 @@ class LGraphTextureOperation {
   // webglstudio stuff...
   onInspect(widgets) {
     var that = this;
-    widgets.addCombo("Presets","",{ values: Object.keys(LGraphTextureOperation.presets), callback: function(v) {
+    widgets.addCombo("Presets", "", { values: Object.keys(LGraphTextureOperation.presets), callback: function(v) {
       var code = LGraphTextureOperation.presets[v];
       if (!code)
         return;
-      that.setProperty("pixelcode",code);
+      that.setProperty("pixelcode", code);
       that.title = v;
       widgets.refresh();
     }});
@@ -675,7 +675,7 @@ class LGraphTextureOperation {
 LGraphTextureOperation.widgets_info = {
   uvcode: { widget: "code" },
   pixelcode: { widget: "code" },
-  precision: { widget: "combo", values: LGraphTexture.MODE_VALUES }
+  precision: { widget: "combo", values: LGraphTexture.MODE_VALUES },
 };
 
 LGraphTextureOperation.title = "Operation";
@@ -707,21 +707,21 @@ LGraphTextureOperation.pixel_shader =
         }\n\
         ";
 
-LGraphTextureOperation.registerPreset("","");
-LGraphTextureOperation.registerPreset("bypass","color");
-LGraphTextureOperation.registerPreset("add","color + colorB * value");
-LGraphTextureOperation.registerPreset("substract","(color - colorB) * value");
-LGraphTextureOperation.registerPreset("mate","mix( color, colorB, color4B.a * value)");
-LGraphTextureOperation.registerPreset("invert","vec3(1.0) - color");
-LGraphTextureOperation.registerPreset("multiply","color * colorB * value");
-LGraphTextureOperation.registerPreset("divide","(color / colorB) / value");
-LGraphTextureOperation.registerPreset("difference","abs(color - colorB) * value");
-LGraphTextureOperation.registerPreset("max","max(color, colorB) * value");
-LGraphTextureOperation.registerPreset("min","min(color, colorB) * value");
-LGraphTextureOperation.registerPreset("displace","texture2D(u_texture, uv + (colorB.xy - vec2(0.5)) * value).xyz");
-LGraphTextureOperation.registerPreset("grayscale","vec3(color.x + color.y + color.z) * value / 3.0");
-LGraphTextureOperation.registerPreset("saturation","mix( vec3(color.x + color.y + color.z) / 3.0, color, value )");
-LGraphTextureOperation.registerPreset("normalmap","\n\
+LGraphTextureOperation.registerPreset("", "");
+LGraphTextureOperation.registerPreset("bypass", "color");
+LGraphTextureOperation.registerPreset("add", "color + colorB * value");
+LGraphTextureOperation.registerPreset("substract", "(color - colorB) * value");
+LGraphTextureOperation.registerPreset("mate", "mix( color, colorB, color4B.a * value)");
+LGraphTextureOperation.registerPreset("invert", "vec3(1.0) - color");
+LGraphTextureOperation.registerPreset("multiply", "color * colorB * value");
+LGraphTextureOperation.registerPreset("divide", "(color / colorB) / value");
+LGraphTextureOperation.registerPreset("difference", "abs(color - colorB) * value");
+LGraphTextureOperation.registerPreset("max", "max(color, colorB) * value");
+LGraphTextureOperation.registerPreset("min", "min(color, colorB) * value");
+LGraphTextureOperation.registerPreset("displace", "texture2D(u_texture, uv + (colorB.xy - vec2(0.5)) * value).xyz");
+LGraphTextureOperation.registerPreset("grayscale", "vec3(color.x + color.y + color.z) * value / 3.0");
+LGraphTextureOperation.registerPreset("saturation", "mix( vec3(color.x + color.y + color.z) / 3.0, color, value )");
+LGraphTextureOperation.registerPreset("normalmap", "\n\
         float z0 = texture2D(u_texture, uv + vec2(-texSize.z, -texSize.w) ).x;\n\
         float z1 = texture2D(u_texture, uv + vec2(0.0, -texSize.w) ).x;\n\
         float z2 = texture2D(u_texture, uv + vec2(texSize.z, -texSize.w) ).x;\n\
@@ -735,7 +735,7 @@ LGraphTextureOperation.registerPreset("normalmap","\n\
         normal.xy *= value;\n\
         result.xyz = normalize(normal) * 0.5 + vec3(0.5);\n\
     ");
-LGraphTextureOperation.registerPreset("threshold","vec3(color.x > colorB.x * value ? 1.0 : 0.0,color.y > colorB.y * value ? 1.0 : 0.0,color.z > colorB.z * value ? 1.0 : 0.0)");
+LGraphTextureOperation.registerPreset("threshold", "vec3(color.x > colorB.x * value ? 1.0 : 0.0,color.y > colorB.y * value ? 1.0 : 0.0,color.z > colorB.z * value ? 1.0 : 0.0)");
 
 LiteGraph.registerNodeType("texture/operation", LGraphTextureOperation);
 
@@ -747,10 +747,10 @@ class LGraphTextureShader {
     this.properties = {
       code: "",
       u_value: 1,
-      u_color: [1,1,1,1],
+      u_color: [1, 1, 1, 1],
       width: 512,
       height: 512,
-      precision: LGraphTexture.DEFAULT
+      precision: LGraphTexture.DEFAULT,
     };
 
     this.properties.code = LGraphTextureShader.pixel_shader;
@@ -932,7 +932,7 @@ LGraphTextureShader.title = "Shader";
 LGraphTextureShader.desc = "Texture shader";
 LGraphTextureShader.widgets_info = {
   code: { type: "code", lang: "glsl" },
-  precision: { widget: "combo", values: LGraphTexture.MODE_VALUES }
+  precision: { widget: "combo", values: LGraphTexture.MODE_VALUES },
 };
 
 LGraphTextureShader.pixel_shader =
@@ -965,7 +965,7 @@ class LGraphTextureScaleOffset {
     this.properties = {
       offset: vec2.fromValues(0, 0),
       scale: vec2.fromValues(1, 1),
-      precision: LGraphTexture.DEFAULT
+      precision: LGraphTexture.DEFAULT,
     };
   }
 
@@ -997,7 +997,7 @@ class LGraphTextureScaleOffset {
       this._tex = new GL.Texture(width, height, {
         type: type,
         format: gl.RGBA,
-        filter: gl.LINEAR
+        filter: gl.LINEAR,
       });
     }
 
@@ -1006,7 +1006,7 @@ class LGraphTextureScaleOffset {
     if (!shader) {
       shader = new GL.Shader(
         GL.Shader.SCREEN_VERTEX_SHADER,
-        LGraphTextureScaleOffset.pixel_shader
+        LGraphTextureScaleOffset.pixel_shader,
       );
     }
 
@@ -1036,7 +1036,7 @@ class LGraphTextureScaleOffset {
         .uniforms({
           u_texture: 0,
           u_scale: scale,
-          u_offset: offset
+          u_offset: offset,
         })
         .draw(mesh);
     });
@@ -1046,7 +1046,7 @@ class LGraphTextureScaleOffset {
 }
 
 LGraphTextureScaleOffset.widgets_info = {
-  precision: { widget: "combo", values: LGraphTexture.MODE_VALUES }
+  precision: { widget: "combo", values: LGraphTexture.MODE_VALUES },
 };
 
 LGraphTextureScaleOffset.title = "Scale/Offset";
@@ -1070,7 +1070,7 @@ LGraphTextureScaleOffset.pixel_shader =
 
 LiteGraph.registerNodeType(
   "texture/scaleOffset",
-  LGraphTextureScaleOffset
+  LGraphTextureScaleOffset,
 );
 
 // Warp (distort a texture) *************************
@@ -1083,9 +1083,9 @@ class LGraphTextureWarp {
     this.addOutput("out", "Texture");
     this.properties = {
       factor: 0.01,
-      scale: [1,1],
-      offset: [0,0],
-      precision: LGraphTexture.DEFAULT
+      scale: [1, 1],
+      offset: [0, 0],
+      precision: LGraphTexture.DEFAULT,
     };
 
     this._uniforms = {
@@ -1093,7 +1093,7 @@ class LGraphTextureWarp {
       u_textureB: 1,
       u_factor: 1,
       u_scale: vec2.create(),
-      u_offset: vec2.create()
+      u_offset: vec2.create(),
     };
   }
 
@@ -1131,13 +1131,13 @@ class LGraphTextureWarp {
                         ? gl.UNSIGNED_BYTE
                         : gl.HIGH_PRECISION_FORMAT,
         format: gl.RGBA,
-        filter: gl.LINEAR
+        filter: gl.LINEAR,
       });
     } else {
       this._tex = LGraphTexture.getTargetTexture(
         tex || this._tex,
         this._tex,
-        this.properties.precision
+        this.properties.precision,
       );
     }
 
@@ -1146,7 +1146,7 @@ class LGraphTextureWarp {
     if (!shader) {
       shader = new GL.Shader(
         GL.Shader.SCREEN_VERTEX_SHADER,
-        LGraphTextureWarp.pixel_shader
+        LGraphTextureWarp.pixel_shader,
       );
     }
 
@@ -1182,7 +1182,7 @@ class LGraphTextureWarp {
 }
 
 LGraphTextureWarp.widgets_info = {
-  precision: { widget: "combo", values: LGraphTexture.MODE_VALUES }
+  precision: { widget: "combo", values: LGraphTexture.MODE_VALUES },
 };
 
 LGraphTextureWarp.title = "Warp";
@@ -1219,7 +1219,7 @@ class LGraphTextureToViewport {
       filter: true,
       disable_alpha: false,
       gamma: 1.0,
-      viewport: [0,0,1,1]
+      viewport: [0, 0, 1, 1],
     };
     this.size[0] = 130;
   }
@@ -1233,7 +1233,7 @@ class LGraphTextureToViewport {
       return;
     }
 
-    ctx.drawImage( ctx == gl ? tex : gl.canvas, 10,30, this.size[0] -20, this.size[1] -40);
+    ctx.drawImage( ctx == gl ? tex : gl.canvas, 10, 30, this.size[0] -20, this.size[1] -40);
   }
 
   onExecute() {
@@ -1261,7 +1261,7 @@ class LGraphTextureToViewport {
 
     tex.setParameter(
       gl.TEXTURE_MAG_FILTER,
-      this.properties.filter ? gl.LINEAR : gl.NEAREST
+      this.properties.filter ? gl.LINEAR : gl.NEAREST,
     );
 
     var old_viewport = LGraphTextureToViewport._prev_viewport;
@@ -1274,7 +1274,7 @@ class LGraphTextureToViewport {
       if (!LGraphTextureToViewport._shader) {
         LGraphTextureToViewport._shader = new GL.Shader(
           GL.Shader.SCREEN_VERTEX_SHADER,
-          LGraphTextureToViewport.aa_pixel_shader
+          LGraphTextureToViewport.aa_pixel_shader,
         );
       }
 
@@ -1285,7 +1285,7 @@ class LGraphTextureToViewport {
           u_texture: 0,
           uViewportSize: [tex.width, tex.height],
           u_igamma: 1 / gamma,
-          inverseVP: [1 / tex.width, 1 / tex.height]
+          inverseVP: [1 / tex.width, 1 / tex.height],
         })
         .draw(mesh);
     } else {
@@ -1293,12 +1293,12 @@ class LGraphTextureToViewport {
         if (!LGraphTextureToViewport._gamma_shader) {
           LGraphTextureToViewport._gamma_shader = new GL.Shader(
             Shader.SCREEN_VERTEX_SHADER,
-            LGraphTextureToViewport.gamma_pixel_shader
+            LGraphTextureToViewport.gamma_pixel_shader,
           );
         }
         tex.toViewport(LGraphTextureToViewport._gamma_shader, {
           u_texture: 0,
-          u_igamma: 1 / gamma
+          u_igamma: 1 / gamma,
         });
       } else {
         tex.toViewport();
@@ -1394,7 +1394,7 @@ LGraphTextureToViewport.gamma_pixel_shader =
 
 LiteGraph.registerNodeType(
   "texture/toviewport",
-  LGraphTextureToViewport
+  LGraphTextureToViewport,
 );
 
 // Texture Copy *****************************************
@@ -1405,7 +1405,7 @@ class LGraphTextureCopy {
     this.properties = {
       size: 0,
       generate_mipmaps: false,
-      precision: LGraphTexture.DEFAULT
+      precision: LGraphTexture.DEFAULT,
     };
   }
 
@@ -1456,7 +1456,7 @@ class LGraphTextureCopy {
           type: type,
           format: gl.RGBA,
           minFilter: minFilter,
-          magFilter: gl.LINEAR
+          magFilter: gl.LINEAR,
         });
       }
       tex.copyTo(this._temp_texture);
@@ -1477,9 +1477,9 @@ LGraphTextureCopy.desc = "Copy Texture";
 LGraphTextureCopy.widgets_info = {
   size: {
     widget: "combo",
-    values: [0, 32, 64, 128, 256, 512, 1024, 2048]
+    values: [0, 32, 64, 128, 256, 512, 1024, 2048],
   },
-  precision: { widget: "combo", values: LGraphTexture.MODE_VALUES }
+  precision: { widget: "combo", values: LGraphTexture.MODE_VALUES },
 };
 
 LiteGraph.registerNodeType("texture/copy", LGraphTextureCopy);
@@ -1492,7 +1492,7 @@ class LGraphTextureDownsample {
     this.properties = {
       iterations: 1,
       generate_mipmaps: false,
-      precision: LGraphTexture.DEFAULT
+      precision: LGraphTexture.DEFAULT,
     };
   }
 
@@ -1520,7 +1520,7 @@ class LGraphTextureDownsample {
     if (!shader) {
       LGraphTextureDownsample._shader = shader = new GL.Shader(
         GL.Shader.SCREEN_VERTEX_SHADER,
-        LGraphTextureDownsample.pixel_shader
+        LGraphTextureDownsample.pixel_shader,
       );
     }
 
@@ -1540,12 +1540,12 @@ class LGraphTextureDownsample {
     var temp = [];
     var options = {
       type: type,
-      format: tex.format
+      format: tex.format,
     };
 
     var offset = vec2.create();
     var uniforms = {
-      u_offset: offset
+      u_offset: offset,
     };
 
     if (this._texture) {
@@ -1589,7 +1589,7 @@ LGraphTextureDownsample.title = "Downsample";
 LGraphTextureDownsample.desc = "Downsample Texture";
 LGraphTextureDownsample.widgets_info = {
   iterations: { type: "number", step: 1, precision: 0, min: 0 },
-  precision: { widget: "combo", values: LGraphTexture.MODE_VALUES }
+  precision: { widget: "combo", values: LGraphTexture.MODE_VALUES },
 };
 
 LGraphTextureDownsample.pixel_shader =
@@ -1610,7 +1610,7 @@ LGraphTextureDownsample.pixel_shader =
 
 LiteGraph.registerNodeType(
   "texture/downsample",
-  LGraphTextureDownsample
+  LGraphTextureDownsample,
 );
 
 
@@ -1620,9 +1620,9 @@ class LGraphTextureResize {
     this.addInput("Texture", "Texture");
     this.addOutput("", "Texture");
     this.properties = {
-      size: [512,512],
+      size: [512, 512],
       generate_mipmaps: false,
-      precision: LGraphTexture.DEFAULT
+      precision: LGraphTexture.DEFAULT,
     };
   }
 
@@ -1673,7 +1673,7 @@ LGraphTextureResize.title = "Resize";
 LGraphTextureResize.desc = "Resize Texture";
 LGraphTextureResize.widgets_info = {
   iterations: { type: "number", step: 1, precision: 0, min: 0 },
-  precision: { widget: "combo", values: LGraphTexture.MODE_VALUES }
+  precision: { widget: "combo", values: LGraphTexture.MODE_VALUES },
 };
 
 LiteGraph.registerNodeType( "texture/resize", LGraphTextureResize );
@@ -1687,12 +1687,12 @@ class LGraphTextureAverage {
     this.addOutput("lum", "number");
     this.properties = {
       use_previous_frame: true, // to avoid stalls
-      high_quality: false // to use as much pixels as possible
+      high_quality: false, // to use as much pixels as possible
     };
 
     this._uniforms = {
       u_texture: 0,
-      u_mipmap_offset: 0
+      u_mipmap_offset: 0,
     };
     this._luminance = new Float32Array(4);
   }
@@ -1730,7 +1730,7 @@ class LGraphTextureAverage {
     if (!LGraphTextureAverage._shader) {
       LGraphTextureAverage._shader = new GL.Shader(
         GL.Shader.SCREEN_VERTEX_SHADER,
-        LGraphTextureAverage.pixel_shader
+        LGraphTextureAverage.pixel_shader,
       );
       // creates 256 random numbers and stores them in two mat4
       var samples = new Float32Array(16);
@@ -1740,7 +1740,7 @@ class LGraphTextureAverage {
       // upload only once
       LGraphTextureAverage._shader.uniforms({
         u_samples_a: samples.subarray(0, 16),
-        u_samples_b: samples.subarray(16, 32)
+        u_samples_b: samples.subarray(16, 32),
       });
     }
 
@@ -1755,7 +1755,7 @@ class LGraphTextureAverage {
       this._temp_texture = new GL.Texture(1, 1, {
         type: type,
         format: gl.RGBA,
-        filter: gl.NEAREST
+        filter: gl.NEAREST,
       });
     }
 
@@ -1768,7 +1768,7 @@ class LGraphTextureAverage {
           type: type,
           format: gl.RGBA,
           minFilter: gl.LINEAR_MIPMAP_LINEAR,
-          magFilter: gl.LINEAR
+          magFilter: gl.LINEAR,
         });
 
       tex.copyTo( this._temp_pot2_texture );
@@ -1846,11 +1846,11 @@ class LGraphTextureMinMax {
     this.addOutput("max", "vec4");
     this.properties = {
       mode: "max",
-      use_previous_frame: true // to avoid stalls
+      use_previous_frame: true, // to avoid stalls
     };
 
     this._uniforms = {
-      u_texture: 0
+      u_texture: 0,
     };
 
     this._max = new Float32Array(4);
@@ -1904,7 +1904,7 @@ class LGraphTextureMinMax {
         this._textures_chain[i] = new GL.Texture( size, size, {
           type: type,
           format: gl.RGBA,
-          filter: gl.NEAREST
+          filter: gl.NEAREST,
         });
         size = size >> 2;
         i++;
@@ -1934,7 +1934,7 @@ class LGraphTextureMinMax {
 }
 
 LGraphTextureMinMax.widgets_info = {
-  mode: { widget: "combo", values: ["min","max","avg"] }
+  mode: { widget: "combo", values: ["min", "max", "avg"] },
 };
 
 LGraphTextureMinMax.title = "MinMax";
@@ -1974,7 +1974,7 @@ class LGraphTextureTemporalSmooth {
     this._uniforms = {
       u_texture: 0,
       u_textureB: 1,
-      u_factor: this.properties.factor
+      u_factor: this.properties.factor,
     };
   }
 
@@ -1987,7 +1987,7 @@ class LGraphTextureTemporalSmooth {
     if (!LGraphTextureTemporalSmooth._shader) {
       LGraphTextureTemporalSmooth._shader = new GL.Shader(
         GL.Shader.SCREEN_VERTEX_SHADER,
-        LGraphTextureTemporalSmooth.pixel_shader
+        LGraphTextureTemporalSmooth.pixel_shader,
       );
     }
 
@@ -2001,7 +2001,7 @@ class LGraphTextureTemporalSmooth {
       var options = {
         type: tex.type,
         format: gl.RGBA,
-        filter: gl.NEAREST
+        filter: gl.NEAREST,
       };
       this._temp_texture = new GL.Texture(tex.width, tex.height, options );
       this._temp_texture2 = new GL.Texture(tex.width, tex.height, options );
@@ -2059,7 +2059,7 @@ class LGraphTextureLinearAvgSmooth {
       u_texture: 0,
       u_textureB: 1,
       u_samples: this.properties.samples,
-      u_isamples: 1/this.properties.samples
+      u_isamples: 1/this.properties.samples,
     };
     this.frame = 0;
   }
@@ -2080,7 +2080,7 @@ class LGraphTextureLinearAvgSmooth {
       LGraphTextureLinearAvgSmooth._shader_avg = new GL.Shader( GL.Shader.SCREEN_VERTEX_SHADER, LGraphTextureLinearAvgSmooth.pixel_shader_avg );
     }
 
-    var samples = clamp(this.properties.samples,0,64);
+    var samples = clamp(this.properties.samples, 0, 64);
     var frame = this.frame;
     var interval = this.properties.frames_interval;
 
@@ -2091,7 +2091,7 @@ class LGraphTextureLinearAvgSmooth {
         var options = {
           type: tex.type,
           format: gl.RGBA,
-          filter: gl.NEAREST
+          filter: gl.NEAREST,
         };
         this._temp_texture = new GL.Texture( samples, 1, options );
         this._temp_texture2 = new GL.Texture( samples, 1, options );
@@ -2204,7 +2204,7 @@ class LGraphImageToTexture {
     if (!temp || temp.width != width || temp.height != height) {
       this._temp_texture = new GL.Texture(width, height, {
         format: gl.RGBA,
-        filter: gl.LINEAR
+        filter: gl.LINEAR,
       });
     }
 
@@ -2213,7 +2213,7 @@ class LGraphImageToTexture {
     } catch (err) {
       console.error(
         "image comes from an unsafe location, cannot be uploaded to webgl: " +
-                      err
+                      err,
       );
       return;
     }
@@ -2227,7 +2227,7 @@ LGraphImageToTexture.desc = "Uploads an image to the GPU";
 
 LiteGraph.registerNodeType(
   "texture/imageToTexture",
-  LGraphImageToTexture
+  LGraphImageToTexture,
 );
 
 // Texture LUT *****************************************
@@ -2276,12 +2276,12 @@ class LGraphTextureLUT {
     gl.texParameteri(
       gl.TEXTURE_2D,
       gl.TEXTURE_WRAP_S,
-      gl.CLAMP_TO_EDGE
+      gl.CLAMP_TO_EDGE,
     );
     gl.texParameteri(
       gl.TEXTURE_2D,
       gl.TEXTURE_WRAP_T,
-      gl.CLAMP_TO_EDGE
+      gl.CLAMP_TO_EDGE,
     );
     gl.bindTexture(gl.TEXTURE_2D, null);
 
@@ -2293,7 +2293,7 @@ class LGraphTextureLUT {
     this._tex = LGraphTexture.getTargetTexture(
       tex,
       this._tex,
-      this.properties.precision
+      this.properties.precision,
     );
 
     // var mesh = Mesh.getScreenQuad();
@@ -2303,7 +2303,7 @@ class LGraphTextureLUT {
       tex.toViewport(LGraphTextureLUT._shader, {
         u_texture: 0,
         u_textureB: 1,
-        u_amount: intensity
+        u_amount: intensity,
       });
     });
 
@@ -2313,7 +2313,7 @@ class LGraphTextureLUT {
 
 LGraphTextureLUT.widgets_info = {
   texture: { widget: "texture" },
-  precision: { widget: "combo", values: LGraphTexture.MODE_VALUES }
+  precision: { widget: "combo", values: LGraphTexture.MODE_VALUES },
 };
 
 LGraphTextureLUT.title = "LUT";
@@ -2369,7 +2369,7 @@ class LGraphTextureEncode {
       u_textureB: 1,
       u_row_simbols: 4,
       u_simbol_size: 16,
-      u_res: vec2.create()
+      u_res: vec2.create(),
     };
   }
 
@@ -2438,7 +2438,7 @@ class LGraphTextureEncode {
 
 LGraphTextureEncode.widgets_info = {
   texture: { widget: "texture" },
-  precision: { widget: "combo", values: LGraphTexture.MODE_VALUES }
+  precision: { widget: "combo", values: LGraphTexture.MODE_VALUES },
 };
 
 LGraphTextureEncode.title = "Encode";
@@ -2491,7 +2491,7 @@ class LGraphTextureChannels {
     if (!LGraphTextureChannels._shader) {
       LGraphTextureChannels._shader = new GL.Shader(
         Shader.SCREEN_VERTEX_SHADER,
-        LGraphTextureChannels.pixel_shader
+        LGraphTextureChannels.pixel_shader,
       );
     }
   }
@@ -2524,8 +2524,8 @@ class LGraphTextureChannels {
             {
               type: texA.type,
               format: format,
-              filter: gl.LINEAR
-            }
+              filter: gl.LINEAR,
+            },
           );
         }
         connections++;
@@ -2547,7 +2547,7 @@ class LGraphTextureChannels {
       [1, 0, 0, 0],
       [0, 1, 0, 0],
       [0, 0, 1, 0],
-      [0, 0, 0, 1]
+      [0, 0, 0, 1],
     ];
 
     for (var i = 0; i < 4; i++) {
@@ -2583,7 +2583,7 @@ LGraphTextureChannels.pixel_shader =
 
 LiteGraph.registerNodeType(
   "texture/textureChannels",
-  LGraphTextureChannels
+  LGraphTextureChannels,
 );
 
 // Texture Channels to Texture *****************************************
@@ -2601,7 +2601,7 @@ class LGraphChannelsTexture {
       R: 1,
       G: 1,
       B: 1,
-      A: 1
+      A: 1,
     };
     this._color = vec4.create();
     this._uniforms = {
@@ -2609,7 +2609,7 @@ class LGraphChannelsTexture {
       u_textureG: 1,
       u_textureB: 2,
       u_textureA: 3,
-      u_color: this._color
+      u_color: this._color,
     };
   }
 
@@ -2627,7 +2627,7 @@ class LGraphChannelsTexture {
     if (!LGraphChannelsTexture._shader) {
       LGraphChannelsTexture._shader = new GL.Shader(
         Shader.SCREEN_VERTEX_SHADER,
-        LGraphChannelsTexture.pixel_shader
+        LGraphChannelsTexture.pixel_shader,
       );
     }
     var shader = LGraphChannelsTexture._shader;
@@ -2637,7 +2637,7 @@ class LGraphChannelsTexture {
       texR.height,
       texG.height,
       texB.height,
-      texA.height
+      texA.height,
     );
     var type =
               this.properties.precision == LGraphTexture.HIGH
@@ -2653,7 +2653,7 @@ class LGraphChannelsTexture {
       this._texture = new GL.Texture(w, h, {
         type: type,
         format: gl.RGBA,
-        filter: gl.LINEAR
+        filter: gl.LINEAR,
       });
     }
 
@@ -2678,7 +2678,7 @@ class LGraphChannelsTexture {
 LGraphChannelsTexture.title = "Channels to Texture";
 LGraphChannelsTexture.desc = "Split texture channels";
 LGraphChannelsTexture.widgets_info = {
-  precision: { widget: "combo", values: LGraphTexture.MODE_VALUES }
+  precision: { widget: "combo", values: LGraphTexture.MODE_VALUES },
 };
 
 LGraphChannelsTexture.pixel_shader =
@@ -2702,7 +2702,7 @@ LGraphChannelsTexture.pixel_shader =
 
 LiteGraph.registerNodeType(
   "texture/channelsTexture",
-  LGraphChannelsTexture
+  LGraphChannelsTexture,
 );
 
 // Texture Color *****************************************
@@ -2713,7 +2713,7 @@ class LGraphTextureColor {
     this._tex_color = vec4.create();
     this.properties = {
       color: vec4.create(),
-      precision: LGraphTexture.DEFAULT
+      precision: LGraphTexture.DEFAULT,
     };
   }
 
@@ -2744,7 +2744,7 @@ class LGraphTextureColor {
       this._tex = new GL.Texture(1, 1, {
         format: gl.RGBA,
         type: type,
-        minFilter: gl.NEAREST
+        minFilter: gl.NEAREST,
       });
     }
     var color = this.properties.color;
@@ -2791,7 +2791,7 @@ class LGraphTextureColor {
       ["R", "number"],
       ["G", "number"],
       ["B", "number"],
-      ["A", "number"]
+      ["A", "number"],
     ];
   }
 }
@@ -2801,7 +2801,7 @@ LGraphTextureColor.desc =
         "Generates a 1x1 texture with a constant color";
 
 LGraphTextureColor.widgets_info = {
-  precision: { widget: "combo", values: LGraphTexture.MODE_VALUES }
+  precision: { widget: "combo", values: LGraphTexture.MODE_VALUES },
 };
 
 LiteGraph.registerNodeType("texture/color", LGraphTextureColor);
@@ -2818,19 +2818,19 @@ class LGraphTextureGradient {
       scale: 1,
       A: [0, 0, 0],
       B: [1, 1, 1],
-      texture_size: 32
+      texture_size: 32,
     };
     if (!LGraphTextureGradient._shader) {
       LGraphTextureGradient._shader = new GL.Shader(
         Shader.SCREEN_VERTEX_SHADER,
-        LGraphTextureGradient.pixel_shader
+        LGraphTextureGradient.pixel_shader,
       );
     }
 
     this._uniforms = {
       u_angle: 0,
       u_colorA: vec3.create(),
-      u_colorB: vec3.create()
+      u_colorB: vec3.create(),
     };
   }
 
@@ -2870,7 +2870,7 @@ class LGraphTextureGradient {
     if (!this._tex || this._tex.width != size) {
       this._tex = new GL.Texture(size, size, {
         format: gl.RGB,
-        filter: gl.LINEAR
+        filter: gl.LINEAR,
       });
     }
 
@@ -2891,7 +2891,7 @@ LGraphTextureGradient["@A"] = { type: "color" };
 LGraphTextureGradient["@B"] = { type: "color" };
 LGraphTextureGradient["@texture_size"] = {
   type: "enum",
-  values: [32, 64, 128, 256, 512]
+  values: [32, 64, 128, 256, 512],
 };
 
 LGraphTextureGradient.pixel_shader =
@@ -2934,7 +2934,7 @@ class LGraphTextureMix {
       u_textureA: 0,
       u_textureB: 1,
       u_textureMix: 2,
-      u_mix: vec4.create()
+      u_mix: vec4.create(),
     };
   }
 
@@ -2962,7 +2962,7 @@ class LGraphTextureMix {
     this._tex = LGraphTexture.getTargetTexture(
       this.properties.size_from_biggest && texB.width > texA.width ? texB : texA,
       this._tex,
-      this.properties.precision
+      this.properties.precision,
     );
 
     gl.disable(gl.BLEND);
@@ -2977,7 +2977,7 @@ class LGraphTextureMix {
         shader = LGraphTextureMix._shader_tex = new GL.Shader(
           Shader.SCREEN_VERTEX_SHADER,
           LGraphTextureMix.pixel_shader,
-          { MIX_TEX: "" }
+          { MIX_TEX: "" },
         );
       }
     } else {
@@ -2985,7 +2985,7 @@ class LGraphTextureMix {
       if (!shader) {
         shader = LGraphTextureMix._shader_factor = new GL.Shader(
           Shader.SCREEN_VERTEX_SHADER,
-          LGraphTextureMix.pixel_shader
+          LGraphTextureMix.pixel_shader,
         );
       }
       var f = factor == null ? this.properties.factor : factor;
@@ -3015,7 +3015,7 @@ LGraphTextureMix.title = "Mix";
 LGraphTextureMix.desc = "Generates a texture mixing two textures";
 
 LGraphTextureMix.widgets_info = {
-  precision: { widget: "combo", values: LGraphTexture.MODE_VALUES }
+  precision: { widget: "combo", values: LGraphTexture.MODE_VALUES },
 };
 
 LGraphTextureMix.pixel_shader =
@@ -3052,13 +3052,13 @@ class LGraphTextureEdges {
       invert: true,
       threshold: false,
       factor: 1,
-      precision: LGraphTexture.DEFAULT
+      precision: LGraphTexture.DEFAULT,
     };
 
     if (!LGraphTextureEdges._shader) {
       LGraphTextureEdges._shader = new GL.Shader(
         Shader.SCREEN_VERTEX_SHADER,
-        LGraphTextureEdges.pixel_shader
+        LGraphTextureEdges.pixel_shader,
       );
     }
   }
@@ -3082,7 +3082,7 @@ class LGraphTextureEdges {
     this._tex = LGraphTexture.getTargetTexture(
       tex,
       this._tex,
-      this.properties.precision
+      this.properties.precision,
     );
 
     gl.disable(gl.BLEND);
@@ -3102,7 +3102,7 @@ class LGraphTextureEdges {
           u_isize: [1 / tex.width, 1 / tex.height],
           u_factor: factor,
           u_threshold: threshold,
-          u_invert: invert ? 1 : 0
+          u_invert: invert ? 1 : 0,
         })
         .draw(mesh);
     });
@@ -3115,7 +3115,7 @@ LGraphTextureEdges.title = "Edges";
 LGraphTextureEdges.desc = "Detects edges";
 
 LGraphTextureEdges.widgets_info = {
-  precision: { widget: "combo", values: LGraphTexture.MODE_VALUES }
+  precision: { widget: "combo", values: LGraphTexture.MODE_VALUES },
 };
 
 LGraphTextureEdges.pixel_shader =
@@ -3158,13 +3158,13 @@ class LGraphTextureDepthRange {
       distance: 100,
       range: 50,
       only_depth: false,
-      high_precision: false
+      high_precision: false,
     };
     this._uniforms = {
       u_texture: 0,
       u_distance: 100,
       u_range: 50,
-      u_camera_planes: null
+      u_camera_planes: null,
     };
   }
 
@@ -3192,7 +3192,7 @@ class LGraphTextureDepthRange {
       this._temp_texture = new GL.Texture(tex.width, tex.height, {
         type: precision,
         format: gl.RGBA,
-        filter: gl.LINEAR
+        filter: gl.LINEAR,
       });
     }
 
@@ -3220,12 +3220,12 @@ class LGraphTextureDepthRange {
     if (!LGraphTextureDepthRange._shader) {
       LGraphTextureDepthRange._shader = new GL.Shader(
         Shader.SCREEN_VERTEX_SHADER,
-        LGraphTextureDepthRange.pixel_shader
+        LGraphTextureDepthRange.pixel_shader,
       );
       LGraphTextureDepthRange._shader_onlydepth = new GL.Shader(
         Shader.SCREEN_VERTEX_SHADER,
         LGraphTextureDepthRange.pixel_shader,
-        { ONLY_DEPTH: "" }
+        { ONLY_DEPTH: "" },
       );
     }
     var shader = this.properties.only_depth
@@ -3298,12 +3298,12 @@ class LGraphTextureLinearDepth {
     this.addOutput("Texture", "Texture");
     this.properties = {
       precision: LGraphTexture.DEFAULT,
-      invert: false
+      invert: false,
     };
     this._uniforms = {
       u_texture: 0,
       u_camera_planes: null, // filled later
-      u_ires: vec2.create()
+      u_ires: vec2.create(),
     };
   }
 
@@ -3323,7 +3323,7 @@ class LGraphTextureLinearDepth {
       this._temp_texture = new GL.Texture(tex.width, tex.height, {
         type: precision,
         format: gl.RGB,
-        filter: gl.LINEAR
+        filter: gl.LINEAR,
       });
     }
 
@@ -3348,7 +3348,7 @@ class LGraphTextureLinearDepth {
     } // hardcoded
     uniforms.u_camera_planes = planes;
     // uniforms.u_ires.set([1/tex.width, 1/tex.height]);
-    uniforms.u_ires.set([0,0]);
+    uniforms.u_ires.set([0, 0]);
 
     this._temp_texture.drawTo(function() {
       tex.bind(0);
@@ -3361,7 +3361,7 @@ class LGraphTextureLinearDepth {
 }
 
 LGraphTextureLinearDepth.widgets_info = {
-  precision: { widget: "combo", values: LGraphTexture.MODE_VALUES }
+  precision: { widget: "combo", values: LGraphTexture.MODE_VALUES },
 };
 
 LGraphTextureLinearDepth.title = "Linear Depth";
@@ -3401,7 +3401,7 @@ class LGraphTextureBlur {
       iterations: 1,
       preserve_aspect: false,
       scale: [1, 1],
-      precision: LGraphTexture.DEFAULT
+      precision: LGraphTexture.DEFAULT,
     };
   }
 
@@ -3428,7 +3428,7 @@ class LGraphTextureBlur {
       temp = this._final_texture = new GL.Texture(
         tex.width,
         tex.height,
-        { type: tex.type, format: gl.RGBA, filter: gl.LINEAR }
+        { type: tex.type, format: gl.RGBA, filter: gl.LINEAR },
       );
     }
 
@@ -3440,7 +3440,7 @@ class LGraphTextureBlur {
     }
     iterations = Math.min(
       Math.floor(iterations),
-      LGraphTextureBlur.max_iterations
+      LGraphTextureBlur.max_iterations,
     );
     if (iterations == 0) {
       // skip blurring
@@ -3470,7 +3470,7 @@ class LGraphTextureBlur {
       temp.applyBlur(
         aspect * scale[0] * (i + 1),
         scale[1] * (i + 1),
-        intensity
+        intensity,
       );
     }
 
@@ -3482,7 +3482,7 @@ LGraphTextureBlur.title = "Blur";
 LGraphTextureBlur.desc = "Blur a texture";
 
 LGraphTextureBlur.widgets_info = {
-  precision: { widget: "combo", values: LGraphTexture.MODE_VALUES }
+  precision: { widget: "combo", values: LGraphTexture.MODE_VALUES },
 };
 
 LGraphTextureBlur.max_iterations = 20;
@@ -3532,7 +3532,7 @@ class FXGlow {
       u_texture: 0,
       u_glow_texture: 1,
       u_threshold: 0,
-      u_texel_size: vec2.create()
+      u_texel_size: vec2.create(),
     };
   }
 
@@ -3546,7 +3546,7 @@ class FXGlow {
       type: tex.type,
       minFilter: GL.LINEAR,
       magFilter: GL.LINEAR,
-      wrap: gl.CLAMP_TO_EDGE
+      wrap: gl.CLAMP_TO_EDGE,
     };
 
     var uniforms = this._uniforms;
@@ -3557,7 +3557,7 @@ class FXGlow {
     if (!shader) {
       shader = FXGlow._cut_shader = new GL.Shader(
         GL.Shader.SCREEN_VERTEX_SHADER,
-        FXGlow.cut_pixel_shader
+        FXGlow.cut_pixel_shader,
       );
     }
 
@@ -3568,7 +3568,7 @@ class FXGlow {
     var currentDestination = (textures[0] = GL.Texture.getTemporary(
       width,
       height,
-      texture_info
+      texture_info,
     ));
     tex.blit( currentDestination, shader.uniforms(uniforms) );
     var currentSource = currentDestination;
@@ -3586,7 +3586,7 @@ class FXGlow {
     if (!shader) {
       shader = FXGlow._shader = new GL.Shader(
         GL.Shader.SCREEN_VERTEX_SHADER,
-        FXGlow.scale_pixel_shader
+        FXGlow.scale_pixel_shader,
       );
     }
 
@@ -3603,13 +3603,13 @@ class FXGlow {
       currentDestination = textures[i] = GL.Texture.getTemporary(
         width,
         height,
-        texture_info
+        texture_info,
       );
       texel_size[0] = 1 / currentSource.width;
       texel_size[1] = 1 / currentSource.height;
       currentSource.blit(
         currentDestination,
-        shader.uniforms(uniforms)
+        shader.uniforms(uniforms),
       );
       currentSource = currentDestination;
     }
@@ -3638,7 +3638,7 @@ class FXGlow {
       texel_size[1] = 1 / currentSource.height;
       currentSource.blit(
         currentDestination,
-        shader.uniforms(uniforms)
+        shader.uniforms(uniforms),
       );
       GL.Texture.releaseTemporary(currentSource);
       currentSource = currentDestination;
@@ -3665,12 +3665,12 @@ class FXGlow {
           shader = FXGlow._dirt_final_shader = new GL.Shader(
             GL.Shader.SCREEN_VERTEX_SHADER,
             FXGlow.final_pixel_shader,
-            { USE_DIRT: "" }
+            { USE_DIRT: "" },
           );
         } else {
           shader = FXGlow._final_shader = new GL.Shader(
             GL.Shader.SCREEN_VERTEX_SHADER,
-            FXGlow.final_pixel_shader
+            FXGlow.final_pixel_shader,
           );
         }
       }
@@ -3682,7 +3682,7 @@ class FXGlow {
           shader.setUniform("u_dirt_factor", dirt_factor);
           shader.setUniform(
             "u_dirt_texture",
-            dirt_texture.bind(2)
+            dirt_texture.bind(2),
           );
         }
         shader.toViewport(uniforms);
@@ -3761,7 +3761,7 @@ class LGraphTextureGlow {
       threshold: 0,
       scale: 1,
       dirt_factor: 0.5,
-      precision: LGraphTexture.DEFAULT
+      precision: LGraphTexture.DEFAULT,
     };
 
     this.fx = new FXGlow();
@@ -3774,7 +3774,7 @@ class LGraphTextureGlow {
       ["intensity", "number"],
       ["persistence", "number"],
       ["iterations", "number"],
-      ["dirt_factor", "number"]
+      ["dirt_factor", "number"],
     ];
   }
 
@@ -3828,8 +3828,8 @@ class LGraphTextureGlow {
           {
             type: tex.type,
             format: tex.format,
-            filter: gl.LINEAR
-          }
+            filter: gl.LINEAR,
+          },
         );
       }
     }
@@ -3847,7 +3847,7 @@ class LGraphTextureGlow {
         glow_texture = this._glow_texture = new GL.Texture(
           tex.width,
           tex.height,
-          { type: type, format: tex.format, filter: gl.LINEAR }
+          { type: type, format: tex.format, filter: gl.LINEAR },
         );
       }
     }
@@ -3865,7 +3865,7 @@ class LGraphTextureGlow {
         final_texture = this._final_texture = new GL.Texture(
           tex.width,
           tex.height,
-          { type: type, format: tex.format, filter: gl.LINEAR }
+          { type: type, format: tex.format, filter: gl.LINEAR },
         );
       }
 
@@ -3894,16 +3894,16 @@ LGraphTextureGlow.widgets_info = {
     min: 0,
     max: 16,
     step: 1,
-    precision: 0
+    precision: 0,
   },
   threshold: {
     type: "number",
     min: 0,
     max: 10,
     step: 0.01,
-    precision: 2
+    precision: 2,
   },
-  precision: { widget: "combo", values: LGraphTexture.MODE_VALUES }
+  precision: { widget: "combo", values: LGraphTexture.MODE_VALUES },
 };
 
 LiteGraph.registerNodeType("texture/glow", LGraphTextureGlow);
@@ -3937,7 +3937,7 @@ class LGraphTextureKuwaharaFilter {
       this._temp_texture = new GL.Texture(tex.width, tex.height, {
         type: tex.type,
         format: gl.RGBA,
-        filter: gl.LINEAR
+        filter: gl.LINEAR,
       });
     }
 
@@ -3945,7 +3945,7 @@ class LGraphTextureKuwaharaFilter {
     var radius = this.properties.radius;
     radius = Math.min(
       Math.floor(radius),
-      LGraphTextureKuwaharaFilter.max_radius
+      LGraphTextureKuwaharaFilter.max_radius,
     );
     if (radius == 0) {
       // skip blurring
@@ -3969,7 +3969,7 @@ class LGraphTextureKuwaharaFilter {
       LGraphTextureKuwaharaFilter._shaders[radius] = new GL.Shader(
         Shader.SCREEN_VERTEX_SHADER,
         LGraphTextureKuwaharaFilter.pixel_shader,
-        { RADIUS: radius.toFixed(0) }
+        { RADIUS: radius.toFixed(0) },
       );
     }
 
@@ -3983,7 +3983,7 @@ class LGraphTextureKuwaharaFilter {
           u_texture: 0,
           u_intensity: intensity,
           u_resolution: [tex.width, tex.height],
-          u_iResolution: [1 / tex.width, 1 / tex.height]
+          u_iResolution: [1 / tex.width, 1 / tex.height],
         })
         .draw(mesh);
     });
@@ -4097,7 +4097,7 @@ void main() {\n\
 
 LiteGraph.registerNodeType(
   "texture/kuwahara",
-  LGraphTextureKuwaharaFilter
+  LGraphTextureKuwaharaFilter,
 );
 
 // Texture  *****************************************
@@ -4110,7 +4110,7 @@ class LGraphTextureXDoGFilter {
       k: 1.6,
       p: 21.7,
       epsilon: 79,
-      phi: 0.017
+      phi: 0.017,
     };
   }
 
@@ -4134,14 +4134,14 @@ class LGraphTextureXDoGFilter {
       this._temp_texture = new GL.Texture(tex.width, tex.height, {
         type: tex.type,
         format: gl.RGBA,
-        filter: gl.LINEAR
+        filter: gl.LINEAR,
       });
     }
 
     if (!LGraphTextureXDoGFilter._xdog_shader) {
       LGraphTextureXDoGFilter._xdog_shader = new GL.Shader(
         Shader.SCREEN_VERTEX_SHADER,
-        LGraphTextureXDoGFilter.xdog_pixel_shader
+        LGraphTextureXDoGFilter.xdog_pixel_shader,
       );
     }
     var shader = LGraphTextureXDoGFilter._xdog_shader;
@@ -4163,7 +4163,7 @@ class LGraphTextureXDoGFilter {
           epsilon: epsilon,
           phi: phi,
           cvsWidth: tex.width,
-          cvsHeight: tex.height
+          cvsHeight: tex.height,
         })
         .draw(mesh);
     });
@@ -4262,7 +4262,7 @@ class LGraphTextureWebcam {
     // Not showing vendor prefixes.
     var constraints = {
       audio: false,
-      video: { facingMode: this.properties.facingMode }
+      video: { facingMode: this.properties.facingMode },
     };
     navigator.mediaDevices
       .getUserMedia(constraints)
@@ -4361,7 +4361,7 @@ class LGraphTextureWebcam {
           0,
           0,
           this.size[0],
-          this.size[1]
+          this.size[1],
         );
       }
     }
@@ -4384,7 +4384,7 @@ class LGraphTextureWebcam {
     if (!temp || temp.width != width || temp.height != height) {
       this._video_texture = new GL.Texture(width, height, {
         format: gl.RGB,
-        filter: gl.LINEAR
+        filter: gl.LINEAR,
       });
     }
 
@@ -4418,7 +4418,7 @@ class LGraphTextureWebcam {
       ["height", "number"],
       ["stream_ready", LiteGraph.EVENT],
       ["stream_closed", LiteGraph.EVENT],
-      ["stream_error", LiteGraph.EVENT]
+      ["stream_error", LiteGraph.EVENT],
     ];
   }
 }
@@ -4439,7 +4439,7 @@ class LGraphLensFX {
     this.properties = {
       enabled: true,
       factor: 1,
-      precision: LGraphTexture.LOW
+      precision: LGraphTexture.LOW,
     };
 
     this._uniforms = { u_texture: 0, u_factor: 1 };
@@ -4477,7 +4477,7 @@ class LGraphLensFX {
       temp = this._temp_texture = new GL.Texture(
         tex.width,
         tex.height,
-        { type: tex.type, format: gl.RGBA, filter: gl.LINEAR }
+        { type: tex.type, format: gl.RGBA, filter: gl.LINEAR },
       );
     }
 
@@ -4485,7 +4485,7 @@ class LGraphLensFX {
     if (!shader) {
       shader = LGraphLensFX._shader = new GL.Shader(
         GL.Shader.SCREEN_VERTEX_SHADER,
-        LGraphLensFX.pixel_shader
+        LGraphLensFX.pixel_shader,
       );
     }
 
@@ -4512,7 +4512,7 @@ LGraphLensFX.title = "Lens FX";
 LGraphLensFX.desc = "distortion and chromatic aberration";
 
 LGraphLensFX.widgets_info = {
-  precision: { widget: "combo", values: LGraphTexture.MODE_VALUES }
+  precision: { widget: "combo", values: LGraphTexture.MODE_VALUES },
 };
 
 LGraphLensFX.pixel_shader =
@@ -4615,7 +4615,7 @@ class LGraphTextureFromData {
 LGraphTextureFromData.title = "Data->Tex";
 LGraphTextureFromData.desc = "Generates or applies a curve to a texture";
 LGraphTextureFromData.widgets_info = {
-  precision: { widget: "combo", values: LGraphTexture.MODE_VALUES }
+  precision: { widget: "combo", values: LGraphTexture.MODE_VALUES },
 };
 
 LiteGraph.registerNodeType("texture/fromdata", LGraphTextureFromData);
@@ -4632,14 +4632,14 @@ class LGraphTextureCurve {
     this._uniforms = { u_texture: 0, u_curve: 1, u_range: 1.0 };
     this._must_update = true;
     this._points = {
-      RGB: [[0,0],[1,1]],
-      R: [[0,0],[1,1]],
-      G: [[0,0],[1,1]],
-      B: [[0,0],[1,1]]
+      RGB: [[0, 0], [1, 1]],
+      R: [[0, 0], [1, 1]],
+      G: [[0, 0], [1, 1]],
+      B: [[0, 0], [1, 1]],
     };
     this.curve_editor = null;
-    this.addWidget("toggle","Split Channels",false,"split_channels");
-    this.addWidget("combo","Channel","RGB",{ values:["RGB","R","G","B"]});
+    this.addWidget("toggle", "Split Channels", false, "split_channels");
+    this.addWidget("combo", "Channel", "RGB", { values: ["RGB", "R", "G", "B"]});
     this.curve_offset = 68;
     this.size = [ 240, 160 ];
   }
@@ -4715,20 +4715,20 @@ class LGraphTextureCurve {
     {
       if (split)
       {
-        values[i*4] = clamp( this.sampleCurve(i/num,this._points.R)*255,0,255);
-        values[i*4+1] = clamp( this.sampleCurve(i/num,this._points.G)*255,0,255);
-        values[i*4+2] = clamp( this.sampleCurve(i/num,this._points.B)*255,0,255);
+        values[i*4] = clamp( this.sampleCurve(i/num, this._points.R)*255, 0, 255);
+        values[i*4+1] = clamp( this.sampleCurve(i/num, this._points.G)*255, 0, 255);
+        values[i*4+2] = clamp( this.sampleCurve(i/num, this._points.B)*255, 0, 255);
       }
       else
       {
         var v = this.sampleCurve(i/num);// sample curve
-        values[i*4] = values[i*4+1] = values[i*4+2] = clamp(v*255,0,255);
+        values[i*4] = values[i*4+1] = values[i*4+2] = clamp(v*255, 0, 255);
       }
       values[i*4+3] = 255; // alpha fixed
     }
     if (!this._curve_texture)
-      this._curve_texture = new GL.Texture(256,1,{ format: gl.RGBA, magFilter: gl.LINEAR, wrap: gl.CLAMP_TO_EDGE });
-    this._curve_texture.uploadData(values,null,true);
+      this._curve_texture = new GL.Texture(256, 1, { format: gl.RGBA, magFilter: gl.LINEAR, wrap: gl.CLAMP_TO_EDGE });
+    this._curve_texture.uploadData(values, null, true);
   }
 
   onSerialize(o) {
@@ -4748,7 +4748,7 @@ class LGraphTextureCurve {
   onMouseDown(e, localpos, graphcanvas) {
     if (this.curve_editor)
     {
-      var r = this.curve_editor.onMouseDown([localpos[0],localpos[1]-this.curve_offset], graphcanvas);
+      var r = this.curve_editor.onMouseDown([localpos[0], localpos[1]-this.curve_offset], graphcanvas);
       if (r)
         this.captureInput(true);
       return r;
@@ -4757,12 +4757,12 @@ class LGraphTextureCurve {
 
   onMouseMove(e, localpos, graphcanvas) {
     if (this.curve_editor)
-      return this.curve_editor.onMouseMove([localpos[0],localpos[1]-this.curve_offset], graphcanvas);
+      return this.curve_editor.onMouseMove([localpos[0], localpos[1]-this.curve_offset], graphcanvas);
   }
 
   onMouseUp(e, localpos, graphcanvas) {
     if (this.curve_editor)
-      return this.curve_editor.onMouseUp([localpos[0],localpos[1]-this.curve_offset], graphcanvas);
+      return this.curve_editor.onMouseUp([localpos[0], localpos[1]-this.curve_offset], graphcanvas);
     this.captureInput(false);
   }
 
@@ -4773,7 +4773,7 @@ class LGraphTextureCurve {
     if (!this.curve_editor)
       this.curve_editor = new LiteGraph.CurveEditor(this._points.R);
     ctx.save();
-    ctx.translate(0,this.curve_offset);
+    ctx.translate(0, this.curve_offset);
     var channel = this.widgets[1].value;
 
     if (this.properties.split_channels)
@@ -4784,12 +4784,12 @@ class LGraphTextureCurve {
         this.widgets[1].disabled = false;
       }
       this.curve_editor.points = this._points.R;
-      this.curve_editor.draw( ctx, [this.size[0],this.size[1] - this.curve_offset], graphcanvas, "#111", LGraphTextureCurve.channel_line_colors.R, true );
+      this.curve_editor.draw( ctx, [this.size[0], this.size[1] - this.curve_offset], graphcanvas, "#111", LGraphTextureCurve.channel_line_colors.R, true );
       ctx.globalCompositeOperation = "lighten";
       this.curve_editor.points = this._points.G;
-      this.curve_editor.draw( ctx, [this.size[0],this.size[1] - this.curve_offset], graphcanvas, null, LGraphTextureCurve.channel_line_colors.G, true );
+      this.curve_editor.draw( ctx, [this.size[0], this.size[1] - this.curve_offset], graphcanvas, null, LGraphTextureCurve.channel_line_colors.G, true );
       this.curve_editor.points = this._points.B;
-      this.curve_editor.draw( ctx, [this.size[0],this.size[1] - this.curve_offset], graphcanvas, null, LGraphTextureCurve.channel_line_colors.B, true );
+      this.curve_editor.draw( ctx, [this.size[0], this.size[1] - this.curve_offset], graphcanvas, null, LGraphTextureCurve.channel_line_colors.B, true );
       ctx.globalCompositeOperation = "source-over";
     }
     else
@@ -4799,7 +4799,7 @@ class LGraphTextureCurve {
     }
 
     this.curve_editor.points = this._points[channel];
-    this.curve_editor.draw( ctx, [this.size[0],this.size[1] - this.curve_offset], graphcanvas, this.properties.split_channels ? null : "#111", LGraphTextureCurve.channel_line_colors[channel] );
+    this.curve_editor.draw( ctx, [this.size[0], this.size[1] - this.curve_offset], graphcanvas, this.properties.split_channels ? null : "#111", LGraphTextureCurve.channel_line_colors[channel] );
     ctx.restore();
   }
 }
@@ -4807,10 +4807,10 @@ class LGraphTextureCurve {
 LGraphTextureCurve.title = "Curve";
 LGraphTextureCurve.desc = "Generates or applies a curve to a texture";
 LGraphTextureCurve.widgets_info = {
-  precision: { widget: "combo", values: LGraphTexture.MODE_VALUES }
+  precision: { widget: "combo", values: LGraphTexture.MODE_VALUES },
 };
 
-LGraphTextureCurve.channel_line_colors = { "RGB":"#666","R":"#F33","G":"#3F3","B":"#33F" };
+LGraphTextureCurve.channel_line_colors = { "RGB": "#666", "R": "#F33", "G": "#3F3", "B": "#33F" };
 
 LGraphTextureCurve.pixel_shader =
         "precision highp float;\n\
@@ -4860,7 +4860,7 @@ class LGraphExposition {
       temp = this._temp_texture = new GL.Texture(
         tex.width,
         tex.height,
-        { type: tex.type, format: gl.RGBA, filter: gl.LINEAR }
+        { type: tex.type, format: gl.RGBA, filter: gl.LINEAR },
       );
     }
 
@@ -4868,7 +4868,7 @@ class LGraphExposition {
     if (!shader) {
       shader = LGraphExposition._shader = new GL.Shader(
         GL.Shader.SCREEN_VERTEX_SHADER,
-        LGraphExposition.pixel_shader
+        LGraphExposition.pixel_shader,
       );
     }
 
@@ -4895,7 +4895,7 @@ LGraphExposition.desc = "Controls texture exposition";
 
 LGraphExposition.widgets_info = {
   exposition: { widget: "slider", min: 0, max: 3 },
-  precision: { widget: "combo", values: LGraphTexture.MODE_VALUES }
+  precision: { widget: "combo", values: LGraphTexture.MODE_VALUES },
 };
 
 LGraphExposition.pixel_shader =
@@ -4922,7 +4922,7 @@ class LGraphToneMapping {
       gamma: 1,
       average_lum: 1,
       lum_white: 1,
-      precision: LGraphTexture.LOW
+      precision: LGraphTexture.LOW,
     };
 
     this._uniforms = {
@@ -4930,7 +4930,7 @@ class LGraphToneMapping {
       u_lumwhite2: 1,
       u_igamma: 1,
       u_scale: 1,
-      u_average_lum: 1
+      u_average_lum: 1,
     };
   }
 
@@ -4967,7 +4967,7 @@ class LGraphToneMapping {
       temp = this._temp_texture = new GL.Texture(
         tex.width,
         tex.height,
-        { type: tex.type, format: gl.RGBA, filter: gl.LINEAR }
+        { type: tex.type, format: gl.RGBA, filter: gl.LINEAR },
       );
     }
 
@@ -4986,7 +4986,7 @@ class LGraphToneMapping {
       if (!shader) {
         shader = LGraphToneMapping._shader = new GL.Shader(
           GL.Shader.SCREEN_VERTEX_SHADER,
-          LGraphToneMapping.pixel_shader
+          LGraphToneMapping.pixel_shader,
         );
       }
     } else if (avg.constructor === GL.Texture) {
@@ -4996,7 +4996,7 @@ class LGraphToneMapping {
         shader = LGraphToneMapping._shader_texture = new GL.Shader(
           GL.Shader.SCREEN_VERTEX_SHADER,
           LGraphToneMapping.pixel_shader,
-          { AVG_TEXTURE: "" }
+          { AVG_TEXTURE: "" },
         );
       }
     }
@@ -5022,7 +5022,7 @@ LGraphToneMapping.desc =
         "Applies Tone Mapping to convert from high to low";
 
 LGraphToneMapping.widgets_info = {
-  precision: { widget: "combo", values: LGraphTexture.MODE_VALUES }
+  precision: { widget: "combo", values: LGraphTexture.MODE_VALUES },
 };
 
 LGraphToneMapping.pixel_shader =
@@ -5089,7 +5089,7 @@ class LGraphTexturePerlin {
       scale: 1,
       offset: [0, 0],
       amplitude: 1,
-      precision: LGraphTexture.DEFAULT
+      precision: LGraphTexture.DEFAULT,
     };
     this._key = 0;
     this._texture = null;
@@ -5098,7 +5098,7 @@ class LGraphTexturePerlin {
       u_seed: 0,
       u_offset: vec2.create(),
       u_scale: 1,
-      u_viewport: vec2.create()
+      u_viewport: vec2.create(),
     };
   }
 
@@ -5109,7 +5109,7 @@ class LGraphTexturePerlin {
       ["octaves", "number"],
       ["scale", "number"],
       ["amplitude", "number"],
-      ["offset", "vec2"]
+      ["offset", "vec2"],
     ];
   }
 
@@ -5138,7 +5138,7 @@ class LGraphTexturePerlin {
       temp = this._texture = new GL.Texture(w, h, {
         type: type,
         format: gl.RGB,
-        filter: gl.LINEAR
+        filter: gl.LINEAR,
       });
     }
 
@@ -5184,7 +5184,7 @@ class LGraphTexturePerlin {
     if (!shader) {
       shader = LGraphTexturePerlin._shader = new GL.Shader(
         GL.Shader.SCREEN_VERTEX_SHADER,
-        LGraphTexturePerlin.pixel_shader
+        LGraphTexturePerlin.pixel_shader,
       );
     }
 
@@ -5206,7 +5206,7 @@ LGraphTexturePerlin.widgets_info = {
   precision: { widget: "combo", values: LGraphTexture.MODE_VALUES },
   width: { type: "number", precision: 0, step: 1 },
   height: { type: "number", precision: 0, step: 1 },
-  octaves: { type: "number", precision: 0, step: 1, min: 1, max: 50 }
+  octaves: { type: "number", precision: 0, step: 1, min: 1, max: 50 },
 };
 
 LGraphTexturePerlin.pixel_shader =
@@ -5275,7 +5275,7 @@ class LGraphTextureCanvas2D {
       height: 512,
       clear: true,
       precision: LGraphTexture.DEFAULT,
-      use_html_canvas: false
+      use_html_canvas: false,
     };
     this._func = null;
     this._temp_texture = null;
@@ -5293,7 +5293,7 @@ class LGraphTextureCanvas2D {
       return;
 
     try {
-      this._func = new Function( "canvas", "ctx", "time", "script","v", code );
+      this._func = new Function( "canvas", "ctx", "time", "script", "v", code );
       this.boxcolor = "#00FF00";
     } catch (err) {
       this.boxcolor = "#FF0000";
@@ -5320,7 +5320,7 @@ class LGraphTextureCanvas2D {
       temp = this._temp_texture = new GL.Texture(width, height, {
         format: gl.RGBA,
         filter: gl.LINEAR,
-        type: type
+        type: type,
       });
     }
 
@@ -5352,7 +5352,7 @@ class LGraphTextureCanvas2D {
         gl.start2D();
         if (properties.clear)
         {
-          gl.clearColor(0,0,0,0);
+          gl.clearColor(0, 0, 0, 0);
           gl.clear( gl.COLOR_BUFFER_BIT );
         }
 
@@ -5360,7 +5360,7 @@ class LGraphTextureCanvas2D {
           if (func_context.draw) {
             func_context.draw.call(that, canvas, ctx, time, func_context, v);
           } else {
-            func_context.call(that, canvas, ctx, time, func_context,v);
+            func_context.call(that, canvas, ctx, time, func_context, v);
           }
           that.boxcolor = "#00FF00";
         } catch (err) {
@@ -5373,13 +5373,13 @@ class LGraphTextureCanvas2D {
     else // rendering to offscreen canvas and uploading to texture
     {
       if (properties.clear)
-        ctx.clearRect(0,0,canvas.width,canvas.height);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       try {
         if (func_context.draw) {
           func_context.draw.call(this, canvas, ctx, time, func_context, v);
         } else {
-          func_context.call(this, canvas, ctx, time, func_context,v);
+          func_context.call(this, canvas, ctx, time, func_context, v);
         }
         this.boxcolor = "#00FF00";
       } catch (err) {
@@ -5404,7 +5404,7 @@ LGraphTextureCanvas2D.widgets_info = {
   precision: { widget: "combo", values: LGraphTexture.MODE_VALUES },
   code: { type: "code" },
   width: { type: "number", precision: 0, step: 1 },
-  height: { type: "number", precision: 0, step: 1 }
+  height: { type: "number", precision: 0, step: 1 },
 };
 
 LiteGraph.registerNodeType("texture/canvas2D", LGraphTextureCanvas2D);
@@ -5420,7 +5420,7 @@ class LGraphTextureMatte {
       key_color: vec3.fromValues(0, 1, 0),
       threshold: 0.8,
       slope: 0.2,
-      precision: LGraphTexture.DEFAULT
+      precision: LGraphTexture.DEFAULT,
     };
   }
 
@@ -5443,7 +5443,7 @@ class LGraphTextureMatte {
     this._tex = LGraphTexture.getTargetTexture(
       tex,
       this._tex,
-      this.properties.precision
+      this.properties.precision,
     );
 
     gl.disable(gl.BLEND);
@@ -5454,7 +5454,7 @@ class LGraphTextureMatte {
         u_texture: 0,
         u_key_color: this.properties.key_color,
         u_threshold: 1,
-        u_slope: 1
+        u_slope: 1,
       };
     }
     var uniforms = this._uniforms;
@@ -5464,7 +5464,7 @@ class LGraphTextureMatte {
     if (!shader) {
       shader = LGraphTextureMatte._shader = new GL.Shader(
         GL.Shader.SCREEN_VERTEX_SHADER,
-        LGraphTextureMatte.pixel_shader
+        LGraphTextureMatte.pixel_shader,
       );
     }
 
@@ -5486,7 +5486,7 @@ LGraphTextureMatte.desc = "Extracts background";
 
 LGraphTextureMatte.widgets_info = {
   key_color: { widget: "color" },
-  precision: { widget: "combo", values: LGraphTexture.MODE_VALUES }
+  precision: { widget: "combo", values: LGraphTexture.MODE_VALUES },
 };
 
 LGraphTextureMatte.pixel_shader =

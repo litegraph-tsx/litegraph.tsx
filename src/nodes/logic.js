@@ -50,7 +50,7 @@ LiteGraph.registerNodeType("logic/selector", Selector);
 class Sequence {
   constructor() {
     this.properties = {
-      sequence: "A,B,C"
+      sequence: "A,B,C",
     };
     this.addInput("index", "number");
     this.addInput("seq");
@@ -108,7 +108,7 @@ class logicAnd {
 
   onGetInputs() {
     return [
-      ["and", "boolean"]
+      ["and", "boolean"],
     ];
   }
 
@@ -139,7 +139,7 @@ class logicOr {
 
   onGetInputs() {
     return [
-      ["or", "boolean"]
+      ["or", "boolean"],
     ];
   }
 }
@@ -191,7 +191,7 @@ class logicCompare {
 
   onGetInputs() {
     return [
-      ["bool", "boolean"]
+      ["bool", "boolean"],
     ];
   }
 

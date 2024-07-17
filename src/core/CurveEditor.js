@@ -39,16 +39,16 @@ export class CurveEditor {
     line_color = line_color || "#666";
 
     ctx.save();
-    ctx.translate(this.margin,this.margin);
+    ctx.translate(this.margin, this.margin);
 
     if (background_color)
     {
       ctx.fillStyle = "#111";
-      ctx.fillRect(0,0,w,h);
+      ctx.fillRect(0, 0, w, h);
       ctx.fillStyle = "#222";
-      ctx.fillRect(w*0.5,0,1,h);
+      ctx.fillRect(w*0.5, 0, 1, h);
       ctx.strokeStyle = "#333";
-      ctx.strokeRect(0,0,w,h);
+      ctx.strokeRect(0, 0, w, h);
     }
     ctx.strokeStyle = line_color;
     if (inactive)
@@ -86,7 +86,7 @@ export class CurveEditor {
     var h = this.size[1] - this.margin * 2;
     var x = localpos[0] - this.margin;
     var y = localpos[1] - this.margin;
-    var pos = [x,y];
+    var pos = [x, y];
     var max_dist = 30 / graphcanvas.ds.scale;
     // search closer one
     this.selected = this.getCloserPoint(pos, max_dist);
@@ -95,7 +95,7 @@ export class CurveEditor {
     {
       var point = [x / w, 1 - y / h];
       points.push(point);
-      points.sort(function(a,b) { return a[0] - b[0]; });
+      points.sort(function(a, b) { return a[0] - b[0]; });
       this.selected = points.indexOf(point);
       this.must_update = true;
     }
@@ -112,7 +112,7 @@ export class CurveEditor {
       return;
     var x = (localpos[0] - this.margin) / (this.size[0] - this.margin * 2 );
     var y = (localpos[1] - this.margin) / (this.size[1] - this.margin * 2 );
-    var curvepos = [(localpos[0] - this.margin),(localpos[1] - this.margin)];
+    var curvepos = [(localpos[0] - this.margin), (localpos[1] - this.margin)];
     var max_dist = 30 / graphcanvas.ds.scale;
     this._nearest = this.getCloserPoint(curvepos, max_dist);
     var point = points[s];
@@ -121,7 +121,7 @@ export class CurveEditor {
       var is_edge_point = s == 0 || s == points.length - 1;
       if ( !is_edge_point && (localpos[0] < -10 || localpos[0] > this.size[0] + 10 || localpos[1] < -10 || localpos[1] > this.size[1] + 10) )
       {
-        points.splice(s,1);
+        points.splice(s, 1);
         this.selected = -1;
         return;
       }
@@ -130,7 +130,7 @@ export class CurveEditor {
       else
         point[0] = s == 0 ? 0 : 1;
       point[1] = 1.0 - clamp(y, 0, 1);
-      points.sort(function(a,b) { return a[0] - b[0]; });
+      points.sort(function(a, b) { return a[0] - b[0]; });
       this.selected = points.indexOf(point);
       this.must_update = true;
     }
@@ -149,7 +149,7 @@ export class CurveEditor {
     var w = (this.size[0] - this.margin * 2);
     var h = (this.size[1] - this.margin * 2);
     var num = points.length;
-    var p2 = [0,0];
+    var p2 = [0, 0];
     var min_dist = 1000000;
     var closest = -1;
     var last_valid = -1;
@@ -160,7 +160,7 @@ export class CurveEditor {
       p2[1] = (1.0 - p[1]) * h;
       if (p2[0] < pos[0])
         last_valid = i;
-      var dist = vec2.distance(pos,p2);
+      var dist = vec2.distance(pos, p2);
       if (dist > min_dist || dist > max_dist)
         continue;
       closest = i;

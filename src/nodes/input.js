@@ -138,7 +138,7 @@ class GamepadInput {
                 ) {
                   this.triggerSlot(
                     i,
-                    GamepadInput.buttons[j]
+                    GamepadInput.buttons[j],
                   );
                 }
               }
@@ -191,7 +191,7 @@ class GamepadInput {
           axes: [],
           buttons: {},
           hat: "",
-          hatmap: GamepadInput.CENTER
+          hatmap: GamepadInput.CENTER,
         };
       }
 
@@ -264,14 +264,14 @@ class GamepadInput {
       (la[0] + 1) * 0.5 * this.size[0] - 4,
       (la[1] + 1) * 0.5 * this.size[1] - 4,
       8,
-      8
+      8,
     );
     ctx.strokeStyle = "#8A8";
     ctx.strokeRect(
       (ra[0] + 1) * 0.5 * this.size[0] - 4,
       (ra[1] + 1) * 0.5 * this.size[1] - 4,
       8,
-      8
+      8,
     );
     var h = this.size[1] / this._current_buttons.length;
     ctx.fillStyle = "#AEB";
@@ -317,7 +317,7 @@ class GamepadInput {
       ["hat_up", "number"],
       ["hat_down", "number"],
       ["hat", "number"],
-      ["button_pressed", LiteGraph.EVENT]
+      ["button_pressed", LiteGraph.EVENT],
     ];
   }
 
@@ -344,10 +344,10 @@ class GamepadInput {
     "start",
     "ls",
     "rs",
-    "home"
+    "home",
   ];
 
-  static mapping = {a:0,b:1,x:2,y:3,lb:4,rb:5,lt:6,rt:7,back:8,start:9,ls:10,rs:11 };
-  static mapping_array = ["a","b","x","y","lb","rb","lt","rt","back","start","ls","rs"];
+  static mapping = {a: 0, b: 1, x: 2, y: 3, lb: 4, rb: 5, lt: 6, rt: 7, back: 8, start: 9, ls: 10, rs: 11 };
+  static mapping_array = ["a", "b", "x", "y", "lb", "rb", "lt", "rt", "back", "start", "ls", "rs"];
 }
 LiteGraph.registerNodeType("input/gamepad", GamepadInput);

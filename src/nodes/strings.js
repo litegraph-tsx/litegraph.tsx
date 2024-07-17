@@ -27,7 +27,7 @@ LiteGraph.wrapFunctionAsNode(
   "string/compare",
   compare,
   ["string", "string"],
-  "boolean"
+  "boolean",
 );
 
 function concatenate(a, b) {
@@ -44,7 +44,7 @@ LiteGraph.wrapFunctionAsNode(
   "string/concatenate",
   concatenate,
   ["string", "string"],
-  "string"
+  "string",
 );
 
 function contains(a, b) {
@@ -58,7 +58,7 @@ LiteGraph.wrapFunctionAsNode(
   "string/contains",
   contains,
   ["string", "string"],
-  "boolean"
+  "boolean",
 );
 
 function toUpperCase(a) {
@@ -72,7 +72,7 @@ LiteGraph.wrapFunctionAsNode(
   "string/toUpperCase",
   toUpperCase,
   ["string"],
-  "string"
+  "string",
 );
 
 function split(str, separator) {
@@ -99,7 +99,7 @@ LiteGraph.wrapFunctionAsNode(
   split,
   ["string,array", "string"],
   "array",
-  { separator: "," }
+  { separator: "," },
 );
 
 function toFixed(a) {
@@ -114,7 +114,7 @@ LiteGraph.wrapFunctionAsNode(
   toFixed,
   ["number"],
   "string",
-  { precision: 0 }
+  { precision: 0 },
 );
 
 

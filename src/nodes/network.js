@@ -13,7 +13,7 @@ class LGWebSocket {
     this.properties = {
       url: "",
       room: "lgraph", // allows to filter messages,
-      only_send_changes: true
+      only_send_changes: true,
     };
     this._ws = null;
     this._last_sent_data = [];
@@ -49,7 +49,7 @@ class LGWebSocket {
           type: 0,
           room: room,
           channel: i,
-          data: data
+          data: data,
         });
       } catch (err) {
         continue;
@@ -132,7 +132,7 @@ class LGWebSocket {
       type: 1,
       room: this.properties.room,
       action: action,
-      data: param
+      data: param,
     });
   }
 
@@ -159,13 +159,13 @@ class LGSillyClient {
       "text",
       "Room",
       "lgraph",
-      this.setRoom.bind(this)
+      this.setRoom.bind(this),
     );
     this.addWidget(
       "button",
       "Reconnect",
       null,
-      this.connectSocket.bind(this)
+      this.connectSocket.bind(this),
     );
 
     this.addInput("send", LiteGraph.ACTION);
@@ -175,7 +175,7 @@ class LGSillyClient {
     this.properties = {
       url: "tamats.com:55000",
       room: "lgraph",
-      only_send_changes: true
+      only_send_changes: true,
     };
 
     this._server = null;
@@ -276,7 +276,7 @@ class LGSillyClient {
     if (typeof SillyClient == "undefined") {
       if (!this._error) {
         console.error(
-          "SillyClient node cannot be used, you must include SillyServer.js"
+          "SillyClient node cannot be used, you must include SillyServer.js",
         );
       }
       this._error = true;
@@ -417,7 +417,7 @@ class HTTPRequestNode {
   }
 
   onGetOutputs() {
-    return [["error",LiteGraph.EVENT]];
+    return [["error", LiteGraph.EVENT]];
   }
 
   static title = "HTTP Request";

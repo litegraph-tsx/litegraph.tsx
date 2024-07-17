@@ -75,7 +75,7 @@ export const LiteGraph = {
   ACTION: -1, // for inputs
 
   NODE_MODES: ["Always", "On Event", "Never", "On Trigger"], // helper, will add "On Request" and more in the future
-  NODE_MODES_COLORS:["#666","#422","#333","#224","#626"], // use with node_box_coloured_by_mode
+  NODE_MODES_COLORS: ["#666", "#422", "#333", "#224", "#626"], // use with node_box_coloured_by_mode
   ALWAYS: 0,
   ON_EVENT: 1,
   NEVER: 2,
@@ -221,7 +221,7 @@ export const LiteGraph = {
           return this._shape;
         },
         enumerable: true,
-        configurable: true
+        configurable: true,
       });
 
 
@@ -252,7 +252,7 @@ export const LiteGraph = {
       console.warn(
         "LiteGraph node class " +
                         type +
-                        " has onPropertyChange method, it must be called onPropertyChanged with d at the end"
+                        " has onPropertyChange method, it must be called onPropertyChanged with d at the end",
       );
     }
 
@@ -345,7 +345,7 @@ export const LiteGraph = {
          */
   buildNodeClassFromObject: function(
     name,
-    object
+    object,
   ) {
     var ctor_code = "";
     if (object.inputs)
@@ -400,7 +400,7 @@ export const LiteGraph = {
     func,
     param_types,
     return_type,
-    properties
+    properties,
   ) {
     var params = Array(func.length);
     var code = "";
@@ -488,7 +488,7 @@ export const LiteGraph = {
     if (!base_class) {
       if (LiteGraph.debug) {
         console.log(
-          'GraphNode type "' + type + '" not registered.'
+          'GraphNode type "' + type + '" not registered.',
         );
       }
       return null;
@@ -586,7 +586,7 @@ export const LiteGraph = {
     }
 
     if (this.auto_sort_node_types) {
-      r.sort(function(a,b) {return a.title.localeCompare(b.title)});
+      r.sort(function(a, b) {return a.title.localeCompare(b.title)});
     }
 
     return r;
@@ -681,7 +681,7 @@ export const LiteGraph = {
          * https://gist.github.com/jed/982883?permalink_comment_id=852670#gistcomment-852670
          */
   uuidv4: function() {
-    return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g,a=>(a^Math.random()*16>>a/4).toString(16));
+    return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, a=>(a^Math.random()*16>>a/4).toString(16));
   },
 
   /**
@@ -719,7 +719,7 @@ export const LiteGraph = {
     var supported_types_b = type_b.split(",");
     for (var i = 0; i < supported_types_a.length; ++i) {
       for (var j = 0; j < supported_types_b.length; ++j) {
-        if (this.isValidConnection(supported_types_a[i],supported_types_b[j])) {
+        if (this.isValidConnection(supported_types_a[i], supported_types_b[j])) {
           // if (supported_types_a[i] == supported_types_b[j]) {
           return true;
         }
@@ -741,7 +741,7 @@ export const LiteGraph = {
     this.searchbox_extras[description.toLowerCase()] = {
       type: node_type,
       desc: description,
-      data: data
+      data: data,
     };
   },
 
@@ -783,7 +783,7 @@ export const LiteGraph = {
             on_complete(data);
         })
         .catch(function(error) {
-          console.error("error fetching file:",url);
+          console.error("error fetching file:", url);
           if (on_error)
             on_error(error);
         });
@@ -820,7 +820,7 @@ export const LiteGraph = {
 
   distance: function(a, b) {
     return Math.sqrt(
-      (b[0] - a[0]) * (b[0] - a[0]) + (b[1] - a[1]) * (b[1] - a[1])
+      (b[0] - a[0]) * (b[0] - a[0]) + (b[1] - a[1]) * (b[1] - a[1]),
     );
   },
 
@@ -976,7 +976,7 @@ export const LiteGraph = {
         if (origin.prototype.__lookupGetter__(i)) {
           target.prototype.__defineGetter__(
             i,
-            origin.prototype.__lookupGetter__(i)
+            origin.prototype.__lookupGetter__(i),
           );
         } else {
           target.prototype[i] = origin.prototype[i];
@@ -986,7 +986,7 @@ export const LiteGraph = {
         if (origin.prototype.__lookupSetter__(i)) {
           target.prototype.__defineSetter__(
             i,
-            origin.prototype.__lookupSetter__(i)
+            origin.prototype.__lookupSetter__(i),
           );
         }
       }
@@ -1139,7 +1139,7 @@ LiteGraph.LGraphCanvas = LGraphCanvas;
 LGraphCanvas.link_type_colors = {
   "-1": LiteGraph.EVENT_LINK_COLOR,
   number: "#AAA",
-  node: "#DCA"
+  node: "#DCA",
 };
 
 // timer that works everywhere

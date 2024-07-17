@@ -11,10 +11,10 @@ class Math3DMat4 {
     this.addInput("S", "vec3");
     this.addOutput("mat4", "mat4");
     this.properties = {
-      "T":[0,0,0],
-      "R":[0,0,0],
-      "S":[1,1,1],
-      R_in_degrees: true
+      "T": [0, 0, 0],
+      "R": [0, 0, 0],
+      "S": [1, 1, 1],
+      R_in_degrees: true,
     };
     this._result = mat4.create();
     this._must_update = true;
@@ -44,7 +44,7 @@ class Math3DMat4 {
       if (this.properties.R_in_degrees)
       {
         temp_vec3.set( R );
-        vec3.scale(temp_vec3,temp_vec3,DEG2RAD);
+        vec3.scale(temp_vec3, temp_vec3, DEG2RAD);
         quat.fromEuler( Q, temp_vec3 );
       }
       else
@@ -58,7 +58,7 @@ class Math3DMat4 {
   }
 
   static title = "mat4";
-  static temp_quat = new Float32Array([0,0,0,1]);
+  static temp_quat = new Float32Array([0, 0, 0, 1]);
   static temp_mat4 = new Float32Array(16);
   static temp_vec3 = new Float32Array(3);
 }
@@ -86,25 +86,25 @@ class Math3DOperation {
     if (A == null || B == null)
       return;
     if (A.constructor === Number)
-      A = [A,A,A];
+      A = [A, A, A];
     if (B.constructor === Number)
-      B = [B,B,B];
+      B = [B, B, B];
 
     var result = this._result;
     switch (this.properties.OP) {
       case "+":
-        result = vec3.add(result,A,B);
+        result = vec3.add(result, A, B);
         break;
       case "-":
-        result = vec3.sub(result,A,B);
+        result = vec3.sub(result, A, B);
         break;
       case "x":
       case "X":
       case "*":
-        result = vec3.mul(result,A,B);
+        result = vec3.mul(result, A, B);
         break;
       case "/":
-        result = vec3.div(result,A,B);
+        result = vec3.div(result, A, B);
         break;
       case "%":
         result[0] = A[0]%B[0];
@@ -112,25 +112,25 @@ class Math3DOperation {
         result[2] = A[2]%B[2];
         break;
       case "^":
-        result[0] = Math.pow(A[0],B[0]);
-        result[1] = Math.pow(A[1],B[1]);
-        result[2] = Math.pow(A[2],B[2]);
+        result[0] = Math.pow(A[0], B[0]);
+        result[1] = Math.pow(A[1], B[1]);
+        result[2] = Math.pow(A[2], B[2]);
         break;
       case "max":
-        result[0] = Math.max(A[0],B[0]);
-        result[1] = Math.max(A[1],B[1]);
-        result[2] = Math.max(A[2],B[2]);
+        result[0] = Math.max(A[0], B[0]);
+        result[1] = Math.max(A[1], B[1]);
+        result[2] = Math.max(A[2], B[2]);
         break;
       case "min":
-        result[0] = Math.min(A[0],B[0]);
-        result[1] = Math.min(A[1],B[1]);
-        result[2] = Math.min(A[2],B[2]);
+        result[0] = Math.min(A[0], B[0]);
+        result[1] = Math.min(A[1], B[1]);
+        result[2] = Math.min(A[2], B[2]);
         break;
       case "dot":
-        result = vec3.dot(A,B);
+        result = vec3.dot(A, B);
         break;
       case "cross":
-        vec3.cross(result,A,B);
+        vec3.cross(result, A, B);
         break;
       default:
         console.warn("Unknown operation: " + this.properties.OP);
@@ -149,7 +149,7 @@ class Math3DOperation {
     ctx.fillText(
       this.properties.OP,
       this.size[0] * 0.5,
-      (this.size[1] + LiteGraph.NODE_TITLE_HEIGHT) * 0.5
+      (this.size[1] + LiteGraph.NODE_TITLE_HEIGHT) * 0.5,
     );
     ctx.textAlign = "left";
   }
@@ -157,21 +157,21 @@ class Math3DOperation {
   static title = "Operation";
   static desc = "Easy math 3D operators";
 
-  static values = ["+", "-", "*", "/", "%", "^", "max", "min","dot","cross"];
+  static values = ["+", "-", "*", "/", "%", "^", "max", "min", "dot", "cross"];
   static "@OP" = {
     type: "enum",
     title: "operation",
-    values: Math3DOperation.values
+    values: Math3DOperation.values,
   };
   static size = [100, 60];
 }
 LiteGraph.registerSearchboxExtra("math3d/operation", "CROSS()", {
-  properties: {"OP":"cross"},
-  title: "CROSS()"
+  properties: {"OP": "cross"},
+  title: "CROSS()",
 });
 LiteGraph.registerSearchboxExtra("math3d/operation", "DOT()", {
-  properties: {"OP":"dot"},
-  title: "DOT()"
+  properties: {"OP": "dot"},
+  title: "DOT()",
 });
 LiteGraph.registerNodeType("math3d/operation", Math3DOperation);
 
@@ -345,7 +345,7 @@ if (global.glMatrix) {
         ["x", "number"],
         ["y", "number"],
         ["z", "number"],
-        ["w", "number"]
+        ["w", "number"],
       ];
     }
 
@@ -388,7 +388,7 @@ if (global.glMatrix) {
     constructor() {
       this.addInput("euler", "vec3");
       this.addOutput("quat", "quat");
-      this.properties = { euler:[0,0,0], use_yaw_pitch_roll: false };
+      this.properties = { euler: [0, 0, 0], use_yaw_pitch_roll: false };
       this._degs = vec3.create();
       this._value = quat.create();
     }
@@ -400,7 +400,7 @@ if (global.glMatrix) {
       }
       vec3.scale( this._degs, euler, DEG2RAD );
       if (this.properties.use_yaw_pitch_roll)
-        this._degs = [this._degs[2],this._degs[0],this._degs[1]];
+        this._degs = [this._degs[2], this._degs[0], this._degs[1]];
       var R = quat.fromEuler(this._value, this._degs);
       this.setOutputData(0, R);
     }
@@ -451,7 +451,7 @@ if (global.glMatrix) {
       } else {
         this.setOutputData(
           0,
-          vec3.transformQuat(vec3.create(), vec, quat)
+          vec3.transformQuat(vec3.create(), vec, quat),
         );
       }
     }
@@ -495,7 +495,7 @@ if (global.glMatrix) {
       this.addInputs([
         ["A", "quat"],
         ["B", "quat"],
-        ["factor", "number"]
+        ["factor", "number"],
       ]);
       this.addOutput("slerp", "quat");
       this.addProperty("factor", 0.5);
@@ -532,7 +532,7 @@ if (global.glMatrix) {
       this.addInput("vec3", "vec3");
       this.addOutput("remap", "vec3");
       this.addOutput("clamped", "vec3");
-      this.properties = { clamp: true, range_min: [-1, -1, 0], range_max: [1, 1, 0], target_min: [-1,-1,0], target_max:[1,1,0] };
+      this.properties = { clamp: true, range_min: [-1, -1, 0], range_max: [1, 1, 0], target_min: [-1, -1, 0], target_max: [1, 1, 0] };
       this._value = vec3.create();
       this._clamped = vec3.create();
     }
@@ -573,13 +573,13 @@ if (global.glMatrix) {
 
         var n = (this._value[i] - range_min[i]) / r;
         if (this.properties.clamp)
-          n = clamp(n,0,1);
+          n = clamp(n, 0, 1);
         var t = target_max[i] - target_min[i];
         this._value[i] = target_min[i] + n * t;
       }
 
-      this.setOutputData(0,this._value);
-      this.setOutputData(1,this._clamped);
+      this.setOutputData(0, this._value);
+      this.setOutputData(1, this._clamped);
     }
 
     static title = "Remap Range";

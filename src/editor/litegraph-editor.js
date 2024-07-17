@@ -56,14 +56,14 @@ function Editor(container_id, options) {
     "Play",
     "./assets/images/icon-play.png",
     this.onPlayButton.bind(this),
-    ".tools-right"
+    ".tools-right",
   );
   this.addToolsButton(
     "playstepnode_button",
     "Step",
     "./assets/images/icon-playstep.png",
     this.onPlayStepButton.bind(this),
-    ".tools-right"
+    ".tools-right",
   );
 
   if (!options.skip_livemode) {
@@ -72,7 +72,7 @@ function Editor(container_id, options) {
       "Live",
       "./assets/images/icon-record.png",
       this.onLiveButton.bind(this),
-      ".tools-right"
+      ".tools-right",
     );
   }
   if (!options.skip_maximize) {
@@ -81,7 +81,7 @@ function Editor(container_id, options) {
       "",
       "./assets/images/icon-maximize.png",
       this.onFullscreenButton.bind(this),
-      ".tools-right"
+      ".tools-right",
     );
   }
   if (options.miniwindow) {
@@ -144,7 +144,7 @@ Editor.prototype.createButton = function(name, icon_url, callback) {
 };
 
 Editor.prototype.onLoadButton = function() {
-  var panel = this.graphcanvas.createPanel("Load session",{closable:true});
+  var panel = this.graphcanvas.createPanel("Load session", {closable: true});
   // TO DO
 
   this.root.appendChild(panel);
@@ -269,7 +269,7 @@ Editor.prototype.addMiniWindow = function(w, h) {
     var tl = that.graphcanvas.convertOffsetToCanvas([0, 0]);
     var br = that.graphcanvas.convertOffsetToCanvas([
       that.graphcanvas.canvas.width,
-      that.graphcanvas.canvas.height
+      that.graphcanvas.canvas.height,
     ]);
     tl = this.convertCanvasToOffset(tl);
     br = this.convertCanvasToOffset(br);
@@ -278,7 +278,7 @@ Editor.prototype.addMiniWindow = function(w, h) {
       Math.floor(tl[0]) + 0.5,
       Math.floor(tl[1]) + 0.5,
       Math.floor(br[0] - tl[0]),
-      Math.floor(br[1] - tl[1])
+      Math.floor(br[1] - tl[1]),
     );
   };
 
@@ -320,13 +320,13 @@ Editor.prototype.addMultiview = function() {
     return;
   }
   this.graphcanvas.ctx.fillStyle = "black";
-  this.graphcanvas.ctx.fillRect(0,0,canvas.width,canvas.height);
-  this.graphcanvas.viewport = [0,0,canvas.width*0.5-2,canvas.height];
+  this.graphcanvas.ctx.fillRect(0, 0, canvas.width, canvas.height);
+  this.graphcanvas.viewport = [0, 0, canvas.width*0.5-2, canvas.height];
 
   graphcanvas = new LGraphCanvas( canvas, this.graph );
   graphcanvas.background_image = "./assets/images/grid.png";
   this.graphcanvas2 = graphcanvas;
-  this.graphcanvas2.viewport = [canvas.width*0.5,0,canvas.width*0.5,canvas.height];
+  this.graphcanvas2.viewport = [canvas.width*0.5, 0, canvas.width*0.5, canvas.height];
 }
 
 LiteGraph.Editor = Editor;

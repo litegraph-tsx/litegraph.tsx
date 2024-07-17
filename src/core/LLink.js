@@ -38,7 +38,7 @@ export class LLink {
       this.origin_slot,
       this.target_id,
       this.target_slot,
-      this.type
+      this.type,
     ];
   }
 }

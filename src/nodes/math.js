@@ -67,7 +67,7 @@ class Converter {
       ["number", "number"],
       ["vec2", "vec2"],
       ["vec3", "vec3"],
-      ["vec4", "vec4"]
+      ["vec4", "vec4"],
     ];
   }
 
@@ -187,7 +187,7 @@ class MathRange {
       ["in_min", "number"],
       ["in_max", "number"],
       ["out_min", "number"],
-      ["out_max", "number"]
+      ["out_max", "number"],
     ];
   }
 
@@ -549,7 +549,7 @@ LiteGraph.registerNodeType("math/scale", MathScale);
 
 class Gate {
   constructor() {
-    this.addInput("v","boolean");
+    this.addInput("v", "boolean");
     this.addInput("A");
     this.addInput("B");
     this.addOutput("out");
@@ -712,20 +712,20 @@ class MathOperation {
     if (A.constructor === Number)
     {
       result = 0;
-      result = func(A,B);
+      result = func(A, B);
     }
     else if (A.constructor === Array)
     {
       result = this._result;
       result.length = A.length;
       for (var i = 0; i < A.length; ++i)
-        result[i] = func(A[i],B);
+        result[i] = func(A[i], B);
     }
     else
     {
       result = {};
       for (var i in A)
-        result[i] = func(A[i],B);
+        result[i] = func(A[i], B);
     }
     this.setOutputData(0, result);
   }
@@ -741,7 +741,7 @@ class MathOperation {
     ctx.fillText(
       this.properties.OP,
       this.size[0] * 0.5,
-      (this.size[1] + LiteGraph.NODE_TITLE_HEIGHT) * 0.5
+      (this.size[1] + LiteGraph.NODE_TITLE_HEIGHT) * 0.5,
     );
     ctx.textAlign = "left";
   }
@@ -751,22 +751,22 @@ class MathOperation {
 
   static values = ["+", "-", "*", "/", "%", "^", "max", "min"];
   static funcs = {
-    "+": function(A,B) { return A + B; },
-    "-": function(A,B) { return A - B; },
-    "x": function(A,B) { return A * B; },
-    "X": function(A,B) { return A * B; },
-    "*": function(A,B) { return A * B; },
-    "/": function(A,B) { return A / B; },
-    "%": function(A,B) { return A % B; },
-    "^": function(A,B) { return Math.pow(A, B); },
-    "max": function(A,B) { return Math.max(A, B); },
-    "min": function(A,B) { return Math.min(A, B); }
+    "+": function(A, B) { return A + B; },
+    "-": function(A, B) { return A - B; },
+    "x": function(A, B) { return A * B; },
+    "X": function(A, B) { return A * B; },
+    "*": function(A, B) { return A * B; },
+    "/": function(A, B) { return A / B; },
+    "%": function(A, B) { return A % B; },
+    "^": function(A, B) { return Math.pow(A, B); },
+    "max": function(A, B) { return Math.max(A, B); },
+    "min": function(A, B) { return Math.min(A, B); },
   };
 
   static "@OP" = {
     type: "enum",
     title: "operation",
-    values: MathOperation.values
+    values: MathOperation.values,
   };
 
   static size = [100, 60];
@@ -775,13 +775,13 @@ LiteGraph.registerNodeType("math/operation", MathOperation);
 
 
 LiteGraph.registerSearchboxExtra("math/operation", "MAX", {
-  properties: {OP:"max"},
-  title: "MAX()"
+  properties: {OP: "max"},
+  title: "MAX()",
 });
 
 LiteGraph.registerSearchboxExtra("math/operation", "MIN", {
-  properties: {OP:"min"},
-  title: "MIN()"
+  properties: {OP: "min"},
+  title: "MIN()",
 });
 
 
@@ -847,7 +847,7 @@ class MathCompare {
       ["A>B", "boolean"],
       ["A<B", "boolean"],
       ["A>=B", "boolean"],
-      ["A<=B", "boolean"]
+      ["A<=B", "boolean"],
     ];
   }
 
@@ -859,27 +859,27 @@ LiteGraph.registerNodeType("math/compare", MathCompare);
 
 LiteGraph.registerSearchboxExtra("math/compare", "==", {
   outputs: [["A==B", "boolean"]],
-  title: "A==B"
+  title: "A==B",
 });
 LiteGraph.registerSearchboxExtra("math/compare", "!=", {
   outputs: [["A!=B", "boolean"]],
-  title: "A!=B"
+  title: "A!=B",
 });
 LiteGraph.registerSearchboxExtra("math/compare", ">", {
   outputs: [["A>B", "boolean"]],
-  title: "A>B"
+  title: "A>B",
 });
 LiteGraph.registerSearchboxExtra("math/compare", "<", {
   outputs: [["A<B", "boolean"]],
-  title: "A<B"
+  title: "A<B",
 });
 LiteGraph.registerSearchboxExtra("math/compare", ">=", {
   outputs: [["A>=B", "boolean"]],
-  title: "A>=B"
+  title: "A>=B",
 });
 LiteGraph.registerSearchboxExtra("math/compare", "<=", {
   outputs: [["A<=B", "boolean"]],
-  title: "A<=B"
+  title: "A<=B",
 });
 
 class MathCondition {
@@ -891,7 +891,7 @@ class MathCondition {
     this.addProperty("A", 1);
     this.addProperty("B", 1);
     this.addProperty("OP", ">", "enum", { values: MathCondition.values });
-    this.addWidget("combo","Cond.",this.properties.OP,{ property: "OP", values: MathCondition.values } );
+    this.addWidget("combo", "Cond.", this.properties.OP, { property: "OP", values: MathCondition.values } );
 
     this.size = [80, 60];
   }
@@ -954,7 +954,7 @@ class MathCondition {
   static "@OP" = {
     type: "enum",
     title: "operation",
-    values: MathCondition.values
+    values: MathCondition.values,
   };
 }
 LiteGraph.registerNodeType("math/condition", MathCondition);
@@ -1085,7 +1085,7 @@ class MathTrigonometry {
       ["tan", "number"],
       ["asin", "number"],
       ["acos", "number"],
-      ["atan", "number"]
+      ["atan", "number"],
     ];
   }
 
@@ -1097,15 +1097,15 @@ LiteGraph.registerNodeType("math/trigonometry", MathTrigonometry);
 
 LiteGraph.registerSearchboxExtra("math/trigonometry", "SIN()", {
   outputs: [["sin", "number"]],
-  title: "SIN()"
+  title: "SIN()",
 });
 LiteGraph.registerSearchboxExtra("math/trigonometry", "COS()", {
   outputs: [["cos", "number"]],
-  title: "COS()"
+  title: "COS()",
 });
 LiteGraph.registerSearchboxExtra("math/trigonometry", "TAN()", {
   outputs: [["tan", "number"]],
-  title: "TAN()"
+  title: "TAN()",
 });
 
 
@@ -1122,7 +1122,7 @@ class MathFormula {
       this.properties.formula,
       function(v, canvas, node) {
         node.properties.formula = v;
-      }
+      },
     );
     this.addWidget("toggle", "allow", LiteGraph.allow_scripts, function(v) {
       LiteGraph.allow_scripts = v;
@@ -1158,7 +1158,7 @@ class MathFormula {
           "x",
           "y",
           "TIME",
-          "return " + this.properties.formula
+          "return " + this.properties.formula,
         );
         this._func_code = this.properties.formula;
       }
@@ -1336,7 +1336,7 @@ class Math3DXYZWToVec4 {
       ["x", "number"],
       ["y", "number"],
       ["z", "number"],
-      ["w", "number"]
+      ["w", "number"],
     ]);
     this.addOutput("vec4", "vec4");
     this.properties = { x: 0, y: 0, z: 0, w: 0 };

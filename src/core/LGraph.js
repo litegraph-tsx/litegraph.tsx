@@ -659,7 +659,7 @@ export class LGraph {
     // nodes
     if (node.id != -1 && this._nodes_by_id[node.id] != null) {
       console.warn(
-        "LiteGraph: there is already a node with this ID, changing it"
+        "LiteGraph: there is already a node with this ID, changing it",
       );
       if (LiteGraph.use_uuids) {
         node.id = LiteGraph.uuidv4();
@@ -964,7 +964,7 @@ export class LGraph {
   onAction(action, param, options) {
     this._input_nodes = this.findNodesByClass(
       LiteGraph.GraphInput,
-      this._input_nodes
+      this._input_nodes,
     );
     for (var i = 0; i < this._input_nodes.length; ++i) {
       var node = this._input_nodes[i];
@@ -1264,7 +1264,7 @@ export class LGraph {
   // used for undo, called before any change is made to the graph
   beforeChange(info) {
     if (this.onBeforeChange) {
-      this.onBeforeChange(this,info);
+      this.onBeforeChange(this, info);
     }
     this.sendActionToCanvas("onBeforeChange", this);
   }
@@ -1272,7 +1272,7 @@ export class LGraph {
   // used to resend actions, called after any change is made to the graph
   afterChange(info) {
     if (this.onAfterChange) {
-      this.onAfterChange(this,info);
+      this.onAfterChange(this, info);
     }
     this.sendActionToCanvas("onAfterChange", this);
   }
@@ -1372,7 +1372,7 @@ export class LGraph {
       if (!link.serialize) {
         // weird bug I havent solved yet
         console.warn(
-          "weird LLink bug, link info is not a LLink but a regular object"
+          "weird LLink bug, link info is not a LLink but a regular object",
         );
         var link2 = new LiteGraph.LLink();
         for (var j in link) {
@@ -1398,7 +1398,7 @@ export class LGraph {
       groups: groups_info,
       config: this.config,
       extra: this.extra,
-      version: LiteGraph.VERSION
+      version: LiteGraph.VERSION,
     };
 
     if (this.onSerialize)
@@ -1459,7 +1459,7 @@ export class LGraph {
         if (!node) {
           if (LiteGraph.debug) {
             console.log(
-              "Node not found or has errors: " + n_info.type
+              "Node not found or has errors: " + n_info.type,
             );
           }
 

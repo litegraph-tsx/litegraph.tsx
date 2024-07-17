@@ -184,7 +184,7 @@ class ColorPalette {
       colorA: "#444444",
       colorB: "#44AAFF",
       colorC: "#44FFAA",
-      colorD: "#FFFFFF"
+      colorD: "#FFFFFF",
     };
   }
 
@@ -300,7 +300,7 @@ class ImageFrame {
   static desc = "Frame viewerew";
   static widgets = [
     { name: "resize", text: "Resize box", type: "button" },
-    { name: "view", text: "View Image", type: "button" }
+    { name: "view", text: "View Image", type: "button" },
   ];
 }
 LiteGraph.registerNodeType("graphics/frame", ImageFrame);
@@ -311,7 +311,7 @@ class ImageFade {
     this.addInputs([
       ["img1", "image"],
       ["img2", "image"],
-      ["fade", "number"]
+      ["fade", "number"],
     ]);
     this.addOutput("", "image");
     this.properties = { fade: 0.5, width: 512, height: 512 };
@@ -359,7 +359,7 @@ class ImageFade {
   static desc = "Fades between images";
   static widgets = [
     { name: "resizeA", text: "Resize to A", type: "button" },
-    { name: "resizeB", text: "Resize to B", type: "button" }
+    { name: "resizeB", text: "Resize to B", type: "button" },
   ];
 }
 LiteGraph.registerNodeType("graphics/imagefade", ImageFade);
@@ -397,7 +397,7 @@ class ImageCrop {
         -this.properties["x"],
         -this.properties["y"],
         input.width * this.properties["scale"],
-        input.height * this.properties["scale"]
+        input.height * this.properties["scale"],
       );
       this.setOutputData(0, this.canvas);
     } else {
@@ -419,7 +419,7 @@ class ImageCrop {
         0,
         0,
         this.size[0],
-        this.size[1]
+        this.size[1],
       );
     }
   }
@@ -533,7 +533,7 @@ class DrawRectangleNode {
       w: 10,
       h: 10,
       color: "white",
-      opacity: 1
+      opacity: 1,
     };
   }
 
@@ -601,15 +601,15 @@ class ImageVideo {
   loadVideo(url) {
     this._video_url = url;
 
-    var pos = url.substr(0,10).indexOf(":");
+    var pos = url.substr(0, 10).indexOf(":");
     var protocol = "";
     if (pos != -1)
-      protocol = url.substr(0,pos);
+      protocol = url.substr(0, pos);
 
     var host = "";
     if (protocol)
     {
-      host = url.substr(0,url.indexOf("/",protocol.length + 3));
+      host = url.substr(0, url.indexOf("/", protocol.length + 3));
       host = host.substr(protocol.length+3);
     }
 
@@ -741,7 +741,7 @@ class ImageVideo {
     { name: "play", text: "PLAY", type: "minibutton" },
     { name: "stop", text: "STOP", type: "minibutton" },
     { name: "demo", text: "Demo video", type: "button" },
-    { name: "mute", text: "Mute video", type: "button" }
+    { name: "mute", text: "Mute video", type: "button" },
   ];
 }
 LiteGraph.registerNodeType("graphics/video", ImageVideo);
@@ -767,7 +767,7 @@ class ImageWebcam {
     // Not showing vendor prefixes.
     var constraints = {
       audio: false,
-      video: !this.properties.filterFacingMode ? true : { facingMode: this.properties.facingMode }
+      video: !this.properties.filterFacingMode ? true : { facingMode: this.properties.facingMode },
     };
     navigator.mediaDevices
       .getUserMedia(constraints)
@@ -871,8 +871,8 @@ class ImageWebcam {
         content: txt,
         callback: function() {
           that.properties.show = !that.properties.show;
-        }
-      }
+        },
+      },
     ];
   }
 
@@ -901,7 +901,7 @@ class ImageWebcam {
       ["height", "number"],
       ["stream_ready", LiteGraph.EVENT],
       ["stream_closed", LiteGraph.EVENT],
-      ["stream_error", LiteGraph.EVENT]
+      ["stream_error", LiteGraph.EVENT],
     ];
   }
 

@@ -4,7 +4,7 @@ var webgl_canvas = null;
 
 LiteGraph.node_images_path = "../nodes_data/";
 
-var editor = new LiteGraph.Editor("main",{miniwindow:false});
+var editor = new LiteGraph.Editor("main", {miniwindow: false});
 window.graphcanvas = editor.graphcanvas;
 window.graph = editor.graph;
 updateEditorHiPPICanvas();
@@ -57,19 +57,19 @@ select.addEventListener("change", function(e) {
     graph.clear();
 });
 
-elem.querySelector("#save").addEventListener("click",function() {
+elem.querySelector("#save").addEventListener("click", function() {
   console.log("saved");
   localStorage.setItem( "graphdemo_save", JSON.stringify( graph.serialize() ) );
 });
 
-elem.querySelector("#load").addEventListener("click",function() {
+elem.querySelector("#load").addEventListener("click", function() {
   var data = localStorage.getItem( "graphdemo_save" );
   if (data)
     graph.configure( JSON.parse( data ) );
   console.log("loaded");
 });
 
-elem.querySelector("#download").addEventListener("click",function() {
+elem.querySelector("#download").addEventListener("click", function() {
   var data = JSON.stringify( graph.serialize() );
   var file = new Blob( [ data ] );
   var url = URL.createObjectURL( file );
@@ -131,7 +131,7 @@ function enableWebGL()
     "../nodes/gltextures.js",
     "../nodes/glfx.js",
     "../nodes/glshaders.js",
-    "../nodes/geometry.js"
+    "../nodes/geometry.js",
   ];
 
   function fetchJS()
@@ -181,9 +181,9 @@ function enableWebGL()
     console.log("webgl ready");
     function ondraw ()
     {
-      gl.clearColor(0,0,0,0);
+      gl.clearColor(0, 0, 0, 0);
       gl.clear( gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT );
-      gl.viewport(0,0,gl.canvas.width, gl.canvas.height );
+      gl.viewport(0, 0, gl.canvas.width, gl.canvas.height );
     }
   }
 }

@@ -61,7 +61,7 @@ class Sequence {
     this.addOutput("", LiteGraph.EVENT);
     this.addOutput("", LiteGraph.EVENT);
     this.addOutput("", LiteGraph.EVENT);
-    this.addWidget("button","+",null,function() {
+    this.addWidget("button", "+", null, function() {
       that.addInput("", LiteGraph.ACTION);
       that.addOutput("", LiteGraph.EVENT);
     });
@@ -101,7 +101,7 @@ class WaitAll {
     this.addInput("", LiteGraph.ACTION);
     this.addInput("", LiteGraph.ACTION);
     this.addOutput("", LiteGraph.EVENT);
-    this.addWidget("button","+",null,function() {
+    this.addWidget("button", "+", null, function() {
       that.addInput("", LiteGraph.ACTION);
       that.size[0] = 90;
     });
@@ -161,9 +161,9 @@ class Stepper {
     this.addOutput("index", "number");
     this.addOutput("", LiteGraph.EVENT);
     this.addOutput("", LiteGraph.EVENT);
-    this.addOutput("", LiteGraph.EVENT,{removable:true});
-    this.addWidget("button","+",null,function() {
-      that.addOutput("", LiteGraph.EVENT, {removable:true});
+    this.addOutput("", LiteGraph.EVENT, {removable: true});
+    this.addWidget("button", "+", null, function() {
+      that.addOutput("", LiteGraph.EVENT, {removable: true});
     });
     this.size = [120, 120];
     this.flags = { render_box: false };
@@ -226,7 +226,7 @@ class FilterEvent {
     this.properties = {
       equal_to: "",
       has_property: "",
-      property_equal_to: ""
+      property_equal_to: "",
     };
   }
 
@@ -296,7 +296,7 @@ class EventCounter {
     this.addOutput("change", LiteGraph.EVENT);
     this.addOutput("num", "number");
     this.addProperty("doCountExecution", false, "boolean", {name: "Count Executions"});
-    this.addWidget("toggle","Count Exec.",this.properties.doCountExecution,"doCountExecution");
+    this.addWidget("toggle", "Count Exec.", this.properties.doCountExecution, "doCountExecution");
     this.num = 0;
   }
 
@@ -431,7 +431,7 @@ class TimerEvent {
     this.time += dt;
     this.last_interval = Math.max(
       1,
-      this.getInputOrProperty("interval") | 0
+      this.getInputOrProperty("interval") | 0,
     );
 
     if (
@@ -479,13 +479,13 @@ class SemaphoreEvent {
     this._ready = false;
     this.properties = {};
     var that = this;
-    this.addWidget("button","reset","",function() {
+    this.addWidget("button", "reset", "", function() {
       that._ready = false;
     });
   }
 
   onExecute() {
-    this.setOutputData(1,this._ready);
+    this.setOutputData(1, this._ready);
     this.boxcolor = this._ready ? "#9F9" : "#FA5";
   }
 
@@ -512,7 +512,7 @@ class OnceEvent {
     this._once = false;
     this.properties = {};
     var that = this;
-    this.addWidget("button","reset","",function() {
+    this.addWidget("button", "reset", "", function() {
       that._once = false;
     });
   }
@@ -541,7 +541,7 @@ class DataStore {
     this._last_value = null;
     this.properties = { data: null, serialize: true };
     var that = this;
-    this.addWidget("button","store","",function() {
+    this.addWidget("button", "store", "", function() {
       that.properties.data = that._last_value;
     });
   }
