@@ -30,6 +30,7 @@ export class LGraphGroup {
     this._pos[1] = v[1];
   }
   get pos() {
+    this._pos ??= new Float32Array(10, 10);
     return this._pos;
   }
 
