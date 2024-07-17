@@ -142,11 +142,8 @@ class StringToTable {
     this.setOutputData(0, this._table );
     this.setOutputData(1, this._table ? this._table.length : 0 );
   }
+
+  static title = "toTable";
+  static desc = "Splits a string to table";
 }
-
-StringToTable.title = "toTable";
-StringToTable.desc = "Splits a string to table";
-
 LiteGraph.registerNodeType("string/toTable", StringToTable);
-
-
