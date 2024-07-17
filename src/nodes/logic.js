@@ -1,5 +1,6 @@
 import { LiteGraph } from "@/litegraph.js";
 
+
 class Selector {
   constructor() {
     this.addInput("sel", "number");
@@ -39,12 +40,12 @@ class Selector {
   onGetInputs() {
     return [["E", 0], ["F", 0], ["G", 0], ["H", 0]];
   }
+
+  static title = "Selector";
+  static desc = "selects an output";
 }
-
-Selector.title = "Selector";
-Selector.desc = "selects an output";
-
 LiteGraph.registerNodeType("logic/selector", Selector);
+
 
 class Sequence {
   constructor() {
@@ -79,11 +80,10 @@ class Sequence {
 
     this.setOutputData(0, this.values[index]);
   }
+
+  static title = "Sequence";
+  static desc = "select one element from a sequence from a string";
 }
-
-Sequence.title = "Sequence";
-Sequence.desc = "select one element from a sequence from a string";
-
 LiteGraph.registerNodeType("logic/sequence", Sequence);
 
 
@@ -111,10 +111,10 @@ class logicAnd {
       ["and", "boolean"]
     ];
   }
-}
 
-logicAnd.title = "AND";
-logicAnd.desc = "Return true if all inputs are true";
+  static title = "AND";
+  static desc = "Return true if all inputs are true";
+}
 LiteGraph.registerNodeType("logic/AND", logicAnd);
 
 
@@ -160,10 +160,10 @@ class logicNot {
     var ret = !this.getInputData(0);
     this.setOutputData(0, ret);
   }
-}
 
-logicNot.title = "NOT";
-logicNot.desc = "Return the logical negation";
+  static title = "NOT";
+  static desc = "Return the logical negation";
+}
 LiteGraph.registerNodeType("logic/NOT", logicNot);
 
 
@@ -194,10 +194,10 @@ class logicCompare {
       ["bool", "boolean"]
     ];
   }
-}
 
-logicCompare.title = "bool == bool";
-logicCompare.desc = "Compare for logical equality";
+  static title = "bool == bool";
+  static desc = "Compare for logical equality";
+}
 LiteGraph.registerNodeType("logic/CompareBool", logicCompare);
 
 
@@ -219,9 +219,8 @@ class logicBranch {
       this.triggerSlot(1);
     }
   }
+
+  static title = "Branch";
+  static desc = "Branch execution on condition";
 }
-
-logicBranch.title = "Branch";
-logicBranch.desc = "Branch execution on condition";
 LiteGraph.registerNodeType("logic/IF", logicBranch);
-
