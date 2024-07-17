@@ -38,9 +38,9 @@
 
 - [ ] Manual class conversion and movement of methods and properties into classes
 
-- [ ] Clean up global.X, LiteGraph.X class attachments
+- [x] Clean up global.X, LiteGraph.X class attachments
 
-- [ ] Ensure all cases of previously globally available methods are bound to LiteGraph.method()
+- [x] Ensure all cases of previously globally available methods are bound to LiteGraph.method()
 
 - [ ] Ensure all of the previously global variables are in the correct module.
 

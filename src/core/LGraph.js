@@ -2,6 +2,8 @@ import { LiteGraph } from "./litegraph.js";
 import { LGraphGroup } from "./LGraphGroup.js";
 import { LGraphCanvas } from "./LGraphCanvas.js";
 
+var global = typeof(window) != "undefined" ? window : typeof(self) != "undefined" ? self : globalThis;
+
 //*********************************************************************************
 // LGraph CLASS
 //*********************************************************************************
