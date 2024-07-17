@@ -55,9 +55,9 @@
 
 ## Debugger and Test Step (0.8)
 
-- [ ] Implement a Debug class, such that method calls are to be Condition Chained on level/target
+- [x] Implemented Console.js, which allows setting level dynamically and can be imported into a local variable console without affecting same globally.
 
-- [ ] Replace all commented out debug calls with Condition Chained method calls on the Debug class
+- [ ] Replace all commented out debug calls with use of console.
 
 - [ ] Establish tests for code functionality using browser hooks and visible indications
 
