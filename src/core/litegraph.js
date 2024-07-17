@@ -6,6 +6,10 @@ import { LGraphNode } from "./LGraphNode.js";
 import { LGraphGroup } from "./LGraphGroup.js";
 import { DragAndScale } from "./DragAndScale.js";
 import { LGraphCanvas } from "./LGraphCanvas.js";
+import { console } from "./Console.js";
+
+// this variable name is only overridden locally.
+console.level = 5;
 
 var global = typeof(window) != "undefined" ? window : typeof(self) != "undefined" ? self : globalThis;
 
