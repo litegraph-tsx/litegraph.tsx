@@ -6,7 +6,12 @@ import { LiteGraph } from "./litegraph.js";
   wheel events are superior to obsolete mousewheel or DOMScrollWheel
 */
 
-// Scale and Offset
+/**
+ * Class for managing scaling and offset operations on an element, with support for dragging and zooming.
+ * @constructor
+ * @param {HTMLElement} element - The HTML element to bind events to.
+ * @param {boolean} [skip_events] - Whether to skip binding events initially.
+ */
 export class DragAndScale {
   constructor(element, skip_events) {
     this.offset = new Float32Array([0, 0]);
@@ -27,6 +32,10 @@ export class DragAndScale {
     }
   }
 
+  /**
+   * Binds mouse and wheel events to the provided element for interaction handling.
+   * @param {HTMLElement} element - The HTML element to bind events to.
+   */
   bindEvents(element) {
     this.last_mouse = new Float32Array(2);
 
@@ -40,6 +49,10 @@ export class DragAndScale {
     element.addEventListener("wheel", this._binded_mouse_callback, false);
   }
 
+  /**
+   * Computes the visible area based on current offset, scale, and optionally a viewport.
+   * @param {Array.<number>} [viewport] - Optional viewport dimensions [x, y, width, height].
+   */
   computeVisibleArea(viewport) {
     if (!this.element) {
       this.visible_area[0] = this.visible_area[1] = this.visible_area[2] = this.visible_area[3] = 0;
@@ -64,6 +77,11 @@ export class DragAndScale {
     this.visible_area[3] = endy - starty;
   }
 
+  /**
+   * Handles mouse events for dragging and scaling operations.
+   * @param {Event} e - The mouse event object.
+   * @returns {boolean} Indicates if the event was handled or ignored.
+   */
   onMouse(e) {
     if (!this.enabled) {
       return;
@@ -137,6 +155,10 @@ export class DragAndScale {
     }
   }
 
+  /**
+   * Applies the current scale and offset transformations to a canvas context.
+   * @param {CanvasRenderingContext2D} ctx - The canvas context to apply transformations to.
+   */
   toCanvasContext(ctx) {
     ctx.scale(this.scale, this.scale);
     ctx.translate(this.offset[0], this.offset[1]);
@@ -150,6 +172,10 @@ export class DragAndScale {
     ];
   }
 
+  /**
+   * Applies the current scale and offset transformations to a canvas context.
+   * @param {CanvasRenderingContext2D} ctx - The canvas context to apply transformations to.
+   */
   convertCanvasToOffset(pos, out) {
     out = out || [0, 0];
     out[0] = pos[0] / this.scale - this.offset[0];
@@ -157,6 +183,11 @@ export class DragAndScale {
     return out;
   }
 
+  /**
+   * Converts an offset position to canvas coordinates based on current scale and offset.
+   * @param {Array.<number>} pos - Offset position [x, y].
+   * @returns {Array.<number>} Converted canvas coordinates [x, y].
+   */
   mouseDrag(x, y) {
     this.offset[0] += x / this.scale;
     this.offset[1] += y / this.scale;
@@ -166,6 +197,11 @@ export class DragAndScale {
     }
   }
 
+  /**
+   * Changes the current scale value, centered around a specific point.
+   * @param {number} value - The new scale value to apply.
+   * @param {Array.<number>} [zooming_center] - Optional center point for scaling [x, y].
+   */
   changeScale(value, zooming_center) {
     if (value < this.min_scale) {
       value = this.min_scale;
@@ -210,10 +246,18 @@ export class DragAndScale {
     }
   }
 
+  /**
+   * Changes the scale by a delta value relative to the current scale, centered around a specific point.
+   * @param {number} value - The delta scale value to apply.
+   * @param {Array.<number>} [zooming_center] - Optional center point for scaling [x, y].
+   */
   changeDeltaScale(value, zooming_center) {
     this.changeScale(this.scale * value, zooming_center);
   }
 
+  /**
+   * Resets the scale and offset to their default values (scale of 1 and offset of [0, 0]).
+   */
   reset() {
     this.scale = 1;
     this.offset[0] = 0;
