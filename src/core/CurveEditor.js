@@ -1,5 +1,9 @@
 
-// used by some widgets to render a curve editor
+/**
+ * Class representing a curve editor used by widgets to render and interact with curves.
+ * @constructor
+ * @param {Array.<Array.<number>>} points - Array of control points defining the curve.
+ */
 export class CurveEditor {
   constructor(points) {
     this.points = points;
@@ -10,6 +14,13 @@ export class CurveEditor {
     this.margin = 5;
   }
 
+  /**
+   * Sample a curve at a given point using linear interpolation between control points.
+   * @static
+   * @param {number} f - The input value where the curve is sampled.
+   * @param {Array.<Array.<number>>} points - Array of control points defining the curve.
+   * @returns {number} The interpolated value on the curve at point 'f'.
+   */
   static sampleCurve(f, points) {
     if (!points)
       return;
@@ -28,6 +39,15 @@ export class CurveEditor {
     return 0;
   }
 
+  /**
+   * Draw the curve editor on a canvas context.
+   * @param {CanvasRenderingContext2D} ctx - The canvas context to draw on.
+   * @param {Array.<number>} size - The size of the canvas [width, height].
+   * @param {object} graphcanvas - Object containing properties related to the canvas.
+   * @param {string} [background_color] - Optional background color for the editor.
+   * @param {string} [line_color] - Color of the curve line.
+   * @param {boolean} [inactive] - Flag indicating if the editor is inactive.
+   */
   draw(ctx, size, graphcanvas, background_color, line_color, inactive) {
     var points = this.points;
     if (!points)
@@ -73,7 +93,12 @@ export class CurveEditor {
     ctx.restore();
   }
 
-  // localpos is mouse in curve editor space
+  /**
+   * Handle mouse down event within the curve editor.
+   * @param {Array.<number>} localpos - Mouse position relative to the curve editor.  is mouse in curve editor space
+   * @param {object} graphcanvas - Object containing properties related to the canvas.
+   * @returns {boolean} True if the event was handled, false otherwise.
+   */
   onMouseDown(localpos, graphcanvas) {
     var points = this.points;
     if (!points)
@@ -103,6 +128,11 @@ export class CurveEditor {
       return true;
   }
 
+  /**
+   * Handle mouse move event within the curve editor.
+   * @param {Array.<number>} localpos - Mouse position relative to the curve editor.
+   * @param {object} graphcanvas - Object containing properties related to the canvas.
+   */
   onMouseMove(localpos, graphcanvas) {
     var points = this.points;
     if (!points)
@@ -136,11 +166,23 @@ export class CurveEditor {
     }
   }
 
+  /**
+   * Handle mouse up event within the curve editor.
+   * @param {Array.<number>} localpos - Mouse position relative to the curve editor.
+   * @param {object} graphcanvas - Object containing properties related to the canvas.
+   * @returns {boolean} Always returns false.
+   */
   onMouseUp(localpos, graphcanvas) {
     this.selected = -1;
     return false;
   }
 
+  /**
+   * Find the index of the closest control point to a given position within a maximum distance.
+   * @param {Array.<number>} pos - Position to find the closest point to.
+   * @param {number} [max_dist] - Maximum distance to consider for proximity.
+   * @returns {number} Index of the closest control point, or -1 if no points are found.
+   */
   getCloserPoint(pos, max_dist) {
     var points = this.points;
     if (!points)
