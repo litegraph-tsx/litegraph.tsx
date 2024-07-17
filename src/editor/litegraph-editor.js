@@ -1,11 +1,11 @@
 import { LiteGraph } from "@/litegraph.js";
 import { LGraphCanvas } from "@/LGraphCanvas.js";
 
-//Creates an interface to access extra features from a graph (like play, stop, live, etc)
+// Creates an interface to access extra features from a graph (like play, stop, live, etc)
 function Editor(container_id, options) {
   options = options || {};
 
-  //fill container
+  // fill container
   var html = "<div class='header'><div class='tools tools-left'></div><div class='tools tools-right'></div></div>";
   html += "<div class='content'><div class='editor-area'><canvas class='graphcanvas' width='1000' height='500' tabindex=10></canvas></div></div>";
   html += "<div class='footer'><div class='tools tools-left'></div><div class='tools tools-right'></div></div>";
@@ -21,7 +21,7 @@ function Editor(container_id, options) {
 
   var canvas = this.canvas = root.querySelector(".graphcanvas");
 
-  //create graph
+  // create graph
   var graph = (this.graph = new LiteGraph.LGraph());
   var graphcanvas = this.graphcanvas = new LGraphCanvas(canvas, graph);
   graphcanvas.background_image = "./assets/images/grid.png";
@@ -33,7 +33,7 @@ function Editor(container_id, options) {
 
   var originalOnPlayEvent = graph.onPlayEvent;
   graph.onPlayEvent = (function() {
-    if(originalOnPlayEvent)
+    if (originalOnPlayEvent)
       originalOnPlayEvent();
     const button = this.root.querySelector("#playnode_button");
     button.innerHTML = `<img src="./assets/images/icon-stop.png"/> Stop`;
@@ -41,15 +41,15 @@ function Editor(container_id, options) {
 
   var originalOnStopEvent = graph.onStopEvent;
   graph.onStopEvent = (function() {
-    if(originalOnStopEvent)
+    if (originalOnStopEvent)
       originalOnStopEvent();
     const button = this.root.querySelector("#playnode_button");
     button.innerHTML = `<img src="./assets/images/icon-play.png"/> Play`;
   }).bind(this);
 
-  //add stuff
-  //this.addToolsButton("loadsession_button","Load","./assets/images/icon-load.png", this.onLoadButton.bind(this), ".tools-left" );
-  //this.addToolsButton("savesession_button","Save","./assets/images/icon-save.png", this.onSaveButton.bind(this), ".tools-left" );
+  // add stuff
+  // this.addToolsButton("loadsession_button","Load","./assets/images/icon-load.png", this.onLoadButton.bind(this), ".tools-left" );
+  // this.addToolsButton("savesession_button","Save","./assets/images/icon-save.png", this.onSaveButton.bind(this), ".tools-left" );
   this.addLoadCounter();
   this.addToolsButton(
     "playnode_button",
@@ -88,14 +88,14 @@ function Editor(container_id, options) {
     this.addMiniWindow(300, 200);
   }
 
-  //append to DOM
+  // append to DOM
   var parent = document.getElementById(container_id);
   if (parent) {
     parent.appendChild(root);
   }
 
   graphcanvas.resize();
-  //graphcanvas.draw(true,true);
+  // graphcanvas.draw(true,true);
 }
 
 Editor.prototype.addLoadCounter = function() {
@@ -138,14 +138,14 @@ Editor.prototype.createButton = function(name, icon_url, callback) {
   }
   button.classList.add("btn");
   button.innerHTML += name;
-  if(callback)
+  if (callback)
     button.addEventListener("click", callback );
   return button;
 };
 
 Editor.prototype.onLoadButton = function() {
   var panel = this.graphcanvas.createPanel("Load session",{closable:true});
-  //TO DO
+  // TO DO
 
   this.root.appendChild(panel);
 };
@@ -187,12 +187,12 @@ Editor.prototype.onLiveButton = function() {
 Editor.prototype.onDropItem = function(e)
 {
   var that = this;
-  for(var i = 0; i < e.dataTransfer.files.length; ++i)
+  for (var i = 0; i < e.dataTransfer.files.length; ++i)
   {
     var file = e.dataTransfer.files[i];
     var ext = LGraphCanvas.getFileExtension(file.name);
     var reader = new FileReader();
-    if(ext == "json")
+    if (ext == "json")
     {
       reader.onload = function(event) {
         var data = JSON.parse( event.target.result );
@@ -221,12 +221,12 @@ Editor.prototype.goFullscreen = function() {
 };
 
 Editor.prototype.onFullscreenButton = function() {
-  if(
+  if (
     document.fullscreenElement ||
         document.mozRequestFullscreen ||
         document.webkitRequestFullscreen
   ) {
-    if(document.exitFullscreen) {
+    if (document.exitFullscreen) {
       document.exitFullscreen();
     } else if (document.mozCancelFullscreen) {
       document.mozCancelFullscreen();

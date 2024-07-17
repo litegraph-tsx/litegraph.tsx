@@ -1,9 +1,9 @@
 import { LiteGraph } from "@/litegraph.js";
 
-//basic nodes
+// basic nodes
 
 function toString(a) {
-  if(a && a.constructor === Object)
+  if (a && a.constructor === Object)
   {
     try
     {
@@ -76,16 +76,16 @@ LiteGraph.wrapFunctionAsNode(
 );
 
 function split(str, separator) {
-  if(separator == null)
+  if (separator == null)
     separator = this.properties.separator;
   if (str == null )
     return [];
-  if( str.constructor === String )
+  if ( str.constructor === String )
     return str.split(separator || " ");
-  else if( str.constructor === Array )
+  else if ( str.constructor === Array )
   {
     var r = [];
-    for(var i = 0; i < str.length; ++i){
+    for (var i = 0; i < str.length; ++i) {
       if (typeof str[i] == "string")
         r[i] = str[i].split(separator || " ");
     }
@@ -130,14 +130,14 @@ class StringToTable {
 
   onExecute() {
     var input = this.getInputData(0);
-    if(!input)
+    if (!input)
       return;
     var separator = this.properties.separator || ",";
-    if(input != this._str || separator != this._last_separator )
+    if (input != this._str || separator != this._last_separator )
     {
       this._last_separator = separator;
       this._str = input;
-      this._table = input.split("\n").map(function(a){ return a.trim().split(separator)});
+      this._table = input.split("\n").map(function(a) { return a.trim().split(separator)});
     }
     this.setOutputData(0, this._table );
     this.setOutputData(1, this._table ? this._table.length : 0 );

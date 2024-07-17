@@ -55,11 +55,11 @@ export const LiteGraph = {
   EVENT_LINK_COLOR: "#A86",
   CONNECTING_LINK_COLOR: "#AFA",
 
-  MAX_NUMBER_OF_NODES: 1000, //avoid infinite loops
-  DEFAULT_POSITION: [100, 100], //default node position
-  VALID_SHAPES: ["default", "box", "round", "card"], //,"circle"
+  MAX_NUMBER_OF_NODES: 1000, // avoid infinite loops
+  DEFAULT_POSITION: [100, 100], // default node position
+  VALID_SHAPES: ["default", "box", "round", "card"], // ,"circle"
 
-  //shapes are used for nodes but also for slots
+  // shapes are used for nodes but also for slots
   BOX_SHAPE: 1,
   ROUND_SHAPE: 2,
   CIRCLE_SHAPE: 3,
@@ -67,12 +67,12 @@ export const LiteGraph = {
   ARROW_SHAPE: 5,
   GRID_SHAPE: 6, // intended for slot arrays
 
-  //enums
+  // enums
   INPUT: 1,
   OUTPUT: 2,
 
-  EVENT: -1, //for outputs
-  ACTION: -1, //for inputs
+  EVENT: -1, // for outputs
+  ACTION: -1, // for inputs
 
   NODE_MODES: ["Always", "On Event", "Never", "On Trigger"], // helper, will add "On Request" and more in the future
   NODE_MODES_COLORS:["#666","#422","#333","#224","#626"], // use with node_box_coloured_by_mode
@@ -98,37 +98,37 @@ export const LiteGraph = {
   AUTOHIDE_TITLE: 3,
   VERTICAL_LAYOUT: "vertical", // arrange nodes vertically
 
-  proxy: null, //used to redirect calls
+  proxy: null, // used to redirect calls
   node_images_path: "",
 
   debug: false,
   catch_exceptions: true,
   throw_errors: true,
-  allow_scripts: false, //if set to true some nodes like Formula would be allowed to evaluate code that comes from unsafe sources (like node configuration), which could lead to exploits
-  use_deferred_actions: true, //executes actions during the graph execution flow
-  registered_node_types: {}, //nodetypes by string
-  node_types_by_file_extension: {}, //used for dropping files in the canvas
-  Nodes: {}, //node types by classname
-  Globals: {}, //used to store vars between graphs
+  allow_scripts: false, // if set to true some nodes like Formula would be allowed to evaluate code that comes from unsafe sources (like node configuration), which could lead to exploits
+  use_deferred_actions: true, // executes actions during the graph execution flow
+  registered_node_types: {}, // nodetypes by string
+  node_types_by_file_extension: {}, // used for dropping files in the canvas
+  Nodes: {}, // node types by classname
+  Globals: {}, // used to store vars between graphs
 
-  searchbox_extras: {}, //used to add extra features to the search box
+  searchbox_extras: {}, // used to add extra features to the search box
   auto_sort_node_types: false, // [true!] If set to true, will automatically sort node types / categories in the context menus
-        
+
   node_box_coloured_when_on: false, // [true!] this make the nodes box (top left circle) coloured when triggered (execute/action), visual feedback
   node_box_coloured_by_mode: false, // [true!] nodebox based on node mode, visual feedback
-        
+
   dialog_close_on_mouse_leave: false, // [false on mobile] better true if not touch device, TODO add an helper/listener to close if false
   dialog_close_on_mouse_leave_delay: 500,
-        
+
   shift_click_do_break_link_from: false, // [false!] prefer false if results too easy to break links - implement with ALT or TODO custom keys
   click_do_break_link_to: false, // [false!]prefer false, way too easy to break links
-        
+
   search_hide_on_mouse_leave: true, // [false on mobile] better true if not touch device, TODO add an helper/listener to close if false
   search_filter_enabled: false, // [true!] enable filtering slots type in the search widget, !requires auto_load_slot_types or manual set registered_slot_[in/out]_types and slot_types_[in/out]
   search_show_all_on_open: true, // [true!] opens the results list when opening the search widget
-        
+
   auto_load_slot_types: false, // [if want false, use true, run, get vars values to be statically set, than disable] nodes types and nodeclass association with node types need to be calculated, if dont want this, calculate once and set registered_slot_[in/out]_types and slot_types_[in/out]
-        
+
   // set these values if not using auto_load_slot_types
   registered_slot_in_types: {}, // slot types for nodeclass
   registered_slot_out_types: {}, // slot types for nodeclass
@@ -136,21 +136,21 @@ export const LiteGraph = {
   slot_types_out: [], // slot types OUT
   slot_types_default_in: [], // specify for each IN slot type a(/many) default node(s), use single string, array, or object (with node, title, parameters, ..) like for search
   slot_types_default_out: [], // specify for each OUT slot type a(/many) default node(s), use single string, array, or object (with node, title, parameters, ..) like for search
-        
+
   alt_drag_do_clone_nodes: false, // [true!] very handy, ALT click to clone and drag the new node
 
   do_add_triggers_slots: false, // [true!] will create and connect event slots when using action/events connections, !WILL CHANGE node mode when using onTrigger (enable mode colors), onExecuted does not need this
-        
+
   allow_multi_output_for_events: true, // [false!] being events, it is strongly reccomended to use them sequentially, one by one
 
-  middle_click_slot_add_default_node: false, //[true!] allows to create and connect a ndoe clicking with the third button (wheel)
-        
-  release_link_on_empty_shows_menu: false, //[true!] dragging a link to empty space will open a menu, add from list, search or defaults
-        
+  middle_click_slot_add_default_node: false, // [true!] allows to create and connect a ndoe clicking with the third button (wheel)
+
+  release_link_on_empty_shows_menu: false, // [true!] dragging a link to empty space will open a menu, add from list, search or defaults
+
   pointerevents_method: "pointer", // "mouse"|"pointer" use mouse for retrocompatibility issues? (none found @ now)
   // TODO implement pointercancel, gotpointercapture, lostpointercapture, (pointerover, pointerout if necessary)
 
-  ctrl_shift_v_paste_connect_unselected_outputs: true, //[true!] allows ctrl + shift + v to paste nodes with the outputs of the unselected nodes connected with the inputs of the newly pasted nodes
+  ctrl_shift_v_paste_connect_unselected_outputs: true, // [true!] allows ctrl + shift + v to paste nodes with the outputs of the unselected nodes connected with the inputs of the newly pasted nodes
 
   // if true, all newly created nodes/links will use string UUIDs for their id fields instead of integers.
   // use this if you must have node IDs that are unique across all graphs and subgraphs.
@@ -191,10 +191,10 @@ export const LiteGraph = {
     });
 
     const prev = this.registered_node_types[type];
-    if(prev) {
+    if (prev) {
       console.log("replacing node type: " + type);
     }
-    if( !Object.prototype.hasOwnProperty.call( base_class.prototype, "shape") ) {
+    if ( !Object.prototype.hasOwnProperty.call( base_class.prototype, "shape") ) {
       Object.defineProperty(base_class.prototype, "shape", {
         set: function(v) {
           switch (v) {
@@ -223,13 +223,13 @@ export const LiteGraph = {
         enumerable: true,
         configurable: true
       });
-                
 
-      //used to know which nodes to create when dragging files to the canvas
+
+      // used to know which nodes to create when dragging files to the canvas
       if (base_class.supported_extensions) {
         for (let i in base_class.supported_extensions) {
           const ext = base_class.supported_extensions[i];
-          if(ext && ext.constructor === String) {
+          if (ext && ext.constructor === String) {
             this.node_types_by_file_extension[ ext.toLowerCase() ] = base_class;
           }
         }
@@ -247,7 +247,7 @@ export const LiteGraph = {
       LiteGraph.onNodeTypeReplaced(type, base_class, prev);
     }
 
-    //warnings
+    // warnings
     if (base_class.prototype.onPropertyChange) {
       console.warn(
         "LiteGraph node class " +
@@ -255,7 +255,7 @@ export const LiteGraph = {
                         " has onPropertyChange method, it must be called onPropertyChanged with d at the end"
       );
     }
-            
+
     // TODO one would want to know input and ouput :: this would allow through registerNodeAndSlotType to get all the slots types
     if (this.auto_load_slot_types) {
       new base_class(base_class.title || "tmpnode");
@@ -287,7 +287,7 @@ export const LiteGraph = {
         * @param {String|Object} type name of the node or the node constructor itself
         * @param {String} slot_type name of the slot type (variable type), eg. string, number, array, boolean, ..
         */
-  registerNodeAndSlotType: function(type, slot_type, out){
+  registerNodeAndSlotType: function(type, slot_type, out) {
     out = out || false;
     const base_class =
                 type.constructor === String &&
@@ -335,7 +335,7 @@ export const LiteGraph = {
       }
     }
   },
-        
+
   /**
          * Create a new nodetype by passing an object with some properties
          * like onCreate, inputs:Array, outputs:Array, properties, onExecute
@@ -348,43 +348,43 @@ export const LiteGraph = {
     object
   ) {
     var ctor_code = "";
-    if(object.inputs)
-      for(var i=0; i < object.inputs.length; ++i)
+    if (object.inputs)
+      for (var i=0; i < object.inputs.length; ++i)
       {
         var _name = object.inputs[i][0];
         var _type = object.inputs[i][1];
-        if(_type && _type.constructor === String)
+        if (_type && _type.constructor === String)
           _type = '"'+_type+'"';
         ctor_code += "this.addInput('"+_name+"',"+_type+");\n";
       }
-    if(object.outputs)
-      for(var i=0; i < object.outputs.length; ++i)
+    if (object.outputs)
+      for (var i=0; i < object.outputs.length; ++i)
       {
         var _name = object.outputs[i][0];
         var _type = object.outputs[i][1];
-        if(_type && _type.constructor === String)
+        if (_type && _type.constructor === String)
           _type = '"'+_type+'"';
         ctor_code += "this.addOutput('"+_name+"',"+_type+");\n";
       }
-    if(object.properties)
-      for(var i in object.properties)
+    if (object.properties)
+      for (var i in object.properties)
       {
         var prop = object.properties[i];
-        if(prop && prop.constructor === String)
+        if (prop && prop.constructor === String)
           prop = '"'+prop+'"';
         ctor_code += "this.addProperty('"+i+"',"+prop+");\n";
       }
     ctor_code += "if(this.onCreate)this.onCreate()";
     var classobj = Function(ctor_code);
-    for(var i in object)
-      if(i!="inputs" && i!="outputs" && i!="properties")
+    for (var i in object)
+      if (i!="inputs" && i!="outputs" && i!="properties")
         classobj.prototype[i] = object[i];
     classobj.title = object.title || name.split("/").pop();
     classobj.desc = object.desc || "Generated from object";
     this.registerNodeType(name, classobj);
     return classobj;
   },
-        
+
   /**
          * Create a new nodetype by passing a function, it wraps it with a proper class and generates inputs according to the parameters of the function.
          * Useful to wrap simple methods that do not require properties, and that only process some input to generate an output.
@@ -404,19 +404,19 @@ export const LiteGraph = {
   ) {
     var params = Array(func.length);
     var code = "";
-    if(param_types !== null) //null means no inputs
+    if (param_types !== null) // null means no inputs
     {
       var names = LiteGraph.getParameterNames(func);
       for (var i = 0; i < names.length; ++i) {
         var type = 0;
-        if(param_types)
+        if (param_types)
         {
-          //type = param_types[i] != null ? "'" + param_types[i] + "'" : "0";
-          if( param_types[i] != null && param_types[i].constructor === String )
+          // type = param_types[i] != null ? "'" + param_types[i] + "'" : "0";
+          if ( param_types[i] != null && param_types[i].constructor === String )
             type = "'" + param_types[i] + "'" ;
-          else if( param_types[i] != null )
+          else if ( param_types[i] != null )
             type = param_types[i];
-        } 
+        }
         code +=
                         "this.addInput('" +
                         names[i] +
@@ -425,7 +425,7 @@ export const LiteGraph = {
                         ");\n";
       }
     }
-    if(return_type !== null) //null means no output
+    if (return_type !== null) // null means no output
       code +=
                 "this.addOutput('out'," +
                 (return_type != null ? (return_type.constructor === String ? "'" + return_type + "'" : return_type) : 0) +
@@ -470,7 +470,7 @@ export const LiteGraph = {
       var type = this.registered_node_types[i];
       if (type.prototype[name]) {
         type.prototype["_" + name] = type.prototype[name];
-      } //keep old in case of replacing
+      } // keep old in case of replacing
       type.prototype[name] = func;
     }
   },
@@ -527,7 +527,7 @@ export const LiteGraph = {
     }
     if (!node.size) {
       node.size = node.computeSize();
-      //call onresize?
+      // call onresize?
     }
     if (!node.pos) {
       node.pos = LiteGraph.DEFAULT_POSITION.concat();
@@ -536,7 +536,7 @@ export const LiteGraph = {
       node.mode = LiteGraph.ALWAYS;
     }
 
-    //extra options
+    // extra options
     if (options) {
       for (var i in options) {
         node[i] = options[i];
@@ -547,7 +547,7 @@ export const LiteGraph = {
     if ( node.onNodeCreated ) {
       node.onNodeCreated();
     }
-            
+
     return node;
   },
 
@@ -586,7 +586,7 @@ export const LiteGraph = {
     }
 
     if (this.auto_sort_node_types) {
-      r.sort(function(a,b){return a.title.localeCompare(b.title)});
+      r.sort(function(a,b) {return a.title.localeCompare(b.title)});
     }
 
     return r;
@@ -604,7 +604,7 @@ export const LiteGraph = {
       var type = this.registered_node_types[i];
       if ( type.category && !type.skip_list )
       {
-        if(type.filter != filter)
+        if (type.filter != filter)
           continue;
         categories[type.category] = 1;
       }
@@ -616,10 +616,10 @@ export const LiteGraph = {
     return this.auto_sort_node_types ? result.sort() : result;
   },
 
-  //debug purposes: reloads all the js scripts that matches a wildcard
+  // debug purposes: reloads all the js scripts that matches a wildcard
   reloadNodes: function(folder_wildcard) {
     var tmp = document.getElementsByTagName("script");
-    //weird, this array changes by its own, so we use a copy
+    // weird, this array changes by its own, so we use a copy
     var script_files = [];
     for (var i=0; i < tmp.length; i++) {
       script_files.push(tmp[i]);
@@ -661,7 +661,7 @@ export const LiteGraph = {
     }
   },
 
-  //separated just to improve if it doesn't work
+  // separated just to improve if it doesn't work
   cloneObject: function(obj, target) {
     if (obj == null) {
       return null;
@@ -695,9 +695,9 @@ export const LiteGraph = {
     if (type_a=="" || type_a==="*") type_a = 0;
     if (type_b=="" || type_b==="*") type_b = 0;
     if (
-      !type_a //generic output
+      !type_a // generic output
                 || !type_b // generic input
-                || type_a == type_b //same type (is valid for triggers)
+                || type_a == type_b // same type (is valid for triggers)
                 || (type_a == LiteGraph.EVENT && type_b == LiteGraph.ACTION)
     ) {
       return true;
@@ -719,8 +719,8 @@ export const LiteGraph = {
     var supported_types_b = type_b.split(",");
     for (var i = 0; i < supported_types_a.length; ++i) {
       for (var j = 0; j < supported_types_b.length; ++j) {
-        if(this.isValidConnection(supported_types_a[i],supported_types_b[j])){
-          //if (supported_types_a[i] == supported_types_b[j]) {
+        if (this.isValidConnection(supported_types_a[i],supported_types_b[j])) {
+          // if (supported_types_a[i] == supported_types_b[j]) {
           return true;
         }
       }
@@ -752,58 +752,58 @@ export const LiteGraph = {
          * @param {String} type an string to know how to fetch it: "text","arraybuffer","json","blob"
          * @param {Function} on_complete callback(data)
          * @param {Function} on_error in case of an error
-         * @return {FileReader|Promise} returns the object used to 
+         * @return {FileReader|Promise} returns the object used to
          */
   fetchFile: function( url, type, on_complete, on_error ) {
     var that = this;
-    if(!url)
+    if (!url)
       return null;
 
     type = type || "text";
-    if( url.constructor === String )
+    if ( url.constructor === String )
     {
       if (url.substr(0, 4) == "http" && LiteGraph.proxy) {
         url = LiteGraph.proxy + url.substr(url.indexOf(":") + 3);
       }
       return fetch(url)
         .then(function(response) {
-          if(!response.ok)
-            throw new Error("File not found"); //it will be catch below
-          if(type == "arraybuffer")
+          if (!response.ok)
+            throw new Error("File not found"); // it will be catch below
+          if (type == "arraybuffer")
             return response.arrayBuffer();
-          else if(type == "text" || type == "string")
+          else if (type == "text" || type == "string")
             return response.text();
-          else if(type == "json")
+          else if (type == "json")
             return response.json();
-          else if(type == "blob")
+          else if (type == "blob")
             return response.blob();
         })
         .then(function(data) {
-          if(on_complete)
+          if (on_complete)
             on_complete(data);
         })
         .catch(function(error) {
           console.error("error fetching file:",url);
-          if(on_error)
+          if (on_error)
             on_error(error);
         });
     }
-    else if( url.constructor === File || url.constructor === Blob)
+    else if ( url.constructor === File || url.constructor === Blob)
     {
       var reader = new FileReader();
       reader.onload = function(e)
       {
         var v = e.target.result;
-        if( type == "json" )
+        if ( type == "json" )
           v = JSON.parse(v);
-        if(on_complete)
+        if (on_complete)
           on_complete(v);
       }
-      if(type == "arraybuffer")
+      if (type == "arraybuffer")
         return reader.readAsArrayBuffer(url);
-      else if(type == "text" || type == "json")
+      else if (type == "text" || type == "json")
         return reader.readAsText(url);
-      else if(type == "blob")
+      else if (type == "blob")
         return reader.readAsBinaryString(url);
     }
     return null;
@@ -845,14 +845,14 @@ export const LiteGraph = {
     return false;
   },
 
-  //[minx,miny,maxx,maxy]
+  // [minx,miny,maxx,maxy]
   growBounding: function(bounding, x, y) {
     if (x < bounding[0]) {
       bounding[0] = x;
     } else if (x > bounding[2]) {
       bounding[2] = x;
     }
-  
+
     if (y < bounding[1]) {
       bounding[1] = y;
     } else if (y > bounding[3]) {
@@ -860,7 +860,7 @@ export const LiteGraph = {
     }
   },
 
-  //point inside bounding box
+  // point inside bounding box
   isInsideBounding: function(p, bb) {
     if (
       p[0] < bb[0][0] ||
@@ -873,13 +873,13 @@ export const LiteGraph = {
     return true;
   },
 
-  //bounding overlap, format: [ startx, starty, width, height ]
+  // bounding overlap, format: [ startx, starty, width, height ]
   overlapBounding: function(a, b) {
     var A_end_x = a[0] + a[2];
     var A_end_y = a[1] + a[3];
     var B_end_x = b[0] + b[2];
     var B_end_y = b[1] + b[3];
-  
+
     if (
       a[0] > B_end_x ||
               a[1] > B_end_y ||
@@ -897,7 +897,7 @@ export const LiteGraph = {
   hex2num: function(hex) {
     if (hex.charAt(0) == "#") {
       hex = hex.slice(1);
-    } //Remove the '#' char - if there is one.
+    } // Remove the '#' char - if there is one.
     hex = hex.toUpperCase();
     var hex_alphabets = "0123456789ABCDEF";
     var value = new Array(3);
@@ -930,17 +930,17 @@ export const LiteGraph = {
   // @TODO: Obviously belongs with ContextMenu
   closeAllContextMenus: function(ref_window) {
     ref_window = ref_window || window;
-  
+
     var elements = ref_window.document.querySelectorAll(".litecontextmenu");
     if (!elements.length) {
       return;
     }
-  
+
     var result = [];
     for (var i = 0; i < elements.length; i++) {
       result.push(elements[i]);
     }
-  
+
     for (var i=0; i < result.length; i++) {
       if (result[i].close) {
         result[i].close();
@@ -952,27 +952,27 @@ export const LiteGraph = {
 
   extendClass: function(target, origin) {
     for (var i in origin) {
-      //copy class properties
+      // copy class properties
       if (target.hasOwnProperty(i)) {
         continue;
       }
       target[i] = origin[i];
     }
-  
+
     if (origin.prototype) {
-      //copy prototype properties
+      // copy prototype properties
       for (var i in origin.prototype) {
-        //only enumerable
+        // only enumerable
         if (!origin.prototype.hasOwnProperty(i)) {
           continue;
         }
-  
+
         if (target.prototype.hasOwnProperty(i)) {
-          //avoid overwriting existing ones
+          // avoid overwriting existing ones
           continue;
         }
-  
-        //copy getters
+
+        // copy getters
         if (origin.prototype.__lookupGetter__(i)) {
           target.prototype.__defineGetter__(
             i,
@@ -981,8 +981,8 @@ export const LiteGraph = {
         } else {
           target.prototype[i] = origin.prototype[i];
         }
-  
-        //and setters
+
+        // and setters
         if (origin.prototype.__lookupSetter__(i)) {
           target.prototype.__defineSetter__(
             i,
@@ -993,7 +993,7 @@ export const LiteGraph = {
     }
   },
 
-  //used to create nodes from wrapping functions
+  // used to create nodes from wrapping functions
   getParameterNames: function(func) {
     return (func + "")
       .replace(/[/][/].*$/gm, "") // strip single-line comments
@@ -1008,20 +1008,20 @@ export const LiteGraph = {
 
   /* helper for interaction: pointer, touch, mouse Listeners used by LGraphCanvas DragAndScale ContextMenu*/
   pointerListenerAdd: function(oDOM, sEvIn, fCall, capture=false) {
-    if (!oDOM || !oDOM.addEventListener || !sEvIn || typeof fCall!=="function"){
-      //console.log("cant pointerListenerAdd "+oDOM+", "+sEvent+", "+fCall);
+    if (!oDOM || !oDOM.addEventListener || !sEvIn || typeof fCall!=="function") {
+      // console.log("cant pointerListenerAdd "+oDOM+", "+sEvent+", "+fCall);
       return; // -- break --
     }
-          
+
     var sMethod = LiteGraph.pointerevents_method;
     var sEvent = sEvIn;
-          
+
     // UNDER CONSTRUCTION
     // convert pointerevents to touch event when not available
-    if (sMethod=="pointer" && !window.PointerEvent){ 
+    if (sMethod=="pointer" && !window.PointerEvent) {
       console.warn("sMethod=='pointer' && !window.PointerEvent");
       console.log("Converting pointer["+sEvent+"] : down move up cancel enter TO touchstart touchmove touchend, etc ..");
-      switch(sEvent){
+      switch (sEvent) {
         case "down":{
           sMethod = "touch";
           sEvent = "start";
@@ -1029,7 +1029,7 @@ export const LiteGraph = {
         }
         case "move":{
           sMethod = "touch";
-          //sEvent = "move";
+          // sEvent = "move";
           break;
         }
         case "up":{
@@ -1039,7 +1039,7 @@ export const LiteGraph = {
         }
         case "cancel":{
           sMethod = "touch";
-          //sEvent = "cancel";
+          // sEvent = "cancel";
           break;
         }
         case "enter":{
@@ -1053,9 +1053,9 @@ export const LiteGraph = {
       }
     }
 
-    switch(sEvent){
+    switch (sEvent) {
 
-      //both pointer and move events
+      // both pointer and move events
       case "down":
       case "up":
       case "move":
@@ -1070,7 +1070,7 @@ export const LiteGraph = {
       case "cancel":
       case "gotpointercapture":
       case "lostpointercapture":
-        if (sMethod!="mouse"){
+        if (sMethod!="mouse") {
           oDOM.addEventListener(sMethod+sEvent, fCall, capture);
           return;
         }
@@ -1079,19 +1079,19 @@ export const LiteGraph = {
   },
 
   pointerListenerRemove: function(oDOM, sEvent, fCall, capture=false) {
-    if (!oDOM || !oDOM.removeEventListener || !sEvent || typeof fCall!=="function"){
-      //console.log("cant pointerListenerRemove "+oDOM+", "+sEvent+", "+fCall);
+    if (!oDOM || !oDOM.removeEventListener || !sEvent || typeof fCall!=="function") {
+      // console.log("cant pointerListenerRemove "+oDOM+", "+sEvent+", "+fCall);
       return; // -- break --
     }
-    switch(sEvent){
-      //both pointer and move events
+    switch (sEvent) {
+      // both pointer and move events
       case "down":
       case "up":
       case "move":
       case "over":
       case "out":
       case "enter":
-        if (LiteGraph.pointerevents_method=="pointer" || LiteGraph.pointerevents_method=="mouse"){
+        if (LiteGraph.pointerevents_method=="pointer" || LiteGraph.pointerevents_method=="mouse") {
           oDOM.removeEventListener(LiteGraph.pointerevents_method+sEvent, fCall, capture);
         }
         return;
@@ -1101,7 +1101,7 @@ export const LiteGraph = {
       case "cancel":
       case "gotpointercapture":
       case "lostpointercapture":
-        if (LiteGraph.pointerevents_method=="pointer"){
+        if (LiteGraph.pointerevents_method=="pointer") {
           oDOM.removeEventListener(LiteGraph.pointerevents_method+sEvent, fCall, capture);
         }
         return;
@@ -1142,7 +1142,7 @@ LGraphCanvas.link_type_colors = {
   node: "#DCA"
 };
 
-//timer that works everywhere
+// timer that works everywhere
 if (typeof performance != "undefined") {
   LiteGraph.getTime = performance.now.bind(performance);
 } else if (typeof Date != "undefined" && Date.now) {

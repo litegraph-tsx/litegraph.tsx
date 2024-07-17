@@ -4,7 +4,7 @@ import { GL } from "@libs/litegl.js";
 
 var global = typeof(window) != "undefined" ? window : typeof(self) != "undefined" ? self : globalThis;
 
-//Works with Litegl.js to create WebGL nodes
+// Works with Litegl.js to create WebGL nodes
 // Texture Lens *****************************************
 class LGraphFXLens {
   constructor() {
@@ -74,7 +74,7 @@ class LGraphFXLens {
     gl.disable(gl.DEPTH_TEST);
     var mesh = Mesh.getScreenQuad();
     var shader = LGraphFXLens._shader;
-    //var camera = LS.Renderer._current_camera;
+    // var camera = LS.Renderer._current_camera;
 
     this._tex.drawTo(function() {
       tex.bind(0);
@@ -152,7 +152,7 @@ LiteGraph.registerNodeType("fx/lens", LGraphFXLens);
         var depth = this.getInputData(1);
         var camera = this.getInputData(2);
 
-        if(!tex || !depth || !camera) 
+        if(!tex || !depth || !camera)
         {
             this.setOutputData(0, tex);
             return;
@@ -160,7 +160,7 @@ LiteGraph.registerNodeType("fx/lens", LGraphFXLens);
 
         var precision = gl.UNSIGNED_BYTE;
         if(this.properties.high_precision)
-            precision = gl.half_float_ext ? gl.HALF_FLOAT_OES : gl.FLOAT;            
+            precision = gl.half_float_ext ? gl.HALF_FLOAT_OES : gl.FLOAT;
         if(!this._temp_texture || this._temp_texture.type != precision ||
             this._temp_texture.width != tex.width || this._temp_texture.height != tex.height)
             this._temp_texture = new GL.Texture( tex.width, tex.height, { type: precision, format: gl.RGBA, filter: gl.LINEAR });
@@ -246,7 +246,7 @@ LiteGraph.registerNodeType("fx/lens", LGraphFXLens);
     global.LGraphDepthOfField = LGraphDepthOfField;
     */
 
-//*******************************************************
+//* ******************************************************
 
 class LGraphFXBokeh {
   constructor() {
@@ -305,7 +305,7 @@ class LGraphFXBokeh {
       });
     }
 
-    //iterations
+    // iterations
     var size = this.properties.size;
 
     var first_shader = LGraphFXBokeh._first_shader;
@@ -358,9 +358,9 @@ class LGraphFXBokeh {
     });
 
     this._temp_texture.drawTo(function() {
-      //clear because we use blending
-      //gl.clearColor(0.0,0.0,0.0,1.0);
-      //gl.clear( gl.COLOR_BUFFER_BIT );
+      // clear because we use blending
+      // gl.clearColor(0.0,0.0,0.0,1.0);
+      // gl.clear( gl.COLOR_BUFFER_BIT );
       gl.enable(gl.BLEND);
       gl.blendFunc(gl.ONE, gl.ONE);
 
@@ -489,7 +489,7 @@ LGraphFXBokeh._second_pixel_shader =
 
 LiteGraph.registerNodeType("fx/bokeh", LGraphFXBokeh);
 
-//************************************************
+//* ***********************************************
 
 class LGraphFXGeneric {
   constructor() {
@@ -508,7 +508,7 @@ class LGraphFXGeneric {
   onExecute() {
     if (!this.isOutputConnected(0)) {
       return;
-    } //saves work
+    } // saves work
 
     var tex = this.getInputData(0);
     if (this.properties.precision === LGraphTexture.PASS_THROUGH) {
@@ -526,7 +526,7 @@ class LGraphFXGeneric {
       this.properties.precision
     );
 
-    //iterations
+    // iterations
     var value1 = this.properties.value1;
     if (this.isInputConnected(1)) {
       value1 = this.getInputData(1);

@@ -97,8 +97,8 @@ class logicAnd {
 
   onExecute() {
     var ret = true;
-    for (var inX in this.inputs){
-      if (!this.getInputData(inX)){
+    for (var inX in this.inputs) {
+      if (!this.getInputData(inX)) {
         var ret = false;
         break;
       }
@@ -128,8 +128,8 @@ class logicOr {
 
   onExecute() {
     var ret = false;
-    for (var inX in this.inputs){
-      if (this.getInputData(inX)){
+    for (var inX in this.inputs) {
+      if (this.getInputData(inX)) {
         ret = true;
         break;
       }
@@ -178,10 +178,10 @@ class logicCompare {
   onExecute() {
     var last = null;
     var ret = true;
-    for (var inX in this.inputs){
+    for (var inX in this.inputs) {
       if (last === null) last = this.getInputData(inX);
       else
-        if (last != this.getInputData(inX)){
+        if (last != this.getInputData(inX)) {
           ret = false;
           break;
         }
@@ -213,9 +213,9 @@ class logicBranch {
 
   onExecute(param, options) {
     var condtition = this.getInputData(1);
-    if (condtition){
+    if (condtition) {
       this.triggerSlot(0);
-    }else{
+    } else {
       this.triggerSlot(1);
     }
   }

@@ -1,8 +1,8 @@
 import { LiteGraph } from "@/litegraph.js";
 
-//event related nodes
+// event related nodes
 
-//Show value inside the debug console
+// Show value inside the debug console
 class LogEvent {
   constructor() {
     this.size = [60, 30];
@@ -18,7 +18,7 @@ class LogEvent {
 }
 LiteGraph.registerNodeType("events/log", LogEvent);
 
-//convert to Event if the value is true
+// convert to Event if the value is true
 class TriggerEvent {
   constructor() {
     this.size = [60, 30];
@@ -33,14 +33,14 @@ class TriggerEvent {
   onExecute(param, options) {
     var v = this.getInputData(0);
     var changed = (v != this.prev);
-    if(this.prev === 0)
+    if (this.prev === 0)
       changed = false;
     var must_resend = (changed && this.properties.only_on_change) || (!changed && !this.properties.only_on_change);
-    if(v && must_resend )
+    if (v && must_resend )
       this.triggerSlot(0, param, null, options);
-    if(!v && must_resend)
+    if (!v && must_resend)
       this.triggerSlot(2, param, null, options);
-    if(changed)
+    if (changed)
       this.triggerSlot(1, param, null, options);
     this.prev = v;
   }
@@ -51,7 +51,7 @@ class TriggerEvent {
 LiteGraph.registerNodeType("events/trigger", TriggerEvent);
 
 
-//Sequence of events
+// Sequence of events
 class Sequence {
   constructor() {
     var that = this;
@@ -61,7 +61,7 @@ class Sequence {
     this.addOutput("", LiteGraph.EVENT);
     this.addOutput("", LiteGraph.EVENT);
     this.addOutput("", LiteGraph.EVENT);
-    this.addWidget("button","+",null,function(){
+    this.addWidget("button","+",null,function() {
       that.addInput("", LiteGraph.ACTION);
       that.addOutput("", LiteGraph.EVENT);
     });
@@ -78,8 +78,8 @@ class Sequence {
       options = options || {};
       for (var i = 0; i < this.outputs.length; ++i) {
         var output = this.outputs[i];
-        //needs more info about this...
-        if( options.action_call ) // CREATE A NEW ID FOR THE ACTION
+        // needs more info about this...
+        if ( options.action_call ) // CREATE A NEW ID FOR THE ACTION
           options.action_call = options.action_call + "_seq_" + i;
         else
           options.action_call = this.id + "_" + (action ? action : "action")+"_seq_"+i+"_"+Math.floor(Math.random()*9999);
@@ -94,14 +94,14 @@ class Sequence {
 LiteGraph.registerNodeType("events/sequence", Sequence);
 
 
-//Sequence of events
+// Sequence of events
 class WaitAll {
   constructor() {
     var that = this;
     this.addInput("", LiteGraph.ACTION);
     this.addInput("", LiteGraph.ACTION);
     this.addOutput("", LiteGraph.EVENT);
-    this.addWidget("button","+",null,function(){
+    this.addWidget("button","+",null,function() {
       that.addInput("", LiteGraph.ACTION);
       that.size[0] = 90;
     });
@@ -117,7 +117,7 @@ class WaitAll {
     if (this.flags.collapsed) {
       return;
     }
-    for(var i = 0; i < this.inputs.length; ++i)
+    for (var i = 0; i < this.inputs.length; ++i)
     {
       var y = i * LiteGraph.NODE_SLOT_HEIGHT + 10;
       ctx.fillStyle = this.ready[i] ? "#AFB" : "#000";
@@ -126,16 +126,16 @@ class WaitAll {
   }
 
   onAction(action, param, options, slot_index) {
-    if(slot_index == null)
+    if (slot_index == null)
       return;
 
-    //check all
+    // check all
     this.ready.length = this.outputs.length;
     this.ready[slot_index] = true;
-    for(var i = 0; i < this.ready.length;++i)
-      if(!this.ready[i])
+    for (var i = 0; i < this.ready.length;++i)
+      if (!this.ready[i])
         return;
-    //pass
+    // pass
     this.reset();
     this.triggerSlot(0);
   }
@@ -150,7 +150,7 @@ class WaitAll {
 LiteGraph.registerNodeType("events/waitAll", WaitAll);
 
 
-//Sequencer for events
+// Sequencer for events
 class Stepper {
   constructor() {
     var that = this;
@@ -162,7 +162,7 @@ class Stepper {
     this.addOutput("", LiteGraph.EVENT);
     this.addOutput("", LiteGraph.EVENT);
     this.addOutput("", LiteGraph.EVENT,{removable:true});
-    this.addWidget("button","+",null,function(){
+    this.addWidget("button","+",null,function() {
       that.addOutput("", LiteGraph.EVENT, {removable:true});
     });
     this.size = [120, 120];
@@ -186,11 +186,11 @@ class Stepper {
 
   onExecute() {
     var index = this.getInputData(0);
-    if(index != null)
+    if (index != null)
     {
       index = Math.floor(index);
       index = clamp( index, 0, this.outputs ? (this.outputs.length - 2) : 0 );
-      if( index != this.properties.index )
+      if ( index != this.properties.index )
       {
         this.properties.index = index;
         this.triggerSlot( index+1 );
@@ -201,9 +201,9 @@ class Stepper {
   }
 
   onAction(action, param) {
-    if(action == "reset")
+    if (action == "reset")
       this.properties.index = 0;
-    else if(action == "step")
+    else if (action == "step")
     {
       this.triggerSlot(this.properties.index+1, param);
       var n = this.outputs ? this.outputs.length - 1 : 0;
@@ -217,7 +217,7 @@ class Stepper {
 LiteGraph.registerNodeType("events/stepper", Stepper);
 
 
-//Filter events
+// Filter events
 class FilterEvent {
   constructor() {
     this.size = [60, 30];
@@ -287,7 +287,7 @@ class EventBranch {
 LiteGraph.registerNodeType("events/branch", EventBranch);
 
 
-//Show value inside the debug console
+// Show value inside the debug console
 class EventCounter {
   constructor() {
     this.addInput("inc", LiteGraph.ACTION);
@@ -332,7 +332,7 @@ class EventCounter {
   }
 
   onExecute() {
-    if(this.properties.doCountExecution){
+    if (this.properties.doCountExecution) {
       this.num += 1;
     }
     this.setOutputData(1, this.num);
@@ -344,7 +344,7 @@ class EventCounter {
 LiteGraph.registerNodeType("events/counter", EventCounter);
 
 
-//Show value inside the debug console
+// Show value inside the debug console
 class DelayEvent {
   constructor() {
     this.size = [60, 30];
@@ -365,7 +365,7 @@ class DelayEvent {
   }
 
   onExecute(param, options) {
-    var dt = this.graph.elapsed_time * 1000; //in ms
+    var dt = this.graph.elapsed_time * 1000; // in ms
 
     if (this.isInputConnected(1)) {
       this.properties.time_in_ms = this.getInputData(1);
@@ -378,11 +378,11 @@ class DelayEvent {
         continue;
       }
 
-      //remove
+      // remove
       this._pending.splice(i, 1);
       --i;
 
-      //trigger
+      // trigger
       this.trigger(null, actionPass[1], options);
     }
   }
@@ -397,7 +397,7 @@ class DelayEvent {
 LiteGraph.registerNodeType("events/delay", DelayEvent);
 
 
-//Show value inside the debug console
+// Show value inside the debug console
 class TimerEvent {
   constructor() {
     this.addProperty("interval", 1000);
@@ -424,7 +424,7 @@ class TimerEvent {
   }
 
   onExecute() {
-    var dt = this.graph.elapsed_time * 1000; //in ms
+    var dt = this.graph.elapsed_time * 1000; // in ms
 
     var trigger = this.time == 0;
 
@@ -479,7 +479,7 @@ class SemaphoreEvent {
     this._ready = false;
     this.properties = {};
     var that = this;
-    this.addWidget("button","reset","",function(){
+    this.addWidget("button","reset","",function() {
       that._ready = false;
     });
   }
@@ -490,11 +490,11 @@ class SemaphoreEvent {
   }
 
   onAction(action, param) {
-    if( action == "go" )
+    if ( action == "go" )
       this.triggerSlot( this._ready ? 0 : 1 );
-    else if( action == "green" )
+    else if ( action == "green" )
       this._ready = true;
-    else if( action == "red" )
+    else if ( action == "red" )
       this._ready = false;
   }
 
@@ -512,18 +512,18 @@ class OnceEvent {
     this._once = false;
     this.properties = {};
     var that = this;
-    this.addWidget("button","reset","",function(){
+    this.addWidget("button","reset","",function() {
       that._once = false;
     });
   }
 
   onAction(action, param) {
-    if( action == "in" && !this._once )
+    if ( action == "in" && !this._once )
     {
       this._once = true;
       this.triggerSlot( 0, param );
     }
-    else if( action == "reset" )
+    else if ( action == "reset" )
       this._once = false;
   }
 
@@ -541,7 +541,7 @@ class DataStore {
     this._last_value = null;
     this.properties = { data: null, serialize: true };
     var that = this;
-    this.addWidget("button","store","",function(){
+    this.addWidget("button","store","",function() {
       that.properties.data = that._last_value;
     });
   }
@@ -556,9 +556,9 @@ class DataStore {
   }
 
   onSerialize(o) {
-    if(o.data == null)
+    if (o.data == null)
       return;
-    if(this.properties.serialize == false || (o.data.constructor !== String && o.data.constructor !== Number && o.data.constructor !== Boolean && o.data.constructor !== Array && o.data.constructor !== Object ))
+    if (this.properties.serialize == false || (o.data.constructor !== String && o.data.constructor !== Number && o.data.constructor !== Boolean && o.data.constructor !== Array && o.data.constructor !== Object ))
       o.data = null;
   }
 

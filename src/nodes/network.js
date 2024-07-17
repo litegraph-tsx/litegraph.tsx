@@ -1,7 +1,7 @@
 import { LiteGraph } from "@/litegraph.js";
 import { SillyClient } from "@libs/sillyclient.js";
 
-//event related nodes
+// event related nodes
 
 class LGWebSocket {
   constructor() {
@@ -12,7 +12,7 @@ class LGWebSocket {
     this.addOutput("out", 0);
     this.properties = {
       url: "",
-      room: "lgraph", //allows to filter messages,
+      room: "lgraph", // allows to filter messages,
       only_send_changes: true
     };
     this._ws = null;
@@ -150,11 +150,11 @@ class LGWebSocket {
 LiteGraph.registerNodeType("network/websocket", LGWebSocket);
 
 
-//It is like a websocket but using the SillyServer.js server that bounces packets back to all clients connected:
-//For more information: https://github.com/jagenjo/SillyServer.js
+// It is like a websocket but using the SillyServer.js server that bounces packets back to all clients connected:
+// For more information: https://github.com/jagenjo/SillyServer.js
 class LGSillyClient {
   constructor() {
-    //this.size = [60,20];
+    // this.size = [60,20];
     this.room_widget = this.addWidget(
       "text",
       "Room",
@@ -183,7 +183,7 @@ class LGSillyClient {
     this._last_sent_data = [];
     this._last_received_data = [];
 
-    if(typeof(SillyClient) == "undefined")
+    if (typeof(SillyClient) == "undefined")
       console.warn("remember to add SillyClient.js to your project: https://tamats.com/projects/sillyserver/src/sillyclient.js");
   }
 
@@ -200,7 +200,7 @@ class LGSillyClient {
     this.connectSocket();
   }
 
-  //force label names
+  // force label names
   onDrawForeground() {
     for (var i = 1; i < this.inputs.length; ++i) {
       var slot = this.inputs[i];
@@ -224,41 +224,41 @@ class LGSillyClient {
       var prev_data = this._last_sent_data[i];
       if (data != null) {
         if (only_send_changes)
-        {    
+        {
           var is_equal = true;
-          if( data && data.length && prev_data && prev_data.length == data.length && data.constructor !== String)
+          if ( data && data.length && prev_data && prev_data.length == data.length && data.constructor !== String)
           {
-            for(var j = 0; j < data.length; ++j)
-              if( prev_data[j] != data[j] )
+            for (var j = 0; j < data.length; ++j)
+              if ( prev_data[j] != data[j] )
               {
                 is_equal = false;
                 break;
               }
           }
-          else if(this._last_sent_data[i] != data)
+          else if (this._last_sent_data[i] != data)
             is_equal = false;
-          if(is_equal)
+          if (is_equal)
             continue;
         }
         this._server.sendMessage({ type: 0, channel: i, data: data });
-        if( data.length && data.constructor !== String )
+        if ( data.length && data.constructor !== String )
         {
-          if( this._last_sent_data[i] )
+          if ( this._last_sent_data[i] )
           {
             this._last_sent_data[i].length = data.length;
-            for(var j = 0; j < data.length; ++j)
+            for (var j = 0; j < data.length; ++j)
               this._last_sent_data[i][j] = data[j];
           }
-          else //create
+          else // create
           {
-            if(data.constructor === Array)
+            if (data.constructor === Array)
               this._last_sent_data[i] = data.concat();
             else
               this._last_sent_data[i] = new data.constructor( data );
           }
         }
         else
-          this._last_sent_data[i] = data; //should be cloned
+          this._last_sent_data[i] = data; // should be cloned
       }
     }
 
@@ -297,7 +297,7 @@ class LGSillyClient {
       }
 
       if (data.type == 1) {
-        //EVENT slot
+        // EVENT slot
         if (
           data.data.object_class &&
                       LiteGraph[data.data.object_class]
@@ -312,7 +312,7 @@ class LGSillyClient {
         } else {
           that.triggerSlot(0, data.data);
         }
-      } //for FLOW slots
+      } // for FLOW slots
       else {
         that._last_received_data[data.channel || 0] = data.data;
       }
@@ -382,14 +382,14 @@ class HTTPRequestNode {
 
   fetch() {
     var url = this.getInputData(1) || this.properties.url;
-    if(!url)
+    if (!url)
       return;
 
     this.boxcolor = "#FF0";
     var that = this;
     this._fetching = fetch(url)
       .then(resp=>{
-        if(!resp.ok)
+        if (!resp.ok)
         {
           this.boxcolor = "#F00";
           that.trigger("error");
@@ -408,7 +408,7 @@ class HTTPRequestNode {
   }
 
   onAction(evt) {
-    if(evt == "request")
+    if (evt == "request")
       this.fetch();
   }
 

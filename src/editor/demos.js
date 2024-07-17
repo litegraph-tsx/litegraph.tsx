@@ -95,7 +95,7 @@ function sortTest()
   graph.add(rand);
 
   var nodes = [];
-  for(var i = 4; i >= 1; i--)
+  for (var i = 4; i >= 1; i--)
   {
     var n = LiteGraph.createNode("basic/watch",null, {pos: [i * 120,100] });
     graph.add(n);
@@ -104,7 +104,7 @@ function sortTest()
 
   rand.connect(0, nodes[0], 0);
 
-  for(var i = 0; i < nodes.length - 1; i++)
+  for (var i = 0; i < nodes.length - 1; i++)
     nodes[i].connect(0,nodes[i+1], 0);
 }
 
@@ -112,33 +112,33 @@ function benchmark()
 {
   var num_nodes = 200;
   var nodes = [];
-  for(var i = 0; i < num_nodes; i++)
+  for (var i = 0; i < num_nodes; i++)
   {
     var n = LiteGraph.createNode("basic/watch",null, {pos: [(2000 * Math.random())|0, (2000 * Math.random())|0] });
     graph.add(n);
     nodes.push(n);
   }
 
-  for(var i = 0; i < nodes.length; i++)
+  for (var i = 0; i < nodes.length; i++)
     nodes[ (Math.random() * nodes.length)|0 ].connect(0, nodes[ (Math.random() * nodes.length)|0 ], 0 );
 }
 
 
 
-//Show value inside the debug console
+// Show value inside the debug console
 function TestWidgetsNode()
 {
   this.addOutput("","number");
   this.properties = {};
   var that = this;
-  this.slider = this.addWidget("slider","Slider", 0.5, function(v){}, { min: 0, max: 1} );
-  this.number = this.addWidget("number","Number", 0.5, function(v){}, { min: 0, max: 100} );
-  this.combo = this.addWidget("combo","Combo", "red", function(v){}, { values:["red","green","blue"]} );
-  this.text = this.addWidget("text","Text", "edit me", function(v){}, {} );
-  this.text2 = this.addWidget("text","Text", "multiline", function(v){}, { multiline:true } );
-  this.toggle = this.addWidget("toggle","Toggle", true, function(v){}, { on: "enabled", off:"disabled"} );
-  this.button = this.addWidget("button","Button", null, function(v){}, {} );
-  this.toggle2 = this.addWidget("toggle","Disabled", true, function(v){}, { on: "enabled", off:"disabled"} );
+  this.slider = this.addWidget("slider","Slider", 0.5, function(v) {}, { min: 0, max: 1} );
+  this.number = this.addWidget("number","Number", 0.5, function(v) {}, { min: 0, max: 100} );
+  this.combo = this.addWidget("combo","Combo", "red", function(v) {}, { values:["red","green","blue"]} );
+  this.text = this.addWidget("text","Text", "edit me", function(v) {}, {} );
+  this.text2 = this.addWidget("text","Text", "multiline", function(v) {}, { multiline:true } );
+  this.toggle = this.addWidget("toggle","Toggle", true, function(v) {}, { on: "enabled", off:"disabled"} );
+  this.button = this.addWidget("button","Button", null, function(v) {}, {} );
+  this.toggle2 = this.addWidget("toggle","Disabled", true, function(v) {}, { on: "enabled", off:"disabled"} );
   this.toggle2.disabled = true;
   this.size = this.computeSize();
   this.serialize_widgets = true;
@@ -148,7 +148,7 @@ TestWidgetsNode.title = "Widgets";
 
 LiteGraph.registerNodeType("features/widgets", TestWidgetsNode );
 
-//Show value inside the debug console
+// Show value inside the debug console
 function TestSpecialNode()
 {
   this.addInput("","number");
@@ -166,13 +166,13 @@ TestSpecialNode.slot_start_y = 20;
 
 TestSpecialNode.prototype.onDrawBackground = function(ctx)
 {
-  if(this.flags.collapsed)
+  if (this.flags.collapsed)
     return;
 
   ctx.fillStyle = "#555";
   ctx.fillRect(0,0,this.size[0],20);
 
-  if(this.enabled)
+  if (this.enabled)
   {
     ctx.fillStyle = "#AFB";
     ctx.beginPath();
@@ -183,7 +183,7 @@ TestSpecialNode.prototype.onDrawBackground = function(ctx)
     ctx.fill();
   }
 
-  if(this.visible)
+  if (this.visible)
   {
     ctx.fillStyle = "#ABF";
     ctx.beginPath();
@@ -204,7 +204,7 @@ TestSpecialNode.prototype.onDrawBackground = function(ctx)
   ctx.lineTo(this.size[0]-45,20);
   ctx.stroke();
 
-  if( this.mouseOver )
+  if ( this.mouseOver )
   {
     ctx.fillStyle = "#AAA";
     ctx.fillText( "Example of helper", 0, this.size[1] + 14 );
@@ -213,18 +213,18 @@ TestSpecialNode.prototype.onDrawBackground = function(ctx)
 
 TestSpecialNode.prototype.onMouseDown = function(e, pos)
 {
-  if(pos[1] > 20)
+  if (pos[1] > 20)
     return;
 
-  if( pos[0] > this.size[0] - 20)
+  if ( pos[0] > this.size[0] - 20)
     this.enabled = !this.enabled;
-  else if( pos[0] > this.size[0] - 40)
+  else if ( pos[0] > this.size[0] - 40)
     this.visible = !this.visible;
 }
 
 TestSpecialNode.prototype.onBounding = function(rect)
 {
-  if(!this.flags.collapsed && this.mouseOver )
+  if (!this.flags.collapsed && this.mouseOver )
     rect[3] = this.size[1] + 20;
 }
 
@@ -232,7 +232,7 @@ LiteGraph.registerNodeType("features/shape", TestSpecialNode );
 
 
 
-//Show value inside the debug console
+// Show value inside the debug console
 function TestSlotsNode()
 {
   this.addInput("C","number");
@@ -248,7 +248,7 @@ TestSlotsNode.title = "Flat Slots";
 LiteGraph.registerNodeType("features/slots", TestSlotsNode );
 
 
-//Show value inside the debug console
+// Show value inside the debug console
 function TestPropertyEditorsNode()
 {
   this.properties = {
@@ -263,7 +263,7 @@ function TestPropertyEditorsNode()
   }
 
   var that = this;
-  this.addWidget("button","Log",null,function(){
+  this.addWidget("button","Log",null,function() {
     console.log(that.properties);
   });
 }
@@ -275,7 +275,7 @@ LiteGraph.registerNodeType("features/properties_editor", TestPropertyEditorsNode
 
 
 
-//Show value inside the debug console
+// Show value inside the debug console
 function LargeInputNode()
 {
   this.addInput("in 1","number");

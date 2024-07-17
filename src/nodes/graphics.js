@@ -290,7 +290,7 @@ class ImageFrame {
   }
 
   show() {
-    //var str = this.canvas.toDataURL("image/png");
+    // var str = this.canvas.toDataURL("image/png");
     if (showElement && this.frame) {
       showElement(this.frame);
     }
@@ -448,7 +448,7 @@ class ImageCrop {
 LiteGraph.registerNodeType("graphics/cropImage", ImageCrop);
 
 
-//CANVAS stuff
+// CANVAS stuff
 class CanvasNode {
   constructor() {
     this.addInput("clear", LiteGraph.ACTION);
@@ -603,11 +603,11 @@ class ImageVideo {
 
     var pos = url.substr(0,10).indexOf(":");
     var protocol = "";
-    if(pos != -1)
+    if (pos != -1)
       protocol = url.substr(0,pos);
 
     var host = "";
-    if(protocol)
+    if (protocol)
     {
       host = url.substr(0,url.indexOf("/",protocol.length + 3));
       host = host.substr(protocol.length+3);
@@ -631,7 +631,7 @@ class ImageVideo {
 
     var that = this;
     this._video.addEventListener("loadedmetadata", function(e) {
-      //onload
+      // onload
       console.log("Duration: " + this.duration + " seconds");
       console.log("Size: " + this.videoWidth + "," + this.videoHeight);
       that.setDirtyCanvas(true);
@@ -639,7 +639,7 @@ class ImageVideo {
       this.height = this.videoHeight;
     });
     this._video.addEventListener("progress", function(e) {
-      //onload
+      // onload
       console.log("video loading...");
     });
     this._video.addEventListener("error", function(e) {
@@ -664,10 +664,10 @@ class ImageVideo {
 
     this._video.addEventListener("ended", function(e) {
       console.log("Video Ended.");
-      this.play(); //loop
+      this.play(); // loop
     });
 
-    //document.body.appendChild(this.video);
+    // document.body.appendChild(this.video);
   }
 
   onPropertyChanged(name, value) {
@@ -680,7 +680,7 @@ class ImageVideo {
   }
 
   play() {
-    if (this._video && this._video.videoWidth ) { //is loaded
+    if (this._video && this._video.videoWidth ) { // is loaded
       this._video.play();
     }
   }
@@ -814,7 +814,7 @@ class ImageWebcam {
 
   streamReady(localMediaStream) {
     this._webcam_stream = localMediaStream;
-    //this._waiting_confirmation = false;
+    // this._waiting_confirmation = false;
     this.boxcolor = "green";
 
     var video = this._video;
@@ -823,8 +823,8 @@ class ImageWebcam {
       video.autoplay = true;
       video.srcObject = localMediaStream;
       this._video = video;
-      //document.body.appendChild( video ); //debug
-      //when video info is loaded (size and so)
+      // document.body.appendChild( video ); //debug
+      // when video info is loaded (size and so)
       video.onloadedmetadata = function(e) {
         // Ready to go. Do some stuff.
         console.log(e);
@@ -889,7 +889,7 @@ class ImageWebcam {
       return;
     }
 
-    //render to graph canvas
+    // render to graph canvas
     ctx.save();
     ctx.drawImage(this._video, 0, 0, this.size[0], this.size[1]);
     ctx.restore();

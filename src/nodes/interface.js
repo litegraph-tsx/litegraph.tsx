@@ -286,7 +286,7 @@ class WidgetCombo {
     this._values = this.properties.values.split(";");
     var that = this;
     this.widgets_up = true;
-    this.widget = this.addWidget("combo","", this.properties.value, function(v){
+    this.widget = this.addWidget("combo","", this.properties.value, function(v) {
       that.properties.value = v;
       that.triggerSlot(1, v);
     }, { property: "value", values: this._values } );
@@ -297,12 +297,12 @@ class WidgetCombo {
   }
 
   onPropertyChanged(name, value) {
-    if(name == "values")
+    if (name == "values")
     {
       this._values = value.split(";");
       this.widget.options.values = this._values;
     }
-    else if(name == "value")
+    else if (name == "value")
     {
       this.widget.value = value;
     }
@@ -349,14 +349,14 @@ class WidgetKnob {
     ctx.translate(center_x, center_y);
     ctx.rotate(Math.PI * 0.75);
 
-    //bg
+    // bg
     ctx.fillStyle = "rgba(0,0,0,0.5)";
     ctx.beginPath();
     ctx.moveTo(0, 0);
     ctx.arc(0, 0, radius, 0, Math.PI * 1.5);
     ctx.fill();
 
-    //value
+    // value
     ctx.strokeStyle = "black";
     ctx.fillStyle = this.properties.color;
     ctx.lineWidth = 2;
@@ -371,18 +371,18 @@ class WidgetKnob {
     );
     ctx.closePath();
     ctx.fill();
-    //ctx.stroke();
+    // ctx.stroke();
     ctx.lineWidth = 1;
     ctx.globalAlpha = 1;
     ctx.restore();
 
-    //inner
+    // inner
     ctx.fillStyle = "black";
     ctx.beginPath();
     ctx.arc(center_x, center_y, radius * 0.75, 0, Math.PI * 2, true);
     ctx.fill();
 
-    //miniball
+    // miniball
     ctx.fillStyle = this.mouseOver ? "white" : this.properties.color;
     ctx.beginPath();
     var angle = this.value * Math.PI * 1.5 + Math.PI * 0.75;
@@ -396,7 +396,7 @@ class WidgetKnob {
     );
     ctx.fill();
 
-    //text
+    // text
     ctx.fillStyle = this.mouseOver ? "white" : "#AAA";
     ctx.font = Math.floor(radius * 0.5) + "px Arial";
     ctx.textAlign = "center";
@@ -465,7 +465,7 @@ class WidgetKnob {
   onPropertyChanged(name, value) {
     if (name == "min" || name == "max" || name == "value") {
       this.properties[name] = parseFloat(value);
-      return true; //block
+      return true; // block
     }
   }
 
@@ -476,7 +476,7 @@ class WidgetKnob {
 LiteGraph.registerNodeType("widget/knob", WidgetKnob);
 
 
-//Show value inside the debug console
+// Show value inside the debug console
 class WidgetSliderGUI {
   constructor() {
     this.addOutput("", "number");
@@ -530,7 +530,7 @@ class WidgetHSlider {
                   (this.properties.max - this.properties.min);
     }
 
-    //border
+    // border
     ctx.globalAlpha = 1;
     ctx.lineWidth = 1;
     ctx.fillStyle = "#000";
@@ -592,7 +592,7 @@ class WidgetHSlider {
   }
 
   onMouseLeave(e) {
-    //this.oldmouse = null;
+    // this.oldmouse = null;
   }
 
   static title = "H.Slider";
@@ -616,7 +616,7 @@ class WidgetProgress {
   }
 
   onDrawForeground(ctx) {
-    //border
+    // border
     ctx.lineWidth = 1;
     ctx.fillStyle = this.properties.color;
     var v =
@@ -648,8 +648,8 @@ class WidgetText {
   }
 
   onDrawForeground(ctx) {
-    //ctx.fillStyle="#000";
-    //ctx.fillRect(0,0,100,60);
+    // ctx.fillStyle="#000";
+    // ctx.fillRect(0,0,100,60);
     ctx.fillStyle = this.properties["color"];
     var v = this.properties["value"];
 
@@ -690,7 +690,7 @@ class WidgetText {
     if (v != null) {
       this.properties["value"] = v;
     }
-    //this.setDirtyCanvas(true);
+    // this.setDirtyCanvas(true);
   }
 
   resize() {
@@ -717,7 +717,7 @@ class WidgetText {
   onPropertyChanged(name, value) {
     this.properties[name] = value;
     this.str = typeof value == "number" ? value.toFixed(3) : value;
-    //this.resize();
+    // this.resize();
     return true;
   }
 
@@ -773,7 +773,7 @@ class WidgetPanel {
 
     ctx.lineWidth = 1;
     ctx.strokeStyle = this.properties["borderColor"];
-    //ctx.fillStyle = "#ebebeb";
+    // ctx.fillStyle = "#ebebeb";
     ctx.fillStyle = this.lineargradient;
 
     if (this.properties["shadowSize"]) {

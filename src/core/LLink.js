@@ -1,5 +1,5 @@
 
-//this is the class in charge of storing link information
+// this is the class in charge of storing link information
 export class LLink {
   constructor(id, type, origin_id, origin_slot, target_id, target_slot) {
     this.id = id;
@@ -8,11 +8,11 @@ export class LLink {
     this.origin_slot = origin_slot;
     this.target_id = target_id;
     this.target_slot = target_slot;
-  
+
     this._data = null;
-    this._pos = new Float32Array(2); //center
+    this._pos = new Float32Array(2); // center
   }
-  
+
   configure(o) {
     if (o.constructor === Array) {
       this.id = o[0];
@@ -30,7 +30,7 @@ export class LLink {
       this.target_slot = o.target_slot;
     }
   }
-  
+
   serialize() {
     return [
       this.id,
