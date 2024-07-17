@@ -231,92 +231,89 @@ class MIDIEvent {
       object_class: "MIDIEvent"
     };
   }
+
+  static notes = [
+    "A",
+    "A#",
+    "B",
+    "C",
+    "C#",
+    "D",
+    "D#",
+    "E",
+    "F",
+    "F#",
+    "G",
+    "G#"
+  ];
+  static note_to_index = {
+    A: 0,
+    "A#": 1,
+    B: 2,
+    C: 3,
+    "C#": 4,
+    D: 5,
+    "D#": 6,
+    E: 7,
+    F: 8,
+    "F#": 9,
+    G: 10,
+    "G#": 11
+  };
+  static NOTEOFF = 0x80;
+  static NOTEON = 0x90;
+  static KEYPRESSURE = 0xa0;
+  static CONTROLLERCHANGE = 0xb0;
+  static PROGRAMCHANGE = 0xc0;
+  static CHANNELPRESSURE = 0xd0;
+  static PITCHBEND = 0xe0;
+  static TIMETICK = 0xf8;
+
+  static commands = {
+    0x80: "note off",
+    0x90: "note on",
+    0xa0: "key pressure",
+    0xb0: "controller change",
+    0xc0: "program change",
+    0xd0: "channel pressure",
+    0xe0: "pitch bend",
+    0xf0: "system",
+    0xf2: "Song pos",
+    0xf3: "Song select",
+    0xf6: "Tune request",
+    0xf8: "time tick",
+    0xfa: "Start Song",
+    0xfb: "Continue Song",
+    0xfc: "Stop Song",
+    0xfe: "Sensing",
+    0xff: "Reset"
+  };
+  static commands_short = {
+    0x80: "NOTEOFF",
+    0x90: "NOTEOFF",
+    0xa0: "KEYP",
+    0xb0: "CC",
+    0xc0: "PC",
+    0xd0: "CP",
+    0xe0: "PB",
+    0xf0: "SYS",
+    0xf2: "POS",
+    0xf3: "SELECT",
+    0xf6: "TUNEREQ",
+    0xf8: "TT",
+    0xfa: "START",
+    0xfb: "CONTINUE",
+    0xfc: "STOP",
+    0xfe: "SENS",
+    0xff: "RESET"
+  };
+  static commands_reversed = {};
 }
-
-LiteGraph.MIDIEvent = MIDIEvent;
-
-MIDIEvent.notes = [
-  "A",
-  "A#",
-  "B",
-  "C",
-  "C#",
-  "D",
-  "D#",
-  "E",
-  "F",
-  "F#",
-  "G",
-  "G#"
-];
-MIDIEvent.note_to_index = {
-  A: 0,
-  "A#": 1,
-  B: 2,
-  C: 3,
-  "C#": 4,
-  D: 5,
-  "D#": 6,
-  E: 7,
-  F: 8,
-  "F#": 9,
-  G: 10,
-  "G#": 11
-};
-
-MIDIEvent.NOTEOFF = 0x80;
-MIDIEvent.NOTEON = 0x90;
-MIDIEvent.KEYPRESSURE = 0xa0;
-MIDIEvent.CONTROLLERCHANGE = 0xb0;
-MIDIEvent.PROGRAMCHANGE = 0xc0;
-MIDIEvent.CHANNELPRESSURE = 0xd0;
-MIDIEvent.PITCHBEND = 0xe0;
-MIDIEvent.TIMETICK = 0xf8;
-
-MIDIEvent.commands = {
-  0x80: "note off",
-  0x90: "note on",
-  0xa0: "key pressure",
-  0xb0: "controller change",
-  0xc0: "program change",
-  0xd0: "channel pressure",
-  0xe0: "pitch bend",
-  0xf0: "system",
-  0xf2: "Song pos",
-  0xf3: "Song select",
-  0xf6: "Tune request",
-  0xf8: "time tick",
-  0xfa: "Start Song",
-  0xfb: "Continue Song",
-  0xfc: "Stop Song",
-  0xfe: "Sensing",
-  0xff: "Reset"
-};
-
-MIDIEvent.commands_short = {
-  0x80: "NOTEOFF",
-  0x90: "NOTEOFF",
-  0xa0: "KEYP",
-  0xb0: "CC",
-  0xc0: "PC",
-  0xd0: "CP",
-  0xe0: "PB",
-  0xf0: "SYS",
-  0xf2: "POS",
-  0xf3: "SELECT",
-  0xf6: "TUNEREQ",
-  0xf8: "TT",
-  0xfa: "START",
-  0xfb: "CONTINUE",
-  0xfc: "STOP",
-  0xfe: "SENS",
-  0xff: "RESET"
-};
-
-MIDIEvent.commands_reversed = {};
 for (var i in MIDIEvent.commands) {
   MIDIEvent.commands_reversed[MIDIEvent.commands[i]] = i;
 }
+LiteGraph.MIDIEvent = MIDIEvent;
+
 
 //MIDI wrapper, instantiate by MIDIIn and MIDIOut
 class MIDIInterface {
@@ -450,11 +447,11 @@ class MIDIInterface {
       output_port.send(midi_data);
     }
   }
+
+  static input = null;
+  static MIDIEvent = MIDIEvent;
 }
 
-MIDIInterface.input = null;
-
-MIDIInterface.MIDIEvent = MIDIEvent;
 
 class LGMIDIIn {
   constructor() {
@@ -574,15 +571,14 @@ class LGMIDIIn {
       ["on_pitchbend", LiteGraph.EVENT]
     ];
   }
+
+  static title = "MIDI Input";
+  static desc = "Reads MIDI from a input port";
+  static color = MIDI_COLOR;
+  static MIDIInterface = MIDIInterface;
 }
-
-LGMIDIIn.MIDIInterface = MIDIInterface;
-
-LGMIDIIn.title = "MIDI Input";
-LGMIDIIn.desc = "Reads MIDI from a input port";
-LGMIDIIn.color = MIDI_COLOR;
-
 LiteGraph.registerNodeType("midi/input", LGMIDIIn);
+
 
 class LGMIDIOut {
   constructor() {
@@ -642,16 +638,13 @@ class LGMIDIOut {
   onGetOutputs() {
     return [["on_midi", LiteGraph.EVENT]];
   }
+
+  static title = "MIDI Output";
+  static desc = "Sends MIDI to output channel";
+  static color = MIDI_COLOR;
+  static MIDIInterface = MIDIInterface;
+  static default_ports = {0:"unknown"};
 }
-
-LGMIDIOut.MIDIInterface = MIDIInterface;
-
-LGMIDIOut.title = "MIDI Output";
-LGMIDIOut.desc = "Sends MIDI to output channel";
-LGMIDIOut.color = MIDI_COLOR;
-
-LGMIDIOut.default_ports = {0:"unknown"};
-
 LiteGraph.registerNodeType("midi/output", LGMIDIOut);
 
 
@@ -696,13 +689,13 @@ class LGMIDIShow {
   onGetOutputs() {
     return [["on_midi", LiteGraph.EVENT]];
   }
+
+  static title = "MIDI Show";
+  static desc = "Shows MIDI in the graph";
+  static color = MIDI_COLOR;
 }
-
-LGMIDIShow.title = "MIDI Show";
-LGMIDIShow.desc = "Shows MIDI in the graph";
-LGMIDIShow.color = MIDI_COLOR;
-
 LiteGraph.registerNodeType("midi/show", LGMIDIShow);
+
 
 class LGMIDIFilter {
   constructor() {
@@ -800,19 +793,18 @@ class LGMIDIFilter {
 
     this.trigger("on_midi", midi_event);
   }
+
+  static title = "MIDI Filter";
+  static desc = "Filters MIDI messages";
+  static color = MIDI_COLOR;
+  static "@cmd" = {
+    type: "enum",
+    title: "Command",
+    values: MIDIEvent.commands_reversed
+  };
 }
-
-LGMIDIFilter.title = "MIDI Filter";
-LGMIDIFilter.desc = "Filters MIDI messages";
-LGMIDIFilter.color = MIDI_COLOR;
-
-LGMIDIFilter["@cmd"] = {
-  type: "enum",
-  title: "Command",
-  values: MIDIEvent.commands_reversed
-};
-
 LiteGraph.registerNodeType("midi/filter", LGMIDIFilter);
+
 
 class LGMIDIEvent {
   constructor() {
@@ -982,13 +974,13 @@ class LGMIDIEvent {
       ["pitchbend", "number"]
     ];
   }
+
+  static title = "MIDIEvent";
+  static desc = "Create a MIDI Event";
+  static color = MIDI_COLOR;
 }
-
-LGMIDIEvent.title = "MIDIEvent";
-LGMIDIEvent.desc = "Create a MIDI Event";
-LGMIDIEvent.color = MIDI_COLOR;
-
 LiteGraph.registerNodeType("midi/event", LGMIDIEvent);
+
 
 class LGMIDICC {
   constructor() {
@@ -1009,13 +1001,13 @@ class LGMIDICC {
     }
     this.setOutputData(0, this.properties.value);
   }
+
+  static title = "MIDICC";
+  static desc = "gets a Controller Change";
+  static color = MIDI_COLOR;
 }
-
-LGMIDICC.title = "MIDICC";
-LGMIDICC.desc = "gets a Controller Change";
-LGMIDICC.color = MIDI_COLOR;
-
 LiteGraph.registerNodeType("midi/cc", LGMIDICC);
+
 
 class LGMIDIGenerator {
   constructor() {
@@ -1102,13 +1094,13 @@ class LGMIDIGenerator {
       duration * 1000
     );
   }
+
+  static title = "MIDI Generator";
+  static desc = "Generates a random MIDI note";
+  static color = MIDI_COLOR;
 }
-
-LGMIDIGenerator.title = "MIDI Generator";
-LGMIDIGenerator.desc = "Generates a random MIDI note";
-LGMIDIGenerator.color = MIDI_COLOR;
-
 LiteGraph.registerNodeType("midi/generator", LGMIDIGenerator);
+
 
 class LGMIDITranspose {
   constructor() {
@@ -1148,13 +1140,13 @@ class LGMIDITranspose {
       this.properties.amount = amount;
     }
   }
+
+  static title = "MIDI Transpose";
+  static desc = "Transpose a MIDI note";
+  static color = MIDI_COLOR;
 }
-
-LGMIDITranspose.title = "MIDI Transpose";
-LGMIDITranspose.desc = "Transpose a MIDI note";
-LGMIDITranspose.color = MIDI_COLOR;
-
 LiteGraph.registerNodeType("midi/transpose", LGMIDITranspose);
+
 
 class LGMIDIQuantize {
   constructor() {
@@ -1227,13 +1219,13 @@ class LGMIDIQuantize {
       this.processScale(scale);
     }
   }
+
+  static title = "MIDI Quantize Pitch";
+  static desc = "Transpose a MIDI note tp fit an scale";
+  static color = MIDI_COLOR;
 }
-
-LGMIDIQuantize.title = "MIDI Quantize Pitch";
-LGMIDIQuantize.desc = "Transpose a MIDI note tp fit an scale";
-LGMIDIQuantize.color = MIDI_COLOR;
-
 LiteGraph.registerNodeType("midi/quantize", LGMIDIQuantize);
+
 
 class LGMIDIFromFile {
   constructor() {
@@ -1339,12 +1331,11 @@ class LGMIDIFromFile {
     this.properties.url = "";
     this.loadMIDIFile( file );
   }
+
+  static title = "MIDI fromFile";
+  static desc = "Plays a MIDI file";
+  static color = MIDI_COLOR;
 }
-
-LGMIDIFromFile.title = "MIDI fromFile";
-LGMIDIFromFile.desc = "Plays a MIDI file";
-LGMIDIFromFile.color = MIDI_COLOR;
-
 LiteGraph.registerNodeType("midi/fromFile", LGMIDIFromFile);
 
 
@@ -1401,13 +1392,13 @@ class LGMIDIPlay {
       this.properties.duration = duration;
     }
   }
+
+  static title = "MIDI Play";
+  static desc = "Plays a MIDI note";
+  static color = MIDI_COLOR;
 }
-
-LGMIDIPlay.title = "MIDI Play";
-LGMIDIPlay.desc = "Plays a MIDI note";
-LGMIDIPlay.color = MIDI_COLOR;
-
 LiteGraph.registerNodeType("midi/play", LGMIDIPlay);
+
 
 class LGMIDIKeys {
   constructor() {
@@ -1568,30 +1559,28 @@ class LGMIDIKeys {
     this.trigger("note", midi_event);
     return true;
   }
+
+  static title = "MIDI Keys";
+  static desc = "Keyboard to play notes";
+  static color = MIDI_COLOR;
+  static keys = [
+    { x: 0, w: 1, h: 1, t: 0 },
+    { x: 0.75, w: 0.5, h: 0.6, t: 1 },
+    { x: 1, w: 1, h: 1, t: 0 },
+    { x: 1.75, w: 0.5, h: 0.6, t: 1 },
+    { x: 2, w: 1, h: 1, t: 0 },
+    { x: 2.75, w: 0.5, h: 0.6, t: 1 },
+    { x: 3, w: 1, h: 1, t: 0 },
+    { x: 4, w: 1, h: 1, t: 0 },
+    { x: 4.75, w: 0.5, h: 0.6, t: 1 },
+    { x: 5, w: 1, h: 1, t: 0 },
+    { x: 5.75, w: 0.5, h: 0.6, t: 1 },
+    { x: 6, w: 1, h: 1, t: 0 }
+  ];
 }
-
-LGMIDIKeys.title = "MIDI Keys";
-LGMIDIKeys.desc = "Keyboard to play notes";
-LGMIDIKeys.color = MIDI_COLOR;
-
-LGMIDIKeys.keys = [
-  { x: 0, w: 1, h: 1, t: 0 },
-  { x: 0.75, w: 0.5, h: 0.6, t: 1 },
-  { x: 1, w: 1, h: 1, t: 0 },
-  { x: 1.75, w: 0.5, h: 0.6, t: 1 },
-  { x: 2, w: 1, h: 1, t: 0 },
-  { x: 2.75, w: 0.5, h: 0.6, t: 1 },
-  { x: 3, w: 1, h: 1, t: 0 },
-  { x: 4, w: 1, h: 1, t: 0 },
-  { x: 4.75, w: 0.5, h: 0.6, t: 1 },
-  { x: 5, w: 1, h: 1, t: 0 },
-  { x: 5.75, w: 0.5, h: 0.6, t: 1 },
-  { x: 6, w: 1, h: 1, t: 0 }
-];
-
 LiteGraph.registerNodeType("midi/keys", LGMIDIKeys);
+
 
 function now() {
   return window.performance.now();
 }
-
