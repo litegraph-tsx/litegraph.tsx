@@ -1,6 +1,6 @@
 
 //used by some widgets to render a curve editor
-class CurveEditor {
+export class CurveEditor {
   constructor(points) {
     this.points = points;
     this.selected = -1;
@@ -169,5 +169,3 @@ class CurveEditor {
     return closest;
   }
 }
-
-export { CurveEditor };

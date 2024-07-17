@@ -31,7 +31,7 @@ var tempB = new Float32Array(2);
      * @param {LGraph} graph [optional]
      * @param {Object} options [optional] { skip_rendering, autoresize, viewport }
      */
-class LGraphCanvas {
+export class LGraphCanvas {
   constructor(canvas, graph, options) {
     this.options = options = options || {};
   
@@ -8135,29 +8135,21 @@ class LGraphCanvas {
       //    return v.callback.call(that, node, options, e, menu, that, event );
     }
   }
-}
-    
-LGraphCanvas.DEFAULT_BACKGROUND_IMAGE = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAIAAAD/gAIDAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAQBJREFUeNrs1rEKwjAUhlETUkj3vP9rdmr1Ysammk2w5wdxuLgcMHyptfawuZX4pJSWZTnfnu/lnIe/jNNxHHGNn//HNbbv+4dr6V+11uF527arU7+u63qfa/bnmh8sWLBgwYJlqRf8MEptXPBXJXa37BSl3ixYsGDBMliwFLyCV/DeLIMFCxYsWLBMwSt4Be/NggXLYMGCBUvBK3iNruC9WbBgwYJlsGApeAWv4L1ZBgsWLFiwYJmCV/AK3psFC5bBggULloJX8BpdwXuzYMGCBctgwVLwCl7Be7MMFixYsGDBsu8FH1FaSmExVfAxBa/gvVmwYMGCZbBg/W4vAQYA5tRF9QYlv/QAAAAASUVORK5CYII=";
-  
-LGraphCanvas.gradients = {}; //cache of gradients
-  
-LGraphCanvas.search_limit = -1;
 
-LGraphCanvas.node_colors = {
-  red: { color: "#322", bgcolor: "#533", groupcolor: "#A88" },
-  brown: { color: "#332922", bgcolor: "#593930", groupcolor: "#b06634" },
-  green: { color: "#232", bgcolor: "#353", groupcolor: "#8A8" },
-  blue: { color: "#223", bgcolor: "#335", groupcolor: "#88A" },
-  pale_blue: {
-    color: "#2a363b",
-    bgcolor: "#3f5159",
-    groupcolor: "#3f789e"
-  },
-  cyan: { color: "#233", bgcolor: "#355", groupcolor: "#8AA" },
-  purple: { color: "#323", bgcolor: "#535", groupcolor: "#a1309b" },
-  yellow: { color: "#432", bgcolor: "#653", groupcolor: "#b58b2a" },
-  black: { color: "#222", bgcolor: "#000", groupcolor: "#444" }
-};
+  static DEFAULT_BACKGROUND_IMAGE = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAIAAAD/gAIDAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAQBJREFUeNrs1rEKwjAUhlETUkj3vP9rdmr1Ysammk2w5wdxuLgcMHyptfawuZX4pJSWZTnfnu/lnIe/jNNxHHGNn//HNbbv+4dr6V+11uF527arU7+u63qfa/bnmh8sWLBgwYJlqRf8MEptXPBXJXa37BSl3ixYsGDBMliwFLyCV/DeLIMFCxYsWLBMwSt4Be/NggXLYMGCBUvBK3iNruC9WbBgwYJlsGApeAWv4L1ZBgsWLFiwYJmCV/AK3psFC5bBggULloJX8BpdwXuzYMGCBctgwVLwCl7Be7MMFixYsGDBsu8FH1FaSmExVfAxBa/gvVmwYMGCZbBg/W4vAQYA5tRF9QYlv/QAAAAASUVORK5CYII=";
+  static gradients = {}; //cache of gradients
+  static search_limit = -1;
+  static node_colors = {
+    red: { color: "#322", bgcolor: "#533", groupcolor: "#A88" },
+    brown: { color: "#332922", bgcolor: "#593930", groupcolor: "#b06634" },
+    green: { color: "#232", bgcolor: "#353", groupcolor: "#8A8" },
+    blue: { color: "#223", bgcolor: "#335", groupcolor: "#88A" },
+    pale_blue: { color: "#2a363b", bgcolor: "#3f5159", groupcolor: "#3f789e" },
+    cyan: { color: "#233", bgcolor: "#355", groupcolor: "#8AA" },
+    purple: { color: "#323", bgcolor: "#535", groupcolor: "#a1309b" },
+    yellow: { color: "#432", bgcolor: "#653", groupcolor: "#b58b2a" },
+    black: { color: "#222", bgcolor: "#000", groupcolor: "#444" }
+  };
+}
 
 global.LGraphCanvas = LGraphCanvas;
-export { LGraphCanvas };

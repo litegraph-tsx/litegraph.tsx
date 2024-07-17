@@ -63,7 +63,7 @@ var global = typeof(window) != "undefined" ? window : typeof(self) != "undefined
      * @param {String} name a name for the node
      */
 
-class LGraphNode {
+export class LGraphNode {
   constructor(title) {
     this._ctor(title);
   }
@@ -2553,4 +2553,3 @@ class LGraphNode {
 }
 
 global.LGraphNode = LGraphNode;
-export { LGraphNode };

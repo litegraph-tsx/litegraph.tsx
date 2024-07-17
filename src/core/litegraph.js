@@ -20,7 +20,7 @@ var global = typeof(window) != "undefined" ? window : typeof(self) != "undefined
      * @constructor
      */
 
-const LiteGraph = {
+export const LiteGraph = {
   VERSION: 0.4,
 
   CANVAS_GRID_SIZE: 10,
@@ -807,350 +807,321 @@ const LiteGraph = {
         return reader.readAsBinaryString(url);
     }
     return null;
-  }
-};
+  },
 
-//timer that works everywhere
-if (typeof performance != "undefined") {
-  LiteGraph.getTime = performance.now.bind(performance);
-} else if (typeof Date != "undefined" && Date.now) {
-  LiteGraph.getTime = Date.now.bind(Date);
-} else if (typeof process != "undefined") {
-  LiteGraph.getTime = function() {
-    var t = process.hrtime();
-    return t[0] * 0.001 + t[1] * 1e-6;
-  };
-} else {
-  LiteGraph.getTime = function getTime() {
-    return new Date().getTime();
-  };
-}
+  compareObjects: function(a, b) {
+    for (var i in a) {
+      if (a[i] != b[i]) {
+        return false;
+      }
+    }
+    return true;
+  },
 
-//API *************************************************
-function compareObjects(a, b) {
-  for (var i in a) {
-    if (a[i] != b[i]) {
+  distance: function(a, b) {
+    return Math.sqrt(
+      (b[0] - a[0]) * (b[0] - a[0]) + (b[1] - a[1]) * (b[1] - a[1])
+    );
+  },
+
+  colorToString: function(c) {
+    return (
+      "rgba(" +
+              Math.round(c[0] * 255).toFixed() +
+              "," +
+              Math.round(c[1] * 255).toFixed() +
+              "," +
+              Math.round(c[2] * 255).toFixed() +
+              "," +
+              (c.length == 4 ? c[3].toFixed(2) : "1.0") +
+              ")"
+    );
+  },
+
+  isInsideRectangle: function(x, y, left, top, width, height) {
+    if (left < x && left + width > x && top < y && top + height > y) {
+      return true;
+    }
+    return false;
+  },
+
+  //[minx,miny,maxx,maxy]
+  growBounding: function(bounding, x, y) {
+    if (x < bounding[0]) {
+      bounding[0] = x;
+    } else if (x > bounding[2]) {
+      bounding[2] = x;
+    }
+  
+    if (y < bounding[1]) {
+      bounding[1] = y;
+    } else if (y > bounding[3]) {
+      bounding[3] = y;
+    }
+  },
+
+  //point inside bounding box
+  isInsideBounding: function(p, bb) {
+    if (
+      p[0] < bb[0][0] ||
+              p[1] < bb[0][1] ||
+              p[0] > bb[1][0] ||
+              p[1] > bb[1][1]
+    ) {
       return false;
     }
-  }
-  return true;
-}
-LiteGraph.compareObjects = compareObjects;
-
-function distance(a, b) {
-  return Math.sqrt(
-    (b[0] - a[0]) * (b[0] - a[0]) + (b[1] - a[1]) * (b[1] - a[1])
-  );
-}
-LiteGraph.distance = distance;
-
-function colorToString(c) {
-  return (
-    "rgba(" +
-            Math.round(c[0] * 255).toFixed() +
-            "," +
-            Math.round(c[1] * 255).toFixed() +
-            "," +
-            Math.round(c[2] * 255).toFixed() +
-            "," +
-            (c.length == 4 ? c[3].toFixed(2) : "1.0") +
-            ")"
-  );
-}
-LiteGraph.colorToString = colorToString;
-
-function isInsideRectangle(x, y, left, top, width, height) {
-  if (left < x && left + width > x && top < y && top + height > y) {
     return true;
-  }
-  return false;
-}
-LiteGraph.isInsideRectangle = isInsideRectangle;
+  },
 
-//[minx,miny,maxx,maxy]
-function growBounding(bounding, x, y) {
-  if (x < bounding[0]) {
-    bounding[0] = x;
-  } else if (x > bounding[2]) {
-    bounding[2] = x;
-  }
-
-  if (y < bounding[1]) {
-    bounding[1] = y;
-  } else if (y > bounding[3]) {
-    bounding[3] = y;
-  }
-}
-LiteGraph.growBounding = growBounding;
-
-//point inside bounding box
-function isInsideBounding(p, bb) {
-  if (
-    p[0] < bb[0][0] ||
-            p[1] < bb[0][1] ||
-            p[0] > bb[1][0] ||
-            p[1] > bb[1][1]
-  ) {
-    return false;
-  }
-  return true;
-}
-LiteGraph.isInsideBounding = isInsideBounding;
-
-//bounding overlap, format: [ startx, starty, width, height ]
-function overlapBounding(a, b) {
-  var A_end_x = a[0] + a[2];
-  var A_end_y = a[1] + a[3];
-  var B_end_x = b[0] + b[2];
-  var B_end_y = b[1] + b[3];
-
-  if (
-    a[0] > B_end_x ||
-            a[1] > B_end_y ||
-            A_end_x < b[0] ||
-            A_end_y < b[1]
-  ) {
-    return false;
-  }
-  return true;
-}
-LiteGraph.overlapBounding = overlapBounding;
-
-//Convert a hex value to its decimal value - the inputted hex must be in the
-//    format of a hex triplet - the kind we use for HTML colours. The function
-//    will return an array with three values.
-function hex2num(hex) {
-  if (hex.charAt(0) == "#") {
-    hex = hex.slice(1);
-  } //Remove the '#' char - if there is one.
-  hex = hex.toUpperCase();
-  var hex_alphabets = "0123456789ABCDEF";
-  var value = new Array(3);
-  var k = 0;
-  var int1, int2;
-  for (var i = 0; i < 6; i += 2) {
-    int1 = hex_alphabets.indexOf(hex.charAt(i));
-    int2 = hex_alphabets.indexOf(hex.charAt(i + 1));
-    value[k] = int1 * 16 + int2;
-    k++;
-  }
-  return value;
-}
-
-LiteGraph.hex2num = hex2num;
-
-//Give a array with three values as the argument and the function will return
-//    the corresponding hex triplet.
-function num2hex(triplet) {
-  var hex_alphabets = "0123456789ABCDEF";
-  var hex = "#";
-  var int1, int2;
-  for (var i = 0; i < 3; i++) {
-    int1 = triplet[i] / 16;
-    int2 = triplet[i] % 16;
-
-    hex += hex_alphabets.charAt(int1) + hex_alphabets.charAt(int2);
-  }
-  return hex;
-}
-
-LiteGraph.num2hex = num2hex;
-
-/* LiteGraph GUI elements used for canvas editing *************************************/
-
-LiteGraph.closeAllContextMenus = function(ref_window) {
-  ref_window = ref_window || window;
-
-  var elements = ref_window.document.querySelectorAll(".litecontextmenu");
-  if (!elements.length) {
-    return;
-  }
-
-  var result = [];
-  for (var i = 0; i < elements.length; i++) {
-    result.push(elements[i]);
-  }
-
-  for (var i=0; i < result.length; i++) {
-    if (result[i].close) {
-      result[i].close();
-    } else if (result[i].parentNode) {
-      result[i].parentNode.removeChild(result[i]);
+  //bounding overlap, format: [ startx, starty, width, height ]
+  overlapBounding: function(a, b) {
+    var A_end_x = a[0] + a[2];
+    var A_end_y = a[1] + a[3];
+    var B_end_x = b[0] + b[2];
+    var B_end_y = b[1] + b[3];
+  
+    if (
+      a[0] > B_end_x ||
+              a[1] > B_end_y ||
+              A_end_x < b[0] ||
+              A_end_y < b[1]
+    ) {
+      return false;
     }
-  }
-};
+    return true;
+  },
 
-LiteGraph.extendClass = function(target, origin) {
-  for (var i in origin) {
-    //copy class properties
-    if (target.hasOwnProperty(i)) {
-      continue;
+  // Convert a hex value to its decimal value - the inputted hex must be in the
+  // format of a hex triplet - the kind we use for HTML colours. The function
+  // will return an array with three values.
+  hex2num: function(hex) {
+    if (hex.charAt(0) == "#") {
+      hex = hex.slice(1);
+    } //Remove the '#' char - if there is one.
+    hex = hex.toUpperCase();
+    var hex_alphabets = "0123456789ABCDEF";
+    var value = new Array(3);
+    var k = 0;
+    var int1, int2;
+    for (var i = 0; i < 6; i += 2) {
+      int1 = hex_alphabets.indexOf(hex.charAt(i));
+      int2 = hex_alphabets.indexOf(hex.charAt(i + 1));
+      value[k] = int1 * 16 + int2;
+      k++;
     }
-    target[i] = origin[i];
-  }
+    return value;
+  },
 
-  if (origin.prototype) {
-    //copy prototype properties
-    for (var i in origin.prototype) {
-      //only enumerable
-      if (!origin.prototype.hasOwnProperty(i)) {
-        continue;
-      }
+  // Give a array with three values as the argument and the function will return
+  // the corresponding hex triplet.
+  num2hex: function(triplet) {
+    var hex_alphabets = "0123456789ABCDEF";
+    var hex = "#";
+    var int1, int2;
+    for (var i = 0; i < 3; i++) {
+      int1 = triplet[i] / 16;
+      int2 = triplet[i] % 16;
 
-      if (target.prototype.hasOwnProperty(i)) {
-        //avoid overwriting existing ones
-        continue;
-      }
-
-      //copy getters
-      if (origin.prototype.__lookupGetter__(i)) {
-        target.prototype.__defineGetter__(
-          i,
-          origin.prototype.__lookupGetter__(i)
-        );
-      } else {
-        target.prototype[i] = origin.prototype[i];
-      }
-
-      //and setters
-      if (origin.prototype.__lookupSetter__(i)) {
-        target.prototype.__defineSetter__(
-          i,
-          origin.prototype.__lookupSetter__(i)
-        );
-      }
+      hex += hex_alphabets.charAt(int1) + hex_alphabets.charAt(int2);
     }
-  }
-};
+    return hex;
+  },
 
-//used to create nodes from wrapping functions
-LiteGraph.getParameterNames = function(func) {
-  return (func + "")
-    .replace(/[/][/].*$/gm, "") // strip single-line comments
-    .replace(/\s+/g, "") // strip white space
-    .replace(/[/][*][^/*]*[*][/]/g, "") // strip multi-line comments  /**/
-    .split("){", 1)[0]
-    .replace(/^[^(]*[(]/, "") // extract the parameters
-    .replace(/=[^,]+/g, "") // strip any ES6 defaults
-    .split(",")
-    .filter(Boolean); // split & filter [""]
-};
-
-/* helper for interaction: pointer, touch, mouse Listeners
-    used by LGraphCanvas DragAndScale ContextMenu*/
-LiteGraph.pointerListenerAdd = function(oDOM, sEvIn, fCall, capture=false) {
-  if (!oDOM || !oDOM.addEventListener || !sEvIn || typeof fCall!=="function"){
-    //console.log("cant pointerListenerAdd "+oDOM+", "+sEvent+", "+fCall);
-    return; // -- break --
-  }
-        
-  var sMethod = LiteGraph.pointerevents_method;
-  var sEvent = sEvIn;
-        
-  // UNDER CONSTRUCTION
-  // convert pointerevents to touch event when not available
-  if (sMethod=="pointer" && !window.PointerEvent){ 
-    console.warn("sMethod=='pointer' && !window.PointerEvent");
-    console.log("Converting pointer["+sEvent+"] : down move up cancel enter TO touchstart touchmove touchend, etc ..");
-    switch(sEvent){
-      case "down":{
-        sMethod = "touch";
-        sEvent = "start";
-        break;
-      }
-      case "move":{
-        sMethod = "touch";
-        //sEvent = "move";
-        break;
-      }
-      case "up":{
-        sMethod = "touch";
-        sEvent = "end";
-        break;
-      }
-      case "cancel":{
-        sMethod = "touch";
-        //sEvent = "cancel";
-        break;
-      }
-      case "enter":{
-        console.log("debug: Should I send a move event?"); // ???
-        break;
-      }
-      // case "over": case "out": not used at now
-      default:{
-        console.warn("PointerEvent not available in this browser ? The event "+sEvent+" would not be called");
-      }
-    }
-  }
-
-  switch(sEvent){
-
-    //both pointer and move events
-    case "down":
-    case "up":
-    case "move":
-    case "over":
-    case "out":
-    case "enter":
-      oDOM.addEventListener(sMethod+sEvent, fCall, capture);
+  // @TODO: Obviously belongs with ContextMenu
+  closeAllContextMenus: function(ref_window) {
+    ref_window = ref_window || window;
+  
+    var elements = ref_window.document.querySelectorAll(".litecontextmenu");
+    if (!elements.length) {
       return;
+    }
+  
+    var result = [];
+    for (var i = 0; i < elements.length; i++) {
+      result.push(elements[i]);
+    }
+  
+    for (var i=0; i < result.length; i++) {
+      if (result[i].close) {
+        result[i].close();
+      } else if (result[i].parentNode) {
+        result[i].parentNode.removeChild(result[i]);
+      }
+    }
+  },
 
-      // only pointerevents
-    case "leave":
-    case "cancel":
-    case "gotpointercapture":
-    case "lostpointercapture":
-      if (sMethod!="mouse"){
+  extendClass: function(target, origin) {
+    for (var i in origin) {
+      //copy class properties
+      if (target.hasOwnProperty(i)) {
+        continue;
+      }
+      target[i] = origin[i];
+    }
+  
+    if (origin.prototype) {
+      //copy prototype properties
+      for (var i in origin.prototype) {
+        //only enumerable
+        if (!origin.prototype.hasOwnProperty(i)) {
+          continue;
+        }
+  
+        if (target.prototype.hasOwnProperty(i)) {
+          //avoid overwriting existing ones
+          continue;
+        }
+  
+        //copy getters
+        if (origin.prototype.__lookupGetter__(i)) {
+          target.prototype.__defineGetter__(
+            i,
+            origin.prototype.__lookupGetter__(i)
+          );
+        } else {
+          target.prototype[i] = origin.prototype[i];
+        }
+  
+        //and setters
+        if (origin.prototype.__lookupSetter__(i)) {
+          target.prototype.__defineSetter__(
+            i,
+            origin.prototype.__lookupSetter__(i)
+          );
+        }
+      }
+    }
+  },
+
+  //used to create nodes from wrapping functions
+  getParameterNames: function(func) {
+    return (func + "")
+      .replace(/[/][/].*$/gm, "") // strip single-line comments
+      .replace(/\s+/g, "") // strip white space
+      .replace(/[/][*][^/*]*[*][/]/g, "") // strip multi-line comments  /**/
+      .split("){", 1)[0]
+      .replace(/^[^(]*[(]/, "") // extract the parameters
+      .replace(/=[^,]+/g, "") // strip any ES6 defaults
+      .split(",")
+      .filter(Boolean); // split & filter [""]
+  },
+
+  /* helper for interaction: pointer, touch, mouse Listeners used by LGraphCanvas DragAndScale ContextMenu*/
+  pointerListenerAdd: function(oDOM, sEvIn, fCall, capture=false) {
+    if (!oDOM || !oDOM.addEventListener || !sEvIn || typeof fCall!=="function"){
+      //console.log("cant pointerListenerAdd "+oDOM+", "+sEvent+", "+fCall);
+      return; // -- break --
+    }
+          
+    var sMethod = LiteGraph.pointerevents_method;
+    var sEvent = sEvIn;
+          
+    // UNDER CONSTRUCTION
+    // convert pointerevents to touch event when not available
+    if (sMethod=="pointer" && !window.PointerEvent){ 
+      console.warn("sMethod=='pointer' && !window.PointerEvent");
+      console.log("Converting pointer["+sEvent+"] : down move up cancel enter TO touchstart touchmove touchend, etc ..");
+      switch(sEvent){
+        case "down":{
+          sMethod = "touch";
+          sEvent = "start";
+          break;
+        }
+        case "move":{
+          sMethod = "touch";
+          //sEvent = "move";
+          break;
+        }
+        case "up":{
+          sMethod = "touch";
+          sEvent = "end";
+          break;
+        }
+        case "cancel":{
+          sMethod = "touch";
+          //sEvent = "cancel";
+          break;
+        }
+        case "enter":{
+          console.log("debug: Should I send a move event?"); // ???
+          break;
+        }
+        // case "over": case "out": not used at now
+        default:{
+          console.warn("PointerEvent not available in this browser ? The event "+sEvent+" would not be called");
+        }
+      }
+    }
+
+    switch(sEvent){
+
+      //both pointer and move events
+      case "down":
+      case "up":
+      case "move":
+      case "over":
+      case "out":
+      case "enter":
         oDOM.addEventListener(sMethod+sEvent, fCall, capture);
         return;
-      }
-  }
-  oDOM.addEventListener(sEvent, fCall, capture);
-}
-LiteGraph.pointerListenerRemove = function(oDOM, sEvent, fCall, capture=false) {
-  if (!oDOM || !oDOM.removeEventListener || !sEvent || typeof fCall!=="function"){
-    //console.log("cant pointerListenerRemove "+oDOM+", "+sEvent+", "+fCall);
-    return; // -- break --
-  }
-  switch(sEvent){
-    //both pointer and move events
-    case "down":
-    case "up":
-    case "move":
-    case "over":
-    case "out":
-    case "enter":
-      if (LiteGraph.pointerevents_method=="pointer" || LiteGraph.pointerevents_method=="mouse"){
-        oDOM.removeEventListener(LiteGraph.pointerevents_method+sEvent, fCall, capture);
-      }
-      return;
 
-      // only pointerevents
-    case "leave":
-    case "cancel":
-    case "gotpointercapture":
-    case "lostpointercapture":
-      if (LiteGraph.pointerevents_method=="pointer"){
-        oDOM.removeEventListener(LiteGraph.pointerevents_method+sEvent, fCall, capture);
-      }
-      return;
-  }
-  // not "pointer" || "mouse"
-  oDOM.removeEventListener(sEvent, fCall, capture);
-}
+        // only pointerevents
+      case "leave":
+      case "cancel":
+      case "gotpointercapture":
+      case "lostpointercapture":
+        if (sMethod!="mouse"){
+          oDOM.addEventListener(sMethod+sEvent, fCall, capture);
+          return;
+        }
+    }
+    oDOM.addEventListener(sEvent, fCall, capture);
+  },
 
-function clamp(v, a, b) {
+  pointerListenerRemove: function(oDOM, sEvent, fCall, capture=false) {
+    if (!oDOM || !oDOM.removeEventListener || !sEvent || typeof fCall!=="function"){
+      //console.log("cant pointerListenerRemove "+oDOM+", "+sEvent+", "+fCall);
+      return; // -- break --
+    }
+    switch(sEvent){
+      //both pointer and move events
+      case "down":
+      case "up":
+      case "move":
+      case "over":
+      case "out":
+      case "enter":
+        if (LiteGraph.pointerevents_method=="pointer" || LiteGraph.pointerevents_method=="mouse"){
+          oDOM.removeEventListener(LiteGraph.pointerevents_method+sEvent, fCall, capture);
+        }
+        return;
+
+        // only pointerevents
+      case "leave":
+      case "cancel":
+      case "gotpointercapture":
+      case "lostpointercapture":
+        if (LiteGraph.pointerevents_method=="pointer"){
+          oDOM.removeEventListener(LiteGraph.pointerevents_method+sEvent, fCall, capture);
+        }
+        return;
+    }
+    // not "pointer" || "mouse"
+    oDOM.removeEventListener(sEvent, fCall, capture);
+  },
+};
+
+export function clamp(v, a, b) {
   return a > v ? a : b < v ? b : v;
 }
 
 if (typeof window != "undefined" && !window["requestAnimationFrame"]) {
   window.requestAnimationFrame =
-            window.webkitRequestAnimationFrame ||
-            window.mozRequestAnimationFrame ||
-            function(callback) {
-              window.setTimeout(callback, 1000 / 60);
-            };
+    window.webkitRequestAnimationFrame ||
+    window.mozRequestAnimationFrame ||
+    function(callback) {
+      window.setTimeout(callback, 1000 / 60);
+    };
 }
 
 // Bind things onto the LiteGraph object as necessary to match original:
@@ -1171,8 +1142,22 @@ LGraphCanvas.link_type_colors = {
   node: "#DCA"
 };
 
+//timer that works everywhere
+if (typeof performance != "undefined") {
+  LiteGraph.getTime = performance.now.bind(performance);
+} else if (typeof Date != "undefined" && Date.now) {
+  LiteGraph.getTime = Date.now.bind(Date);
+} else if (typeof process != "undefined") {
+  LiteGraph.getTime = function() {
+    var t = process.hrtime();
+    return t[0] * 0.001 + t[1] * 1e-6;
+  };
+} else {
+  LiteGraph.getTime = function getTime() {
+    return new Date().getTime();
+  };
+}
+
 // Bind global.LiteGraph:
 global.LiteGraph = LiteGraph;
 global.clamp = clamp;
-
-export { LiteGraph, clamp };
