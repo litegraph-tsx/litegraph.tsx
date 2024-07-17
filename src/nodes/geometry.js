@@ -22,6 +22,7 @@ function generateGeometryId() {
   return (Math.random() * 100000)|0;
 }
 
+
 class LGraphPoints3D {
   constructor() {
 
@@ -445,28 +446,36 @@ class LGraphPoints3D {
       i+=3;
     }
   }
+
+  static title = "list of points";
+  static desc = "returns an array of points";
+
+  static RECTANGLE = 1;
+  static CIRCLE = 2;
+  static CUBE = 10;
+  static SPHERE = 11;
+  static HEMISPHERE = 12;
+  static INSIDE_SPHERE = 13;
+  static OBJECT = 20;
+  static OBJECT_UNIFORMLY = 21;
+  static OBJECT_INSIDE = 22;
+  static MODE_VALUES = { 
+    "rectangle":LGraphPoints3D.RECTANGLE, 
+    "circle":LGraphPoints3D.CIRCLE, 
+    "cube":LGraphPoints3D.CUBE, 
+    "sphere":LGraphPoints3D.SPHERE, 
+    "hemisphere":LGraphPoints3D.HEMISPHERE, 
+    "inside_sphere":LGraphPoints3D.INSIDE_SPHERE, 
+    "object":LGraphPoints3D.OBJECT, 
+    "object_uniformly":LGraphPoints3D.OBJECT_UNIFORMLY, 
+    "object_inside":LGraphPoints3D.OBJECT_INSIDE 
+  };
+
+  static widgets_info = {
+    mode: { widget: "combo", values: LGraphPoints3D.MODE_VALUES }
+  };
 }
 
-LGraphPoints3D.RECTANGLE = 1;
-LGraphPoints3D.CIRCLE = 2;
-
-LGraphPoints3D.CUBE = 10;
-LGraphPoints3D.SPHERE = 11;
-LGraphPoints3D.HEMISPHERE = 12;
-LGraphPoints3D.INSIDE_SPHERE = 13;
-
-LGraphPoints3D.OBJECT = 20;
-LGraphPoints3D.OBJECT_UNIFORMLY = 21;
-LGraphPoints3D.OBJECT_INSIDE = 22;
-
-LGraphPoints3D.MODE_VALUES = { "rectangle":LGraphPoints3D.RECTANGLE, "circle":LGraphPoints3D.CIRCLE, "cube":LGraphPoints3D.CUBE, "sphere":LGraphPoints3D.SPHERE, "hemisphere":LGraphPoints3D.HEMISPHERE, "inside_sphere":LGraphPoints3D.INSIDE_SPHERE, "object":LGraphPoints3D.OBJECT, "object_uniformly":LGraphPoints3D.OBJECT_UNIFORMLY, "object_inside":LGraphPoints3D.OBJECT_INSIDE };
-
-LGraphPoints3D.widgets_info = {
-  mode: { widget: "combo", values: LGraphPoints3D.MODE_VALUES }
-};
-
-LGraphPoints3D.title = "list of points";
-LGraphPoints3D.desc = "returns an array of points";
 
 function findRandomTriangle( areas, f )
 {
@@ -497,7 +506,6 @@ function findRandomTriangle( areas, f )
 }
 
 LiteGraph.registerNodeType( "geometry/points3D", LGraphPoints3D );
-
 
 
 class LGraphPointsToInstances {
@@ -621,21 +629,20 @@ class LGraphPointsToInstances {
     this._version = geometry._version;
     this._geometry_id = geometry._id;
   }
+
+  static title = "points to inst";
+  static desc = "";
+
+  static NORMAL = 0;
+  static VERTICAL = 1;
+  static SPHERICAL = 2;
+  static RANDOM = 3;
+  static RANDOM_VERTICAL = 4;
+  static modes = {"normal":0,"vertical":1,"spherical":2,"random":3,"random_vertical":4};
+  static widgets_info = {
+    mode: { widget: "combo", values: LGraphPointsToInstances.modes }
+  };
 }
-
-LGraphPointsToInstances.NORMAL = 0;
-LGraphPointsToInstances.VERTICAL = 1;
-LGraphPointsToInstances.SPHERICAL = 2;
-LGraphPointsToInstances.RANDOM = 3;
-LGraphPointsToInstances.RANDOM_VERTICAL = 4;
-
-LGraphPointsToInstances.modes = {"normal":0,"vertical":1,"spherical":2,"random":3,"random_vertical":4};
-LGraphPointsToInstances.widgets_info = {
-  mode: { widget: "combo", values: LGraphPointsToInstances.modes }
-};
-
-LGraphPointsToInstances.title = "points to inst";
-
 LiteGraph.registerNodeType( "geometry/points_to_instances", LGraphPointsToInstances );
 
 
@@ -759,10 +766,10 @@ class LGraphGeometryTransform {
     this.geometry.type = geometry.type;
     this.geometry._version++;
   }
+
+  static title = "Transform";
+  static desc = "";
 }
-
-LGraphGeometryTransform.title = "Transform";
-
 LiteGraph.registerNodeType( "geometry/transform", LGraphGeometryTransform );
 
 
@@ -829,10 +836,10 @@ class LGraphGeometryPolygon {
     this.last_info.sides = sides;
     this.last_info.radius = radius;
   }
+
+  static title = "Polygon";
+  static desc = "";
 }
-
-LGraphGeometryPolygon.title = "Polygon";
-
 LiteGraph.registerNodeType( "geometry/polygon", LGraphGeometryPolygon );
 
 
@@ -917,10 +924,10 @@ class LGraphGeometryExtrude {
 
     return out_geo;
   }
+
+  static title = "extrude";
+  static desc = "";
 }
-
-LGraphGeometryExtrude.title = "extrude";
-
 LiteGraph.registerNodeType( "geometry/extrude", LGraphGeometryExtrude );
 
 
@@ -1032,16 +1039,16 @@ class LGraphGeometryEval {
 
     this.setOutputData(0,this.geometry);
   }
+
+  static title = "geoeval";
+  static desc = "eval code";
+
+  static widgets_info = {
+    code: { widget: "code" }
+  };
 }
-
-LGraphGeometryEval.title = "geoeval";
-LGraphGeometryEval.desc = "eval code";
-
-LGraphGeometryEval.widgets_info = {
-  code: { widget: "code" }
-};
-
 LiteGraph.registerNodeType( "geometry/eval", LGraphGeometryEval );
+
 
 /*
 function LGraphGeometryDisplace() {
@@ -1110,6 +1117,7 @@ function LGraphGeometryDisplace() {
 
     LiteGraph.registerNodeType( "geometry/displace", LGraphGeometryDisplace );
 */
+
 
 class LGraphConnectPoints {
   constructor() {
@@ -1190,16 +1198,17 @@ class LGraphConnectPoints {
     else
       this.setOutputData( 0, null );
   }
-}
 
-LGraphConnectPoints.title = "connect points";
-LGraphConnectPoints.desc = "adds indices between near points";
+  static title = "connect points";
+  static desc = "adds indices between near points";
+}
 
 LiteGraph.registerNodeType( "geometry/connectPoints", LGraphConnectPoints );
 
+
 //Works with Litegl.js to create WebGL nodes
 if (typeof GL != "undefined") {
-  //LiteGL RELATED **********************************************
+
 
   class LGraphToGeometry {
     constructor() {
@@ -1234,12 +1243,12 @@ if (typeof GL != "undefined") {
       if(this.geometry)
         this.setOutputData(1,this.geometry.vertices);
     }
+
+    static title = "to geometry";
+    static desc = "converts a mesh to geometry";
   }
-
-  LGraphToGeometry.title = "to geometry";
-  LGraphToGeometry.desc = "converts a mesh to geometry";
-
   LiteGraph.registerNodeType( "geometry/toGeometry", LGraphToGeometry );
+
 
   class LGraphGeometryToMesh {
     constructor() {
@@ -1305,11 +1314,11 @@ if (typeof GL != "undefined") {
         this.updateMesh( geometry );
       this.setOutputData(0, this.mesh);
     }
+
+    static title = "Geo to Mesh";
   }
-
-  LGraphGeometryToMesh.title = "Geo to Mesh";
-
   LiteGraph.registerNodeType( "geometry/toMesh", LGraphGeometryToMesh );
+
 
   class LGraphRenderMesh {
     constructor() {
@@ -1400,21 +1409,26 @@ if (typeof GL != "undefined") {
       gl.disable( gl.BLEND );
       gl.depthMask( true );
     }
+
+    static title = "Render Mesh";
+    static desc = "renders a mesh flat";
+
+    static PRIMITIVE_VALUES = { 
+      "points":GL.POINTS, 
+      "lines":GL.LINES, 
+      "line_loop":GL.LINE_LOOP,
+      "line_strip":GL.LINE_STRIP, 
+      "triangles":GL.TRIANGLES, 
+      "triangle_fan":GL.TRIANGLE_FAN, 
+      "triangle_strip":GL.TRIANGLE_STRIP 
+    };
+
+    static widgets_info = {
+      primitive: { widget: "combo", values: LGraphRenderMesh.PRIMITIVE_VALUES },
+      color: { widget: "color" }
+    };
   }
-
-  LGraphRenderMesh.title = "Render Mesh";
-  LGraphRenderMesh.desc = "renders a mesh flat";
-
-  LGraphRenderMesh.PRIMITIVE_VALUES = { "points":GL.POINTS, "lines":GL.LINES, "line_loop":GL.LINE_LOOP,"line_strip":GL.LINE_STRIP, "triangles":GL.TRIANGLES, "triangle_fan":GL.TRIANGLE_FAN, "triangle_strip":GL.TRIANGLE_STRIP };
-
-  LGraphRenderMesh.widgets_info = {
-    primitive: { widget: "combo", values: LGraphRenderMesh.PRIMITIVE_VALUES },
-    color: { widget: "color" }
-  };
-
   LiteGraph.registerNodeType( "geometry/render_mesh", LGraphRenderMesh );
-
-  //**************************
 
 
   class LGraphGeometryPrimitive {
@@ -1480,15 +1494,13 @@ if (typeof GL != "undefined") {
       this.last_info.subdivisions = subdivisions;
       this._mesh.version = this.version++;
     }
+
+    static title = "Primitive";
+    static VALID = { "CUBE":1, "PLANE":2, "CYLINDER":3, "SPHERE":4, "CIRCLE":5, "HEMISPHERE":6, "ICOSAHEDRON":7, "CONE":8, "QUAD":9 };
+    static widgets_info = {
+      type: { widget: "combo", values: LGraphGeometryPrimitive.VALID }
+    };
   }
-
-  LGraphGeometryPrimitive.title = "Primitive";
-
-  LGraphGeometryPrimitive.VALID = { "CUBE":1, "PLANE":2, "CYLINDER":3, "SPHERE":4, "CIRCLE":5, "HEMISPHERE":6, "ICOSAHEDRON":7, "CONE":8, "QUAD":9 };
-  LGraphGeometryPrimitive.widgets_info = {
-    type: { widget: "combo", values: LGraphGeometryPrimitive.VALID }
-  };
-
   LiteGraph.registerNodeType( "geometry/mesh_primitive", LGraphGeometryPrimitive );
 
 
@@ -1608,94 +1620,94 @@ if (typeof GL != "undefined") {
       gl.disable( gl.BLEND );
       gl.depthMask( true );
     }
+
+    static title = "renderPoints";
+    static desc = "render points with a texture";
+
+    static widgets_info = {
+      color: { widget: "color" }
+    };
+
+    static vertex_shader_code = '\
+      precision mediump float;\n\
+      attribute vec3 a_vertex;\n\
+      varying vec3 v_vertex;\n\
+      attribute vec3 a_normal;\n\
+      varying vec3 v_normal;\n\
+      #ifdef USE_COLOR\n\
+        attribute vec4 a_color;\n\
+        varying vec4 v_color;\n\
+      #endif\n\
+      attribute vec2 a_coord;\n\
+      varying vec2 v_coord;\n\
+      #ifdef USE_SIZE\n\
+        attribute float a_extra;\n\
+      #endif\n\
+      #ifdef USE_INSTANCING\n\
+        attribute mat4 u_model;\n\
+      #else\n\
+        uniform mat4 u_model;\n\
+      #endif\n\
+      uniform mat4 u_viewprojection;\n\
+      uniform float u_point_size;\n\
+      uniform float u_perspective;\n\
+      uniform float u_point_perspective;\n\
+      float computePointSize(float radius, float w)\n\
+      {\n\
+        if(radius < 0.0)\n\
+          return -radius;\n\
+        return u_perspective * radius / w;\n\
+      }\n\
+      void main() {\n\
+        v_coord = a_coord;\n\
+        #ifdef USE_COLOR\n\
+          v_color = a_color;\n\
+        #endif\n\
+        v_vertex = ( u_model * vec4( a_vertex, 1.0 )).xyz;\n\
+        v_normal = ( u_model * vec4( a_normal, 0.0 )).xyz;\n\
+        gl_Position = u_viewprojection * vec4(v_vertex,1.0);\n\
+        gl_PointSize = u_point_size;\n\
+        #ifdef USE_SIZE\n\
+          gl_PointSize = a_extra;\n\
+        #endif\n\
+        if(u_point_perspective != 0.0)\n\
+          gl_PointSize = computePointSize( gl_PointSize, gl_Position.w );\n\
+      }\
+    ';
+
+    static fragment_shader_code = '\
+      precision mediump float;\n\
+      uniform vec4 u_color;\n\
+      #ifdef USE_COLOR\n\
+        varying vec4 v_color;\n\
+      #endif\n\
+      varying vec2 v_coord;\n\
+      uniform sampler2D u_texture;\n\
+      void main() {\n\
+        vec4 color = u_color;\n\
+        #ifdef USE_TEXTURED_POINTS\n\
+          color *= texture2D(u_texture, gl_PointCoord.xy);\n\
+        #else\n\
+          #ifdef USE_TEXTURE\n\
+            color *= texture2D(u_texture, v_coord);\n\
+            if(color.a < 0.1)\n\
+              discard;\n\
+          #endif\n\
+          #ifdef USE_POINTS\n\
+              float dist = length( gl_PointCoord.xy - vec2(0.5) );\n\
+              if( dist > 0.45 )\n\
+                discard;\n\
+          #endif\n\
+        #endif\n\
+        #ifdef USE_COLOR\n\
+          color *= v_color;\n\
+        #endif\n\
+        gl_FragColor = color;\n\
+      }\
+    ';
   }
-
-  LGraphRenderPoints.title = "renderPoints";
-  LGraphRenderPoints.desc = "render points with a texture";
-
-  LGraphRenderPoints.widgets_info = {
-    color: { widget: "color" }
-  };
-
   LiteGraph.registerNodeType( "geometry/render_points", LGraphRenderPoints );
 
-  LGraphRenderPoints.vertex_shader_code = '\
-        precision mediump float;\n\
-        attribute vec3 a_vertex;\n\
-        varying vec3 v_vertex;\n\
-        attribute vec3 a_normal;\n\
-        varying vec3 v_normal;\n\
-        #ifdef USE_COLOR\n\
-            attribute vec4 a_color;\n\
-            varying vec4 v_color;\n\
-        #endif\n\
-        attribute vec2 a_coord;\n\
-        varying vec2 v_coord;\n\
-        #ifdef USE_SIZE\n\
-            attribute float a_extra;\n\
-        #endif\n\
-        #ifdef USE_INSTANCING\n\
-            attribute mat4 u_model;\n\
-        #else\n\
-            uniform mat4 u_model;\n\
-        #endif\n\
-        uniform mat4 u_viewprojection;\n\
-        uniform float u_point_size;\n\
-        uniform float u_perspective;\n\
-        uniform float u_point_perspective;\n\
-        float computePointSize(float radius, float w)\n\
-        {\n\
-            if(radius < 0.0)\n\
-                return -radius;\n\
-            return u_perspective * radius / w;\n\
-        }\n\
-        void main() {\n\
-            v_coord = a_coord;\n\
-            #ifdef USE_COLOR\n\
-                v_color = a_color;\n\
-            #endif\n\
-            v_vertex = ( u_model * vec4( a_vertex, 1.0 )).xyz;\n\
-            v_normal = ( u_model * vec4( a_normal, 0.0 )).xyz;\n\
-            gl_Position = u_viewprojection * vec4(v_vertex,1.0);\n\
-            gl_PointSize = u_point_size;\n\
-            #ifdef USE_SIZE\n\
-                gl_PointSize = a_extra;\n\
-            #endif\n\
-            if(u_point_perspective != 0.0)\n\
-                gl_PointSize = computePointSize( gl_PointSize, gl_Position.w );\n\
-        }\
-    ';
-
-  LGraphRenderPoints.fragment_shader_code = '\
-        precision mediump float;\n\
-        uniform vec4 u_color;\n\
-        #ifdef USE_COLOR\n\
-            varying vec4 v_color;\n\
-        #endif\n\
-        varying vec2 v_coord;\n\
-        uniform sampler2D u_texture;\n\
-        void main() {\n\
-            vec4 color = u_color;\n\
-            #ifdef USE_TEXTURED_POINTS\n\
-                color *= texture2D(u_texture, gl_PointCoord.xy);\n\
-            #else\n\
-                #ifdef USE_TEXTURE\n\
-                  color *= texture2D(u_texture, v_coord);\n\
-                  if(color.a < 0.1)\n\
-                    discard;\n\
-                #endif\n\
-                #ifdef USE_POINTS\n\
-                    float dist = length( gl_PointCoord.xy - vec2(0.5) );\n\
-                    if( dist > 0.45 )\n\
-                        discard;\n\
-                #endif\n\
-            #endif\n\
-            #ifdef USE_COLOR\n\
-                color *= v_color;\n\
-            #endif\n\
-            gl_FragColor = color;\n\
-        }\
-    ';
 
   //based on https://inconvergent.net/2019/depth-of-field/
   /*
