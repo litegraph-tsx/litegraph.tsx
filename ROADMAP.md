@@ -42,7 +42,7 @@
 
 - [x] Ensure all cases of previously globally available methods are bound to LiteGraph.method()
 
-- [ ] Ensure all of the previously global variables are in the correct module.
+- [x] Ensure all of the previously global variables are in the correct module.
 
 - [ ] Shunt migration of ES6 classes along with version so calls to constructors doesn't bomb adopter's code
 
