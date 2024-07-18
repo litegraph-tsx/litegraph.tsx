@@ -8,6 +8,8 @@
 - [ ] Move eslint.config.js into tools and still have it work
     Sluffing fix to "whenever"
 
+- [ ] Implement airbnb eslint stylistic rules, 0 strictness to start.
+
 - [x] Implement PRs
 
 - [x] Correctly apply `reversion` commits from github.com/daniel-lewis-ab/litegraph.js without borking git history
@@ -46,7 +48,7 @@
 
 - [ ] Shunt migration of ES6 classes along with version so calls to constructors doesn't bomb adopter's code
 
-- [ ] node/Math.js and length bug fixes
+- [x] node/Math.js and length bug fixes
 
 - [x] Migration of getters and setters to ES6 form
 
