@@ -1,6 +1,6 @@
 {
     "name": "litegraph.tsx",
-    "version": "0.6.1",
+    "version": "0.6.2",
     "description": "A flow graph node editor similar to LiteGraph.js, Blender Nodes, or ReactFlow.  It works in an HTML5 Canvas and allows to export graphs to be included in applications.",
     "main": "build/litegraph.core.js",
     "type": "module",
