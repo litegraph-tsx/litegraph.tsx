@@ -1,5 +1,6 @@
 import { LiteGraph } from './litegraph';
 import { console } from './Console';
+import { LGraphStyles } from './styles';
 
 const global = typeof (window) !== 'undefined' ? window : typeof (self) !== 'undefined' ? self : globalThis;
 
@@ -71,7 +72,7 @@ export class LGraphNode {
 
   _ctor(title) {
     this.title = title || 'Unnamed';
-    this.size = [LiteGraph.NODE_WIDTH, 60];
+    this.size = [LGraphStyles.NODE_WIDTH, 60];
     this.graph = null;
 
     this._pos = new Float32Array(10, 10);
@@ -1220,7 +1221,7 @@ export class LGraphNode {
     );
     const size = out || new Float32Array([0, 0]);
     rows = Math.max(rows, 1);
-    const font_size = LiteGraph.NODE_TEXT_SIZE; // although it should be graphcanvas.inner_text_font size
+    const font_size = LGraphStyles.NODE_TEXT_SIZE; // although it should be graphcanvas.inner_text_font size
 
     const title_width = compute_text_size(this.title);
     let input_width = 0;
@@ -1249,18 +1250,18 @@ export class LGraphNode {
     }
 
     size[0] = Math.max(input_width + output_width + 10, title_width);
-    size[0] = Math.max(size[0], LiteGraph.NODE_WIDTH);
+    size[0] = Math.max(size[0], LGraphStyles.NODE_WIDTH);
     if (this.widgets && this.widgets.length) {
-      size[0] = Math.max(size[0], LiteGraph.NODE_WIDTH * 1.5);
+      size[0] = Math.max(size[0], LGraphStyles.NODE_WIDTH * 1.5);
     }
 
-    size[1] = (this.constructor.slot_start_y || 0) + rows * LiteGraph.NODE_SLOT_HEIGHT;
+    size[1] = (this.constructor.slot_start_y || 0) + rows * LGraphStyles.NODE_SLOT_HEIGHT;
 
     let widgets_height = 0;
     if (this.widgets && this.widgets.length) {
       for (var i = 0, l = this.widgets.length; i < l; ++i) {
         if (this.widgets[i].computeSize) widgets_height += this.widgets[i].computeSize(size[0])[1] + 4;
-        else widgets_height += LiteGraph.NODE_WIDGET_HEIGHT + 4;
+        else widgets_height += LGraphStyles.NODE_WIDGET_HEIGHT + 4;
       }
       widgets_height += 8;
     }
@@ -1424,13 +1425,13 @@ export class LGraphNode {
     }
 
     out[0] = nodePos[0] - left_offset;
-    out[1] = nodePos[1] - LiteGraph.NODE_TITLE_HEIGHT - top_offset;
+    out[1] = nodePos[1] - LGraphStyles.NODE_TITLE_HEIGHT - top_offset;
     out[2] = isCollapsed
-      ? (this._collapsed_width || LiteGraph.NODE_COLLAPSED_WIDTH) + right_offset
+      ? (this._collapsed_width || LGraphStyles.NODE_COLLAPSED_WIDTH) + right_offset
       : nodeSize[0] + right_offset;
     out[3] = isCollapsed
-      ? LiteGraph.NODE_TITLE_HEIGHT + bottom_offset
-      : nodeSize[1] + LiteGraph.NODE_TITLE_HEIGHT + bottom_offset;
+      ? LGraphStyles.NODE_TITLE_HEIGHT + bottom_offset
+      : nodeSize[1] + LGraphStyles.NODE_TITLE_HEIGHT + bottom_offset;
 
     if (this.onBounding) {
       this.onBounding(out);
@@ -1448,21 +1449,21 @@ export class LGraphNode {
   isPointInside(x, y, margin, skip_title) {
     margin = margin || 0;
 
-    let margin_top = this.graph && this.graph.isLive() ? 0 : LiteGraph.NODE_TITLE_HEIGHT;
+    let margin_top = this.graph && this.graph.isLive() ? 0 : LGraphStyles.NODE_TITLE_HEIGHT;
     if (skip_title) {
       margin_top = 0;
     }
     if (this.flags && this.flags.collapsed) {
-      // if ( distance([x,y], [this.pos[0] + this.size[0]*0.5, this.pos[1] + this.size[1]*0.5]) < LiteGraph.NODE_COLLAPSED_RADIUS)
+      // if ( distance([x,y], [this.pos[0] + this.size[0]*0.5, this.pos[1] + this.size[1]*0.5]) < LGraphStyles.NODE_COLLAPSED_RADIUS)
       if (
         LiteGraph.isInsideRectangle(
           x,
           y,
           this.pos[0] - margin,
-          this.pos[1] - LiteGraph.NODE_TITLE_HEIGHT - margin,
-          (this._collapsed_width || LiteGraph.NODE_COLLAPSED_WIDTH)
+          this.pos[1] - LGraphStyles.NODE_TITLE_HEIGHT - margin,
+          (this._collapsed_width || LGraphStyles.NODE_COLLAPSED_WIDTH)
                             + 2 * margin,
-          LiteGraph.NODE_TITLE_HEIGHT + 2 * margin,
+          LGraphStyles.NODE_TITLE_HEIGHT + 2 * margin,
         )
       ) {
         return true;
@@ -2274,14 +2275,14 @@ export class LGraphNode {
       num_slots = this.outputs.length;
     }
 
-    const offset = LiteGraph.NODE_SLOT_HEIGHT * 0.5;
+    const offset = LGraphStyles.NODE_SLOT_HEIGHT * 0.5;
 
     if (this.flags.collapsed) {
-      const w = this._collapsed_width || LiteGraph.NODE_COLLAPSED_WIDTH;
+      const w = this._collapsed_width || LGraphStyles.NODE_COLLAPSED_WIDTH;
       if (this.horizontal) {
         out[0] = this.pos[0] + w * 0.5;
         if (is_input) {
-          out[1] = this.pos[1] - LiteGraph.NODE_TITLE_HEIGHT;
+          out[1] = this.pos[1] - LGraphStyles.NODE_TITLE_HEIGHT;
         } else {
           out[1] = this.pos[1];
         }
@@ -2291,15 +2292,15 @@ export class LGraphNode {
         } else {
           out[0] = this.pos[0] + w;
         }
-        out[1] = this.pos[1] - LiteGraph.NODE_TITLE_HEIGHT * 0.5;
+        out[1] = this.pos[1] - LGraphStyles.NODE_TITLE_HEIGHT * 0.5;
       }
       return out;
     }
 
     // weird feature that never got finished
     if (is_input && slot_number == -1) {
-      out[0] = this.pos[0] + LiteGraph.NODE_TITLE_HEIGHT * 0.5;
-      out[1] = this.pos[1] + LiteGraph.NODE_TITLE_HEIGHT * 0.5;
+      out[0] = this.pos[0] + LGraphStyles.NODE_TITLE_HEIGHT * 0.5;
+      out[1] = this.pos[1] + LGraphStyles.NODE_TITLE_HEIGHT * 0.5;
       return out;
     }
 
@@ -2326,7 +2327,7 @@ export class LGraphNode {
     if (this.horizontal) {
       out[0] = this.pos[0] + (slot_number + 0.5) * (this.size[0] / num_slots);
       if (is_input) {
-        out[1] = this.pos[1] - LiteGraph.NODE_TITLE_HEIGHT;
+        out[1] = this.pos[1] - LGraphStyles.NODE_TITLE_HEIGHT;
       } else {
         out[1] = this.pos[1] + this.size[1];
       }
@@ -2340,17 +2341,17 @@ export class LGraphNode {
       out[0] = this.pos[0] + this.size[0] + 1 - offset;
     }
     out[1] = this.pos[1]
-                + (slot_number + 0.7) * LiteGraph.NODE_SLOT_HEIGHT
+                + (slot_number + 0.7) * LGraphStyles.NODE_SLOT_HEIGHT
                 + (this.constructor.slot_start_y || 0);
     return out;
   }
 
   /* Force align to grid */
   alignToGrid() {
-    this.pos[0] = LiteGraph.CANVAS_GRID_SIZE
-                * Math.round(this.pos[0] / LiteGraph.CANVAS_GRID_SIZE);
-    this.pos[1] = LiteGraph.CANVAS_GRID_SIZE
-                * Math.round(this.pos[1] / LiteGraph.CANVAS_GRID_SIZE);
+    this.pos[0] = LGraphStyles.CANVAS_GRID_SIZE
+                * Math.round(this.pos[0] / LGraphStyles.CANVAS_GRID_SIZE);
+    this.pos[1] = LGraphStyles.CANVAS_GRID_SIZE
+                * Math.round(this.pos[1] / LGraphStyles.CANVAS_GRID_SIZE);
   }
 
   /* Console output */
