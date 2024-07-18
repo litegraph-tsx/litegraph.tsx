@@ -320,6 +320,7 @@ if (typeof GL != "undefined") {
     return null;
   }
 
+
   // used to host a shader body **************************************
   class LGShaderContext {
     constructor() {
@@ -505,9 +506,8 @@ if (typeof GL != "undefined") {
 
   LiteGraph.ShaderContext = LiteGraph.Shaders.Context = LGShaderContext;
 
-  // LGraphShaderGraph *****************************
-  // applies a shader graph to texture, it can be uses as an example
 
+  // applies a shader graph to texture, it can be uses as an example
   class LGraphShaderGraph {
     constructor() {
 
@@ -705,35 +705,35 @@ if (typeof GL != "undefined") {
 
       return options;
     }
-  }
 
-  LGraphShaderGraph.template = "\n\
-#define FRAGMENT\n\
-precision highp float;\n\
-varying vec2 v_coord;\n\
-{{varying}}\n\
-{{uniforms}}\n\
-{{functions}}\n\
-{{fs_functions}}\n\
-void main() {\n\n\
-vec2 uv = v_coord;\n\
-vec4 fragcolor = vec4(0.0);\n\
-vec4 fragcolor1 = vec4(0.0);\n\
-{{fs_code}}\n\
-gl_FragColor = fragcolor;\n\
-}\n\
+    static title = "ShaderGraph";
+    static desc = "Builds a shader using a graph";
+    static title_color = SHADERNODES_COLOR;
+
+    static widgets_info = {
+      precision: { widget: "combo", values: LGraphTexture.MODE_VALUES },
+    };
+
+    static input_node_type = "input/uniform";
+    static output_node_type = "output/fragcolor";
+
+    static template = "\n\
+      #define FRAGMENT\n\
+      precision highp float;\n\
+      varying vec2 v_coord;\n\
+      {{varying}}\n\
+      {{uniforms}}\n\
+      {{functions}}\n\
+      {{fs_functions}}\n\
+      void main() {\n\n\
+      vec2 uv = v_coord;\n\
+      vec4 fragcolor = vec4(0.0);\n\
+      vec4 fragcolor1 = vec4(0.0);\n\
+      {{fs_code}}\n\
+      gl_FragColor = fragcolor;\n\
+      }\n\
     ";
-
-  LGraphShaderGraph.widgets_info = {
-    precision: { widget: "combo", values: LGraphTexture.MODE_VALUES },
-  };
-
-  LGraphShaderGraph.title = "ShaderGraph";
-  LGraphShaderGraph.desc = "Builds a shader using a graph";
-  LGraphShaderGraph.input_node_type = "input/uniform";
-  LGraphShaderGraph.output_node_type = "output/fragcolor";
-  LGraphShaderGraph.title_color = SHADERNODES_COLOR;
-
+  }
   LiteGraph.registerNodeType( "texture/shaderGraph", LGraphShaderGraph );
 
   function shaderNodeFromFunction( classname, params, return_type, code )
@@ -741,7 +741,6 @@ gl_FragColor = fragcolor;\n\
     // TODO
   }
 
-  // Shader Nodes ***********************************************************
 
   // applies a shader graph to a code
   class LGraphShaderUniform {
@@ -788,11 +787,10 @@ gl_FragColor = fragcolor;\n\
     getOutputVarName(slot) {
       return "u_" + this.properties.name;
     }
+
+    static title = "Uniform";
+    static desc = "Input data for the shader";
   }
-
-  LGraphShaderUniform.title = "Uniform";
-  LGraphShaderUniform.desc = "Input data for the shader";
-
   registerShaderNode( "input/uniform", LGraphShaderUniform );
 
 
@@ -827,12 +825,12 @@ gl_FragColor = fragcolor;\n\
     getOutputVarName(slot) {
       return "v_" + this.properties.name;
     }
+
+    static title = "Attribute";
+    static desc = "Input data from mesh attribute";
   }
-
-  LGraphShaderAttribute.title = "Attribute";
-  LGraphShaderAttribute.desc = "Input data from mesh attribute";
-
   registerShaderNode( "input/attribute", LGraphShaderAttribute );
+
 
   class LGraphShaderSampler2D {
     constructor() {
@@ -867,14 +865,12 @@ gl_FragColor = fragcolor;\n\
       this.setOutputData( 0, "vec4" );
       this.setOutputData( 1, "vec3" );
     }
+
+    static title = "Sampler2D";
+    static desc = "Reads a pixel from a texture";
   }
-
-  LGraphShaderSampler2D.title = "Sampler2D";
-  LGraphShaderSampler2D.desc = "Reads a pixel from a texture";
-
   registerShaderNode( "texture/sampler2D", LGraphShaderSampler2D );
 
-  //* ********************************
 
   class LGraphShaderConstant {
     constructor() {
@@ -969,11 +965,11 @@ gl_FragColor = fragcolor;\n\
 
       this.setOutputData( 0, this.properties.type );
     }
+
+    static title = "const";
   }
-
-  LGraphShaderConstant.title = "const";
-
   registerShaderNode( "const/const", LGraphShaderConstant );
+
 
   class LGraphShaderVec2 {
     constructor() {
@@ -1023,12 +1019,12 @@ gl_FragColor = fragcolor;\n\
 
       context.addCode( "code", code, this.shader_destination );
     }
+
+    static title = "vec2";
+    static varmodes = ["xy", "x", "y"];
   }
-
-  LGraphShaderVec2.title = "vec2";
-  LGraphShaderVec2.varmodes = ["xy", "x", "y"];
-
   registerShaderNode( "const/vec2", LGraphShaderVec2 );
+
 
   class LGraphShaderVec3 {
     constructor() {
@@ -1086,11 +1082,10 @@ gl_FragColor = fragcolor;\n\
 
       context.addCode( "code", code, this.shader_destination );
     }
+
+    static title = "vec3";
+    static varmodes = ["xyz", "x", "y", "z", "xy", "xz", "yz"];
   }
-
-  LGraphShaderVec3.title = "vec3";
-  LGraphShaderVec3.varmodes = ["xyz", "x", "y", "z", "xy", "xz", "yz"];
-
   registerShaderNode( "const/vec3", LGraphShaderVec3 );
 
 
@@ -1150,18 +1145,14 @@ gl_FragColor = fragcolor;\n\
         code += "    "+type+" " + outlink + " = " + varname + "." + varmode + ";\n";
         this.setOutputData( i, type );
       }
-
       context.addCode( "code", code, this.shader_destination );
-
     }
+
+    static title = "vec4";
+    static varmodes = ["xyzw", "xyz", "x", "y", "z", "w", "xy", "yz", "zw"];
   }
-
-  LGraphShaderVec4.title = "vec4";
-  LGraphShaderVec4.varmodes = ["xyzw", "xyz", "x", "y", "z", "w", "xy", "yz", "zw"];
-
   registerShaderNode( "const/vec4", LGraphShaderVec4 );
 
-  //* ********************************
 
   class LGraphShaderFragColor {
     constructor() {
@@ -1177,11 +1168,10 @@ gl_FragColor = fragcolor;\n\
       var code = varToTypeGLSL( link_name, type, "vec4" );
       context.addCode("fs_code", "fragcolor = " + code + ";");
     }
+
+    static title = "FragColor";
+    static desc = "Pixel final color";
   }
-
-  LGraphShaderFragColor.title = "FragColor";
-  LGraphShaderFragColor.desc = "Pixel final color";
-
   registerShaderNode( "output/fragcolor", LGraphShaderFragColor );
 
 
@@ -1213,8 +1203,6 @@ gl_FragColor = fragcolor;\n\
     registerShaderNode( "output/discard", LGraphShaderDiscard );
     */
 
-
-  // *************************************************
 
   class LGraphShaderOperation {
     constructor() {
@@ -1280,11 +1268,10 @@ gl_FragColor = fragcolor;\n\
       context.addCode("code", return_type + " " + outlink + " = "+ params[0] + op + params[1] + ";", this.shader_destination );
       this.setOutputData( 0, return_type );
     }
+
+    static title = "Operation";
+    static operations = ["+", "-", "*", "/"];
   }
-
-  LGraphShaderOperation.title = "Operation";
-  LGraphShaderOperation.operations = ["+", "-", "*", "/"];
-
   registerShaderNode( "math/operation", LGraphShaderOperation );
 
 
@@ -1379,12 +1366,10 @@ gl_FragColor = fragcolor;\n\
 
       this.setOutputData( 0, return_type );
     }
+
+    static title = "Func";
   }
-
-  LGraphShaderFunc.title = "Func";
-
   registerShaderNode( "math/func", LGraphShaderFunc );
-
 
 
   class LGraphShaderSnippet {
@@ -1454,13 +1439,11 @@ gl_FragColor = fragcolor;\n\
 
       this.setOutputData( 0, return_type );
     }
+
+    static title = "Snippet";
   }
-
-  LGraphShaderSnippet.title = "Snippet";
-
   registerShaderNode( "utils/snippet", LGraphShaderSnippet );
 
-  //* ***********************************
 
   class LGraphShaderRand {
     constructor() {
@@ -1477,11 +1460,11 @@ gl_FragColor = fragcolor;\n\
       context.addCode("code", "float " + outlink + " = u_rand" + this.id +";", this.shader_destination );
       this.setOutputData( 0, "float" );
     }
+
+    static title = "Rand";
   }
-
-  LGraphShaderRand.title = "Rand";
-
   registerShaderNode( "input/rand", LGraphShaderRand );
+
 
   // noise
   // https://gist.github.com/patriciogonzalezvivo/670c22f3966e662d2f83
@@ -1522,149 +1505,149 @@ gl_FragColor = fragcolor;\n\
         context.addCode("code", "float " + outlink + " = snoise(" + inlink +".xyz * u_noise_scale" + this.id +");", this.shader_destination );
       this.setOutputData( 0, "float" );
     }
+
+    static title = "noise";
+
+    static NOISE_TYPES = ["noise", "rand"];
+
+    shader_functions = "\n\
+      vec3 permute(vec3 x) { return mod(((x*34.0)+1.0)*x, 289.0); }\n\
+      \n\
+      float snoise(vec2 v){\n\
+        const vec4 C = vec4(0.211324865405187, 0.366025403784439,-0.577350269189626, 0.024390243902439);\n\
+        vec2 i  = floor(v + dot(v, C.yy) );\n\
+        vec2 x0 = v -   i + dot(i, C.xx);\n\
+        vec2 i1;\n\
+        i1 = (x0.x > x0.y) ? vec2(1.0, 0.0) : vec2(0.0, 1.0);\n\
+        vec4 x12 = x0.xyxy + C.xxzz;\n\
+        x12.xy -= i1;\n\
+        i = mod(i, 289.0);\n\
+        vec3 p = permute( permute( i.y + vec3(0.0, i1.y, 1.0 ))\n\
+        + i.x + vec3(0.0, i1.x, 1.0 ));\n\
+        vec3 m = max(0.5 - vec3(dot(x0,x0), dot(x12.xy,x12.xy),dot(x12.zw,x12.zw)), 0.0);\n\
+        m = m*m ;\n\
+        m = m*m ;\n\
+        vec3 x = 2.0 * fract(p * C.www) - 1.0;\n\
+        vec3 h = abs(x) - 0.5;\n\
+        vec3 ox = floor(x + 0.5);\n\
+        vec3 a0 = x - ox;\n\
+        m *= 1.79284291400159 - 0.85373472095314 * ( a0*a0 + h*h );\n\
+        vec3 g;\n\
+        g.x  = a0.x  * x0.x  + h.x  * x0.y;\n\
+        g.yz = a0.yz * x12.xz + h.yz * x12.yw;\n\
+        return 130.0 * dot(m, g);\n\
+      }\n\
+      vec4 permute(vec4 x){return mod(((x*34.0)+1.0)*x, 289.0);}\n\
+      vec4 taylorInvSqrt(vec4 r){return 1.79284291400159 - 0.85373472095314 * r;}\n\
+      \n\
+      float snoise(vec3 v){ \n\
+        const vec2  C = vec2(1.0/6.0, 1.0/3.0) ;\n\
+        const vec4  D = vec4(0.0, 0.5, 1.0, 2.0);\n\
+      \n\
+      // First corner\n\
+        vec3 i  = floor(v + dot(v, C.yyy) );\n\
+        vec3 x0 =   v - i + dot(i, C.xxx) ;\n\
+      \n\
+      // Other corners\n\
+        vec3 g = step(x0.yzx, x0.xyz);\n\
+        vec3 l = 1.0 - g;\n\
+        vec3 i1 = min( g.xyz, l.zxy );\n\
+        vec3 i2 = max( g.xyz, l.zxy );\n\
+      \n\
+        //  x0 = x0 - 0. + 0.0 * C \n\
+        vec3 x1 = x0 - i1 + 1.0 * C.xxx;\n\
+        vec3 x2 = x0 - i2 + 2.0 * C.xxx;\n\
+        vec3 x3 = x0 - 1. + 3.0 * C.xxx;\n\
+      \n\
+      // Permutations\n\
+        i = mod(i, 289.0 ); \n\
+        vec4 p = permute( permute( permute( \n\
+                  i.z + vec4(0.0, i1.z, i2.z, 1.0 ))\n\
+                + i.y + vec4(0.0, i1.y, i2.y, 1.0 )) \n\
+                + i.x + vec4(0.0, i1.x, i2.x, 1.0 ));\n\
+      \n\
+      // Gradients\n\
+      // ( N*N points uniformly over a square, mapped onto an octahedron.)\n\
+        float n_ = 1.0/7.0; // N=7\n\
+        vec3  ns = n_ * D.wyz - D.xzx;\n\
+      \n\
+        vec4 j = p - 49.0 * floor(p * ns.z *ns.z);  //  mod(p,N*N)\n\
+      \n\
+        vec4 x_ = floor(j * ns.z);\n\
+        vec4 y_ = floor(j - 7.0 * x_ );    // mod(j,N)\n\
+      \n\
+        vec4 x = x_ *ns.x + ns.yyyy;\n\
+        vec4 y = y_ *ns.x + ns.yyyy;\n\
+        vec4 h = 1.0 - abs(x) - abs(y);\n\
+      \n\
+        vec4 b0 = vec4( x.xy, y.xy );\n\
+        vec4 b1 = vec4( x.zw, y.zw );\n\
+      \n\
+        vec4 s0 = floor(b0)*2.0 + 1.0;\n\
+        vec4 s1 = floor(b1)*2.0 + 1.0;\n\
+        vec4 sh = -step(h, vec4(0.0));\n\
+      \n\
+        vec4 a0 = b0.xzyw + s0.xzyw*sh.xxyy ;\n\
+        vec4 a1 = b1.xzyw + s1.xzyw*sh.zzww ;\n\
+      \n\
+        vec3 p0 = vec3(a0.xy,h.x);\n\
+        vec3 p1 = vec3(a0.zw,h.y);\n\
+        vec3 p2 = vec3(a1.xy,h.z);\n\
+        vec3 p3 = vec3(a1.zw,h.w);\n\
+      \n\
+      //Normalise gradients\n\
+        vec4 norm = taylorInvSqrt(vec4(dot(p0,p0), dot(p1,p1), dot(p2, p2), dot(p3,p3)));\n\
+        p0 *= norm.x;\n\
+        p1 *= norm.y;\n\
+        p2 *= norm.z;\n\
+        p3 *= norm.w;\n\
+      \n\
+      // Mix final noise value\n\
+        vec4 m = max(0.6 - vec4(dot(x0,x0), dot(x1,x1), dot(x2,x2), dot(x3,x3)), 0.0);\n\
+        m = m * m;\n\
+        return 42.0 * dot( m*m, vec4( dot(p0,x0), dot(p1,x1),dot(p2,x2), dot(p3,x3) ) );\n\
+      }\n\
+      \n\
+      vec3 hash3( vec2 p ){\n\
+          vec3 q = vec3( dot(p,vec2(127.1,311.7)), \n\
+                        dot(p,vec2(269.5,183.3)), \n\
+                        dot(p,vec2(419.2,371.9)) );\n\
+          return fract(sin(q)*43758.5453);\n\
+      }\n\
+      vec4 hash4( vec3 p ){\n\
+          vec4 q = vec4( dot(p,vec3(127.1,311.7,257.3)), \n\
+                        dot(p,vec3(269.5,183.3,335.1)), \n\
+                        dot(p,vec3(314.5,235.1,467.3)), \n\
+                        dot(p,vec3(419.2,371.9,114.9)) );\n\
+          return fract(sin(q)*43758.5453);\n\
+      }\n\
+      \n\
+      float iqnoise( in vec2 x, float u, float v ){\n\
+          vec2 p = floor(x);\n\
+          vec2 f = fract(x);\n\
+          \n\
+          float k = 1.0+63.0*pow(1.0-v,4.0);\n\
+          \n\
+          float va = 0.0;\n\
+          float wt = 0.0;\n\
+          for( int j=-2; j<=2; j++ )\n\
+          for( int i=-2; i<=2; i++ )\n\
+          {\n\
+              vec2 g = vec2( float(i),float(j) );\n\
+              vec3 o = hash3( p + g )*vec3(u,u,1.0);\n\
+              vec2 r = g - f + o.xy;\n\
+              float d = dot(r,r);\n\
+              float ww = pow( 1.0-smoothstep(0.0,1.414,sqrt(d)), k );\n\
+              va += o.z*ww;\n\
+              wt += ww;\n\
+          }\n\
+          \n\
+          return va/wt;\n\
+      }\n\
+      ";
   }
-
-  LGraphShaderNoise.NOISE_TYPES = ["noise", "rand"];
-
-  LGraphShaderNoise.title = "noise";
-
   registerShaderNode( "math/noise", LGraphShaderNoise );
 
-  LGraphShaderNoise.shader_functions = "\n\
-vec3 permute(vec3 x) { return mod(((x*34.0)+1.0)*x, 289.0); }\n\
-\n\
-float snoise(vec2 v){\n\
-  const vec4 C = vec4(0.211324865405187, 0.366025403784439,-0.577350269189626, 0.024390243902439);\n\
-  vec2 i  = floor(v + dot(v, C.yy) );\n\
-  vec2 x0 = v -   i + dot(i, C.xx);\n\
-  vec2 i1;\n\
-  i1 = (x0.x > x0.y) ? vec2(1.0, 0.0) : vec2(0.0, 1.0);\n\
-  vec4 x12 = x0.xyxy + C.xxzz;\n\
-  x12.xy -= i1;\n\
-  i = mod(i, 289.0);\n\
-  vec3 p = permute( permute( i.y + vec3(0.0, i1.y, 1.0 ))\n\
-  + i.x + vec3(0.0, i1.x, 1.0 ));\n\
-  vec3 m = max(0.5 - vec3(dot(x0,x0), dot(x12.xy,x12.xy),dot(x12.zw,x12.zw)), 0.0);\n\
-  m = m*m ;\n\
-  m = m*m ;\n\
-  vec3 x = 2.0 * fract(p * C.www) - 1.0;\n\
-  vec3 h = abs(x) - 0.5;\n\
-  vec3 ox = floor(x + 0.5);\n\
-  vec3 a0 = x - ox;\n\
-  m *= 1.79284291400159 - 0.85373472095314 * ( a0*a0 + h*h );\n\
-  vec3 g;\n\
-  g.x  = a0.x  * x0.x  + h.x  * x0.y;\n\
-  g.yz = a0.yz * x12.xz + h.yz * x12.yw;\n\
-  return 130.0 * dot(m, g);\n\
-}\n\
-vec4 permute(vec4 x){return mod(((x*34.0)+1.0)*x, 289.0);}\n\
-vec4 taylorInvSqrt(vec4 r){return 1.79284291400159 - 0.85373472095314 * r;}\n\
-\n\
-float snoise(vec3 v){ \n\
-  const vec2  C = vec2(1.0/6.0, 1.0/3.0) ;\n\
-  const vec4  D = vec4(0.0, 0.5, 1.0, 2.0);\n\
-\n\
-// First corner\n\
-  vec3 i  = floor(v + dot(v, C.yyy) );\n\
-  vec3 x0 =   v - i + dot(i, C.xxx) ;\n\
-\n\
-// Other corners\n\
-  vec3 g = step(x0.yzx, x0.xyz);\n\
-  vec3 l = 1.0 - g;\n\
-  vec3 i1 = min( g.xyz, l.zxy );\n\
-  vec3 i2 = max( g.xyz, l.zxy );\n\
-\n\
-  //  x0 = x0 - 0. + 0.0 * C \n\
-  vec3 x1 = x0 - i1 + 1.0 * C.xxx;\n\
-  vec3 x2 = x0 - i2 + 2.0 * C.xxx;\n\
-  vec3 x3 = x0 - 1. + 3.0 * C.xxx;\n\
-\n\
-// Permutations\n\
-  i = mod(i, 289.0 ); \n\
-  vec4 p = permute( permute( permute( \n\
-             i.z + vec4(0.0, i1.z, i2.z, 1.0 ))\n\
-           + i.y + vec4(0.0, i1.y, i2.y, 1.0 )) \n\
-           + i.x + vec4(0.0, i1.x, i2.x, 1.0 ));\n\
-\n\
-// Gradients\n\
-// ( N*N points uniformly over a square, mapped onto an octahedron.)\n\
-  float n_ = 1.0/7.0; // N=7\n\
-  vec3  ns = n_ * D.wyz - D.xzx;\n\
-\n\
-  vec4 j = p - 49.0 * floor(p * ns.z *ns.z);  //  mod(p,N*N)\n\
-\n\
-  vec4 x_ = floor(j * ns.z);\n\
-  vec4 y_ = floor(j - 7.0 * x_ );    // mod(j,N)\n\
-\n\
-  vec4 x = x_ *ns.x + ns.yyyy;\n\
-  vec4 y = y_ *ns.x + ns.yyyy;\n\
-  vec4 h = 1.0 - abs(x) - abs(y);\n\
-\n\
-  vec4 b0 = vec4( x.xy, y.xy );\n\
-  vec4 b1 = vec4( x.zw, y.zw );\n\
-\n\
-  vec4 s0 = floor(b0)*2.0 + 1.0;\n\
-  vec4 s1 = floor(b1)*2.0 + 1.0;\n\
-  vec4 sh = -step(h, vec4(0.0));\n\
-\n\
-  vec4 a0 = b0.xzyw + s0.xzyw*sh.xxyy ;\n\
-  vec4 a1 = b1.xzyw + s1.xzyw*sh.zzww ;\n\
-\n\
-  vec3 p0 = vec3(a0.xy,h.x);\n\
-  vec3 p1 = vec3(a0.zw,h.y);\n\
-  vec3 p2 = vec3(a1.xy,h.z);\n\
-  vec3 p3 = vec3(a1.zw,h.w);\n\
-\n\
-//Normalise gradients\n\
-  vec4 norm = taylorInvSqrt(vec4(dot(p0,p0), dot(p1,p1), dot(p2, p2), dot(p3,p3)));\n\
-  p0 *= norm.x;\n\
-  p1 *= norm.y;\n\
-  p2 *= norm.z;\n\
-  p3 *= norm.w;\n\
-\n\
-// Mix final noise value\n\
-  vec4 m = max(0.6 - vec4(dot(x0,x0), dot(x1,x1), dot(x2,x2), dot(x3,x3)), 0.0);\n\
-  m = m * m;\n\
-  return 42.0 * dot( m*m, vec4( dot(p0,x0), dot(p1,x1),dot(p2,x2), dot(p3,x3) ) );\n\
-}\n\
-\n\
-vec3 hash3( vec2 p ){\n\
-    vec3 q = vec3( dot(p,vec2(127.1,311.7)), \n\
-                   dot(p,vec2(269.5,183.3)), \n\
-                   dot(p,vec2(419.2,371.9)) );\n\
-    return fract(sin(q)*43758.5453);\n\
-}\n\
-vec4 hash4( vec3 p ){\n\
-    vec4 q = vec4( dot(p,vec3(127.1,311.7,257.3)), \n\
-                   dot(p,vec3(269.5,183.3,335.1)), \n\
-                   dot(p,vec3(314.5,235.1,467.3)), \n\
-                   dot(p,vec3(419.2,371.9,114.9)) );\n\
-    return fract(sin(q)*43758.5453);\n\
-}\n\
-\n\
-float iqnoise( in vec2 x, float u, float v ){\n\
-    vec2 p = floor(x);\n\
-    vec2 f = fract(x);\n\
-    \n\
-    float k = 1.0+63.0*pow(1.0-v,4.0);\n\
-    \n\
-    float va = 0.0;\n\
-    float wt = 0.0;\n\
-    for( int j=-2; j<=2; j++ )\n\
-    for( int i=-2; i<=2; i++ )\n\
-    {\n\
-        vec2 g = vec2( float(i),float(j) );\n\
-        vec3 o = hash3( p + g )*vec3(u,u,1.0);\n\
-        vec2 r = g - f + o.xy;\n\
-        float d = dot(r,r);\n\
-        float ww = pow( 1.0-smoothstep(0.0,1.414,sqrt(d)), k );\n\
-        va += o.z*ww;\n\
-        wt += ww;\n\
-    }\n\
-    \n\
-    return va/wt;\n\
-}\n\
-"
 
   class LGraphShaderTime {
     constructor() {
@@ -1681,10 +1664,9 @@ float iqnoise( in vec2 x, float u, float v ){\n\
       context.addCode("code", "float " + outlink + " = u_time" + this.id +";", this.shader_destination );
       this.setOutputData( 0, "float" );
     }
+    
+    static title = "Time";
   }
-
-  LGraphShaderTime.title = "Time";
-
   registerShaderNode( "input/time", LGraphShaderTime );
 
 
@@ -1707,30 +1689,28 @@ float iqnoise( in vec2 x, float u, float v ){\n\
       context.addCode("code", return_type + " " + outlink + " = dither8x8("+ inlink +");", this.shader_destination );
       this.setOutputData( 0, return_type );
     }
+
+    static title = "Dither";
+    static dither_values = [0.515625, 0.140625, 0.640625, 0.046875, 0.546875, 0.171875, 0.671875, 0.765625, 0.265625, 0.890625, 0.390625, 0.796875, 0.296875, 0.921875, 0.421875, 0.203125, 0.703125, 0.078125, 0.578125, 0.234375, 0.734375, 0.109375, 0.609375, 0.953125, 0.453125, 0.828125, 0.328125, 0.984375, 0.484375, 0.859375, 0.359375, 0.0625, 0.5625, 0.1875, 0.6875, 0.03125, 0.53125, 0.15625, 0.65625, 0.8125, 0.3125, 0.9375, 0.4375, 0.78125, 0.28125, 0.90625, 0.40625, 0.25, 0.75, 0.125, 0.625, 0.21875, 0.71875, 0.09375, 0.59375, 1.0001, 0.5, 0.875, 0.375, 0.96875, 0.46875, 0.84375, 0.34375];
+    static dither_func = "\n\
+      float dither8x8(float brightness) {\n\
+        vec2 position = vec2(0.0);\n\
+        #ifdef FRAGMENT\n\
+          position = gl_FragCoord.xy;\n\
+        #endif\n\
+        int x = int(mod(position.x, 8.0));\n\
+        int y = int(mod(position.y, 8.0));\n\
+        int index = x + y * 8;\n\
+        float limit = 0.0;\n\
+        if (x < 8) {\n\
+          if(index==0) limit = 0.015625;\n\
+          "+(LGraphShaderDither.dither_values.map( function(v, i) { return "else if(index== "+(i+1)+") limit = " + v + ";"}).join("\n"))+"\n\
+        }\n\
+        return brightness < limit ? 0.0 : 1.0;\n\
+      }\n";
   }
-
-  LGraphShaderDither.title = "Dither";
-
-  LGraphShaderDither.dither_values = [0.515625, 0.140625, 0.640625, 0.046875, 0.546875, 0.171875, 0.671875, 0.765625, 0.265625, 0.890625, 0.390625, 0.796875, 0.296875, 0.921875, 0.421875, 0.203125, 0.703125, 0.078125, 0.578125, 0.234375, 0.734375, 0.109375, 0.609375, 0.953125, 0.453125, 0.828125, 0.328125, 0.984375, 0.484375, 0.859375, 0.359375, 0.0625, 0.5625, 0.1875, 0.6875, 0.03125, 0.53125, 0.15625, 0.65625, 0.8125, 0.3125, 0.9375, 0.4375, 0.78125, 0.28125, 0.90625, 0.40625, 0.25, 0.75, 0.125, 0.625, 0.21875, 0.71875, 0.09375, 0.59375, 1.0001, 0.5, 0.875, 0.375, 0.96875, 0.46875, 0.84375, 0.34375];
-
-  LGraphShaderDither.dither_func = "\n\
-        float dither8x8(float brightness) {\n\
-          vec2 position = vec2(0.0);\n\
-          #ifdef FRAGMENT\n\
-            position = gl_FragCoord.xy;\n\
-          #endif\n\
-          int x = int(mod(position.x, 8.0));\n\
-          int y = int(mod(position.y, 8.0));\n\
-          int index = x + y * 8;\n\
-          float limit = 0.0;\n\
-          if (x < 8) {\n\
-            if(index==0) limit = 0.015625;\n\
-            "+(LGraphShaderDither.dither_values.map( function(v, i) { return "else if(index== "+(i+1)+") limit = " + v + ";"}).join("\n"))+"\n\
-          }\n\
-          return brightness < limit ? 0.0 : 1.0;\n\
-        }\n",
-
   registerShaderNode( "math/dither", LGraphShaderDither );
+
 
   class LGraphShaderRemap {
     constructor() {
@@ -1789,11 +1769,8 @@ float iqnoise( in vec2 x, float u, float v ){\n\
       context.addCode("code", return_type + " " + outlink + " = ( (" + inlink + " - "+minv+") / ("+ maxv+" - "+minv+") ) * ("+ maxv2+" - "+minv2+") + " + minv2 + ";", this.shader_destination );
       this.setOutputData( 0, return_type );
     }
+
+    static title = "Remap";
   }
-
-  LGraphShaderRemap.title = "Remap";
-
   registerShaderNode( "math/remap", LGraphShaderRemap );
 }
-
-
