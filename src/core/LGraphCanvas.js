@@ -2372,8 +2372,9 @@ export class LGraphCanvas {
       clientY_rel = e.clientY;
     }
 
-    e.deltaX = clientX_rel - this.last_mouse_position[0];
-    e.deltaY = clientY_rel- this.last_mouse_position[1];
+    // @BUG: Debug this!  In Chrome e.deltaX and e.deltaY are read-only and will error!
+    // e.deltaX = clientX_rel - this.last_mouse_position[0];
+    // e.deltaY = clientY_rel - this.last_mouse_position[1];
 
     this.last_mouse_position[0] = clientX_rel;
     this.last_mouse_position[1] = clientY_rel;
