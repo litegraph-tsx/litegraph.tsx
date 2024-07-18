@@ -1,4 +1,6 @@
 import { LiteGraph } from "./litegraph.js";
+import { console } from "./Console.js";
+
 /*
   Dependency cleanup:
   Extracting LiteGraph.pointerListener* eliminates the dependency to LiteGraph altogether.
@@ -27,9 +29,7 @@ export class ContextMenu {
     // to link a menu with its parent
     if (options.parentMenu) {
       if (options.parentMenu.constructor !== this.constructor) {
-        console.error(
-          "parentMenu must be of class ContextMenu, ignoring it",
-        );
+        console.error("parentMenu must be of class ContextMenu, ignoring it");
         options.parentMenu = null;
       } else {
         this.parentMenu = options.parentMenu;
@@ -45,9 +45,7 @@ export class ContextMenu {
                 eventClass !== "CustomEvent" &&
                 eventClass !== "PointerEvent"
     ) {
-      console.error(
-        "Event passed to ContextMenu is not of type MouseEvent or CustomEvent. Ignoring it. ("+eventClass+")",
-      );
+      console.error("Event passed to ContextMenu is not of type MouseEvent or CustomEvent. Ignoring it. ("+eventClass+")");
       options.event = null;
     }
 
@@ -64,7 +62,7 @@ export class ContextMenu {
     // this prevents the default context browser menu to open in case this menu was created when pressing right button
     LiteGraph.pointerListenerAdd(root, "up",
       function(e) {
-        // console.log("pointerevents: ContextMenu up root prevent");
+        console.log("pointerevents: ContextMenu up root prevent");
         e.preventDefault();
         return true;
       },
@@ -85,7 +83,7 @@ export class ContextMenu {
 
     LiteGraph.pointerListenerAdd(root, "down",
       function(e) {
-        // console.log("pointerevents: ContextMenu down");
+        console.log("pointerevents: ContextMenu down");
         if (e.button == 2) {
           that.close();
           e.preventDefault();
@@ -146,7 +144,7 @@ export class ContextMenu {
             });*/
 
     LiteGraph.pointerListenerAdd(root, "enter", function(e) {
-      // console.log("pointerevents: ContextMenu enter");
+      console.log("pointerevents: ContextMenu enter");
       if (root.closing_timer) {
         clearTimeout(root.closing_timer);
       }

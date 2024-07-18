@@ -1,4 +1,6 @@
 import { LiteGraph } from "./litegraph.js";
+import { console } from "./Console.js";
+
 /*
   Dependency cleanup:
   Extracting LiteGraph.pointerListener* eliminates the dependency to LiteGraph altogether.
@@ -97,7 +99,7 @@ export class DragAndScale {
 
     var is_inside = !this.viewport || ( this.viewport && x >= this.viewport[0] && x < (this.viewport[0] + this.viewport[2]) && y >= this.viewport[1] && y < (this.viewport[1] + this.viewport[3]) );
 
-    // console.log("pointerevents: DragAndScale onMouse "+e.type+" "+is_inside);
+    console.log("pointerevents: DragAndScale onMouse "+e.type+" "+is_inside);
 
     var ignore = false;
     if (this.onmouse) {
