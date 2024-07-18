@@ -58,7 +58,11 @@
 
 - [x] Implemented Console.js, which allows setting level dynamically and can be imported into a local variable console without affecting same globally.
 
-- [ ] Replace all commented out debug calls with use of console.
+- [x] Replace all commented out debug calls with use of console.
+
+- [ ] Figure out and implement categorization mechanism for messages "I want a higher console level for stuff involving pointer events?"
+
+- [ ] Deprecate LiteGraph.debug boolean in favor of console mechanism by implementing a console.trace() on get/set.
 
 - [ ] Establish tests for code functionality using browser hooks and visible indications
 
