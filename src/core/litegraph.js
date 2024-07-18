@@ -954,46 +954,27 @@ export const LiteGraph = {
     }
   },
 
-  extendClass: function(target, origin) {
-    for (var i in origin) {
-      // copy class properties
-      if (target.hasOwnProperty(i)) {
-        continue;
-      }
-      target[i] = origin[i];
-    }
+  extendClass(target, origin) {
 
+    // Copy static properties
+    Object.getOwnPropertyNames(origin).forEach(prop => {
+      if (!target.hasOwnProperty(prop)) {
+        Object.defineProperty(target, prop, Object.getOwnPropertyDescriptor(origin, prop));
+      }
+    });
+
+    // Copy prototype properties
     if (origin.prototype) {
-      // copy prototype properties
-      for (var i in origin.prototype) {
-        // only enumerable
-        if (!origin.prototype.hasOwnProperty(i)) {
-          continue;
+      Object.getOwnPropertyNames(origin.prototype).forEach(prop => {
+        if (!target.prototype.hasOwnProperty(prop)) {
+          const descriptor = Object.getOwnPropertyDescriptor(origin.prototype, prop);
+          if (descriptor.get || descriptor.set) {
+            Object.defineProperty(target.prototype, prop, descriptor);
+          } else {
+            target.prototype[prop] = origin.prototype[prop];
+          }
         }
-
-        if (target.prototype.hasOwnProperty(i)) {
-          // avoid overwriting existing ones
-          continue;
-        }
-
-        // copy getters
-        if (origin.prototype.__lookupGetter__(i)) {
-          target.prototype.__defineGetter__(
-            i,
-            origin.prototype.__lookupGetter__(i),
-          );
-        } else {
-          target.prototype[i] = origin.prototype[i];
-        }
-
-        // and setters
-        if (origin.prototype.__lookupSetter__(i)) {
-          target.prototype.__defineSetter__(
-            i,
-            origin.prototype.__lookupSetter__(i),
-          );
-        }
-      }
+      });
     }
   },
 
