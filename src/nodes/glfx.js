@@ -464,7 +464,7 @@ export class LGraphFXBokeh {
 }
 
 /*
-  LGraphTextureBokeh._pixel_shader = 
+  LGraphTextureBokeh._pixel_shader =
     "precision highp float;\n\
       varying vec2 a_coord;\n\
       uniform sampler2D u_texture;\n\

@@ -3633,7 +3633,7 @@ class FXGlow {
     void main() {\n\
       gl_FragColor = u_intensity * sampleBox( v_coord );\n\
     }";
-  
+
   static final_pixel_shader =
     "precision highp float;\n\
     varying vec2 v_coord;\n\
