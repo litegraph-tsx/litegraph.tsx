@@ -148,10 +148,10 @@ export const LiteGraph = {
 
   allow_multi_output_for_events: true, // [false!] being events, it is strongly reccomended to use them sequentially, one by one
 
-  middle_click_slot_add_default_node: false, //[true!] allows to create and connect a ndoe clicking with the third button (wheel)
-        
-  release_link_on_empty_shows_menu: false, //[true!] dragging a link to empty space will open a menu, add from list, search or defaults
-        
+  middle_click_slot_add_default_node: false, // [true!] allows to create and connect a ndoe clicking with the third button (wheel)
+
+  release_link_on_empty_shows_menu: false, // [true!] dragging a link to empty space will open a menu, add from list, search or defaults
+
   get pointerevents_method() { return PointerSettings.pointerevents_method; },
   set pointerevents_method(newMethod) { PointerSettings.pointerevents_method = newMethod; },
 
@@ -1138,7 +1138,7 @@ if (typeof performance != "undefined") {
   };
 }
 
-//API *************************************************
+// API *************************************************
 function compareObjects(a, b) {
   for (var i in a) {
     if (a[i] != b[i]) {
@@ -1151,7 +1151,7 @@ LiteGraph.compareObjects = compareObjects;
 
 function distance(a, b) {
   return Math.sqrt(
-    (b[0] - a[0]) * (b[0] - a[0]) + (b[1] - a[1]) * (b[1] - a[1])
+    (b[0] - a[0]) * (b[0] - a[0]) + (b[1] - a[1]) * (b[1] - a[1]),
   );
 }
 LiteGraph.distance = distance;
@@ -1179,7 +1179,7 @@ function isInsideRectangle(x, y, left, top, width, height) {
 }
 LiteGraph.isInsideRectangle = isInsideRectangle;
 
-//[minx,miny,maxx,maxy]
+// [minx,miny,maxx,maxy]
 function growBounding(bounding, x, y) {
   if (x < bounding[0]) {
     bounding[0] = x;
@@ -1195,7 +1195,7 @@ function growBounding(bounding, x, y) {
 }
 LiteGraph.growBounding = growBounding;
 
-//point inside bounding box
+// point inside bounding box
 function isInsideBounding(p, bb) {
   if (
     p[0] < bb[0][0] ||
@@ -1209,7 +1209,7 @@ function isInsideBounding(p, bb) {
 }
 LiteGraph.isInsideBounding = isInsideBounding;
 
-//bounding overlap, format: [ startx, starty, width, height ]
+// bounding overlap, format: [ startx, starty, width, height ]
 function overlapBounding(a, b) {
   var A_end_x = a[0] + a[2];
   var A_end_y = a[1] + a[3];
@@ -1228,13 +1228,13 @@ function overlapBounding(a, b) {
 }
 LiteGraph.overlapBounding = overlapBounding;
 
-//Convert a hex value to its decimal value - the inputted hex must be in the
+// Convert a hex value to its decimal value - the inputted hex must be in the
 //    format of a hex triplet - the kind we use for HTML colours. The function
 //    will return an array with three values.
 function hex2num(hex) {
   if (hex.charAt(0) == "#") {
     hex = hex.slice(1);
-  } //Remove the '#' char - if there is one.
+  } // Remove the '#' char - if there is one.
   hex = hex.toUpperCase();
   var hex_alphabets = "0123456789ABCDEF";
   var value = new Array(3);
@@ -1251,7 +1251,7 @@ function hex2num(hex) {
 
 LiteGraph.hex2num = hex2num;
 
-//Give a array with three values as the argument and the function will return
+// Give a array with three values as the argument and the function will return
 //    the corresponding hex triplet.
 function num2hex(triplet) {
   var hex_alphabets = "0123456789ABCDEF";
@@ -1294,7 +1294,7 @@ LiteGraph.closeAllContextMenus = function(ref_window) {
 
 LiteGraph.extendClass = function(target, origin) {
   for (var i in origin) {
-    //copy class properties
+    // copy class properties
     if (target.hasOwnProperty(i)) {
       continue;
     }
@@ -1302,40 +1302,40 @@ LiteGraph.extendClass = function(target, origin) {
   }
 
   if (origin.prototype) {
-    //copy prototype properties
+    // copy prototype properties
     for (var i in origin.prototype) {
-      //only enumerable
+      // only enumerable
       if (!origin.prototype.hasOwnProperty(i)) {
         continue;
       }
 
       if (target.prototype.hasOwnProperty(i)) {
-        //avoid overwriting existing ones
+        // avoid overwriting existing ones
         continue;
       }
 
-      //copy getters
+      // copy getters
       if (origin.prototype.__lookupGetter__(i)) {
         target.prototype.__defineGetter__(
           i,
-          origin.prototype.__lookupGetter__(i)
+          origin.prototype.__lookupGetter__(i),
         );
       } else {
         target.prototype[i] = origin.prototype[i];
       }
 
-      //and setters
+      // and setters
       if (origin.prototype.__lookupSetter__(i)) {
         target.prototype.__defineSetter__(
           i,
-          origin.prototype.__lookupSetter__(i)
+          origin.prototype.__lookupSetter__(i),
         );
       }
     }
   }
 };
 
-//used to create nodes from wrapping functions
+// used to create nodes from wrapping functions
 LiteGraph.getParameterNames = function(func) {
   return (func + "")
     .replace(/[/][/].*$/gm, "") // strip single-line comments
@@ -1348,7 +1348,4 @@ LiteGraph.getParameterNames = function(func) {
     .filter(Boolean); // split & filter [""]
 };
 
-function clamp(v, a, b) {
-  return a > v ? a : b < v ? b : v;
-}
 global.clamp = clamp;
