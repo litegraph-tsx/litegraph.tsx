@@ -20,10 +20,10 @@ export default [
   {
     settings: {
       'import/resolver': {
+        node: {},
         typescript: {
           project: './tools/tsconfig.json',
         },
-        node: true,
         alias: {
           map: [
             ['@', './src/core'],
@@ -33,6 +33,9 @@ export default [
           extensions: ['.js', '.jsx', '.ts', '.d.ts', '.tsx'],
         },
       },
+    },
+    rules: {
+      'import/no-extraneous-dependencies': ['error', { devDependencies: true }],
     },
   },
   {
