@@ -5728,7 +5728,7 @@ export class LGraphCanvas {
       } else {
         // is not not connected
       }
-      nodeNewType = false;
+      var nodeNewType = false;
       if (typeof slotTypesDefault[fromSlotType] == "object" || Array.isArray(slotTypesDefault[fromSlotType])) {
         for (var typeX in slotTypesDefault[fromSlotType]) {
           if (opts.nodeType == slotTypesDefault[fromSlotType][typeX] || opts.nodeType == "AUTO") {
