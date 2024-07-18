@@ -49,7 +49,7 @@
 
 - [ ] node/Math.js and length bug fixes
 
-- [ ] Migration of getters and setters to ES6 form
+- [x] Migration of getters and setters to ES6 form
 
 - [x] Split litegraph.js into class files
 
