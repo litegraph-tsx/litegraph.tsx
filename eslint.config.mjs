@@ -2,7 +2,6 @@ import js from '@eslint/js';
 import stylistic from '@stylistic/eslint-plugin';
 import stylisticJs from '@stylistic/eslint-plugin-js';
 import { FlatCompat } from '@eslint/eslintrc';
-import pluginImport from 'eslint-plugin-import';
 
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -17,7 +16,7 @@ const compat = new FlatCompat({
 
 export default [
   js.configs.recommended,
-  ...compat.extends('airbnb'),
+  ...compat.extends('airbnb-base'),
   {
     settings: {
       'import/resolver': {
@@ -34,6 +33,65 @@ export default [
           extensions: ['.js', '.jsx', '.ts', '.d.ts', '.tsx'],
         },
       },
+    },
+  },
+  {
+    name: 'airbnb/overrides',
+    rules: {
+      'no-console': ['off'],
+      'no-underscore-dangle': ['off'],
+      eqeqeq: ['off'],
+      'no-param-reassign': ['off'],
+      'max-len': ['off'],
+      'no-plusplus': ['off'],
+      'no-nested-ternary': ['off'],
+      'no-restricted-globals': ['off'],
+      'func-names': ['off'],
+      'block-scoped-var': ['off'],
+      'no-var': ['off'],
+      'consistent-return': ['off'],
+      'vars-on-top': ['off'],
+      camelcase: ['off'],
+      'no-continue': ['off'],
+      'brace-style': ['off'],
+      'class-methods-use-this': ['off'],
+      'no-bitwise': ['off'],
+      'no-multi-assign': ['off'],
+      'max-classes-per-file': ['off'],
+      'no-empty': ['off'],
+      'no-shadow': ['off'],
+      'prefer-destructuring': ['off'],
+      'default-case': ['off'],
+      'no-new': ['off'],
+      'no-restricted-syntax': ['off'],
+      'no-throw-literal': ['off'],
+      'guard-for-in': ['off'],
+      'no-multi-str': ['off'],
+      'no-new-func': ['off'],
+      radix: ['off'],
+      'no-use-before-define': ['off'],
+      'no-array-constructor': ['off'],
+      'import/prefer-default-export': ['off'],
+      'no-alert': ['off'],
+      'new-cap': ['off'],
+      'no-mixed-operators': ['off'],
+      'no-return-assign': ['off'],
+      'no-lonely-if': ['off'],
+      'no-useless-concat': ['off'],
+      'no-loop-func': ['off'],
+      'no-cond-assign': ['off'],
+      'no-extend-native': ['off'],
+      'no-restricted-properties': ['off'],
+      'no-lone-blocks': ['off'],
+      'no-unused-expressions': ['off'],
+      'prefer-const': ['off'],
+      'no-sequences': ['off'],
+      'no-void': ['off'],
+      'import/no-mutable-exports': ['off'],
+      'prefer-spread': ['off'],
+      'prefer-rest-params': ['off'],
+      'array-callback-return': ['off'],
+      'no-eval': ['off'],
     },
   },
   {
