@@ -4,9 +4,10 @@ import { GL } from "@libs/litegl.js";
 
 var global = typeof(window) != "undefined" ? window : typeof(self) != "undefined" ? self : globalThis;
 
+
 // Works with Litegl.js to create WebGL nodes
 // Texture Lens *****************************************
-class LGraphFXLens {
+export class LGraphFXLens {
   constructor() {
     this.addInput("Texture", "Texture");
     this.addInput("Aberration", "number");
@@ -90,47 +91,37 @@ class LGraphFXLens {
 
     this.setOutputData(0, this._tex);
   }
+
+  static title = "Lens";
+  static desc = "Camera Lens distortion";
+  static widgets_info = {
+    precision: { widget: "combo", values: LGraphTexture.MODE_VALUES },
+  };
+
+  static pixel_shader =
+    "precision highp float;\n\
+    precision highp float;\n\
+    varying vec2 v_coord;\n\
+    uniform sampler2D u_texture;\n\
+    uniform vec2 u_camera_planes;\n\
+    uniform float u_aberration;\n\
+    uniform float u_distortion;\n\
+    uniform float u_blur;\n\
+    \n\
+    void main() {\n\
+        vec2 coord = v_coord;\n\
+        float dist = distance(vec2(0.5), coord);\n\
+        vec2 dist_coord = coord - vec2(0.5);\n\
+        float percent = 1.0 + ((0.5 - dist) / 0.5) * u_distortion;\n\
+        dist_coord *= percent;\n\
+        coord = dist_coord + vec2(0.5);\n\
+        vec4 color = texture2D(u_texture,coord, u_blur * dist);\n\
+        color.r = texture2D(u_texture,vec2(0.5) + dist_coord * (1.0+0.01*u_aberration), u_blur * dist ).r;\n\
+        color.b = texture2D(u_texture,vec2(0.5) + dist_coord * (1.0-0.01*u_aberration), u_blur * dist ).b;\n\
+        gl_FragColor = color;\n\
+    }\n\
+    ";
 }
-
-LGraphFXLens.title = "Lens";
-LGraphFXLens.desc = "Camera Lens distortion";
-LGraphFXLens.widgets_info = {
-  precision: { widget: "combo", values: LGraphTexture.MODE_VALUES },
-};
-
-LGraphFXLens.pixel_shader =
-            "precision highp float;\n\
-            precision highp float;\n\
-            varying vec2 v_coord;\n\
-            uniform sampler2D u_texture;\n\
-            uniform vec2 u_camera_planes;\n\
-            uniform float u_aberration;\n\
-            uniform float u_distortion;\n\
-            uniform float u_blur;\n\
-            \n\
-            void main() {\n\
-                vec2 coord = v_coord;\n\
-                float dist = distance(vec2(0.5), coord);\n\
-                vec2 dist_coord = coord - vec2(0.5);\n\
-                float percent = 1.0 + ((0.5 - dist) / 0.5) * u_distortion;\n\
-                dist_coord *= percent;\n\
-                coord = dist_coord + vec2(0.5);\n\
-                vec4 color = texture2D(u_texture,coord, u_blur * dist);\n\
-                color.r = texture2D(u_texture,vec2(0.5) + dist_coord * (1.0+0.01*u_aberration), u_blur * dist ).r;\n\
-                color.b = texture2D(u_texture,vec2(0.5) + dist_coord * (1.0-0.01*u_aberration), u_blur * dist ).b;\n\
-                gl_FragColor = color;\n\
-            }\n\
-            ";
-/*
-            float normalized_tunable_sigmoid(float xs, float k)\n\
-            {\n\
-                xs = xs * 2.0 - 1.0;\n\
-                float signx = sign(xs);\n\
-                float absx = abs(xs);\n\
-                return signx * ((-k - 1.0)*absx)/(2.0*(-2.0*k*absx+k-1.0)) + 0.5;\n\
-            }\n\
-        */
-
 LiteGraph.registerNodeType("fx/lens", LGraphFXLens);
 
 /* not working yet
@@ -246,9 +237,8 @@ LiteGraph.registerNodeType("fx/lens", LGraphFXLens);
     global.LGraphDepthOfField = LGraphDepthOfField;
     */
 
-//* ******************************************************
 
-class LGraphFXBokeh {
+export class LGraphFXBokeh {
   constructor() {
     this.addInput("Texture", "Texture");
     this.addInput("Blurred", "Texture");
@@ -409,89 +399,87 @@ class LGraphFXBokeh {
 
     return this._points_mesh;
   }
+
+  static title = "Bokeh";
+  static desc = "applies an Bokeh effect";
+  static widgets_info = { shape: { widget: "texture" } };
+
+  static _first_pixel_shader =
+    "precision highp float;\n\
+    precision highp float;\n\
+    varying vec2 v_coord;\n\
+    uniform sampler2D u_texture;\n\
+    uniform sampler2D u_texture_blur;\n\
+    uniform sampler2D u_mask;\n\
+    \n\
+    void main() {\n\
+        vec4 color = texture2D(u_texture, v_coord);\n\
+        vec4 blurred_color = texture2D(u_texture_blur, v_coord);\n\
+        float mask = texture2D(u_mask, v_coord).x;\n\
+      gl_FragColor = mix(color, blurred_color, mask);\n\
+    }\n\
+    ";
+
+  static _second_vertex_shader =
+    "precision highp float;\n\
+    attribute vec2 a_vertex2D;\n\
+    varying vec4 v_color;\n\
+    uniform sampler2D u_texture;\n\
+    uniform sampler2D u_mask;\n\
+    uniform vec2 u_itexsize;\n\
+    uniform float u_pointSize;\n\
+    uniform float u_threshold;\n\
+    void main() {\n\
+        vec2 coord = a_vertex2D * 0.5 + 0.5;\n\
+        v_color = texture2D( u_texture, coord );\n\
+        v_color += texture2D( u_texture, coord + vec2(u_itexsize.x, 0.0) );\n\
+        v_color += texture2D( u_texture, coord + vec2(0.0, u_itexsize.y));\n\
+        v_color += texture2D( u_texture, coord + u_itexsize);\n\
+        v_color *= 0.25;\n\
+        float mask = texture2D(u_mask, coord).x;\n\
+        float luminance = length(v_color) * mask;\n\
+        /*luminance /= (u_pointSize*u_pointSize)*0.01 */;\n\
+        luminance -= u_threshold;\n\
+        if(luminance < 0.0)\n\
+        {\n\
+            gl_Position.x = -100.0;\n\
+            return;\n\
+        }\n\
+        gl_PointSize = u_pointSize;\n\
+        gl_Position = vec4(a_vertex2D,0.0,1.0);\n\
+    }\n\
+    ";
+
+  static _second_pixel_shader =
+    "precision highp float;\n\
+    varying vec4 v_color;\n\
+    uniform sampler2D u_shape;\n\
+    uniform float u_alpha;\n\
+    \n\
+    void main() {\n\
+        vec4 color = texture2D( u_shape, gl_PointCoord );\n\
+        color *= v_color * u_alpha;\n\
+        gl_FragColor = color;\n\
+    }\n";
 }
 
-LGraphFXBokeh.title = "Bokeh";
-LGraphFXBokeh.desc = "applies an Bokeh effect";
-
-LGraphFXBokeh.widgets_info = { shape: { widget: "texture" } };
-
 /*
-    LGraphTextureBokeh._pixel_shader = "precision highp float;\n\
-            varying vec2 a_coord;\n\
-            uniform sampler2D u_texture;\n\
-            uniform sampler2D u_shape;\n\
-            \n\
-            void main() {\n\
-                vec4 color = texture2D( u_texture, gl_PointCoord );\n\
-                color *= v_color * u_alpha;\n\
-                gl_FragColor = color;\n\
-            }\n";
-    */
-
-LGraphFXBokeh._first_pixel_shader =
-            "precision highp float;\n\
-            precision highp float;\n\
-            varying vec2 v_coord;\n\
-            uniform sampler2D u_texture;\n\
-            uniform sampler2D u_texture_blur;\n\
-            uniform sampler2D u_mask;\n\
-            \n\
-            void main() {\n\
-                vec4 color = texture2D(u_texture, v_coord);\n\
-                vec4 blurred_color = texture2D(u_texture_blur, v_coord);\n\
-                float mask = texture2D(u_mask, v_coord).x;\n\
-               gl_FragColor = mix(color, blurred_color, mask);\n\
-            }\n\
-            ";
-
-LGraphFXBokeh._second_vertex_shader =
-            "precision highp float;\n\
-            attribute vec2 a_vertex2D;\n\
-            varying vec4 v_color;\n\
-            uniform sampler2D u_texture;\n\
-            uniform sampler2D u_mask;\n\
-            uniform vec2 u_itexsize;\n\
-            uniform float u_pointSize;\n\
-            uniform float u_threshold;\n\
-            void main() {\n\
-                vec2 coord = a_vertex2D * 0.5 + 0.5;\n\
-                v_color = texture2D( u_texture, coord );\n\
-                v_color += texture2D( u_texture, coord + vec2(u_itexsize.x, 0.0) );\n\
-                v_color += texture2D( u_texture, coord + vec2(0.0, u_itexsize.y));\n\
-                v_color += texture2D( u_texture, coord + u_itexsize);\n\
-                v_color *= 0.25;\n\
-                float mask = texture2D(u_mask, coord).x;\n\
-                float luminance = length(v_color) * mask;\n\
-                /*luminance /= (u_pointSize*u_pointSize)*0.01 */;\n\
-                luminance -= u_threshold;\n\
-                if(luminance < 0.0)\n\
-                {\n\
-                    gl_Position.x = -100.0;\n\
-                    return;\n\
-                }\n\
-                gl_PointSize = u_pointSize;\n\
-                gl_Position = vec4(a_vertex2D,0.0,1.0);\n\
-            }\n\
-            ";
-
-LGraphFXBokeh._second_pixel_shader =
-            "precision highp float;\n\
-            varying vec4 v_color;\n\
-            uniform sampler2D u_shape;\n\
-            uniform float u_alpha;\n\
-            \n\
-            void main() {\n\
-                vec4 color = texture2D( u_shape, gl_PointCoord );\n\
-                color *= v_color * u_alpha;\n\
-                gl_FragColor = color;\n\
-            }\n";
-
+  LGraphTextureBokeh._pixel_shader = 
+    "precision highp float;\n\
+      varying vec2 a_coord;\n\
+      uniform sampler2D u_texture;\n\
+      uniform sampler2D u_shape;\n\
+      \n\
+      void main() {\n\
+        vec4 color = texture2D( u_texture, gl_PointCoord );\n\
+        color *= v_color * u_alpha;\n\
+        gl_FragColor = color;\n\
+      }\n";
+*/
 LiteGraph.registerNodeType("fx/bokeh", LGraphFXBokeh);
 
-//* ***********************************************
 
-class LGraphFXGeneric {
+export class LGraphFXGeneric {
   constructor() {
     this.addInput("Texture", "Texture");
     this.addInput("value1", "number");
@@ -593,106 +581,79 @@ class LGraphFXGeneric {
 
     this.setOutputData(0, this._tex);
   }
+
+  static title = "FX";
+  static desc = "applies an FX from a list";
+  static widgets_info = {
+    fx: {
+      widget: "combo",
+      values: ["halftone", "pixelate", "lowpalette", "noise", "gamma"],
+    },
+    precision: { widget: "combo", values: LGraphTexture.MODE_VALUES },
+  };
+  static shaders = {};
+
+  static pixel_shader_pixelate =
+    "precision highp float;\n\
+    varying vec2 v_coord;\n\
+    uniform sampler2D u_texture;\n\
+    uniform vec2 u_camera_planes;\n\
+    uniform vec2 u_size;\n\
+    uniform float u_value1;\n\
+    uniform float u_value2;\n\
+    \n\
+    void main() {\n\
+        vec2 coord = vec2( floor(v_coord.x * u_value1) / u_value1, floor(v_coord.y * u_value2) / u_value2 );\n\
+        vec4 color = texture2D(u_texture, coord);\n\
+        gl_FragColor = color;\n\
+    }\n";
+
+  static pixel_shader_lowpalette =
+    "precision highp float;\n\
+    varying vec2 v_coord;\n\
+    uniform sampler2D u_texture;\n\
+    uniform vec2 u_camera_planes;\n\
+    uniform vec2 u_size;\n\
+    uniform float u_value1;\n\
+    uniform float u_value2;\n\
+    \n\
+    void main() {\n\
+        vec4 color = texture2D(u_texture, v_coord);\n\
+        gl_FragColor = floor(color * u_value1) / u_value1;\n\
+    }\n";
+
+  static pixel_shader_noise =
+    "precision highp float;\n\
+    varying vec2 v_coord;\n\
+    uniform sampler2D u_texture;\n\
+    uniform sampler2D u_noise;\n\
+    uniform vec2 u_size;\n\
+    uniform float u_value1;\n\
+    uniform float u_value2;\n\
+    uniform vec2 u_rand;\n\
+    \n\
+    void main() {\n\
+        vec4 color = texture2D(u_texture, v_coord);\n\
+        vec3 noise = texture2D(u_noise, v_coord * vec2(u_size.x / 512.0, u_size.y / 512.0) + u_rand).xyz - vec3(0.5);\n\
+        gl_FragColor = vec4( color.xyz + noise * u_value1, color.a );\n\
+    }\n";
+
+  static pixel_shader_gamma =
+    "precision highp float;\n\
+    varying vec2 v_coord;\n\
+    uniform sampler2D u_texture;\n\
+    uniform float u_value1;\n\
+    \n\
+    void main() {\n\
+        vec4 color = texture2D(u_texture, v_coord);\n\
+        float gamma = 1.0 / u_value1;\n\
+        gl_FragColor = vec4( pow( color.xyz, vec3(gamma) ), color.a );\n\
+    }\n";
 }
-
-LGraphFXGeneric.title = "FX";
-LGraphFXGeneric.desc = "applies an FX from a list";
-
-LGraphFXGeneric.widgets_info = {
-  fx: {
-    widget: "combo",
-    values: ["halftone", "pixelate", "lowpalette", "noise", "gamma"],
-  },
-  precision: { widget: "combo", values: LGraphTexture.MODE_VALUES },
-};
-LGraphFXGeneric.shaders = {};
-
-LGraphFXGeneric.pixel_shader_halftone =
-            "precision highp float;\n\
-            varying vec2 v_coord;\n\
-            uniform sampler2D u_texture;\n\
-            uniform vec2 u_camera_planes;\n\
-            uniform vec2 u_size;\n\
-            uniform float u_value1;\n\
-            uniform float u_value2;\n\
-            \n\
-            float pattern() {\n\
-                float s = sin(u_value1 * 3.1415), c = cos(u_value1 * 3.1415);\n\
-                vec2 tex = v_coord * u_size.xy;\n\
-                vec2 point = vec2(\n\
-                   c * tex.x - s * tex.y ,\n\
-                   s * tex.x + c * tex.y \n\
-                ) * u_value2;\n\
-                return (sin(point.x) * sin(point.y)) * 4.0;\n\
-            }\n\
-            void main() {\n\
-                vec4 color = texture2D(u_texture, v_coord);\n\
-                float average = (color.r + color.g + color.b) / 3.0;\n\
-                gl_FragColor = vec4(vec3(average * 10.0 - 5.0 + pattern()), color.a);\n\
-            }\n";
-
-LGraphFXGeneric.pixel_shader_pixelate =
-            "precision highp float;\n\
-            varying vec2 v_coord;\n\
-            uniform sampler2D u_texture;\n\
-            uniform vec2 u_camera_planes;\n\
-            uniform vec2 u_size;\n\
-            uniform float u_value1;\n\
-            uniform float u_value2;\n\
-            \n\
-            void main() {\n\
-                vec2 coord = vec2( floor(v_coord.x * u_value1) / u_value1, floor(v_coord.y * u_value2) / u_value2 );\n\
-                vec4 color = texture2D(u_texture, coord);\n\
-                gl_FragColor = color;\n\
-            }\n";
-
-LGraphFXGeneric.pixel_shader_lowpalette =
-            "precision highp float;\n\
-            varying vec2 v_coord;\n\
-            uniform sampler2D u_texture;\n\
-            uniform vec2 u_camera_planes;\n\
-            uniform vec2 u_size;\n\
-            uniform float u_value1;\n\
-            uniform float u_value2;\n\
-            \n\
-            void main() {\n\
-                vec4 color = texture2D(u_texture, v_coord);\n\
-                gl_FragColor = floor(color * u_value1) / u_value1;\n\
-            }\n";
-
-LGraphFXGeneric.pixel_shader_noise =
-            "precision highp float;\n\
-            varying vec2 v_coord;\n\
-            uniform sampler2D u_texture;\n\
-            uniform sampler2D u_noise;\n\
-            uniform vec2 u_size;\n\
-            uniform float u_value1;\n\
-            uniform float u_value2;\n\
-            uniform vec2 u_rand;\n\
-            \n\
-            void main() {\n\
-                vec4 color = texture2D(u_texture, v_coord);\n\
-                vec3 noise = texture2D(u_noise, v_coord * vec2(u_size.x / 512.0, u_size.y / 512.0) + u_rand).xyz - vec3(0.5);\n\
-                gl_FragColor = vec4( color.xyz + noise * u_value1, color.a );\n\
-            }\n";
-
-LGraphFXGeneric.pixel_shader_gamma =
-            "precision highp float;\n\
-            varying vec2 v_coord;\n\
-            uniform sampler2D u_texture;\n\
-            uniform float u_value1;\n\
-            \n\
-            void main() {\n\
-                vec4 color = texture2D(u_texture, v_coord);\n\
-                float gamma = 1.0 / u_value1;\n\
-                gl_FragColor = vec4( pow( color.xyz, vec3(gamma) ), color.a );\n\
-            }\n";
-
 LiteGraph.registerNodeType("fx/generic", LGraphFXGeneric);
 
-// Vigneting ************************************
 
-class LGraphFXVigneting {
+export class LGraphFXVigneting {
   constructor() {
     this.addInput("Tex.", "Texture");
     this.addInput("intensity", "number");
@@ -757,38 +718,33 @@ class LGraphFXVigneting {
 
     this.setOutputData(0, this._tex);
   }
+
+  static title = "Vigneting";
+  static desc = "Vigneting";
+  static widgets_info = {
+    precision: { widget: "combo", values: LGraphTexture.MODE_VALUES },
+  };
+  static pixel_shader =
+    "precision highp float;\n\
+    precision highp float;\n\
+    varying vec2 v_coord;\n\
+    uniform sampler2D u_texture;\n\
+    uniform float u_intensity;\n\
+    uniform int u_invert;\n\
+    \n\
+    void main() {\n\
+        float luminance = 1.0 - length( v_coord - vec2(0.5) ) * 1.414;\n\
+        vec4 color = texture2D(u_texture, v_coord);\n\
+        if(u_invert == 1)\n\
+            luminance = 1.0 - luminance;\n\
+        luminance = mix(1.0, luminance, u_intensity);\n\
+      gl_FragColor = vec4( luminance * color.xyz, color.a);\n\
+    }\n\
+    ";
 }
-
-LGraphFXVigneting.title = "Vigneting";
-LGraphFXVigneting.desc = "Vigneting";
-
-LGraphFXVigneting.widgets_info = {
-  precision: { widget: "combo", values: LGraphTexture.MODE_VALUES },
-};
-
-LGraphFXVigneting.pixel_shader =
-            "precision highp float;\n\
-            precision highp float;\n\
-            varying vec2 v_coord;\n\
-            uniform sampler2D u_texture;\n\
-            uniform float u_intensity;\n\
-            uniform int u_invert;\n\
-            \n\
-            void main() {\n\
-                float luminance = 1.0 - length( v_coord - vec2(0.5) ) * 1.414;\n\
-                vec4 color = texture2D(u_texture, v_coord);\n\
-                if(u_invert == 1)\n\
-                    luminance = 1.0 - luminance;\n\
-                luminance = mix(1.0, luminance, u_intensity);\n\
-               gl_FragColor = vec4( luminance * color.xyz, color.a);\n\
-            }\n\
-            ";
-
 LiteGraph.registerNodeType("fx/vigneting", LGraphFXVigneting);
 
 global.LGraphFXLens = LGraphFXLens;
 global.LGraphFXBokeh = LGraphFXBokeh;
 global.LGraphFXGeneric = LGraphFXGeneric;
 global.LGraphFXVigneting = LGraphFXVigneting;
-
-export { LGraphFXLens, LGraphFXBokeh, LGraphFXGeneric, LGraphFXVigneting };
