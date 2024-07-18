@@ -5,7 +5,9 @@ import { GL } from "@libs/litegl.js";
 var global = typeof(window) != "undefined" ? window : typeof(self) != "undefined" ? self : globalThis;
 // Works with Litegl.js to create WebGL nodes
 
+// @TODO: This... doesn't belong here!?
 LGraphCanvas.link_type_colors["Texture"] = "#987";
+
 
 class LGraphTexture {
   constructor() {
@@ -346,41 +348,40 @@ class LGraphTexture {
       return context[v] || "";
     });
   }
+
+  static title = "Texture";
+  static desc = "Texture";
+  static widgets_info = {
+    name: { widget: "texture" },
+    filter: { widget: "checkbox" },
+  };
+
+  // "REPLACE THIS TO INTEGRATE WITH YOUR FRAMEWORK"
+  static loadTextureCallback = null; // function in charge of loading textures when not present in the container
+  static image_preview_size = 256;
+
+  // flags to choose output texture type
+  static UNDEFINED = 0; // not specified
+  static PASS_THROUGH = 1; // do not apply FX (like disable but passing the in to the out)
+  static COPY = 2; // create new texture with the same properties as the origin texture
+  static LOW = 3; // create new texture with low precision (byte)
+  static HIGH = 4; // create new texture with high precision (half-float)
+  static REUSE = 5; // reuse input texture
+  static DEFAULT = 2; // use the default
+
+  static MODE_VALUES = {
+    "undefined": LGraphTexture.UNDEFINED,
+    "pass through": LGraphTexture.PASS_THROUGH,
+    copy: LGraphTexture.COPY,
+    low: LGraphTexture.LOW,
+    high: LGraphTexture.HIGH,
+    reuse: LGraphTexture.REUSE,
+    default: LGraphTexture.DEFAULT,
+  };
 }
-
-LGraphTexture.title = "Texture";
-LGraphTexture.desc = "Texture";
-LGraphTexture.widgets_info = {
-  name: { widget: "texture" },
-  filter: { widget: "checkbox" },
-};
-
-// REPLACE THIS TO INTEGRATE WITH YOUR FRAMEWORK
-LGraphTexture.loadTextureCallback = null; // function in charge of loading textures when not present in the container
-LGraphTexture.image_preview_size = 256;
-
-// flags to choose output texture type
-LGraphTexture.UNDEFINED = 0; // not specified
-LGraphTexture.PASS_THROUGH = 1; // do not apply FX (like disable but passing the in to the out)
-LGraphTexture.COPY = 2; // create new texture with the same properties as the origin texture
-LGraphTexture.LOW = 3; // create new texture with low precision (byte)
-LGraphTexture.HIGH = 4; // create new texture with high precision (half-float)
-LGraphTexture.REUSE = 5; // reuse input texture
-LGraphTexture.DEFAULT = 2; // use the default
-
-LGraphTexture.MODE_VALUES = {
-  "undefined": LGraphTexture.UNDEFINED,
-  "pass through": LGraphTexture.PASS_THROUGH,
-  copy: LGraphTexture.COPY,
-  low: LGraphTexture.LOW,
-  high: LGraphTexture.HIGH,
-  reuse: LGraphTexture.REUSE,
-  default: LGraphTexture.DEFAULT,
-};
-
 LiteGraph.registerNodeType("texture/texture", LGraphTexture);
 
-//* *************************
+
 class LGraphTexturePreview {
   constructor() {
     this.addInput("Texture", "Texture");
@@ -422,15 +423,13 @@ class LGraphTexturePreview {
     ctx.drawImage(tex_canvas, 0, 0, this.size[0], this.size[1]);
     ctx.restore();
   }
+
+  static title = "Preview";
+  static desc = "Show a texture in the graph canvas";
+  static allow_preview = false;
 }
-
-LGraphTexturePreview.title = "Preview";
-LGraphTexturePreview.desc = "Show a texture in the graph canvas";
-LGraphTexturePreview.allow_preview = false;
-
 LiteGraph.registerNodeType("texture/preview", LGraphTexturePreview);
 
-//* *************************************
 
 class LGraphTextureSave {
   constructor() {
@@ -471,14 +470,12 @@ class LGraphTextureSave {
     this.setOutputData(0, tex);
     this.setOutputData(1, this.properties.name);
   }
+
+  static title = "Save";
+  static desc = "Save a texture in the repository";
 }
-
-LGraphTextureSave.title = "Save";
-LGraphTextureSave.desc = "Save a texture in the repository";
-
 LiteGraph.registerNodeType("texture/save", LGraphTextureSave);
 
-//* ***************************************************
 
 class LGraphTextureOperation {
   constructor() {
@@ -670,42 +667,40 @@ class LGraphTextureOperation {
       widgets.refresh();
     }});
   }
+
+  static title = "Operation";
+  static desc = "Texture shader operation";
+  static widgets_info = {
+    uvcode: { widget: "code" },
+    pixelcode: { widget: "code" },
+    precision: { widget: "combo", values: LGraphTexture.MODE_VALUES },
+  };
+  static presets = {};
+
+  static pixel_shader =
+    "precision highp float;\n\
+    \n\
+    uniform sampler2D u_texture;\n\
+    uniform sampler2D u_textureB;\n\
+    varying vec2 v_coord;\n\
+    uniform vec4 texSize;\n\
+    uniform float time;\n\
+    uniform float value;\n\
+    \n\
+    void main() {\n\
+        vec2 uv = v_coord;\n\
+        {{UV_CODE}};\n\
+        vec4 color4 = texture2D(u_texture, uv);\n\
+        vec3 color = color4.rgb;\n\
+        vec4 color4B = texture2D(u_textureB, uv);\n\
+        vec3 colorB = color4B.rgb;\n\
+        vec3 result = color;\n\
+        float alpha = 1.0;\n\
+        {{PIXEL_CODE}};\n\
+        gl_FragColor = vec4(result, alpha);\n\
+    }\n\
+    ";
 }
-
-LGraphTextureOperation.widgets_info = {
-  uvcode: { widget: "code" },
-  pixelcode: { widget: "code" },
-  precision: { widget: "combo", values: LGraphTexture.MODE_VALUES },
-};
-
-LGraphTextureOperation.title = "Operation";
-LGraphTextureOperation.desc = "Texture shader operation";
-
-LGraphTextureOperation.presets = {};
-
-LGraphTextureOperation.pixel_shader =
-        "precision highp float;\n\
-        \n\
-        uniform sampler2D u_texture;\n\
-        uniform sampler2D u_textureB;\n\
-        varying vec2 v_coord;\n\
-        uniform vec4 texSize;\n\
-        uniform float time;\n\
-        uniform float value;\n\
-        \n\
-        void main() {\n\
-            vec2 uv = v_coord;\n\
-            {{UV_CODE}};\n\
-            vec4 color4 = texture2D(u_texture, uv);\n\
-            vec3 color = color4.rgb;\n\
-            vec4 color4B = texture2D(u_textureB, uv);\n\
-            vec3 colorB = color4B.rgb;\n\
-            vec3 result = color;\n\
-            float alpha = 1.0;\n\
-            {{PIXEL_CODE}};\n\
-            gl_FragColor = vec4(result, alpha);\n\
-        }\n\
-        ";
 
 LGraphTextureOperation.registerPreset("", "");
 LGraphTextureOperation.registerPreset("bypass", "color");
@@ -739,7 +734,6 @@ LGraphTextureOperation.registerPreset("threshold", "vec3(color.x > colorB.x * va
 
 LiteGraph.registerNodeType("texture/operation", LGraphTextureOperation);
 
-//* ***************************************************
 
 class LGraphTextureShader {
   constructor() {
@@ -926,35 +920,33 @@ class LGraphTextureShader {
 
     this.setOutputData(0, this._tex);
   }
+
+  static title = "Shader";
+  static desc = "Texture shader";
+  static widgets_info = {
+    code: { type: "code", lang: "glsl" },
+    precision: { widget: "combo", values: LGraphTexture.MODE_VALUES },
+  };
+
+  static pixel_shader =
+    "precision highp float;\n\
+    \n\
+    varying vec2 v_coord;\n\
+    uniform float time; //time in seconds\n\
+    uniform vec4 texSize; //tex resolution\n\
+    uniform float u_value;\n\
+    uniform vec4 u_color;\n\n\
+    void main() {\n\
+        vec2 uv = v_coord;\n\
+        vec3 color = vec3(0.0);\n\
+        //your code here\n\
+        color.xy=uv;\n\n\
+        gl_FragColor = vec4(color, 1.0);\n\
+    }\n\
+    ";
 }
-
-LGraphTextureShader.title = "Shader";
-LGraphTextureShader.desc = "Texture shader";
-LGraphTextureShader.widgets_info = {
-  code: { type: "code", lang: "glsl" },
-  precision: { widget: "combo", values: LGraphTexture.MODE_VALUES },
-};
-
-LGraphTextureShader.pixel_shader =
-"precision highp float;\n\
-\n\
-varying vec2 v_coord;\n\
-uniform float time; //time in seconds\n\
-uniform vec4 texSize; //tex resolution\n\
-uniform float u_value;\n\
-uniform vec4 u_color;\n\n\
-void main() {\n\
-    vec2 uv = v_coord;\n\
-    vec3 color = vec3(0.0);\n\
-    //your code here\n\
-    color.xy=uv;\n\n\
-    gl_FragColor = vec4(color, 1.0);\n\
-}\n\
-";
-
 LiteGraph.registerNodeType("texture/shader", LGraphTextureShader);
 
-// Texture Scale Offset
 
 class LGraphTextureScaleOffset {
   constructor() {
@@ -1043,37 +1035,30 @@ class LGraphTextureScaleOffset {
 
     this.setOutputData(0, this._tex);
   }
+
+  static title = "Scale/Offset";
+  static desc = "Applies an scaling and offseting";
+  static widgets_info = {
+    precision: { widget: "combo", values: LGraphTexture.MODE_VALUES },
+  };
+  static pixel_shader =
+    "precision highp float;\n\
+    \n\
+    uniform sampler2D u_texture;\n\
+    uniform sampler2D u_textureB;\n\
+    varying vec2 v_coord;\n\
+    uniform vec2 u_scale;\n\
+    uniform vec2 u_offset;\n\
+    \n\
+    void main() {\n\
+        vec2 uv = v_coord;\n\
+        uv = uv / u_scale - u_offset;\n\
+        gl_FragColor = texture2D(u_texture, uv);\n\
+    }\n\
+    ";
 }
+LiteGraph.registerNodeType("texture/scaleOffset", LGraphTextureScaleOffset);
 
-LGraphTextureScaleOffset.widgets_info = {
-  precision: { widget: "combo", values: LGraphTexture.MODE_VALUES },
-};
-
-LGraphTextureScaleOffset.title = "Scale/Offset";
-LGraphTextureScaleOffset.desc = "Applies an scaling and offseting";
-
-LGraphTextureScaleOffset.pixel_shader =
-        "precision highp float;\n\
-        \n\
-        uniform sampler2D u_texture;\n\
-        uniform sampler2D u_textureB;\n\
-        varying vec2 v_coord;\n\
-        uniform vec2 u_scale;\n\
-        uniform vec2 u_offset;\n\
-        \n\
-        void main() {\n\
-            vec2 uv = v_coord;\n\
-            uv = uv / u_scale - u_offset;\n\
-            gl_FragColor = texture2D(u_texture, uv);\n\
-        }\n\
-        ";
-
-LiteGraph.registerNodeType(
-  "texture/scaleOffset",
-  LGraphTextureScaleOffset,
-);
-
-// Warp (distort a texture) *************************
 
 class LGraphTextureWarp {
   constructor() {
@@ -1179,37 +1164,32 @@ class LGraphTextureWarp {
 
     this.setOutputData(0, this._tex);
   }
+
+  static title = "Warp";
+  static desc = "Texture warp operation";
+  static widgets_info = {
+    precision: { widget: "combo", values: LGraphTexture.MODE_VALUES },
+  };
+  static pixel_shader =
+    "precision highp float;\n\
+    \n\
+    uniform sampler2D u_texture;\n\
+    uniform sampler2D u_textureB;\n\
+    varying vec2 v_coord;\n\
+    uniform float u_factor;\n\
+    uniform vec2 u_scale;\n\
+    uniform vec2 u_offset;\n\
+    \n\
+    void main() {\n\
+        vec2 uv = v_coord;\n\
+        uv += ( texture2D(u_textureB, uv).rg - vec2(0.5)) * u_factor * u_scale + u_offset;\n\
+        gl_FragColor = texture2D(u_texture, uv);\n\
+    }\n\
+    ";
 }
-
-LGraphTextureWarp.widgets_info = {
-  precision: { widget: "combo", values: LGraphTexture.MODE_VALUES },
-};
-
-LGraphTextureWarp.title = "Warp";
-LGraphTextureWarp.desc = "Texture warp operation";
-
-LGraphTextureWarp.pixel_shader =
-        "precision highp float;\n\
-        \n\
-        uniform sampler2D u_texture;\n\
-        uniform sampler2D u_textureB;\n\
-        varying vec2 v_coord;\n\
-        uniform float u_factor;\n\
-        uniform vec2 u_scale;\n\
-        uniform vec2 u_offset;\n\
-        \n\
-        void main() {\n\
-            vec2 uv = v_coord;\n\
-            uv += ( texture2D(u_textureB, uv).rg - vec2(0.5)) * u_factor * u_scale + u_offset;\n\
-            gl_FragColor = texture2D(u_texture, uv);\n\
-        }\n\
-        ";
-
 LiteGraph.registerNodeType("texture/warp", LGraphTextureWarp);
 
-//* ***************************************************
 
-// Texture to Viewport *****************************************
 class LGraphTextureToViewport {
   constructor() {
     this.addInput("Texture", "Texture");
@@ -1311,93 +1291,87 @@ class LGraphTextureToViewport {
   onGetInputs() {
     return [["gamma", "number"]];
   }
+
+  static title = "to Viewport";
+  static desc = "Texture to viewport";
+  static _prev_viewport = new Float32Array(4);
+  static aa_pixel_shader =
+    "precision highp float;\n\
+    precision highp float;\n\
+    varying vec2 v_coord;\n\
+    uniform sampler2D u_texture;\n\
+    uniform vec2 uViewportSize;\n\
+    uniform vec2 inverseVP;\n\
+    uniform float u_igamma;\n\
+    #define FXAA_REDUCE_MIN   (1.0/ 128.0)\n\
+    #define FXAA_REDUCE_MUL   (1.0 / 8.0)\n\
+    #define FXAA_SPAN_MAX     8.0\n\
+    \n\
+    /* from mitsuhiko/webgl-meincraft based on the code on geeks3d.com */\n\
+    vec4 applyFXAA(sampler2D tex, vec2 fragCoord)\n\
+    {\n\
+        vec4 color = vec4(0.0);\n\
+        /*vec2 inverseVP = vec2(1.0 / uViewportSize.x, 1.0 / uViewportSize.y);*/\n\
+        vec3 rgbNW = texture2D(tex, (fragCoord + vec2(-1.0, -1.0)) * inverseVP).xyz;\n\
+        vec3 rgbNE = texture2D(tex, (fragCoord + vec2(1.0, -1.0)) * inverseVP).xyz;\n\
+        vec3 rgbSW = texture2D(tex, (fragCoord + vec2(-1.0, 1.0)) * inverseVP).xyz;\n\
+        vec3 rgbSE = texture2D(tex, (fragCoord + vec2(1.0, 1.0)) * inverseVP).xyz;\n\
+        vec3 rgbM  = texture2D(tex, fragCoord  * inverseVP).xyz;\n\
+        vec3 luma = vec3(0.299, 0.587, 0.114);\n\
+        float lumaNW = dot(rgbNW, luma);\n\
+        float lumaNE = dot(rgbNE, luma);\n\
+        float lumaSW = dot(rgbSW, luma);\n\
+        float lumaSE = dot(rgbSE, luma);\n\
+        float lumaM  = dot(rgbM,  luma);\n\
+        float lumaMin = min(lumaM, min(min(lumaNW, lumaNE), min(lumaSW, lumaSE)));\n\
+        float lumaMax = max(lumaM, max(max(lumaNW, lumaNE), max(lumaSW, lumaSE)));\n\
+        \n\
+        vec2 dir;\n\
+        dir.x = -((lumaNW + lumaNE) - (lumaSW + lumaSE));\n\
+        dir.y =  ((lumaNW + lumaSW) - (lumaNE + lumaSE));\n\
+        \n\
+        float dirReduce = max((lumaNW + lumaNE + lumaSW + lumaSE) * (0.25 * FXAA_REDUCE_MUL), FXAA_REDUCE_MIN);\n\
+        \n\
+        float rcpDirMin = 1.0 / (min(abs(dir.x), abs(dir.y)) + dirReduce);\n\
+        dir = min(vec2(FXAA_SPAN_MAX, FXAA_SPAN_MAX), max(vec2(-FXAA_SPAN_MAX, -FXAA_SPAN_MAX), dir * rcpDirMin)) * inverseVP;\n\
+        \n\
+        vec3 rgbA = 0.5 * (texture2D(tex, fragCoord * inverseVP + dir * (1.0 / 3.0 - 0.5)).xyz + \n\
+            texture2D(tex, fragCoord * inverseVP + dir * (2.0 / 3.0 - 0.5)).xyz);\n\
+        vec3 rgbB = rgbA * 0.5 + 0.25 * (texture2D(tex, fragCoord * inverseVP + dir * -0.5).xyz + \n\
+            texture2D(tex, fragCoord * inverseVP + dir * 0.5).xyz);\n\
+        \n\
+        //return vec4(rgbA,1.0);\n\
+        float lumaB = dot(rgbB, luma);\n\
+        if ((lumaB < lumaMin) || (lumaB > lumaMax))\n\
+            color = vec4(rgbA, 1.0);\n\
+        else\n\
+            color = vec4(rgbB, 1.0);\n\
+        if(u_igamma != 1.0)\n\
+            color.xyz = pow( color.xyz, vec3(u_igamma) );\n\
+        return color;\n\
+    }\n\
+    \n\
+    void main() {\n\
+      gl_FragColor = applyFXAA( u_texture, v_coord * uViewportSize) ;\n\
+    }\n\
+    ";
+
+  static gamma_pixel_shader =
+    "precision highp float;\n\
+    precision highp float;\n\
+    varying vec2 v_coord;\n\
+    uniform sampler2D u_texture;\n\
+    uniform float u_igamma;\n\
+    void main() {\n\
+        vec4 color = texture2D( u_texture, v_coord);\n\
+        color.xyz = pow(color.xyz, vec3(u_igamma) );\n\
+      gl_FragColor = color;\n\
+    }\n\
+    ";
 }
+LiteGraph.registerNodeType("texture/toviewport", LGraphTextureToViewport);
 
-LGraphTextureToViewport.title = "to Viewport";
-LGraphTextureToViewport.desc = "Texture to viewport";
 
-LGraphTextureToViewport._prev_viewport = new Float32Array(4);
-
-LGraphTextureToViewport.aa_pixel_shader =
-        "precision highp float;\n\
-        precision highp float;\n\
-        varying vec2 v_coord;\n\
-        uniform sampler2D u_texture;\n\
-        uniform vec2 uViewportSize;\n\
-        uniform vec2 inverseVP;\n\
-        uniform float u_igamma;\n\
-        #define FXAA_REDUCE_MIN   (1.0/ 128.0)\n\
-        #define FXAA_REDUCE_MUL   (1.0 / 8.0)\n\
-        #define FXAA_SPAN_MAX     8.0\n\
-        \n\
-        /* from mitsuhiko/webgl-meincraft based on the code on geeks3d.com */\n\
-        vec4 applyFXAA(sampler2D tex, vec2 fragCoord)\n\
-        {\n\
-            vec4 color = vec4(0.0);\n\
-            /*vec2 inverseVP = vec2(1.0 / uViewportSize.x, 1.0 / uViewportSize.y);*/\n\
-            vec3 rgbNW = texture2D(tex, (fragCoord + vec2(-1.0, -1.0)) * inverseVP).xyz;\n\
-            vec3 rgbNE = texture2D(tex, (fragCoord + vec2(1.0, -1.0)) * inverseVP).xyz;\n\
-            vec3 rgbSW = texture2D(tex, (fragCoord + vec2(-1.0, 1.0)) * inverseVP).xyz;\n\
-            vec3 rgbSE = texture2D(tex, (fragCoord + vec2(1.0, 1.0)) * inverseVP).xyz;\n\
-            vec3 rgbM  = texture2D(tex, fragCoord  * inverseVP).xyz;\n\
-            vec3 luma = vec3(0.299, 0.587, 0.114);\n\
-            float lumaNW = dot(rgbNW, luma);\n\
-            float lumaNE = dot(rgbNE, luma);\n\
-            float lumaSW = dot(rgbSW, luma);\n\
-            float lumaSE = dot(rgbSE, luma);\n\
-            float lumaM  = dot(rgbM,  luma);\n\
-            float lumaMin = min(lumaM, min(min(lumaNW, lumaNE), min(lumaSW, lumaSE)));\n\
-            float lumaMax = max(lumaM, max(max(lumaNW, lumaNE), max(lumaSW, lumaSE)));\n\
-            \n\
-            vec2 dir;\n\
-            dir.x = -((lumaNW + lumaNE) - (lumaSW + lumaSE));\n\
-            dir.y =  ((lumaNW + lumaSW) - (lumaNE + lumaSE));\n\
-            \n\
-            float dirReduce = max((lumaNW + lumaNE + lumaSW + lumaSE) * (0.25 * FXAA_REDUCE_MUL), FXAA_REDUCE_MIN);\n\
-            \n\
-            float rcpDirMin = 1.0 / (min(abs(dir.x), abs(dir.y)) + dirReduce);\n\
-            dir = min(vec2(FXAA_SPAN_MAX, FXAA_SPAN_MAX), max(vec2(-FXAA_SPAN_MAX, -FXAA_SPAN_MAX), dir * rcpDirMin)) * inverseVP;\n\
-            \n\
-            vec3 rgbA = 0.5 * (texture2D(tex, fragCoord * inverseVP + dir * (1.0 / 3.0 - 0.5)).xyz + \n\
-                texture2D(tex, fragCoord * inverseVP + dir * (2.0 / 3.0 - 0.5)).xyz);\n\
-            vec3 rgbB = rgbA * 0.5 + 0.25 * (texture2D(tex, fragCoord * inverseVP + dir * -0.5).xyz + \n\
-                texture2D(tex, fragCoord * inverseVP + dir * 0.5).xyz);\n\
-            \n\
-            //return vec4(rgbA,1.0);\n\
-            float lumaB = dot(rgbB, luma);\n\
-            if ((lumaB < lumaMin) || (lumaB > lumaMax))\n\
-                color = vec4(rgbA, 1.0);\n\
-            else\n\
-                color = vec4(rgbB, 1.0);\n\
-            if(u_igamma != 1.0)\n\
-                color.xyz = pow( color.xyz, vec3(u_igamma) );\n\
-            return color;\n\
-        }\n\
-        \n\
-        void main() {\n\
-           gl_FragColor = applyFXAA( u_texture, v_coord * uViewportSize) ;\n\
-        }\n\
-        ";
-
-LGraphTextureToViewport.gamma_pixel_shader =
-        "precision highp float;\n\
-        precision highp float;\n\
-        varying vec2 v_coord;\n\
-        uniform sampler2D u_texture;\n\
-        uniform float u_igamma;\n\
-        void main() {\n\
-            vec4 color = texture2D( u_texture, v_coord);\n\
-            color.xyz = pow(color.xyz, vec3(u_igamma) );\n\
-           gl_FragColor = color;\n\
-        }\n\
-        ";
-
-LiteGraph.registerNodeType(
-  "texture/toviewport",
-  LGraphTextureToViewport,
-);
-
-// Texture Copy *****************************************
 class LGraphTextureCopy {
   constructor() {
     this.addInput("Texture", "Texture");
@@ -1470,21 +1444,20 @@ class LGraphTextureCopy {
 
     this.setOutputData(0, this._temp_texture);
   }
+
+  static title = "Copy";
+  static desc = "Copy Texture";
+  static widgets_info = {
+    size: {
+      widget: "combo",
+      values: [0, 32, 64, 128, 256, 512, 1024, 2048],
+    },
+    precision: { widget: "combo", values: LGraphTexture.MODE_VALUES },
+  };
 }
-
-LGraphTextureCopy.title = "Copy";
-LGraphTextureCopy.desc = "Copy Texture";
-LGraphTextureCopy.widgets_info = {
-  size: {
-    widget: "combo",
-    values: [0, 32, 64, 128, 256, 512, 1024, 2048],
-  },
-  precision: { widget: "combo", values: LGraphTexture.MODE_VALUES },
-};
-
 LiteGraph.registerNodeType("texture/copy", LGraphTextureCopy);
 
-// Texture Downsample *****************************************
+
 class LGraphTextureDownsample {
   constructor() {
     this.addInput("Texture", "Texture");
@@ -1583,36 +1556,30 @@ class LGraphTextureDownsample {
 
     this.setOutputData(0, this._texture);
   }
+
+  static title = "Downsample";
+  static desc = "Downsample Texture";
+  static widgets_info = {
+    iterations: { type: "number", step: 1, precision: 0, min: 0 },
+    precision: { widget: "combo", values: LGraphTexture.MODE_VALUES },
+  };
+  static pixel_shader =
+    "precision highp float;\n\
+    precision highp float;\n\
+    uniform sampler2D u_texture;\n\
+    uniform vec2 u_offset;\n\
+    varying vec2 v_coord;\n\
+    \n\
+    void main() {\n\
+        vec4 color = texture2D(u_texture, v_coord );\n\
+        color += texture2D(u_texture, v_coord + vec2( u_offset.x, 0.0 ) );\n\
+        color += texture2D(u_texture, v_coord + vec2( 0.0, u_offset.y ) );\n\
+        color += texture2D(u_texture, v_coord + vec2( u_offset.x, u_offset.y ) );\n\
+      gl_FragColor = color * 0.25;\n\
+    }\n\
+    ";
 }
-
-LGraphTextureDownsample.title = "Downsample";
-LGraphTextureDownsample.desc = "Downsample Texture";
-LGraphTextureDownsample.widgets_info = {
-  iterations: { type: "number", step: 1, precision: 0, min: 0 },
-  precision: { widget: "combo", values: LGraphTexture.MODE_VALUES },
-};
-
-LGraphTextureDownsample.pixel_shader =
-        "precision highp float;\n\
-        precision highp float;\n\
-        uniform sampler2D u_texture;\n\
-        uniform vec2 u_offset;\n\
-        varying vec2 v_coord;\n\
-        \n\
-        void main() {\n\
-            vec4 color = texture2D(u_texture, v_coord );\n\
-            color += texture2D(u_texture, v_coord + vec2( u_offset.x, 0.0 ) );\n\
-            color += texture2D(u_texture, v_coord + vec2( 0.0, u_offset.y ) );\n\
-            color += texture2D(u_texture, v_coord + vec2( u_offset.x, u_offset.y ) );\n\
-           gl_FragColor = color * 0.25;\n\
-        }\n\
-        ";
-
-LiteGraph.registerNodeType(
-  "texture/downsample",
-  LGraphTextureDownsample,
-);
-
+LiteGraph.registerNodeType("texture/downsample", LGraphTextureDownsample);
 
 
 class LGraphTextureResize {
@@ -1667,18 +1634,17 @@ class LGraphTextureResize {
 
     this.setOutputData(0, this._texture);
   }
+
+  static title = "Resize";
+  static desc = "Resize Texture";
+  static widgets_info = {
+    iterations: { type: "number", step: 1, precision: 0, min: 0 },
+    precision: { widget: "combo", values: LGraphTexture.MODE_VALUES },
+  };
 }
-
-LGraphTextureResize.title = "Resize";
-LGraphTextureResize.desc = "Resize Texture";
-LGraphTextureResize.widgets_info = {
-  iterations: { type: "number", step: 1, precision: 0, min: 0 },
-  precision: { widget: "combo", values: LGraphTexture.MODE_VALUES },
-};
-
 LiteGraph.registerNodeType( "texture/resize", LGraphTextureResize );
 
-// Texture Average  *****************************************
+
 class LGraphTextureAverage {
   constructor() {
     this.addInput("Texture", "Texture");
@@ -1804,36 +1770,32 @@ class LGraphTextureAverage {
       }
     }
   }
+
+  static title = "Average";
+  static desc = "Compute a partial average (32 random samples) of a texture and stores it as a 1x1 pixel texture.\n If high_quality is true, then it generates the mipmaps first and reads from the lower one.";
+  static pixel_shader =
+    "precision highp float;\n\
+    precision highp float;\n\
+    uniform mat4 u_samples_a;\n\
+    uniform mat4 u_samples_b;\n\
+    uniform sampler2D u_texture;\n\
+    uniform float u_mipmap_offset;\n\
+    varying vec2 v_coord;\n\
+    \n\
+    void main() {\n\
+        vec4 color = vec4(0.0);\n\
+        //random average\n\
+        for(int i = 0; i < 4; ++i)\n\
+            for(int j = 0; j < 4; ++j)\n\
+            {\n\
+                color += texture2D(u_texture, vec2( u_samples_a[i][j], u_samples_b[i][j] ), u_mipmap_offset );\n\
+                color += texture2D(u_texture, vec2( 1.0 - u_samples_a[i][j], 1.0 - u_samples_b[i][j] ), u_mipmap_offset );\n\
+            }\n\
+      gl_FragColor = color * 0.03125;\n\
+    }\n\
+    ";
 }
-
-LGraphTextureAverage.title = "Average";
-LGraphTextureAverage.desc =
-        "Compute a partial average (32 random samples) of a texture and stores it as a 1x1 pixel texture.\n If high_quality is true, then it generates the mipmaps first and reads from the lower one.";
-
-LGraphTextureAverage.pixel_shader =
-        "precision highp float;\n\
-        precision highp float;\n\
-        uniform mat4 u_samples_a;\n\
-        uniform mat4 u_samples_b;\n\
-        uniform sampler2D u_texture;\n\
-        uniform float u_mipmap_offset;\n\
-        varying vec2 v_coord;\n\
-        \n\
-        void main() {\n\
-            vec4 color = vec4(0.0);\n\
-            //random average\n\
-            for(int i = 0; i < 4; ++i)\n\
-                for(int j = 0; j < 4; ++j)\n\
-                {\n\
-                    color += texture2D(u_texture, vec2( u_samples_a[i][j], u_samples_b[i][j] ), u_mipmap_offset );\n\
-                    color += texture2D(u_texture, vec2( 1.0 - u_samples_a[i][j], 1.0 - u_samples_b[i][j] ), u_mipmap_offset );\n\
-                }\n\
-           gl_FragColor = color * 0.03125;\n\
-        }\n\
-        ";
-
 LiteGraph.registerNodeType("texture/average", LGraphTextureAverage);
-
 
 
 // Computes operation between pixels (max, min)  *****************************************
@@ -1931,37 +1893,34 @@ class LGraphTextureMinMax {
       tex.toViewport(shader, uniforms);
     });
   }
+
+  static title = "MinMax";
+  static desc = "Compute the scene min max";
+  static widgets_info = {
+    mode: { widget: "combo", values: ["min", "max", "avg"] },
+  };
+  static pixel_shader =
+    "precision highp float;\n\
+    precision highp float;\n\
+    uniform mat4 u_samples_a;\n\
+    uniform mat4 u_samples_b;\n\
+    uniform sampler2D u_texture;\n\
+    uniform float u_mipmap_offset;\n\
+    varying vec2 v_coord;\n\
+    \n\
+    void main() {\n\
+        vec4 color = vec4(0.0);\n\
+        //random average\n\
+        for(int i = 0; i < 4; ++i)\n\
+            for(int j = 0; j < 4; ++j)\n\
+            {\n\
+                color += texture2D(u_texture, vec2( u_samples_a[i][j], u_samples_b[i][j] ), u_mipmap_offset );\n\
+                color += texture2D(u_texture, vec2( 1.0 - u_samples_a[i][j], 1.0 - u_samples_b[i][j] ), u_mipmap_offset );\n\
+            }\n\
+      gl_FragColor = color * 0.03125;\n\
+    }\n\
+    ";
 }
-
-LGraphTextureMinMax.widgets_info = {
-  mode: { widget: "combo", values: ["min", "max", "avg"] },
-};
-
-LGraphTextureMinMax.title = "MinMax";
-LGraphTextureMinMax.desc = "Compute the scene min max";
-
-LGraphTextureMinMax.pixel_shader =
-        "precision highp float;\n\
-        precision highp float;\n\
-        uniform mat4 u_samples_a;\n\
-        uniform mat4 u_samples_b;\n\
-        uniform sampler2D u_texture;\n\
-        uniform float u_mipmap_offset;\n\
-        varying vec2 v_coord;\n\
-        \n\
-        void main() {\n\
-            vec4 color = vec4(0.0);\n\
-            //random average\n\
-            for(int i = 0; i < 4; ++i)\n\
-                for(int j = 0; j < 4; ++j)\n\
-                {\n\
-                    color += texture2D(u_texture, vec2( u_samples_a[i][j], u_samples_b[i][j] ), u_mipmap_offset );\n\
-                    color += texture2D(u_texture, vec2( 1.0 - u_samples_a[i][j], 1.0 - u_samples_b[i][j] ), u_mipmap_offset );\n\
-                }\n\
-           gl_FragColor = color * 0.03125;\n\
-        }\n\
-        ";
-
 // LiteGraph.registerNodeType("texture/clustered_operation", LGraphTextureClusteredOperation);
 
 
@@ -2028,24 +1987,22 @@ class LGraphTextureTemporalSmooth {
     this._temp_texture = tempB;
     this._temp_texture2 = tempA;
   }
+
+  static title = "Smooth";
+  static desc = "Smooth texture over time";
+  static pixel_shader =
+    "precision highp float;\n\
+    precision highp float;\n\
+    uniform sampler2D u_texture;\n\
+    uniform sampler2D u_textureB;\n\
+    uniform float u_factor;\n\
+    varying vec2 v_coord;\n\
+    \n\
+    void main() {\n\
+        gl_FragColor = mix( texture2D( u_texture, v_coord ), texture2D( u_textureB, v_coord ), u_factor );\n\
+    }\n\
+    ";
 }
-
-LGraphTextureTemporalSmooth.title = "Smooth";
-LGraphTextureTemporalSmooth.desc = "Smooth texture over time";
-
-LGraphTextureTemporalSmooth.pixel_shader =
-        "precision highp float;\n\
-        precision highp float;\n\
-        uniform sampler2D u_texture;\n\
-        uniform sampler2D u_textureB;\n\
-        uniform float u_factor;\n\
-        varying vec2 v_coord;\n\
-        \n\
-        void main() {\n\
-            gl_FragColor = mix( texture2D( u_texture, v_coord ), texture2D( u_textureB, v_coord ), u_factor );\n\
-        }\n\
-        ";
-
 LiteGraph.registerNodeType( "texture/temporal_smooth", LGraphTextureTemporalSmooth );
 
 
@@ -2129,53 +2086,50 @@ class LGraphTextureLinearAvgSmooth {
     this.setOutputData(1, this._temp_texture2);
     this.frame++;
   }
+
+  static title = "Lineal Avg Smooth";
+  static desc = "Smooth texture linearly over time";
+
+  static "@samples" = { type: "number", min: 1, max: 64, step: 1, precision: 1 };
+  static pixel_shader_copy =
+    "precision highp float;\n\
+    precision highp float;\n\
+    uniform sampler2D u_texture;\n\
+    uniform sampler2D u_textureB;\n\
+    uniform float u_isamples;\n\
+    varying vec2 v_coord;\n\
+    \n\
+    void main() {\n\
+        if( v_coord.x <= u_isamples )\n\
+            gl_FragColor = texture2D( u_texture, vec2(0.5) );\n\
+        else\n\
+            gl_FragColor = texture2D( u_textureB, v_coord - vec2(u_isamples,0.0) );\n\
+    }\n\
+    ";
+
+  static pixel_shader_avg =
+    "precision highp float;\n\
+    precision highp float;\n\
+    uniform sampler2D u_texture;\n\
+    uniform int u_samples;\n\
+    uniform float u_isamples;\n\
+    varying vec2 v_coord;\n\
+    \n\
+    void main() {\n\
+        vec4 color = vec4(0.0);\n\
+        for(int i = 0; i < 64; ++i)\n\
+        {\n\
+            color += texture2D( u_texture, vec2( float(i)*u_isamples,0.0) );\n\
+            if(i == (u_samples - 1))\n\
+                break;\n\
+        }\n\
+        gl_FragColor = color * u_isamples;\n\
+    }\n\
+    ";
 }
-
-LGraphTextureLinearAvgSmooth.title = "Lineal Avg Smooth";
-LGraphTextureLinearAvgSmooth.desc = "Smooth texture linearly over time";
-
-LGraphTextureLinearAvgSmooth["@samples"] = { type: "number", min: 1, max: 64, step: 1, precision: 1 };
-
-LGraphTextureLinearAvgSmooth.pixel_shader_copy =
-        "precision highp float;\n\
-        precision highp float;\n\
-        uniform sampler2D u_texture;\n\
-        uniform sampler2D u_textureB;\n\
-        uniform float u_isamples;\n\
-        varying vec2 v_coord;\n\
-        \n\
-        void main() {\n\
-            if( v_coord.x <= u_isamples )\n\
-                gl_FragColor = texture2D( u_texture, vec2(0.5) );\n\
-            else\n\
-                gl_FragColor = texture2D( u_textureB, v_coord - vec2(u_isamples,0.0) );\n\
-        }\n\
-        ";
-
-LGraphTextureLinearAvgSmooth.pixel_shader_avg =
-        "precision highp float;\n\
-        precision highp float;\n\
-        uniform sampler2D u_texture;\n\
-        uniform int u_samples;\n\
-        uniform float u_isamples;\n\
-        varying vec2 v_coord;\n\
-        \n\
-        void main() {\n\
-            vec4 color = vec4(0.0);\n\
-            for(int i = 0; i < 64; ++i)\n\
-            {\n\
-                color += texture2D( u_texture, vec2( float(i)*u_isamples,0.0) );\n\
-                if(i == (u_samples - 1))\n\
-                    break;\n\
-            }\n\
-            gl_FragColor = color * u_isamples;\n\
-        }\n\
-        ";
-
-
 LiteGraph.registerNodeType( "texture/linear_avg_smooth", LGraphTextureLinearAvgSmooth );
 
-// Image To Texture *****************************************
+
 class LGraphImageToTexture {
   constructor() {
     this.addInput("Image", "image");
@@ -2220,17 +2174,13 @@ class LGraphImageToTexture {
 
     this.setOutputData(0, this._temp_texture);
   }
+
+  static title = "Image to Texture";
+  static desc = "Uploads an image to the GPU";
 }
+LiteGraph.registerNodeType("texture/imageToTexture", LGraphImageToTexture);
 
-LGraphImageToTexture.title = "Image to Texture";
-LGraphImageToTexture.desc = "Uploads an image to the GPU";
 
-LiteGraph.registerNodeType(
-  "texture/imageToTexture",
-  LGraphImageToTexture,
-);
-
-// Texture LUT *****************************************
 class LGraphTextureLUT {
   constructor() {
     this.addInput("Texture", "Texture");
@@ -2309,50 +2259,46 @@ class LGraphTextureLUT {
 
     this.setOutputData(0, this._tex);
   }
+
+  static title = "LUT";
+  static desc = "Apply LUT to Texture";
+  static widgets_info = {
+    texture: { widget: "texture" },
+    precision: { widget: "combo", values: LGraphTexture.MODE_VALUES },
+  };
+  static pixel_shader =
+    "precision highp float;\n\
+    precision highp float;\n\
+    varying vec2 v_coord;\n\
+    uniform sampler2D u_texture;\n\
+    uniform sampler2D u_textureB;\n\
+    uniform float u_amount;\n\
+    \n\
+    void main() {\n\
+        lowp vec4 textureColor = clamp( texture2D(u_texture, v_coord), vec4(0.0), vec4(1.0) );\n\
+        mediump float blueColor = textureColor.b * 63.0;\n\
+        mediump vec2 quad1;\n\
+        quad1.y = floor(floor(blueColor) / 8.0);\n\
+        quad1.x = floor(blueColor) - (quad1.y * 8.0);\n\
+        mediump vec2 quad2;\n\
+        quad2.y = floor(ceil(blueColor) / 8.0);\n\
+        quad2.x = ceil(blueColor) - (quad2.y * 8.0);\n\
+        highp vec2 texPos1;\n\
+        texPos1.x = (quad1.x * 0.125) + 0.5/512.0 + ((0.125 - 1.0/512.0) * textureColor.r);\n\
+        texPos1.y = 1.0 - ((quad1.y * 0.125) + 0.5/512.0 + ((0.125 - 1.0/512.0) * textureColor.g));\n\
+        highp vec2 texPos2;\n\
+        texPos2.x = (quad2.x * 0.125) + 0.5/512.0 + ((0.125 - 1.0/512.0) * textureColor.r);\n\
+        texPos2.y = 1.0 - ((quad2.y * 0.125) + 0.5/512.0 + ((0.125 - 1.0/512.0) * textureColor.g));\n\
+        lowp vec4 newColor1 = texture2D(u_textureB, texPos1);\n\
+        lowp vec4 newColor2 = texture2D(u_textureB, texPos2);\n\
+        lowp vec4 newColor = mix(newColor1, newColor2, fract(blueColor));\n\
+        gl_FragColor = vec4( mix( textureColor.rgb, newColor.rgb, u_amount), textureColor.w);\n\
+    }\n\
+    ";
 }
-
-LGraphTextureLUT.widgets_info = {
-  texture: { widget: "texture" },
-  precision: { widget: "combo", values: LGraphTexture.MODE_VALUES },
-};
-
-LGraphTextureLUT.title = "LUT";
-LGraphTextureLUT.desc = "Apply LUT to Texture";
-
-LGraphTextureLUT.pixel_shader =
-        "precision highp float;\n\
-        precision highp float;\n\
-        varying vec2 v_coord;\n\
-        uniform sampler2D u_texture;\n\
-        uniform sampler2D u_textureB;\n\
-        uniform float u_amount;\n\
-        \n\
-        void main() {\n\
-             lowp vec4 textureColor = clamp( texture2D(u_texture, v_coord), vec4(0.0), vec4(1.0) );\n\
-             mediump float blueColor = textureColor.b * 63.0;\n\
-             mediump vec2 quad1;\n\
-             quad1.y = floor(floor(blueColor) / 8.0);\n\
-             quad1.x = floor(blueColor) - (quad1.y * 8.0);\n\
-             mediump vec2 quad2;\n\
-             quad2.y = floor(ceil(blueColor) / 8.0);\n\
-             quad2.x = ceil(blueColor) - (quad2.y * 8.0);\n\
-             highp vec2 texPos1;\n\
-             texPos1.x = (quad1.x * 0.125) + 0.5/512.0 + ((0.125 - 1.0/512.0) * textureColor.r);\n\
-             texPos1.y = 1.0 - ((quad1.y * 0.125) + 0.5/512.0 + ((0.125 - 1.0/512.0) * textureColor.g));\n\
-             highp vec2 texPos2;\n\
-             texPos2.x = (quad2.x * 0.125) + 0.5/512.0 + ((0.125 - 1.0/512.0) * textureColor.r);\n\
-             texPos2.y = 1.0 - ((quad2.y * 0.125) + 0.5/512.0 + ((0.125 - 1.0/512.0) * textureColor.g));\n\
-             lowp vec4 newColor1 = texture2D(u_textureB, texPos1);\n\
-             lowp vec4 newColor2 = texture2D(u_textureB, texPos2);\n\
-             lowp vec4 newColor = mix(newColor1, newColor2, fract(blueColor));\n\
-             gl_FragColor = vec4( mix( textureColor.rgb, newColor.rgb, u_amount), textureColor.w);\n\
-        }\n\
-        ";
-
 LiteGraph.registerNodeType("texture/LUT", LGraphTextureLUT);
 
 
-// Texture LUT *****************************************
 class LGraphTextureEncode {
   constructor() {
     this.addInput("Texture", "Texture");
@@ -2434,50 +2380,47 @@ class LGraphTextureEncode {
 
     this.setOutputData(0, this._tex);
   }
+
+  static title = "Encode";
+  static desc = "Apply a texture atlas to encode a texture";
+  static widgets_info = {
+    texture: { widget: "texture" },
+    precision: { widget: "combo", values: LGraphTexture.MODE_VALUES },
+  };
+  static pixel_shader =
+    "precision highp float;\n\
+    precision highp float;\n\
+    varying vec2 v_coord;\n\
+    uniform sampler2D u_texture;\n\
+    uniform sampler2D u_textureB;\n\
+    uniform float u_row_simbols;\n\
+    uniform float u_symbol_size;\n\
+    uniform float u_brightness;\n\
+    uniform float u_invert;\n\
+    uniform float u_colorize;\n\
+    uniform vec2 u_res;\n\
+    \n\
+    void main() {\n\
+        vec2 total_symbols = u_res / u_symbol_size;\n\
+        vec2 uv = floor(v_coord * total_symbols) / total_symbols; //pixelate \n\
+        vec2 local_uv = mod(v_coord * u_res, u_symbol_size) / u_symbol_size;\n\
+        lowp vec4 textureColor = texture2D(u_texture, uv );\n\
+        float lum = clamp(u_brightness * (textureColor.x + textureColor.y + textureColor.z)/3.0,0.0,1.0);\n\
+        if( u_invert == 1.0 ) lum = 1.0 - lum;\n\
+        float index = floor( lum * (u_row_simbols * u_row_simbols - 1.0));\n\
+        float col = mod( index, u_row_simbols );\n\
+        float row = u_row_simbols - floor( index / u_row_simbols ) - 1.0;\n\
+        vec2 simbol_uv = ( vec2( col, row ) + local_uv ) / u_row_simbols;\n\
+        vec4 color = texture2D( u_textureB, simbol_uv );\n\
+        if(u_colorize == 1.0)\n\
+            color *= textureColor;\n\
+        gl_FragColor = color;\n\
+    }\n\
+    ";
 }
-
-LGraphTextureEncode.widgets_info = {
-  texture: { widget: "texture" },
-  precision: { widget: "combo", values: LGraphTexture.MODE_VALUES },
-};
-
-LGraphTextureEncode.title = "Encode";
-LGraphTextureEncode.desc = "Apply a texture atlas to encode a texture";
-
-LGraphTextureEncode.pixel_shader =
-        "precision highp float;\n\
-        precision highp float;\n\
-        varying vec2 v_coord;\n\
-        uniform sampler2D u_texture;\n\
-        uniform sampler2D u_textureB;\n\
-        uniform float u_row_simbols;\n\
-        uniform float u_symbol_size;\n\
-        uniform float u_brightness;\n\
-        uniform float u_invert;\n\
-        uniform float u_colorize;\n\
-        uniform vec2 u_res;\n\
-        \n\
-        void main() {\n\
-            vec2 total_symbols = u_res / u_symbol_size;\n\
-            vec2 uv = floor(v_coord * total_symbols) / total_symbols; //pixelate \n\
-            vec2 local_uv = mod(v_coord * u_res, u_symbol_size) / u_symbol_size;\n\
-            lowp vec4 textureColor = texture2D(u_texture, uv );\n\
-            float lum = clamp(u_brightness * (textureColor.x + textureColor.y + textureColor.z)/3.0,0.0,1.0);\n\
-            if( u_invert == 1.0 ) lum = 1.0 - lum;\n\
-            float index = floor( lum * (u_row_simbols * u_row_simbols - 1.0));\n\
-            float col = mod( index, u_row_simbols );\n\
-            float row = u_row_simbols - floor( index / u_row_simbols ) - 1.0;\n\
-            vec2 simbol_uv = ( vec2( col, row ) + local_uv ) / u_row_simbols;\n\
-            vec4 color = texture2D( u_textureB, simbol_uv );\n\
-            if(u_colorize == 1.0)\n\
-                color *= textureColor;\n\
-            gl_FragColor = color;\n\
-        }\n\
-        ";
-
 LiteGraph.registerNodeType("texture/encode", LGraphTextureEncode);
 
-// Texture Channels *****************************************
+
 class LGraphTextureChannels {
   constructor() {
     this.addInput("Texture", "Texture");
@@ -2564,29 +2507,25 @@ class LGraphTextureChannels {
       this.setOutputData(i, this._channels[i]);
     }
   }
+
+  static title = "Texture to Channels";
+  static desc = "Split texture channels";
+  static pixel_shader =
+    "precision highp float;\n\
+    precision highp float;\n\
+    varying vec2 v_coord;\n\
+    uniform sampler2D u_texture;\n\
+    uniform vec4 u_mask;\n\
+    \n\
+    void main() {\n\
+      gl_FragColor = vec4( vec3( length( texture2D(u_texture, v_coord) * u_mask )), 1.0 );\n\
+    }\n\
+    ";
 }
+LiteGraph.registerNodeType("texture/textureChannels", LGraphTextureChannels);
 
-LGraphTextureChannels.title = "Texture to Channels";
-LGraphTextureChannels.desc = "Split texture channels";
 
-LGraphTextureChannels.pixel_shader =
-        "precision highp float;\n\
-        precision highp float;\n\
-        varying vec2 v_coord;\n\
-        uniform sampler2D u_texture;\n\
-        uniform vec4 u_mask;\n\
-        \n\
-        void main() {\n\
-           gl_FragColor = vec4( vec3( length( texture2D(u_texture, v_coord) * u_mask )), 1.0 );\n\
-        }\n\
-        ";
-
-LiteGraph.registerNodeType(
-  "texture/textureChannels",
-  LGraphTextureChannels,
-);
-
-// Texture Channels to Texture *****************************************
+// Texture Channels to Texture
 class LGraphChannelsTexture {
   constructor() {
     this.addInput("R", "Texture");
@@ -2673,39 +2612,34 @@ class LGraphChannelsTexture {
     });
     this.setOutputData(0, this._texture);
   }
+
+  static title = "Channels to Texture";
+  static desc = "Split texture channels";
+  static widgets_info = {
+    precision: { widget: "combo", values: LGraphTexture.MODE_VALUES },
+  };
+  static pixel_shader =
+    "precision highp float;\n\
+    precision highp float;\n\
+    varying vec2 v_coord;\n\
+    uniform sampler2D u_textureR;\n\
+    uniform sampler2D u_textureG;\n\
+    uniform sampler2D u_textureB;\n\
+    uniform sampler2D u_textureA;\n\
+    uniform vec4 u_color;\n\
+    \n\
+    void main() {\n\
+      gl_FragColor = u_color * vec4( \
+        texture2D(u_textureR, v_coord).r,\
+        texture2D(u_textureG, v_coord).r,\
+        texture2D(u_textureB, v_coord).r,\
+        texture2D(u_textureA, v_coord).r);\n\
+    }\n\
+    ";
 }
+LiteGraph.registerNodeType("texture/channelsTexture", LGraphChannelsTexture);
 
-LGraphChannelsTexture.title = "Channels to Texture";
-LGraphChannelsTexture.desc = "Split texture channels";
-LGraphChannelsTexture.widgets_info = {
-  precision: { widget: "combo", values: LGraphTexture.MODE_VALUES },
-};
 
-LGraphChannelsTexture.pixel_shader =
-        "precision highp float;\n\
-        precision highp float;\n\
-        varying vec2 v_coord;\n\
-        uniform sampler2D u_textureR;\n\
-        uniform sampler2D u_textureG;\n\
-        uniform sampler2D u_textureB;\n\
-        uniform sampler2D u_textureA;\n\
-        uniform vec4 u_color;\n\
-        \n\
-        void main() {\n\
-           gl_FragColor = u_color * vec4( \
-                    texture2D(u_textureR, v_coord).r,\
-                    texture2D(u_textureG, v_coord).r,\
-                    texture2D(u_textureB, v_coord).r,\
-                    texture2D(u_textureA, v_coord).r);\n\
-        }\n\
-        ";
-
-LiteGraph.registerNodeType(
-  "texture/channelsTexture",
-  LGraphChannelsTexture,
-);
-
-// Texture Color *****************************************
 class LGraphTextureColor {
   constructor() {
     this.addOutput("Texture", "Texture");
@@ -2794,17 +2728,15 @@ class LGraphTextureColor {
       ["A", "number"],
     ];
   }
+
+  static title = "Color";
+  static desc = "Generates a 1x1 texture with a constant color";
+  static widgets_info = {
+    precision: { widget: "combo", values: LGraphTexture.MODE_VALUES },
+  };
 }
-
-LGraphTextureColor.title = "Color";
-LGraphTextureColor.desc =
-        "Generates a 1x1 texture with a constant color";
-
-LGraphTextureColor.widgets_info = {
-  precision: { widget: "combo", values: LGraphTexture.MODE_VALUES },
-};
-
 LiteGraph.registerNodeType("texture/color", LGraphTextureColor);
+
 
 // Texture Channels to Texture *****************************************
 class LGraphTextureGradient {
@@ -2883,45 +2815,43 @@ class LGraphTextureGradient {
   onGetInputs() {
     return [["angle", "number"], ["scale", "number"]];
   }
+
+  static title = "Gradient";
+  static desc = "Generates a gradient";
+  static "@A" = { type: "color" };
+  static "@B" = { type: "color" };
+  static "@texture_size" = {
+    type: "enum",
+    values: [32, 64, 128, 256, 512],
+  };
+  static pixel_shader =
+    "precision highp float;\n\
+    precision highp float;\n\
+    varying vec2 v_coord;\n\
+    uniform float u_angle;\n\
+    uniform float u_scale;\n\
+    uniform vec3 u_colorA;\n\
+    uniform vec3 u_colorB;\n\
+    \n\
+    vec2 rotate(vec2 v, float angle)\n\
+    {\n\
+        vec2 result;\n\
+        float _cos = cos(angle);\n\
+        float _sin = sin(angle);\n\
+        result.x = v.x * _cos - v.y * _sin;\n\
+        result.y = v.x * _sin + v.y * _cos;\n\
+        return result;\n\
+    }\n\
+    void main() {\n\
+        float f = (rotate(u_scale * (v_coord - vec2(0.5)), u_angle) + vec2(0.5)).x;\n\
+        vec3 color = mix(u_colorA,u_colorB,clamp(f,0.0,1.0));\n\
+      gl_FragColor = vec4(color,1.0);\n\
+    }\n\
+    ";
 }
-
-LGraphTextureGradient.title = "Gradient";
-LGraphTextureGradient.desc = "Generates a gradient";
-LGraphTextureGradient["@A"] = { type: "color" };
-LGraphTextureGradient["@B"] = { type: "color" };
-LGraphTextureGradient["@texture_size"] = {
-  type: "enum",
-  values: [32, 64, 128, 256, 512],
-};
-
-LGraphTextureGradient.pixel_shader =
-        "precision highp float;\n\
-        precision highp float;\n\
-        varying vec2 v_coord;\n\
-        uniform float u_angle;\n\
-        uniform float u_scale;\n\
-        uniform vec3 u_colorA;\n\
-        uniform vec3 u_colorB;\n\
-        \n\
-        vec2 rotate(vec2 v, float angle)\n\
-        {\n\
-            vec2 result;\n\
-            float _cos = cos(angle);\n\
-            float _sin = sin(angle);\n\
-            result.x = v.x * _cos - v.y * _sin;\n\
-            result.y = v.x * _sin + v.y * _cos;\n\
-            return result;\n\
-        }\n\
-        void main() {\n\
-            float f = (rotate(u_scale * (v_coord - vec2(0.5)), u_angle) + vec2(0.5)).x;\n\
-            vec3 color = mix(u_colorA,u_colorB,clamp(f,0.0,1.0));\n\
-           gl_FragColor = vec4(color,1.0);\n\
-        }\n\
-        ";
-
 LiteGraph.registerNodeType("texture/gradient", LGraphTextureGradient);
 
-// Texture Mix *****************************************
+
 class LGraphTextureMix {
   constructor() {
     this.addInput("A", "Texture");
