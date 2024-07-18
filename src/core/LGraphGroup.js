@@ -1,8 +1,8 @@
-import { LiteGraph } from "./litegraph.js";
-import { LGraphCanvas } from "./LGraphCanvas.js";
-import { LGraphNode } from "./LGraphNode.js";
+import { LiteGraph } from './litegraph';
+import { LGraphCanvas } from './LGraphCanvas';
+import { LGraphNode } from './LGraphNode';
 
-var global = typeof(window) != "undefined" ? window : typeof(self) != "undefined" ? self : globalThis;
+const global = typeof (window) !== 'undefined' ? window : typeof (self) !== 'undefined' ? self : globalThis;
 
 export class LGraphGroup {
   constructor(title) {
@@ -10,11 +10,11 @@ export class LGraphGroup {
   }
 
   _ctor(title) {
-    this.title = title || "Group";
+    this.title = title || 'Group';
     this.font_size = 24;
     this.color = LGraphCanvas.node_colors.pale_blue
       ? LGraphCanvas.node_colors.pale_blue.groupcolor
-      : "#AAA";
+      : '#AAA';
     this._bounding = new Float32Array([10, 10, 140, 80]);
     this._pos = this._bounding.subarray(0, 2);
     this._size = this._bounding.subarray(2, 4);
@@ -29,6 +29,7 @@ export class LGraphGroup {
     this._pos[0] = v[0];
     this._pos[1] = v[1];
   }
+
   get pos() {
     this._pos ??= new Float32Array(10, 10);
     return this._pos;
@@ -41,6 +42,7 @@ export class LGraphGroup {
     this._size[0] = Math.max(140, v[0]);
     this._size[1] = Math.max(80, v[1]);
   }
+
   get size() {
     return this._size;
   }
@@ -55,7 +57,7 @@ export class LGraphGroup {
   }
 
   serialize() {
-    var b = this._bounding;
+    const b = this._bounding;
     return {
       title: this.title,
       bounding: [
@@ -75,8 +77,8 @@ export class LGraphGroup {
     if (ignore_nodes) {
       return;
     }
-    for (var i = 0; i < this._nodes.length; ++i) {
-      var node = this._nodes[i];
+    for (let i = 0; i < this._nodes.length; ++i) {
+      const node = this._nodes[i];
       node.pos[0] += deltax;
       node.pos[1] += deltay;
     }
@@ -84,11 +86,11 @@ export class LGraphGroup {
 
   recomputeInsideNodes() {
     this._nodes.length = 0;
-    var nodes = this.graph._nodes;
-    var node_bounding = new Float32Array(4);
+    const nodes = this.graph._nodes;
+    const node_bounding = new Float32Array(4);
 
-    for (var i = 0; i < nodes.length; ++i) {
-      var node = nodes[i];
+    for (let i = 0; i < nodes.length; ++i) {
+      const node = nodes[i];
       node.getBounding(node_bounding);
       if (!LiteGraph.overlapBounding(this._bounding, node_bounding)) {
         continue;

@@ -1,14 +1,13 @@
-import { LiteGraph } from "@/litegraph.js";
-
+import { LiteGraph } from '@/litegraph';
 
 class Selector {
   constructor() {
-    this.addInput("sel", "number");
-    this.addInput("A");
-    this.addInput("B");
-    this.addInput("C");
-    this.addInput("D");
-    this.addOutput("out");
+    this.addInput('sel', 'number');
+    this.addInput('A');
+    this.addInput('B');
+    this.addInput('C');
+    this.addInput('D');
+    this.addOutput('out');
 
     this.selected = 0;
   }
@@ -17,8 +16,8 @@ class Selector {
     if (this.flags.collapsed) {
       return;
     }
-    ctx.fillStyle = "#AFB";
-    var y = (this.selected + 1) * LiteGraph.NODE_SLOT_HEIGHT + 6;
+    ctx.fillStyle = '#AFB';
+    const y = (this.selected + 1) * LiteGraph.NODE_SLOT_HEIGHT + 6;
     ctx.beginPath();
     ctx.moveTo(50, y);
     ctx.lineTo(50, y + LiteGraph.NODE_SLOT_HEIGHT);
@@ -27,52 +26,51 @@ class Selector {
   }
 
   onExecute() {
-    var sel = this.getInputData(0);
-    if (sel == null || sel.constructor !== Number)
-      sel = 0;
+    let sel = this.getInputData(0);
+    if (sel == null || sel.constructor !== Number) sel = 0;
     this.selected = sel = Math.round(sel) % (this.inputs.length - 1);
-    var v = this.getInputData(sel + 1);
+    const v = this.getInputData(sel + 1);
     if (v !== undefined) {
       this.setOutputData(0, v);
     }
   }
 
   onGetInputs() {
-    return [["E", 0], ["F", 0], ["G", 0], ["H", 0]];
+    return [['E', 0], ['F', 0], ['G', 0], ['H', 0]];
   }
 
-  static title = "Selector";
-  static desc = "selects an output";
-}
-LiteGraph.registerNodeType("logic/selector", Selector);
+  static title = 'Selector';
 
+  static desc = 'selects an output';
+}
+LiteGraph.registerNodeType('logic/selector', Selector);
 
 class Sequence {
   constructor() {
     this.properties = {
-      sequence: "A,B,C",
+      sequence: 'A,B,C',
     };
-    this.addInput("index", "number");
-    this.addInput("seq");
-    this.addOutput("out");
+    this.addInput('index', 'number');
+    this.addInput('seq');
+    this.addOutput('out');
 
     this.index = 0;
-    this.values = this.properties.sequence.split(",");
+    this.values = this.properties.sequence.split(',');
   }
 
   onPropertyChanged(name, value) {
-    if (name == "sequence") {
-      this.values = value.split(",");
+    if (name == 'sequence') {
+      this.values = value.split(',');
     }
   }
 
   onExecute() {
-    var seq = this.getInputData(1);
+    const seq = this.getInputData(1);
     if (seq && seq != this.current_sequence) {
-      this.values = seq.split(",");
+      this.values = seq.split(',');
       this.current_sequence = seq;
     }
-    var index = this.getInputData(0);
+    let index = this.getInputData(0);
     if (index == null) {
       index = 0;
     }
@@ -81,23 +79,23 @@ class Sequence {
     this.setOutputData(0, this.values[index]);
   }
 
-  static title = "Sequence";
-  static desc = "select one element from a sequence from a string";
-}
-LiteGraph.registerNodeType("logic/sequence", Sequence);
+  static title = 'Sequence';
 
+  static desc = 'select one element from a sequence from a string';
+}
+LiteGraph.registerNodeType('logic/sequence', Sequence);
 
 class logicAnd {
   constructor() {
     this.properties = { };
-    this.addInput("a", "boolean");
-    this.addInput("b", "boolean");
-    this.addOutput("out", "boolean");
+    this.addInput('a', 'boolean');
+    this.addInput('b', 'boolean');
+    this.addOutput('out', 'boolean');
   }
 
   onExecute() {
     var ret = true;
-    for (var inX in this.inputs) {
+    for (const inX in this.inputs) {
       if (!this.getInputData(inX)) {
         var ret = false;
         break;
@@ -108,27 +106,27 @@ class logicAnd {
 
   onGetInputs() {
     return [
-      ["and", "boolean"],
+      ['and', 'boolean'],
     ];
   }
 
-  static title = "AND";
-  static desc = "Return true if all inputs are true";
-}
-LiteGraph.registerNodeType("logic/AND", logicAnd);
+  static title = 'AND';
 
+  static desc = 'Return true if all inputs are true';
+}
+LiteGraph.registerNodeType('logic/AND', logicAnd);
 
 class logicOr {
   constructor() {
     this.properties = { };
-    this.addInput("a", "boolean");
-    this.addInput("b", "boolean");
-    this.addOutput("out", "boolean");
+    this.addInput('a', 'boolean');
+    this.addInput('b', 'boolean');
+    this.addOutput('out', 'boolean');
   }
 
   onExecute() {
-    var ret = false;
-    for (var inX in this.inputs) {
+    let ret = false;
+    for (const inX in this.inputs) {
       if (this.getInputData(inX)) {
         ret = true;
         break;
@@ -139,46 +137,45 @@ class logicOr {
 
   onGetInputs() {
     return [
-      ["or", "boolean"],
+      ['or', 'boolean'],
     ];
   }
 }
 
-logicOr.title = "OR";
-logicOr.desc = "Return true if at least one input is true";
-LiteGraph.registerNodeType("logic/OR", logicOr);
-
+logicOr.title = 'OR';
+logicOr.desc = 'Return true if at least one input is true';
+LiteGraph.registerNodeType('logic/OR', logicOr);
 
 class logicNot {
   constructor() {
     this.properties = { };
-    this.addInput("in", "boolean");
-    this.addOutput("out", "boolean");
+    this.addInput('in', 'boolean');
+    this.addOutput('out', 'boolean');
   }
 
   onExecute() {
-    var ret = !this.getInputData(0);
+    const ret = !this.getInputData(0);
     this.setOutputData(0, ret);
   }
 
-  static title = "NOT";
-  static desc = "Return the logical negation";
-}
-LiteGraph.registerNodeType("logic/NOT", logicNot);
+  static title = 'NOT';
 
+  static desc = 'Return the logical negation';
+}
+LiteGraph.registerNodeType('logic/NOT', logicNot);
 
 class logicCompare {
   constructor() {
     this.properties = { };
-    this.addInput("a", "boolean");
-    this.addInput("b", "boolean");
-    this.addOutput("out", "boolean");
+    this.addInput('a', 'boolean');
+    this.addInput('b', 'boolean');
+    this.addOutput('out', 'boolean');
   }
 
   onExecute() {
-    var last = null;
-    var ret = true;
-    for (var inX in this.inputs) {
+    let last = null;
+    let ret = true;
+    for (const inX in this.inputs) {
       if (last === null) last = this.getInputData(inX);
       else
         if (last != this.getInputData(inX)) {
@@ -191,28 +188,28 @@ class logicCompare {
 
   onGetInputs() {
     return [
-      ["bool", "boolean"],
+      ['bool', 'boolean'],
     ];
   }
 
-  static title = "bool == bool";
-  static desc = "Compare for logical equality";
-}
-LiteGraph.registerNodeType("logic/CompareBool", logicCompare);
+  static title = 'bool == bool';
 
+  static desc = 'Compare for logical equality';
+}
+LiteGraph.registerNodeType('logic/CompareBool', logicCompare);
 
 class logicBranch {
   constructor() {
     this.properties = { };
-    this.addInput("onTrigger", LiteGraph.ACTION);
-    this.addInput("condition", "boolean");
-    this.addOutput("true", LiteGraph.EVENT);
-    this.addOutput("false", LiteGraph.EVENT);
+    this.addInput('onTrigger', LiteGraph.ACTION);
+    this.addInput('condition', 'boolean');
+    this.addOutput('true', LiteGraph.EVENT);
+    this.addOutput('false', LiteGraph.EVENT);
     this.mode = LiteGraph.ON_TRIGGER;
   }
 
   onExecute(param, options) {
-    var condtition = this.getInputData(1);
+    const condtition = this.getInputData(1);
     if (condtition) {
       this.triggerSlot(0);
     } else {
@@ -220,7 +217,8 @@ class logicBranch {
     }
   }
 
-  static title = "Branch";
-  static desc = "Branch execution on condition";
+  static title = 'Branch';
+
+  static desc = 'Branch execution on condition';
 }
-LiteGraph.registerNodeType("logic/IF", logicBranch);
+LiteGraph.registerNodeType('logic/IF', logicBranch);
