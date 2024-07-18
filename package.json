@@ -12,7 +12,7 @@
         "dev": "vite dev",
         "preview": "vite preview",
         "test": "vitest",
-        "lint": "npx eslint src",
+        "lint": "npx eslint --cache src",
         "lint:fix": "npx eslint --fix src",
         "madge:png": "npx madge --image assets/dev/dep_graph.png --ts-config ./tools/tsconfig.json src",
         "typecheck": "tsc -p ./tools/tsconfig.strict.json"
@@ -56,7 +56,7 @@
         "@types/eslint__js": "^8.42.3",
         "@typescript-eslint/parser": "^7.16.1",
         "eslint": "^8.57.0",
-        "eslint-config-airbnb": "^19.0.4",
+        "eslint-config-airbnb-base": "^15.0.0",
         "eslint-import-resolver-alias": "^1.1.2",
         "eslint-import-resolver-typescript": "^3.6.1",
         "eslint-plugin-import": "^2.29.1",
