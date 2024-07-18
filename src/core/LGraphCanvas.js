@@ -5,13 +5,7 @@ var global = typeof(window) != "undefined" ? window : typeof(self) != "undefined
 
 var temp = new Float32Array(4);
 var temp_vec2 = new Float32Array(2);
-
-/**
-     * draws the shape of the given node in the canvas
-     * @method drawNodeShape
-     **/
-var tmp_area = new Float32Array(4);
-
+var tmp_area = new Float32Array(4); // used by drawNodeShape
 var margin_area = new Float32Array(4);
 var link_bounding = new Float32Array(4);
 var tempA = new Float32Array(2);
