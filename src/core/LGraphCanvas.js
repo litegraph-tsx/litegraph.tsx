@@ -2,6 +2,7 @@ import { LiteGraph, clamp } from './litegraph';
 import { DragAndScale } from './DragAndScale';
 import { console } from './Console';
 import { pointerListenerAdd, pointerListenerRemove, PointerSettings } from './pointer_events';
+import { LGraphStyles } from './styles';
 
 const global = typeof (window) !== 'undefined' ? window : typeof (self) !== 'undefined' ? self : globalThis;
 
@@ -42,9 +43,9 @@ export class LGraphCanvas {
     this.ds = new DragAndScale();
     this.zoom_modify_alpha = true; // otherwise it generates ugly patterns when scaling down too much
 
-    this.title_text_font = `${LiteGraph.NODE_TEXT_SIZE}px Arial`;
-    this.inner_text_font = `normal ${LiteGraph.NODE_SUBTEXT_SIZE}px Arial`;
-    this.node_title_color = LiteGraph.NODE_TITLE_COLOR;
+    this.title_text_font = `${LGraphStyles.NODE_TEXT_SIZE}px Arial`;
+    this.inner_text_font = `normal ${LGraphStyles.NODE_SUBTEXT_SIZE}px Arial`;
+    this.node_title_color = LGraphStyles.NODE_TITLE_COLOR;
     this.default_link_color = LiteGraph.LINK_COLOR;
     this.default_connection_color = {
       input_off: '#778',
@@ -880,7 +881,7 @@ export class LGraphCanvas {
           } else {
             // open subgraph button
             if (node.subgraph && !node.skip_subgraph_button) {
-              if (!node.flags.collapsed && pos[0] > node.size[0] - LiteGraph.NODE_TITLE_HEIGHT && pos[1] < 0) {
+              if (!node.flags.collapsed && pos[0] > node.size[0] - LGraphStyles.NODE_TITLE_HEIGHT && pos[1] < 0) {
                 var that = this;
                 setTimeout(() => {
                   that.openSubgraph(node.subgraph);
@@ -1543,7 +1544,7 @@ export class LGraphCanvas {
         if (
           node
                         && e.click_time < 300
-                        && LiteGraph.isInsideRectangle(e.canvasX, e.canvasY, node.pos[0], node.pos[1] - LiteGraph.NODE_TITLE_HEIGHT, LiteGraph.NODE_TITLE_HEIGHT, LiteGraph.NODE_TITLE_HEIGHT)
+                        && LiteGraph.isInsideRectangle(e.canvasX, e.canvasY, node.pos[0], node.pos[1] - LGraphStyles.NODE_TITLE_HEIGHT, LGraphStyles.NODE_TITLE_HEIGHT, LGraphStyles.NODE_TITLE_HEIGHT)
         ) {
           node.collapse();
         }
@@ -1657,7 +1658,7 @@ export class LGraphCanvas {
          * @method isOverNodeBox
          * */
   isOverNodeBox(node, canvasx, canvasy) {
-    const title_height = LiteGraph.NODE_TITLE_HEIGHT;
+    const title_height = LGraphStyles.NODE_TITLE_HEIGHT;
     if (
       LiteGraph.isInsideRectangle(
         canvasx,
@@ -2726,7 +2727,7 @@ export class LGraphCanvas {
   drawSubgraphPanelLeft(subgraph, subnode, ctx) {
     const num = subnode.inputs ? subnode.inputs.length : 0;
     const w = 200;
-    const h = Math.floor(LiteGraph.NODE_SLOT_HEIGHT * 1.6);
+    const h = Math.floor(LGraphStyles.NODE_SLOT_HEIGHT * 1.6);
 
     ctx.fillStyle = '#111';
     ctx.globalAlpha = 0.8;
@@ -2794,7 +2795,7 @@ export class LGraphCanvas {
     const num = subnode.outputs ? subnode.outputs.length : 0;
     const canvas_w = this.bgcanvas.width;
     const w = 200;
-    const h = Math.floor(LiteGraph.NODE_SLOT_HEIGHT * 1.6);
+    const h = Math.floor(LGraphStyles.NODE_SLOT_HEIGHT * 1.6);
 
     ctx.fillStyle = '#111';
     ctx.globalAlpha = 0.8;
@@ -2862,9 +2863,9 @@ export class LGraphCanvas {
   // Draws a button into the canvas overlay and computes if it was clicked using the immediate gui paradigm
   drawButton(x, y, w, h, text, bgcolor, hovercolor, textcolor) {
     const { ctx } = this;
-    bgcolor = bgcolor || LiteGraph.NODE_DEFAULT_COLOR;
+    bgcolor = bgcolor || LGraphStyles.NODE_DEFAULT_COLOR;
     hovercolor = hovercolor || '#555';
-    textcolor = textcolor || LiteGraph.NODE_TEXT_COLOR;
+    textcolor = textcolor || LGraphStyles.NODE_TEXT_COLOR;
     let pos = this.ds.convertOffsetToCanvas(this.graph_mouse);
     const hover = LiteGraph.isInsideRectangle(pos[0], pos[1], x, y, w, h);
     pos = this.last_click_position ? [this.last_click_position[0], this.last_click_position[1]] : null;
@@ -3121,8 +3122,8 @@ export class LGraphCanvas {
     let glow = false;
     this.current_node = node;
 
-    const color = node.color || node.constructor.color || LiteGraph.NODE_DEFAULT_COLOR;
-    let bgcolor = node.bgcolor || node.constructor.bgcolor || LiteGraph.NODE_DEFAULT_BGCOLOR;
+    const color = node.color || node.constructor.color || LGraphStyles.NODE_DEFAULT_COLOR;
+    let bgcolor = node.bgcolor || node.constructor.bgcolor || LGraphStyles.NODE_DEFAULT_BGCOLOR;
 
     // shadow and glow
     if (node.mouseOver) {
@@ -3176,8 +3177,8 @@ export class LGraphCanvas {
         node._collapsed_width = Math.min(
           node.size[0],
           ctx.measureText(title).width
-                            + LiteGraph.NODE_TITLE_HEIGHT * 2,
-        ); // LiteGraph.NODE_COLLAPSED_WIDTH;
+                            + LGraphStyles.NODE_TITLE_HEIGHT * 2,
+        ); // LGraphStyles.NODE_COLLAPSED_WIDTH;
         size[0] = node._collapsed_width;
         size[1] = 0;
       }
@@ -3264,8 +3265,8 @@ export class LGraphCanvas {
           var pos = node.getConnectionPos(true, i, slot_pos);
           pos[0] -= node.pos[0];
           pos[1] -= node.pos[1];
-          if (max_y < pos[1] + LiteGraph.NODE_SLOT_HEIGHT * 0.5) {
-            max_y = pos[1] + LiteGraph.NODE_SLOT_HEIGHT * 0.5;
+          if (max_y < pos[1] + LGraphStyles.NODE_SLOT_HEIGHT * 0.5) {
+            max_y = pos[1] + LGraphStyles.NODE_SLOT_HEIGHT * 0.5;
           }
 
           ctx.beginPath();
@@ -3319,7 +3320,7 @@ export class LGraphCanvas {
           if (render_text) {
             var text = slot.label != null ? slot.label : slot.name;
             if (text) {
-              ctx.fillStyle = LiteGraph.NODE_TEXT_COLOR;
+              ctx.fillStyle = LGraphStyles.NODE_TEXT_COLOR;
               if (horizontal || slot.dir == LiteGraph.UP) {
                 ctx.fillText(text, pos[0], pos[1] - 10);
               } else {
@@ -3349,8 +3350,8 @@ export class LGraphCanvas {
           var pos = node.getConnectionPos(false, i, slot_pos);
           pos[0] -= node.pos[0];
           pos[1] -= node.pos[1];
-          if (max_y < pos[1] + LiteGraph.NODE_SLOT_HEIGHT * 0.5) {
-            max_y = pos[1] + LiteGraph.NODE_SLOT_HEIGHT * 0.5;
+          if (max_y < pos[1] + LGraphStyles.NODE_SLOT_HEIGHT * 0.5) {
+            max_y = pos[1] + LGraphStyles.NODE_SLOT_HEIGHT * 0.5;
           }
 
           ctx.fillStyle = slot.links && slot.links.length
@@ -3420,7 +3421,7 @@ export class LGraphCanvas {
           if (render_text) {
             var text = slot.label != null ? slot.label : slot.name;
             if (text) {
-              ctx.fillStyle = LiteGraph.NODE_TEXT_COLOR;
+              ctx.fillStyle = LGraphStyles.NODE_TEXT_COLOR;
               if (horizontal || slot.dir == LiteGraph.DOWN) {
                 ctx.fillText(text, pos[0], pos[1] - 8);
               } else {
@@ -3477,10 +3478,10 @@ export class LGraphCanvas {
 
       if (input_slot) {
         var x = 0;
-        var y = LiteGraph.NODE_TITLE_HEIGHT * -0.5; // center
+        var y = LGraphStyles.NODE_TITLE_HEIGHT * -0.5; // center
         if (horizontal) {
           x = node._collapsed_width * 0.5;
-          y = -LiteGraph.NODE_TITLE_HEIGHT;
+          y = -LGraphStyles.NODE_TITLE_HEIGHT;
         }
         ctx.fillStyle = '#686';
         ctx.beginPath();
@@ -3502,7 +3503,7 @@ export class LGraphCanvas {
 
       if (output_slot) {
         var x = node._collapsed_width;
-        var y = LiteGraph.NODE_TITLE_HEIGHT * -0.5; // center
+        var y = LGraphStyles.NODE_TITLE_HEIGHT * -0.5; // center
         if (horizontal) {
           x = node._collapsed_width * 0.5;
           y = 0;
@@ -3585,7 +3586,7 @@ export class LGraphCanvas {
     ctx.strokeStyle = fgcolor;
     ctx.fillStyle = bgcolor;
 
-    const title_height = LiteGraph.NODE_TITLE_HEIGHT;
+    const title_height = LGraphStyles.NODE_TITLE_HEIGHT;
     const low_quality = this.ds.scale < 0.5;
 
     // render node area depending on shape
@@ -3696,8 +3697,8 @@ export class LGraphCanvas {
 
       let colState = false;
       if (LiteGraph.node_box_coloured_by_mode) {
-        if (LiteGraph.NODE_MODES_COLORS[node.mode]) {
-          colState = LiteGraph.NODE_MODES_COLORS[node.mode];
+        if (LGraphStyles.NODE_MODES_COLORS[node.mode]) {
+          colState = LGraphStyles.NODE_MODES_COLORS[node.mode];
         }
       }
       if (LiteGraph.node_box_coloured_when_on) {
@@ -3726,7 +3727,7 @@ export class LGraphCanvas {
           ctx.fill();
         }
 
-        ctx.fillStyle = node.boxcolor || colState || LiteGraph.NODE_DEFAULT_BOXCOLOR;
+        ctx.fillStyle = node.boxcolor || colState || LGraphStyles.NODE_DEFAULT_BOXCOLOR;
         if (low_quality) ctx.fillRect(title_height * 0.5 - box_size * 0.5, title_height * -0.5 - box_size * 0.5, box_size, box_size);
         else {
           ctx.beginPath();
@@ -3749,7 +3750,7 @@ export class LGraphCanvas {
             box_size + 2,
           );
         }
-        ctx.fillStyle = node.boxcolor || colState || LiteGraph.NODE_DEFAULT_BOXCOLOR;
+        ctx.fillStyle = node.boxcolor || colState || LGraphStyles.NODE_DEFAULT_BOXCOLOR;
         ctx.fillRect(
           (title_height - box_size) * 0.5,
           (title_height + box_size) * -0.5,
@@ -3775,7 +3776,7 @@ export class LGraphCanvas {
         const title = String(node.getTitle());
         if (title) {
           if (selected) {
-            ctx.fillStyle = LiteGraph.NODE_SELECTED_TITLE_COLOR;
+            ctx.fillStyle = LGraphStyles.NODE_SELECTED_TITLE_COLOR;
           } else {
             ctx.fillStyle = node.constructor.title_text_color
                                 || this.node_title_color;
@@ -3786,7 +3787,7 @@ export class LGraphCanvas {
             ctx.fillText(
               title.substr(0, 20), // avoid urls too long
               title_height, // + measure.width * 0.5,
-              LiteGraph.NODE_TITLE_TEXT_Y - title_height,
+              LGraphStyles.NODE_TITLE_TEXT_Y - title_height,
             );
             ctx.textAlign = 'left';
           } else {
@@ -3794,7 +3795,7 @@ export class LGraphCanvas {
             ctx.fillText(
               title,
               title_height,
-              LiteGraph.NODE_TITLE_TEXT_Y - title_height,
+              LGraphStyles.NODE_TITLE_TEXT_Y - title_height,
             );
           }
         }
@@ -3802,7 +3803,7 @@ export class LGraphCanvas {
 
       // subgraph box
       if (!node.flags.collapsed && node.subgraph && !node.skip_subgraph_button) {
-        const w = LiteGraph.NODE_TITLE_HEIGHT;
+        const w = LGraphStyles.NODE_TITLE_HEIGHT;
         const x = node.size[0] - w;
         const over = LiteGraph.isInsideRectangle(this.graph_mouse[0] - node.pos[0], this.graph_mouse[1] - node.pos[1], x + 2, -w + 2, w - 4, w - 4);
         ctx.fillStyle = over ? '#888' : '#555';
@@ -3874,7 +3875,7 @@ export class LGraphCanvas {
           Math.PI * 2,
         );
       }
-      ctx.strokeStyle = LiteGraph.NODE_BOX_OUTLINE_COLOR;
+      ctx.strokeStyle = LGraphStyles.NODE_BOX_OUTLINE_COLOR;
       ctx.stroke();
       ctx.strokeStyle = fgcolor;
       ctx.globalAlpha = 1;
@@ -4358,23 +4359,23 @@ export class LGraphCanvas {
       const node = visible_nodes[i];
       ctx.fillStyle = 'black';
       ctx.fillRect(
-        node.pos[0] - LiteGraph.NODE_TITLE_HEIGHT,
-        node.pos[1] - LiteGraph.NODE_TITLE_HEIGHT,
-        LiteGraph.NODE_TITLE_HEIGHT,
-        LiteGraph.NODE_TITLE_HEIGHT,
+        node.pos[0] - LGraphStyles.NODE_TITLE_HEIGHT,
+        node.pos[1] - LGraphStyles.NODE_TITLE_HEIGHT,
+        LGraphStyles.NODE_TITLE_HEIGHT,
+        LGraphStyles.NODE_TITLE_HEIGHT,
       );
       if (node.order == 0) {
         ctx.strokeRect(
-          node.pos[0] - LiteGraph.NODE_TITLE_HEIGHT + 0.5,
-          node.pos[1] - LiteGraph.NODE_TITLE_HEIGHT + 0.5,
-          LiteGraph.NODE_TITLE_HEIGHT,
-          LiteGraph.NODE_TITLE_HEIGHT,
+          node.pos[0] - LGraphStyles.NODE_TITLE_HEIGHT + 0.5,
+          node.pos[1] - LGraphStyles.NODE_TITLE_HEIGHT + 0.5,
+          LGraphStyles.NODE_TITLE_HEIGHT,
+          LGraphStyles.NODE_TITLE_HEIGHT,
         );
       }
       ctx.fillStyle = '#FFF';
       ctx.fillText(
         node.order,
-        node.pos[0] + LiteGraph.NODE_TITLE_HEIGHT * -0.5,
+        node.pos[0] + LGraphStyles.NODE_TITLE_HEIGHT * -0.5,
         node.pos[1] - 6,
       );
     }
@@ -4392,14 +4393,14 @@ export class LGraphCanvas {
     const width = node.size[0];
     const { widgets } = node;
     posY += 2;
-    const H = LiteGraph.NODE_WIDGET_HEIGHT;
+    const H = LGraphStyles.NODE_WIDGET_HEIGHT;
     const show_text = this.ds.scale > 0.5;
     ctx.save();
     ctx.globalAlpha = this.editor_alpha;
-    const outline_color = LiteGraph.WIDGET_OUTLINE_COLOR;
-    const background_color = LiteGraph.WIDGET_BGCOLOR;
-    const text_color = LiteGraph.WIDGET_TEXT_COLOR;
-    const secondary_text_color = LiteGraph.WIDGET_SECONDARY_TEXT_COLOR;
+    const outline_color = LGraphStyles.WIDGET_OUTLINE_COLOR;
+    const background_color = LGraphStyles.WIDGET_BGCOLOR;
+    const text_color = LGraphStyles.WIDGET_TEXT_COLOR;
+    const secondary_text_color = LGraphStyles.WIDGET_SECONDARY_TEXT_COLOR;
     const margin = 15;
 
     for (let i = 0; i < widgets.length; ++i) {
@@ -4606,7 +4607,7 @@ export class LGraphCanvas {
     for (let i = 0; i < node.widgets.length; ++i) {
       var w = node.widgets[i];
       if (!w || w.disabled) continue;
-      const widget_height = w.computeSize ? w.computeSize(width)[1] : LiteGraph.NODE_WIDGET_HEIGHT;
+      const widget_height = w.computeSize ? w.computeSize(width)[1] : LGraphStyles.NODE_WIDGET_HEIGHT;
       const widget_width = w.width || width;
       // outside
       if (w != active_widget
@@ -7074,8 +7075,8 @@ export class LGraphCanvas {
             node.title = value;
             break;
           case 'Mode':
-            var kV = Object.values(LiteGraph.NODE_MODES).indexOf(value);
-            if (kV >= 0 && LiteGraph.NODE_MODES[kV]) {
+            var kV = Object.values(LGraphStyles.NODE_MODES).indexOf(value);
+            if (kV >= 0 && LGraphStyles.NODE_MODES[kV]) {
               node.changeMode(kV);
             } else {
               console.warn(`unexpected mode: ${value}`);
@@ -7099,7 +7100,7 @@ export class LGraphCanvas {
 
       panel.addWidget('string', 'Title', node.title, {}, fUpdate);
 
-      panel.addWidget('combo', 'Mode', LiteGraph.NODE_MODES[node.mode], { values: LiteGraph.NODE_MODES }, fUpdate);
+      panel.addWidget('combo', 'Mode', LGraphStyles.NODE_MODES[node.mode], { values: LGraphStyles.NODE_MODES }, fUpdate);
 
       let nodeCol = '';
       if (node.color !== undefined) {
@@ -7327,7 +7328,7 @@ export class LGraphCanvas {
 
   static onMenuNodeMode(value, options, e, menu, node) {
     new LiteGraph.ContextMenu(
-      LiteGraph.NODE_MODES,
+      LGraphStyles.NODE_MODES,
       {
         event: e, callback: inner_clicked, parentMenu: menu, node,
       },
@@ -7337,9 +7338,9 @@ export class LGraphCanvas {
       if (!node) {
         return;
       }
-      const kV = Object.values(LiteGraph.NODE_MODES).indexOf(v);
+      const kV = Object.values(LGraphStyles.NODE_MODES).indexOf(v);
       const fApplyMultiNode = function (node) {
-        if (kV >= 0 && LiteGraph.NODE_MODES[kV]) node.changeMode(kV);
+        if (kV >= 0 && LGraphStyles.NODE_MODES[kV]) node.changeMode(kV);
         else {
           console.warn(`unexpected mode: ${v}`);
           node.changeMode(LiteGraph.ALWAYS);
