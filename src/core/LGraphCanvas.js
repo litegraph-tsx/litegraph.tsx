@@ -375,7 +375,7 @@ export class LGraphCanvas {
 
   // used in some events to capture them
   _doNothing(e) {
-    console.log("pointerevents: _doNothing "+e.type);
+    console.debug("pointerevents: _doNothing "+e.type);
     e.preventDefault();
     return false;
   }
@@ -395,7 +395,7 @@ export class LGraphCanvas {
       return;
     }
 
-    console.log("pointerevents: bindEvents");
+    console.debug("pointerevents: bindEvents");
 
     var canvas = this.canvas;
 
@@ -460,7 +460,7 @@ export class LGraphCanvas {
       return;
     }
 
-    console.log("pointerevents: unbindEvents");
+    console.debug("pointerevents: unbindEvents");
 
     var ref_window = this.getCanvasWindow();
     var document = ref_window.document;
@@ -632,8 +632,7 @@ export class LGraphCanvas {
 
     var x = e.clientX;
     var y = e.clientY;
-    console.log(y, this.viewport);
-    console.log("pointerevents: processMouseDown pointerId:"+e.pointerId+" which:"+e.which+" isPrimary:"+e.isPrimary+" :: x y "+x+" "+y);
+    console.verbose("pointerevents: processMouseDown pointerId:"+e.pointerId+" which:"+e.which+" isPrimary:"+e.isPrimary+" :: x y "+x+" "+y);
 
     this.ds.viewport = this.viewport;
     var is_inside = !this.viewport || ( this.viewport && x >= this.viewport[0] && x < (this.viewport[0] + this.viewport[2]) && y >= this.viewport[1] && y < (this.viewport[1] + this.viewport[3]) );
@@ -664,7 +663,7 @@ export class LGraphCanvas {
 
     if (this.pointer_is_down && is_primary ) {
       this.pointer_is_double = true;
-      console.log("pointerevents: pointer_is_double start");
+      console.debug("pointerevents: pointer_is_double start");
     } else {
       this.pointer_is_double = false;
     }
@@ -979,7 +978,7 @@ export class LGraphCanvas {
       }
 
       if (!skip_action && clicking_canvas_bg && this.allow_dragcanvas) {
-        console.log("pointerevents: dragging_canvas start");
+        console.debug("pointerevents: dragging_canvas start");
         this.dragging_canvas = true;
       }
 
@@ -1048,7 +1047,7 @@ export class LGraphCanvas {
         }
       }
       if (!skip_action && this.allow_dragcanvas) {
-        console.log("pointerevents: dragging_canvas start from middle button");
+        console.debug("pointerevents: dragging_canvas start from middle button");
         this.dragging_canvas = true;
       }
 
@@ -1141,11 +1140,11 @@ export class LGraphCanvas {
     this.graph_mouse[0] = e.canvasX;
     this.graph_mouse[1] = e.canvasY;
 
-    console.log("pointerevents: processMouseMove "+e.pointerId+" "+e.isPrimary);
+    console.verbose("pointerevents: processMouseMove "+e.pointerId+" "+e.isPrimary);
 
     if (this.block_click)
     {
-      console.log("pointerevents: processMouseMove block_click");
+      console.verbose("pointerevents: processMouseMove block_click");
       e.preventDefault();
       return false;
     }
@@ -1189,7 +1188,7 @@ export class LGraphCanvas {
       }
       this.dirty_bgcanvas = true;
     } else if (this.dragging_canvas) {
-      console.log("pointerevents: processMouseMove is dragging_canvas");
+      console.verbose("pointerevents: processMouseMove is dragging_canvas");
       this.ds.offset[0] += delta[0] / this.ds.scale;
       this.ds.offset[1] += delta[1] / this.ds.scale;
       this.dirty_canvas = true;
@@ -1336,7 +1335,7 @@ export class LGraphCanvas {
 
       // node being dragged
       if (this.node_dragged && !this.live_mode) {
-        console.log("draggin!", this.selected_nodes);
+        console.verbose("dragging!", this.selected_nodes);
         for (var i in this.selected_nodes) {
           var n = this.selected_nodes[i];
           n.pos[0] += delta[0] / this.ds.scale;
@@ -1381,11 +1380,11 @@ export class LGraphCanvas {
     if (!is_primary) {
       /* e.stopPropagation();
                 e.preventDefault();*/
-      console.log("pointerevents: processMouseUp pointerN_stop "+e.pointerId+" "+e.isPrimary);
+      console.debug("pointerevents: processMouseUp pointerN_stop "+e.pointerId+" "+e.isPrimary);
       return false;
     }
 
-    console.log("pointerevents: processMouseUp "+e.pointerId+" "+e.isPrimary+" :: "+e.clientX+" "+e.clientY);
+    console.debug("pointerevents: processMouseUp "+e.pointerId+" "+e.isPrimary+" :: "+e.clientX+" "+e.clientY);
 
     if ( this.set_canvas_dirty_on_mouse_event )
       this.dirty_canvas = true;
@@ -1400,7 +1399,7 @@ export class LGraphCanvas {
     // restore the mousemove event back to the canvas
     if (!this.options.skip_events)
     {
-      // console.log("pointerevents: processMouseUp adjustEventListener");
+      console.debug("pointerevents: processMouseUp adjustEventListener");
       pointerListenerRemove(document, "move", this._mousemove_callback, true);
       pointerListenerAdd(this.canvas, "move", this._mousemove_callback, true);
       pointerListenerRemove(document, "up", this._mouseup_callback, true);
@@ -1414,11 +1413,11 @@ export class LGraphCanvas {
 
     if (this.block_click)
     {
-      console.log("pointerevents: processMouseUp block_clicks");
+      console.debug("pointerevents: processMouseUp block_clicks");
       this.block_click = false; // used to avoid sending twice a click in a immediate button
     }
 
-    console.log("pointerevents: processMouseUp which: "+e.which);
+    console.debug("pointerevents: processMouseUp which: "+e.which);
 
     if (e.which == 1) {
 
@@ -1675,7 +1674,7 @@ export class LGraphCanvas {
 
     this.graph.change();
 
-    console.log("pointerevents: processMouseUp stopPropagation");
+    console.debug("pointerevents: processMouseUp stopPropagation");
     e.stopPropagation();
     e.preventDefault();
     return false;
@@ -1830,13 +1829,17 @@ export class LGraphCanvas {
     }
 
     var block_default = false;
-    console.log(e); // debug
+    console.verbose("processKey",e);
 
     if (e.target.localName == "input") {
       return;
     }
 
     if (e.type == "keydown") {
+      if(!e.repeat){
+        console.debug("keydown",e);
+      }
+
       if (e.keyCode == 32) {
         // space
         this.dragging_canvas = true;
@@ -1892,6 +1895,10 @@ export class LGraphCanvas {
         }
       }
     } else if (e.type == "keyup") {
+      if(!e.repeat){
+        console.debug("keyup",e);
+      }
+
       if (e.keyCode == 32) {
         // space
         this.dragging_canvas = false;
@@ -2375,7 +2382,7 @@ export class LGraphCanvas {
     e.canvasX = clientX_rel / this.ds.scale - this.ds.offset[0];
     e.canvasY = clientY_rel / this.ds.scale - this.ds.offset[1];
 
-    console.log("pointerevents: adjustMouseEvent "+e.clientX+":"+e.clientY+" "+clientX_rel+":"+clientY_rel+" "+e.canvasX+":"+e.canvasY);
+    console.verbose("pointerevents: adjustedMouseEvent "+e.clientX+":"+e.clientY+" "+clientX_rel+":"+clientY_rel+" "+e.canvasX+":"+e.canvasY);
   }
 
   /**
@@ -5807,7 +5814,7 @@ export class LGraphCanvas {
           return true;
 
         } else {
-          console.log("failed creating "+nodeNewType);
+          console.warn("failed creating node",nodeNewType);
         }
       }
     }
@@ -6156,7 +6163,7 @@ export class LGraphCanvas {
     };
     options = Object.assign(def_options, options || {});
 
-    console.log(options);
+    console.log("showSearchBox",options);
 
     var that = this;
     var input_html = "";
@@ -6316,9 +6323,9 @@ export class LGraphCanvas {
           if (options.type_filter_in !==false && (options.type_filter_in+"").toLowerCase() == (aSlots[iK]+"").toLowerCase()) {
             // selIn.selectedIndex ..
             opt.selected = true;
-            console.log("comparing IN "+options.type_filter_in+" :: "+aSlots[iK]);
+            console.verbose("showSearchBox comparing IN "+options.type_filter_in+" :: "+aSlots[iK]);
           } else {
-            console.log("comparing OUT "+options.type_filter_in+" :: "+aSlots[iK]);
+            console.verbose("showSearchBox comparing OUT "+options.type_filter_in+" :: "+aSlots[iK]);
           }
         }
         selIn.addEventListener("change", function() {
