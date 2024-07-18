@@ -1,5 +1,5 @@
-import { console } from "./Console.js";
-import { pointerListenerAdd, pointerListenerRemove, PointerSettings } from "./pointer_events.js";
+import { console } from './Console';
+import { pointerListenerAdd, pointerListenerRemove, PointerSettings } from './pointer_events';
 
 /*
   Dependency cleanup:
@@ -43,16 +43,16 @@ export class DragAndScale {
 
     this._binded_mouse_callback = this.onMouse.bind(this);
 
-    pointerListenerAdd(element, "down", this._binded_mouse_callback);
-    pointerListenerAdd(element, "move", this._binded_mouse_callback);
-    pointerListenerAdd(element, "up", this._binded_mouse_callback);
+    pointerListenerAdd(element, 'down', this._binded_mouse_callback);
+    pointerListenerAdd(element, 'move', this._binded_mouse_callback);
+    pointerListenerAdd(element, 'up', this._binded_mouse_callback);
 
     element.addEventListener(
-      "mousewheel",
+      'mousewheel',
       this._binded_mouse_callback,
       false,
     );
-    element.addEventListener("wheel", this._binded_mouse_callback, false);
+    element.addEventListener('wheel', this._binded_mouse_callback, false);
   }
 
   /**
@@ -64,19 +64,18 @@ export class DragAndScale {
       this.visible_area[0] = this.visible_area[1] = this.visible_area[2] = this.visible_area[3] = 0;
       return;
     }
-    var width = this.element.width;
-    var height = this.element.height;
-    var startx = -this.offset[0];
-    var starty = -this.offset[1];
-    if ( viewport )
-    {
+    let { width } = this.element;
+    let { height } = this.element;
+    let startx = -this.offset[0];
+    let starty = -this.offset[1];
+    if (viewport) {
       startx += viewport[0] / this.scale;
       starty += viewport[1] / this.scale;
       width = viewport[2];
       height = viewport[3];
     }
-    var endx = startx + width / this.scale;
-    var endy = starty + height / this.scale;
+    const endx = startx + width / this.scale;
+    const endy = starty + height / this.scale;
     this.visible_area[0] = startx;
     this.visible_area[1] = starty;
     this.visible_area[2] = endx - startx;
@@ -93,52 +92,51 @@ export class DragAndScale {
       return;
     }
 
-    var canvas = this.element;
-    var rect = canvas.getBoundingClientRect();
-    var x = e.clientX - rect.left;
-    var y = e.clientY - rect.top;
+    const canvas = this.element;
+    const rect = canvas.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
     e.canvasx = x;
     e.canvasy = y;
     e.dragging = this.dragging;
 
-    var is_inside = !this.viewport || ( this.viewport && x >= this.viewport[0] && x < (this.viewport[0] + this.viewport[2]) && y >= this.viewport[1] && y < (this.viewport[1] + this.viewport[3]) );
+    const is_inside = !this.viewport || (this.viewport && x >= this.viewport[0] && x < (this.viewport[0] + this.viewport[2]) && y >= this.viewport[1] && y < (this.viewport[1] + this.viewport[3]));
 
-    console.log("pointerevents: DragAndScale onMouse "+e.type+" "+is_inside);
+    console.log(`pointerevents: DragAndScale onMouse ${e.type} ${is_inside}`);
 
-    var ignore = false;
+    let ignore = false;
     if (this.onmouse) {
       ignore = this.onmouse(e);
     }
 
-    if (e.type == PointerSettings.pointerevents_method+"down" && is_inside) {
+    if (e.type == `${PointerSettings.pointerevents_method}down` && is_inside) {
       this.dragging = true;
-      pointerListenerRemove(canvas, "move", this._binded_mouse_callback);
-      pointerListenerAdd(document, "move", this._binded_mouse_callback);
-      pointerListenerAdd(document, "up", this._binded_mouse_callback);
-    } else if (e.type == PointerSettings.pointerevents_method+"move") {
+      pointerListenerRemove(canvas, 'move', this._binded_mouse_callback);
+      pointerListenerAdd(document, 'move', this._binded_mouse_callback);
+      pointerListenerAdd(document, 'up', this._binded_mouse_callback);
+    } else if (e.type == `${PointerSettings.pointerevents_method}move`) {
       if (!ignore) {
-        var deltax = x - this.last_mouse[0];
-        var deltay = y - this.last_mouse[1];
+        const deltax = x - this.last_mouse[0];
+        const deltay = y - this.last_mouse[1];
         if (this.dragging) {
           this.mouseDrag(deltax, deltay);
         }
       }
-    } else if (e.type == PointerSettings.pointerevents_method+"up") {
+    } else if (e.type == `${PointerSettings.pointerevents_method}up`) {
       this.dragging = false;
-      pointerListenerRemove(document, "move", this._binded_mouse_callback);
-      pointerListenerRemove(document, "up", this._binded_mouse_callback);
-      pointerListenerAdd(canvas, "move", this._binded_mouse_callback);
-    } else if ( is_inside &&
-                (e.type == "mousewheel" ||
-                e.type == "wheel" ||
-                e.type == "DOMMouseScroll")
+      pointerListenerRemove(document, 'move', this._binded_mouse_callback);
+      pointerListenerRemove(document, 'up', this._binded_mouse_callback);
+      pointerListenerAdd(canvas, 'move', this._binded_mouse_callback);
+    } else if (is_inside
+                && (e.type == 'mousewheel'
+                || e.type == 'wheel'
+                || e.type == 'DOMMouseScroll')
     ) {
-      e.eventType = "mousewheel";
-      if (e.type == "wheel") {
+      e.eventType = 'mousewheel';
+      if (e.type == 'wheel') {
         e.wheel = -e.deltaY;
       } else {
-        e.wheel =
-                        e.wheelDeltaY != null ? e.wheelDeltaY : e.detail * -60;
+        e.wheel = e.wheelDeltaY != null ? e.wheelDeltaY : e.detail * -60;
       }
 
       // from stack overflow
@@ -153,8 +151,7 @@ export class DragAndScale {
     this.last_mouse[0] = x;
     this.last_mouse[1] = y;
 
-    if (is_inside)
-    {
+    if (is_inside) {
       e.preventDefault();
       e.stopPropagation();
       return false;
@@ -223,7 +220,7 @@ export class DragAndScale {
       return;
     }
 
-    var rect = this.element.getBoundingClientRect();
+    const rect = this.element.getBoundingClientRect();
     if (!rect) {
       return;
     }
@@ -232,14 +229,14 @@ export class DragAndScale {
       rect.width * 0.5,
       rect.height * 0.5,
     ];
-    var center = this.convertCanvasToOffset(zooming_center);
+    const center = this.convertCanvasToOffset(zooming_center);
     this.scale = value;
     if (Math.abs(this.scale - 1) < 0.01) {
       this.scale = 1;
     }
 
-    var new_center = this.convertCanvasToOffset(zooming_center);
-    var delta_offset = [
+    const new_center = this.convertCanvasToOffset(zooming_center);
+    const delta_offset = [
       new_center[0] - center[0],
       new_center[1] - center[1],
     ];

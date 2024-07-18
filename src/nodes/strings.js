@@ -1,33 +1,29 @@
-import { LiteGraph } from "@/litegraph.js";
+import { LiteGraph } from '@/litegraph';
 
 // basic nodes
 
 function toString(a) {
-  if (a && a.constructor === Object)
-  {
-    try
-    {
+  if (a && a.constructor === Object) {
+    try {
       return JSON.stringify(a);
-    }
-    catch (err)
-    {
+    } catch (err) {
       return String(a);
     }
   }
   return String(a);
 }
 
-LiteGraph.wrapFunctionAsNode("string/toString", toString, [""], "string");
+LiteGraph.wrapFunctionAsNode('string/toString', toString, [''], 'string');
 
 function compare(a, b) {
   return a == b;
 }
 
 LiteGraph.wrapFunctionAsNode(
-  "string/compare",
+  'string/compare',
   compare,
-  ["string", "string"],
-  "boolean",
+  ['string', 'string'],
+  'boolean',
 );
 
 function concatenate(a, b) {
@@ -41,10 +37,10 @@ function concatenate(a, b) {
 }
 
 LiteGraph.wrapFunctionAsNode(
-  "string/concatenate",
+  'string/concatenate',
   concatenate,
-  ["string", "string"],
-  "string",
+  ['string', 'string'],
+  'string',
 );
 
 function contains(a, b) {
@@ -55,10 +51,10 @@ function contains(a, b) {
 }
 
 LiteGraph.wrapFunctionAsNode(
-  "string/contains",
+  'string/contains',
   contains,
-  ["string", "string"],
-  "boolean",
+  ['string', 'string'],
+  'boolean',
 );
 
 function toUpperCase(a) {
@@ -69,25 +65,20 @@ function toUpperCase(a) {
 }
 
 LiteGraph.wrapFunctionAsNode(
-  "string/toUpperCase",
+  'string/toUpperCase',
   toUpperCase,
-  ["string"],
-  "string",
+  ['string'],
+  'string',
 );
 
 function split(str, separator) {
-  if (separator == null)
-    separator = this.properties.separator;
-  if (str == null )
-    return [];
-  if ( str.constructor === String )
-    return str.split(separator || " ");
-  else if ( str.constructor === Array )
-  {
-    var r = [];
-    for (var i = 0; i < str.length; ++i) {
-      if (typeof str[i] == "string")
-        r[i] = str[i].split(separator || " ");
+  if (separator == null) { separator = this.properties.separator; }
+  if (str == null) { return []; }
+  if (str.constructor === String) { return str.split(separator || ' '); }
+  if (str.constructor === Array) {
+    const r = [];
+    for (let i = 0; i < str.length; ++i) {
+      if (typeof str[i] === 'string') { r[i] = str[i].split(separator || ' '); }
     }
     return r;
   }
@@ -95,11 +86,11 @@ function split(str, separator) {
 }
 
 LiteGraph.wrapFunctionAsNode(
-  "string/split",
+  'string/split',
   split,
-  ["string,array", "string"],
-  "array",
-  { separator: "," },
+  ['string,array', 'string'],
+  'array',
+  { separator: ',' },
 );
 
 function toFixed(a) {
@@ -110,40 +101,38 @@ function toFixed(a) {
 }
 
 LiteGraph.wrapFunctionAsNode(
-  "string/toFixed",
+  'string/toFixed',
   toFixed,
-  ["number"],
-  "string",
+  ['number'],
+  'string',
   { precision: 0 },
 );
 
-
 class StringToTable {
   constructor() {
-    this.addInput("", "string");
-    this.addOutput("table", "table");
-    this.addOutput("rows", "number");
-    this.addProperty("value", "");
-    this.addProperty("separator", ",");
+    this.addInput('', 'string');
+    this.addOutput('table', 'table');
+    this.addOutput('rows', 'number');
+    this.addProperty('value', '');
+    this.addProperty('separator', ',');
     this._table = null;
   }
 
   onExecute() {
-    var input = this.getInputData(0);
-    if (!input)
-      return;
-    var separator = this.properties.separator || ",";
-    if (input != this._str || separator != this._last_separator )
-    {
+    const input = this.getInputData(0);
+    if (!input) { return; }
+    const separator = this.properties.separator || ',';
+    if (input != this._str || separator != this._last_separator) {
       this._last_separator = separator;
       this._str = input;
-      this._table = input.split("\n").map(function(a) { return a.trim().split(separator)});
+      this._table = input.split('\n').map((a) => a.trim().split(separator));
     }
-    this.setOutputData(0, this._table );
-    this.setOutputData(1, this._table ? this._table.length : 0 );
+    this.setOutputData(0, this._table);
+    this.setOutputData(1, this._table ? this._table.length : 0);
   }
 
-  static title = "toTable";
-  static desc = "Splits a string to table";
+  static title = 'toTable';
+
+  static desc = 'Splits a string to table';
 }
-LiteGraph.registerNodeType("string/toTable", StringToTable);
+LiteGraph.registerNodeType('string/toTable', StringToTable);

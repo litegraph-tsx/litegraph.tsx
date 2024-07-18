@@ -1,19 +1,18 @@
-import { LiteGraph } from "@/litegraph.js";
-import { LGraphTexture } from "./gltextures.js";
-import { GL } from "@libs/litegl.js";
+import { GL } from '@libs/litegl';
+import { LiteGraph } from '@/litegraph';
+import { LGraphTexture } from './gltextures';
 
-var global = typeof(window) != "undefined" ? window : typeof(self) != "undefined" ? self : globalThis;
-
+const global = typeof (window) !== 'undefined' ? window : typeof (self) !== 'undefined' ? self : globalThis;
 
 // Works with Litegl.js to create WebGL nodes
 // Texture Lens *****************************************
 export class LGraphFXLens {
   constructor() {
-    this.addInput("Texture", "Texture");
-    this.addInput("Aberration", "number");
-    this.addInput("Distortion", "number");
-    this.addInput("Blur", "number");
-    this.addOutput("Texture", "Texture");
+    this.addInput('Texture', 'Texture');
+    this.addInput('Aberration', 'number');
+    this.addInput('Distortion', 'number');
+    this.addInput('Blur', 'number');
+    this.addOutput('Texture', 'Texture');
     this.properties = {
       aberration: 1.0,
       distortion: 1.0,
@@ -37,7 +36,7 @@ export class LGraphFXLens {
   }
 
   onExecute() {
-    var tex = this.getInputData(0);
+    const tex = this.getInputData(0);
     if (this.properties.precision === LGraphTexture.PASS_THROUGH) {
       this.setOutputData(0, tex);
       return;
@@ -53,19 +52,19 @@ export class LGraphFXLens {
       this.properties.precision,
     );
 
-    var aberration = this.properties.aberration;
+    let { aberration } = this.properties;
     if (this.isInputConnected(1)) {
       aberration = this.getInputData(1);
       this.properties.aberration = aberration;
     }
 
-    var distortion = this.properties.distortion;
+    let { distortion } = this.properties;
     if (this.isInputConnected(2)) {
       distortion = this.getInputData(2);
       this.properties.distortion = distortion;
     }
 
-    var blur = this.properties.blur;
+    let { blur } = this.properties;
     if (this.isInputConnected(3)) {
       blur = this.getInputData(3);
       this.properties.blur = blur;
@@ -73,11 +72,11 @@ export class LGraphFXLens {
 
     gl.disable(gl.BLEND);
     gl.disable(gl.DEPTH_TEST);
-    var mesh = Mesh.getScreenQuad();
-    var shader = LGraphFXLens._shader;
+    const mesh = Mesh.getScreenQuad();
+    const shader = LGraphFXLens._shader;
     // var camera = LS.Renderer._current_camera;
 
-    this._tex.drawTo(function() {
+    this._tex.drawTo(() => {
       tex.bind(0);
       shader
         .uniforms({
@@ -92,14 +91,15 @@ export class LGraphFXLens {
     this.setOutputData(0, this._tex);
   }
 
-  static title = "Lens";
-  static desc = "Camera Lens distortion";
+  static title = 'Lens';
+
+  static desc = 'Camera Lens distortion';
+
   static widgets_info = {
-    precision: { widget: "combo", values: LGraphTexture.MODE_VALUES },
+    precision: { widget: 'combo', values: LGraphTexture.MODE_VALUES },
   };
 
-  static pixel_shader =
-    "precision highp float;\n\
+  static pixel_shader = 'precision highp float;\n\
     precision highp float;\n\
     varying vec2 v_coord;\n\
     uniform sampler2D u_texture;\n\
@@ -120,9 +120,9 @@ export class LGraphFXLens {
         color.b = texture2D(u_texture,vec2(0.5) + dist_coord * (1.0-0.01*u_aberration), u_blur * dist ).b;\n\
         gl_FragColor = color;\n\
     }\n\
-    ";
+    ';
 }
-LiteGraph.registerNodeType("fx/lens", LGraphFXLens);
+LiteGraph.registerNodeType('fx/lens', LGraphFXLens);
 
 /* not working yet
     function LGraphDepthOfField()
@@ -237,16 +237,15 @@ LiteGraph.registerNodeType("fx/lens", LGraphFXLens);
     global.LGraphDepthOfField = LGraphDepthOfField;
     */
 
-
 export class LGraphFXBokeh {
   constructor() {
-    this.addInput("Texture", "Texture");
-    this.addInput("Blurred", "Texture");
-    this.addInput("Mask", "Texture");
-    this.addInput("Threshold", "number");
-    this.addOutput("Texture", "Texture");
+    this.addInput('Texture', 'Texture');
+    this.addInput('Blurred', 'Texture');
+    this.addInput('Mask', 'Texture');
+    this.addInput('Threshold', 'number');
+    this.addOutput('Texture', 'Texture');
     this.properties = {
-      shape: "",
+      shape: '',
       size: 10,
       alpha: 1.0,
       threshold: 1.0,
@@ -255,9 +254,9 @@ export class LGraphFXBokeh {
   }
 
   onExecute() {
-    var tex = this.getInputData(0);
-    var blurred_tex = this.getInputData(1);
-    var mask_tex = this.getInputData(2);
+    const tex = this.getInputData(0);
+    let blurred_tex = this.getInputData(1);
+    const mask_tex = this.getInputData(2);
     if (!tex || !mask_tex || !this.properties.shape) {
       this.setOutputData(0, tex);
       return;
@@ -267,26 +266,26 @@ export class LGraphFXBokeh {
       blurred_tex = tex;
     }
 
-    var shape_tex = LGraphTexture.getTexture(this.properties.shape);
+    const shape_tex = LGraphTexture.getTexture(this.properties.shape);
     if (!shape_tex) {
       return;
     }
 
-    var threshold = this.properties.threshold;
+    let { threshold } = this.properties;
     if (this.isInputConnected(3)) {
       threshold = this.getInputData(3);
       this.properties.threshold = threshold;
     }
 
-    var precision = gl.UNSIGNED_BYTE;
+    let precision = gl.UNSIGNED_BYTE;
     if (this.properties.high_precision) {
       precision = gl.half_float_ext ? gl.HALF_FLOAT_OES : gl.FLOAT;
     }
     if (
-      !this._temp_texture ||
-                  this._temp_texture.type != precision ||
-                  this._temp_texture.width != tex.width ||
-                  this._temp_texture.height != tex.height
+      !this._temp_texture
+                  || this._temp_texture.type != precision
+                  || this._temp_texture.width != tex.width
+                  || this._temp_texture.height != tex.height
     ) {
       this._temp_texture = new GL.Texture(tex.width, tex.height, {
         type: precision,
@@ -296,9 +295,9 @@ export class LGraphFXBokeh {
     }
 
     // iterations
-    var size = this.properties.size;
+    const { size } = this.properties;
 
-    var first_shader = LGraphFXBokeh._first_shader;
+    let first_shader = LGraphFXBokeh._first_shader;
     if (!first_shader) {
       first_shader = LGraphFXBokeh._first_shader = new GL.Shader(
         Shader.SCREEN_VERTEX_SHADER,
@@ -306,7 +305,7 @@ export class LGraphFXBokeh {
       );
     }
 
-    var second_shader = LGraphFXBokeh._second_shader;
+    let second_shader = LGraphFXBokeh._second_shader;
     if (!second_shader) {
       second_shader = LGraphFXBokeh._second_shader = new GL.Shader(
         LGraphFXBokeh._second_vertex_shader,
@@ -314,26 +313,26 @@ export class LGraphFXBokeh {
       );
     }
 
-    var points_mesh = this._points_mesh;
+    let points_mesh = this._points_mesh;
     if (
-      !points_mesh ||
-                  points_mesh._width != tex.width ||
-                  points_mesh._height != tex.height ||
-                  points_mesh._spacing != 2
+      !points_mesh
+                  || points_mesh._width != tex.width
+                  || points_mesh._height != tex.height
+                  || points_mesh._spacing != 2
     ) {
       points_mesh = this.createPointsMesh(tex.width, tex.height, 2);
     }
 
-    var screen_mesh = Mesh.getScreenQuad();
+    const screen_mesh = Mesh.getScreenQuad();
 
-    var point_size = this.properties.size;
-    var min_light = this.properties.min_light;
-    var alpha = this.properties.alpha;
+    const point_size = this.properties.size;
+    const { min_light } = this.properties;
+    const { alpha } = this.properties;
 
     gl.disable(gl.DEPTH_TEST);
     gl.disable(gl.BLEND);
 
-    this._temp_texture.drawTo(function() {
+    this._temp_texture.drawTo(() => {
       tex.bind(0);
       blurred_tex.bind(1);
       mask_tex.bind(2);
@@ -347,7 +346,7 @@ export class LGraphFXBokeh {
         .draw(screen_mesh);
     });
 
-    this._temp_texture.drawTo(function() {
+    this._temp_texture.drawTo(() => {
       // clear because we use blending
       // gl.clearColor(0.0,0.0,0.0,1.0);
       // gl.clear( gl.COLOR_BUFFER_BIT );
@@ -373,18 +372,18 @@ export class LGraphFXBokeh {
   }
 
   createPointsMesh(width, height, spacing) {
-    var nwidth = Math.round(width / spacing);
-    var nheight = Math.round(height / spacing);
+    const nwidth = Math.round(width / spacing);
+    const nheight = Math.round(height / spacing);
 
-    var vertices = new Float32Array(nwidth * nheight * 2);
+    const vertices = new Float32Array(nwidth * nheight * 2);
 
-    var ny = -1;
-    var dx = (2 / width) * spacing;
-    var dy = (2 / height) * spacing;
-    for (var y = 0; y < nheight; ++y) {
-      var nx = -1;
-      for (var x = 0; x < nwidth; ++x) {
-        var pos = y * nwidth * 2 + x * 2;
+    let ny = -1;
+    const dx = (2 / width) * spacing;
+    const dy = (2 / height) * spacing;
+    for (let y = 0; y < nheight; ++y) {
+      let nx = -1;
+      for (let x = 0; x < nwidth; ++x) {
+        const pos = y * nwidth * 2 + x * 2;
         vertices[pos] = nx;
         vertices[pos + 1] = ny;
         nx += dx;
@@ -400,12 +399,13 @@ export class LGraphFXBokeh {
     return this._points_mesh;
   }
 
-  static title = "Bokeh";
-  static desc = "applies an Bokeh effect";
-  static widgets_info = { shape: { widget: "texture" } };
+  static title = 'Bokeh';
 
-  static _first_pixel_shader =
-    "precision highp float;\n\
+  static desc = 'applies an Bokeh effect';
+
+  static widgets_info = { shape: { widget: 'texture' } };
+
+  static _first_pixel_shader = 'precision highp float;\n\
     precision highp float;\n\
     varying vec2 v_coord;\n\
     uniform sampler2D u_texture;\n\
@@ -418,10 +418,9 @@ export class LGraphFXBokeh {
         float mask = texture2D(u_mask, v_coord).x;\n\
       gl_FragColor = mix(color, blurred_color, mask);\n\
     }\n\
-    ";
+    ';
 
-  static _second_vertex_shader =
-    "precision highp float;\n\
+  static _second_vertex_shader = 'precision highp float;\n\
     attribute vec2 a_vertex2D;\n\
     varying vec4 v_color;\n\
     uniform sampler2D u_texture;\n\
@@ -448,10 +447,9 @@ export class LGraphFXBokeh {
         gl_PointSize = u_pointSize;\n\
         gl_Position = vec4(a_vertex2D,0.0,1.0);\n\
     }\n\
-    ";
+    ';
 
-  static _second_pixel_shader =
-    "precision highp float;\n\
+  static _second_pixel_shader = 'precision highp float;\n\
     varying vec4 v_color;\n\
     uniform sampler2D u_shape;\n\
     uniform float u_alpha;\n\
@@ -460,7 +458,7 @@ export class LGraphFXBokeh {
         vec4 color = texture2D( u_shape, gl_PointCoord );\n\
         color *= v_color * u_alpha;\n\
         gl_FragColor = color;\n\
-    }\n";
+    }\n';
 }
 
 /*
@@ -476,17 +474,16 @@ export class LGraphFXBokeh {
         gl_FragColor = color;\n\
       }\n";
 */
-LiteGraph.registerNodeType("fx/bokeh", LGraphFXBokeh);
-
+LiteGraph.registerNodeType('fx/bokeh', LGraphFXBokeh);
 
 export class LGraphFXGeneric {
   constructor() {
-    this.addInput("Texture", "Texture");
-    this.addInput("value1", "number");
-    this.addInput("value2", "number");
-    this.addOutput("Texture", "Texture");
+    this.addInput('Texture', 'Texture');
+    this.addInput('value1', 'number');
+    this.addInput('value2', 'number');
+    this.addOutput('Texture', 'Texture');
     this.properties = {
-      fx: "halftone",
+      fx: 'halftone',
       value1: 1,
       value2: 1,
       precision: LGraphTexture.DEFAULT,
@@ -498,7 +495,7 @@ export class LGraphFXGeneric {
       return;
     } // saves work
 
-    var tex = this.getInputData(0);
+    const tex = this.getInputData(0);
     if (this.properties.precision === LGraphTexture.PASS_THROUGH) {
       this.setOutputData(0, tex);
       return;
@@ -515,22 +512,22 @@ export class LGraphFXGeneric {
     );
 
     // iterations
-    var value1 = this.properties.value1;
+    let { value1 } = this.properties;
     if (this.isInputConnected(1)) {
       value1 = this.getInputData(1);
       this.properties.value1 = value1;
     }
 
-    var value2 = this.properties.value2;
+    let { value2 } = this.properties;
     if (this.isInputConnected(2)) {
       value2 = this.getInputData(2);
       this.properties.value2 = value2;
     }
 
-    var fx = this.properties.fx;
-    var shader = LGraphFXGeneric.shaders[fx];
+    const { fx } = this.properties;
+    let shader = LGraphFXGeneric.shaders[fx];
     if (!shader) {
-      var pixel_shader_code = LGraphFXGeneric["pixel_shader_" + fx];
+      const pixel_shader_code = LGraphFXGeneric[`pixel_shader_${fx}`];
       if (!pixel_shader_code) {
         return;
       }
@@ -543,9 +540,9 @@ export class LGraphFXGeneric {
 
     gl.disable(gl.BLEND);
     gl.disable(gl.DEPTH_TEST);
-    var mesh = Mesh.getScreenQuad();
-    var camera = global.LS ? LS.Renderer._current_camera : null;
-    var camera_planes;
+    const mesh = Mesh.getScreenQuad();
+    const camera = global.LS ? LS.Renderer._current_camera : null;
+    let camera_planes;
     if (camera) {
       camera_planes = [
         LS.Renderer._current_camera.near,
@@ -555,14 +552,14 @@ export class LGraphFXGeneric {
       camera_planes = [1, 100];
     }
 
-    var noise = null;
-    if (fx == "noise") {
+    let noise = null;
+    if (fx == 'noise') {
       noise = LGraphTexture.getNoiseTexture();
     }
 
-    this._tex.drawTo(function() {
+    this._tex.drawTo(() => {
       tex.bind(0);
-      if (fx == "noise") {
+      if (fx == 'noise') {
         noise.bind(1);
       }
 
@@ -582,19 +579,21 @@ export class LGraphFXGeneric {
     this.setOutputData(0, this._tex);
   }
 
-  static title = "FX";
-  static desc = "applies an FX from a list";
+  static title = 'FX';
+
+  static desc = 'applies an FX from a list';
+
   static widgets_info = {
     fx: {
-      widget: "combo",
-      values: ["halftone", "pixelate", "lowpalette", "noise", "gamma"],
+      widget: 'combo',
+      values: ['halftone', 'pixelate', 'lowpalette', 'noise', 'gamma'],
     },
-    precision: { widget: "combo", values: LGraphTexture.MODE_VALUES },
+    precision: { widget: 'combo', values: LGraphTexture.MODE_VALUES },
   };
+
   static shaders = {};
 
-  static pixel_shader_pixelate =
-    "precision highp float;\n\
+  static pixel_shader_pixelate = 'precision highp float;\n\
     varying vec2 v_coord;\n\
     uniform sampler2D u_texture;\n\
     uniform vec2 u_camera_planes;\n\
@@ -606,10 +605,9 @@ export class LGraphFXGeneric {
         vec2 coord = vec2( floor(v_coord.x * u_value1) / u_value1, floor(v_coord.y * u_value2) / u_value2 );\n\
         vec4 color = texture2D(u_texture, coord);\n\
         gl_FragColor = color;\n\
-    }\n";
+    }\n';
 
-  static pixel_shader_lowpalette =
-    "precision highp float;\n\
+  static pixel_shader_lowpalette = 'precision highp float;\n\
     varying vec2 v_coord;\n\
     uniform sampler2D u_texture;\n\
     uniform vec2 u_camera_planes;\n\
@@ -620,10 +618,9 @@ export class LGraphFXGeneric {
     void main() {\n\
         vec4 color = texture2D(u_texture, v_coord);\n\
         gl_FragColor = floor(color * u_value1) / u_value1;\n\
-    }\n";
+    }\n';
 
-  static pixel_shader_noise =
-    "precision highp float;\n\
+  static pixel_shader_noise = 'precision highp float;\n\
     varying vec2 v_coord;\n\
     uniform sampler2D u_texture;\n\
     uniform sampler2D u_noise;\n\
@@ -636,10 +633,9 @@ export class LGraphFXGeneric {
         vec4 color = texture2D(u_texture, v_coord);\n\
         vec3 noise = texture2D(u_noise, v_coord * vec2(u_size.x / 512.0, u_size.y / 512.0) + u_rand).xyz - vec3(0.5);\n\
         gl_FragColor = vec4( color.xyz + noise * u_value1, color.a );\n\
-    }\n";
+    }\n';
 
-  static pixel_shader_gamma =
-    "precision highp float;\n\
+  static pixel_shader_gamma = 'precision highp float;\n\
     varying vec2 v_coord;\n\
     uniform sampler2D u_texture;\n\
     uniform float u_value1;\n\
@@ -648,17 +644,16 @@ export class LGraphFXGeneric {
         vec4 color = texture2D(u_texture, v_coord);\n\
         float gamma = 1.0 / u_value1;\n\
         gl_FragColor = vec4( pow( color.xyz, vec3(gamma) ), color.a );\n\
-    }\n";
+    }\n';
 }
-LiteGraph.registerNodeType("fx/generic", LGraphFXGeneric);
-
+LiteGraph.registerNodeType('fx/generic', LGraphFXGeneric);
 
 export class LGraphFXVigneting {
   constructor() {
-    this.addInput("Tex.", "Texture");
-    this.addInput("intensity", "number");
+    this.addInput('Tex.', 'Texture');
+    this.addInput('intensity', 'number');
 
-    this.addOutput("Texture", "Texture");
+    this.addOutput('Texture', 'Texture');
     this.properties = {
       intensity: 1,
       invert: false,
@@ -674,7 +669,7 @@ export class LGraphFXVigneting {
   }
 
   onExecute() {
-    var tex = this.getInputData(0);
+    const tex = this.getInputData(0);
 
     if (this.properties.precision === LGraphTexture.PASS_THROUGH) {
       this.setOutputData(0, tex);
@@ -691,7 +686,7 @@ export class LGraphFXVigneting {
       this.properties.precision,
     );
 
-    var intensity = this.properties.intensity;
+    let { intensity } = this.properties;
     if (this.isInputConnected(1)) {
       intensity = this.getInputData(1);
       this.properties.intensity = intensity;
@@ -700,11 +695,11 @@ export class LGraphFXVigneting {
     gl.disable(gl.BLEND);
     gl.disable(gl.DEPTH_TEST);
 
-    var mesh = Mesh.getScreenQuad();
-    var shader = LGraphFXVigneting._shader;
-    var invert = this.properties.invert;
+    const mesh = Mesh.getScreenQuad();
+    const shader = LGraphFXVigneting._shader;
+    const { invert } = this.properties;
 
-    this._tex.drawTo(function() {
+    this._tex.drawTo(() => {
       tex.bind(0);
       shader
         .uniforms({
@@ -719,13 +714,15 @@ export class LGraphFXVigneting {
     this.setOutputData(0, this._tex);
   }
 
-  static title = "Vigneting";
-  static desc = "Vigneting";
+  static title = 'Vigneting';
+
+  static desc = 'Vigneting';
+
   static widgets_info = {
-    precision: { widget: "combo", values: LGraphTexture.MODE_VALUES },
+    precision: { widget: 'combo', values: LGraphTexture.MODE_VALUES },
   };
-  static pixel_shader =
-    "precision highp float;\n\
+
+  static pixel_shader = 'precision highp float;\n\
     precision highp float;\n\
     varying vec2 v_coord;\n\
     uniform sampler2D u_texture;\n\
@@ -740,9 +737,9 @@ export class LGraphFXVigneting {
         luminance = mix(1.0, luminance, u_intensity);\n\
       gl_FragColor = vec4( luminance * color.xyz, color.a);\n\
     }\n\
-    ";
+    ';
 }
-LiteGraph.registerNodeType("fx/vigneting", LGraphFXVigneting);
+LiteGraph.registerNodeType('fx/vigneting', LGraphFXVigneting);
 
 global.LGraphFXLens = LGraphFXLens;
 global.LGraphFXBokeh = LGraphFXBokeh;

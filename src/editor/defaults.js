@@ -1,5 +1,5 @@
-import { LiteGraph } from "@/litegraph.js";
-import { PointerSettings } from "@/pointer_events";
+import { LiteGraph } from '@/litegraph';
+import { PointerSettings } from '@/pointer_events';
 
 LiteGraph.debug = false;
 LiteGraph.catch_exceptions = true;
@@ -23,12 +23,12 @@ LiteGraph.auto_load_slot_types = true; // [if want false; use true; run; get var
 LiteGraph.registered_slot_in_types = {}; // slot types for nodeclass
 LiteGraph.registered_slot_out_types = {}; // slot types for nodeclass
 LiteGraph.slot_types_in = []; // slot types IN
-LiteGraph.slot_types_out = []; // slot types OUT*/
+LiteGraph.slot_types_out = []; // slot types OUT */
 
 LiteGraph.alt_drag_do_clone_nodes = true; // [true!] very handy; ALT click to clone and drag the new node
 LiteGraph.do_add_triggers_slots = true; // [true!] will create and connect event slots when using action/events connections; !WILL CHANGE node mode when using onTrigger (enable mode colors); onExecuted does not need this
 LiteGraph.allow_multi_output_for_events = false; // [false!] being events; it is strongly reccomended to use them sequentially; one by one
 LiteGraph.middle_click_slot_add_default_node = true; // [true!] allows to create and connect a ndoe clicking with the third button (wheel)
 LiteGraph.release_link_on_empty_shows_menu = true; // [true!] dragging a link to empty space will open a menu, add from list, search or defaults
-PointerSettings.pointerevents_method = "mouse"; // "mouse"|"pointer" use mouse for retrocompatibility issues? (none found @ now)
+PointerSettings.pointerevents_method = 'mouse'; // "mouse"|"pointer" use mouse for retrocompatibility issues? (none found @ now)
 LiteGraph.ctrl_shift_v_paste_connect_unselected_outputs = true; // [true!] allows ctrl + shift + v to paste nodes with the outputs of the unselected nodes connected with the inputs of the newly pasted nodes
