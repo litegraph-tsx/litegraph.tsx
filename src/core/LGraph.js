@@ -1,6 +1,5 @@
 import { LiteGraph } from "./litegraph.js";
 import { LGraphGroup } from "./LGraphGroup.js";
-import { LGraphCanvas } from "./LGraphCanvas.js";
 import { console } from "./Console.js";
 
 var global = typeof(window) != "undefined" ? window : typeof(self) != "undefined" ? self : globalThis;
@@ -115,7 +114,7 @@ export class LGraph {
                  */
 
   attachCanvas(graphcanvas) {
-    if (graphcanvas.constructor != LGraphCanvas) {
+    if (graphcanvas.constructor != LiteGraph.LGraphCanvas) {
       throw "attachCanvas expects a LGraphCanvas instance";
     }
     if (graphcanvas.graph && graphcanvas.graph != this) {
