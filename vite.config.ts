@@ -25,8 +25,10 @@ const formats = Object.keys(fileName) as Array<keyof typeof fileName>;
 
 export default defineConfig({
   base: "./",
+  root: './',
   build: {
     outDir: "./build/dist",
+    emptyOutDir: true,
     lib: {
       entry: path.resolve(__dirname, "src/core/litegraph.js"),
       name: getPackageNameCamelCase(),
