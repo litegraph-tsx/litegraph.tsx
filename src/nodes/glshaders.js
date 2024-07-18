@@ -1664,7 +1664,7 @@ if (typeof GL != "undefined") {
       context.addCode("code", "float " + outlink + " = u_time" + this.id +";", this.shader_destination );
       this.setOutputData( 0, "float" );
     }
-    
+
     static title = "Time";
   }
   registerShaderNode( "input/time", LGraphShaderTime );
