@@ -598,23 +598,22 @@ class MathAverageFilter {
     this.setOutputData(0, avr / num_samples);
   }
 
+  // @TODO: CHECK!
   onPropertyChanged(name, value) {
-    if (value < 1) {
-      value = 1;
-    }
-    this.properties.samples = Math.round(value);
-    var old = this._values;
+    if (name === "samples") {
+      if (value < 1) {
+        value = 1;
+      }
+      this.properties.samples = Math.round(value);
+      var old = this._values;
 
-    this._values = new Float32Array(this.properties.samples);
-    if (old.length <= this._values.length) {
-      this._values.set(old);
-    } else {
-      this._values.set(old.subarray(0, this._values.length));
-    }
-  }
-
-  onPropertyChanged(name, value) {
-    if (name == "formula") {
+      this._values = new Float32Array(this.properties.samples);
+      if (old.length <= this._values.length) {
+        this._values.set(old);
+      } else {
+        this._values.set(old.subarray(0, this._values.length));
+      }
+    } else if (name === "formula") {
       this.code_widget.value = value;
     }
   }
