@@ -253,11 +253,7 @@ export const LiteGraph = {
 
     // warnings
     if (base_class.prototype.onPropertyChange) {
-      console.warn(
-        "LiteGraph node class " +
-                        type +
-                        " has onPropertyChange method, it must be called onPropertyChanged with d at the end",
-      );
+      console.warn("LiteGraph node class " +type+" has onPropertyChange method, it must be called onPropertyChanged with d at the end");
     }
 
     // TODO one would want to know input and ouput :: this would allow through registerNodeAndSlotType to get all the slots types
@@ -491,9 +487,7 @@ export const LiteGraph = {
     var base_class = this.registered_node_types[type];
     if (!base_class) {
       if (LiteGraph.debug) {
-        console.log(
-          'GraphNode type "' + type + '" not registered.',
-        );
+        console.log('GraphNode type "' + type + '" not registered.');
       }
       return null;
     }
@@ -994,7 +988,7 @@ export const LiteGraph = {
   /* helper for interaction: pointer, touch, mouse Listeners used by LGraphCanvas DragAndScale ContextMenu*/
   pointerListenerAdd: function(oDOM, sEvIn, fCall, capture=false) {
     if (!oDOM || !oDOM.addEventListener || !sEvIn || typeof fCall!=="function") {
-      // console.log("cant pointerListenerAdd "+oDOM+", "+sEvent+", "+fCall);
+      console.log("cant pointerListenerAdd "+oDOM+", "+sEvent+", "+fCall);
       return; // -- break --
     }
 
@@ -1028,7 +1022,7 @@ export const LiteGraph = {
           break;
         }
         case "enter":{
-          console.log("debug: Should I send a move event?"); // ???
+          console.log("debug: Should I send a move event?"); // ??? Should you?
           break;
         }
         // case "over": case "out": not used at now
@@ -1065,8 +1059,8 @@ export const LiteGraph = {
 
   pointerListenerRemove: function(oDOM, sEvent, fCall, capture=false) {
     if (!oDOM || !oDOM.removeEventListener || !sEvent || typeof fCall!=="function") {
-      // console.log("cant pointerListenerRemove "+oDOM+", "+sEvent+", "+fCall);
-      return; // -- break --
+      console.log("cant pointerListenerRemove "+oDOM+", "+sEvent+", "+fCall);
+      return;
     }
     switch (sEvent) {
       // both pointer and move events

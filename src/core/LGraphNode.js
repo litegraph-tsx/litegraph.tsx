@@ -1,4 +1,5 @@
 import { LiteGraph } from "./litegraph.js";
+import { console } from "./Console.js";
 
 var global = typeof(window) != "undefined" ? window : typeof(self) != "undefined" ? self : globalThis;
 
@@ -271,9 +272,7 @@ export class LGraphNode {
 
     if (this.onSerialize) {
       if (this.onSerialize(o)) {
-        console.warn(
-          "node onSerialize shouldnt return anything, data should be stored in the object pass in the first parameter",
-        );
+        console.warn("node onSerialize shouldnt return anything, data should be stored in the object pass in the first parameter");
       }
     }
 
@@ -742,9 +741,9 @@ export class LGraphNode {
     var trigS = this.findOutputSlot("onExecuted");
     if (trigS != -1) {
 
-      // console.debug(this.id+":"+this.order+" triggering slot onAfterExecute");
-      // console.debug(param);
-      // console.debug(options);
+      console.debug(this.id+":"+this.order+" triggering slot onAfterExecute");
+      console.debug(param);
+      console.debug(options);
       this.triggerSlot(trigS, param, null, options);
 
     }
@@ -1763,19 +1762,19 @@ export class LGraphNode {
     }
     var target_slot = target_node.findInputSlotByType(target_slotType, false, true);
     if (target_slot >= 0 && target_slot !== null) {
-      // console.debug("CONNbyTYPE type "+target_slotType+" for "+target_slot)
+      console.debug("CONNbyTYPE type "+target_slotType+" for "+target_slot)
       return this.connect(slot, target_node, target_slot);
     } else {
-      // console.log("type "+target_slotType+" not found or not free?")
+      console.log("type "+target_slotType+" not found or not free?")
       if (opts.createEventInCase && target_slotType == LiteGraph.EVENT) {
         // WILL CREATE THE onTrigger IN SLOT
-        // console.debug("connect WILL CREATE THE onTrigger "+target_slotType+" to "+target_node);
+        console.debug("connect WILL CREATE THE onTrigger "+target_slotType+" to "+target_node);
         return this.connect(slot, target_node, -1);
       }
       // connect to the first general output slot if not found a specific type and
       if (opts.generalTypeInCase) {
         var target_slot = target_node.findInputSlotByType(0, false, true, true);
-        // console.debug("connect TO a general type (*, 0), if not found the specific type ",target_slotType," to ",target_node,"RES_SLOT:",target_slot);
+        console.debug("connect TO a general type (*, 0), if not found the specific type ", target_slotType, " to ", target_node, "RES_SLOT:", target_slot);
         if (target_slot >= 0) {
           return this.connect(slot, target_node, target_slot);
         }
@@ -1783,7 +1782,7 @@ export class LGraphNode {
       // connect to the first free input slot if not found a specific type and this output is general
       if (opts.firstFreeIfOutputGeneralInCase && (target_slotType == 0 || target_slotType == "*" || target_slotType == "")) {
         var target_slot = target_node.findInputSlotFree({typesNotAccepted: [LiteGraph.EVENT] });
-        // console.debug("connect TO TheFirstFREE ",target_slotType," to ",target_node,"RES_SLOT:",target_slot);
+        console.debug("connect TO TheFirstFREE ", target_slotType, " to ", target_node, "RES_SLOT:", target_slot);
         if (target_slot >= 0) {
           return this.connect(slot, target_node, target_slot);
         }
@@ -1816,7 +1815,7 @@ export class LGraphNode {
     }
     var source_slot = source_node.findOutputSlotByType(source_slotType, false, true);
     if (source_slot >= 0 && source_slot !== null) {
-      // console.debug("CONNbyTYPE OUT! type "+source_slotType+" for "+source_slot)
+      console.debug("CONNbyTYPE OUT! type "+source_slotType+" for "+source_slot)
       return source_node.connect(source_slot, this, slot);
     } else {
 
@@ -1846,7 +1845,7 @@ export class LGraphNode {
       console.debug("no way to connect byOUT type: ", source_slotType, " to sourceNODE ", source_node);
       // TODO filter
 
-      // console.log("type OUT! "+source_slotType+" not found or not free?")
+      console.log("type OUT! "+source_slotType+" not found or not free?")
       return null;
     }
   }
@@ -1863,10 +1862,8 @@ export class LGraphNode {
     target_slot = target_slot || 0;
 
     if (!this.graph) {
-      // could be connected before adding it to a graph
-      console.log(
-        "Connect: Error, node doesn't belong to any graph. Nodes must be added first to a graph before connecting them.",
-      ); // due to link ids being associated with graphs
+      // could be connected before adding it to a graph due to link ids being associated with graphs
+      console.log("Connect: Error, node doesn't belong to any graph. Nodes must be added first to a graph before connecting them.");
       return null;
     }
 
@@ -1903,9 +1900,7 @@ export class LGraphNode {
       target_slot = target_node.findInputSlot(target_slot);
       if (target_slot == -1) {
         if (LiteGraph.debug) {
-          console.log(
-            "Connect: Error, no slot of name " + target_slot,
-          );
+          console.log("Connect: Error, no slot of name " + target_slot);
         }
         return null;
       }
@@ -1913,7 +1908,7 @@ export class LGraphNode {
 
       if (LiteGraph.do_add_triggers_slots) {
         // search for first slot with event? :: NO this is done outside
-        // console.log("Connect: Creating triggerEvent");
+        console.log("Connect: Creating triggerEvent");
         // force mode
         target_node.changeMode(LiteGraph.ON_TRIGGER);
         target_slot = target_node.findInputSlot("onTrigger");
@@ -1937,8 +1932,8 @@ export class LGraphNode {
     var output = this.outputs[slot];
 
     if (!this.outputs[slot]) {
-      /* console.debug("Invalid slot passed: "+slot);
-                console.debug(this.outputs);*/
+      console.debug("Invalid slot passed: "+slot);
+      console.debug(this.outputs);
       return null;
     }
 
@@ -1956,7 +1951,7 @@ export class LGraphNode {
         this.graph.connectionChange(this, link_info);
       return null;
     } else {
-      // console.debug("valid connection",output.type, input.type);
+      console.debug("valid connection", output.type, input.type);
     }
 
     // allows nodes to block connection, callback
