@@ -56,10 +56,10 @@ export class ContextMenu {
     root.style.pointerEvents = "none";
     setTimeout(function() {
       root.style.pointerEvents = "auto";
-    }, 100); //delay so the mouse up event is not caught by this element
-  
-    //this prevents the default context browser menu to open in case this menu was created when pressing right button
-    pointerListenerAdd(root,"up",
+    }, 100); // delay so the mouse up event is not caught by this element
+
+    // this prevents the default context browser menu to open in case this menu was created when pressing right button
+    pointerListenerAdd(root, "up",
       function(e) {
         console.log("pointerevents: ContextMenu up root prevent");
         e.preventDefault();
@@ -79,8 +79,8 @@ export class ContextMenu {
       },
       true,
     );
-  
-    pointerListenerAdd(root,"down",
+
+    pointerListenerAdd(root, "down",
       function(e) {
         console.log("pointerevents: ContextMenu down");
         if (e.button == 2) {
@@ -128,9 +128,9 @@ export class ContextMenu {
       this.addItem(name, value, options);
       num++;
     }
-  
-    //close on leave? touch enabled devices won't work TODO use a global device detector and condition on that
-    /*pointerListenerAdd(root,"leave", function(e) {
+
+    // close on leave? touch enabled devices won't work TODO use a global device detector and condition on that
+    /* pointerListenerAdd(root,"leave", function(e) {
                   console.log("pointerevents: ContextMenu leave");
                 if (that.lock) {
                     return;
@@ -141,9 +141,9 @@ export class ContextMenu {
                 root.closing_timer = setTimeout(that.close.bind(that, e), 500);
                 //that.close(e);
             });*/
-  
-    pointerListenerAdd(root,"enter", function(e) {
-      //console.log("pointerevents: ContextMenu enter");
+
+    pointerListenerAdd(root, "enter", function(e) {
+      // console.log("pointerevents: ContextMenu enter");
       if (root.closing_timer) {
         clearTimeout(root.closing_timer);
       }
@@ -244,7 +244,7 @@ export class ContextMenu {
       element.addEventListener("click", inner_onclick);
     }
     if (!disabled && options.autoopen) {
-      pointerListenerAdd(element,"enter",inner_over);
+      pointerListenerAdd(element, "enter", inner_over);
     }
 
     function inner_over(e) {

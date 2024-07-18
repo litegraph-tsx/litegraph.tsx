@@ -1,13 +1,13 @@
 export const PointerSettings = {
   pointerevents_method: "pointer", // "mouse"|"pointer" use mouse for retrocompatibility issues? (none found @ now)
-  // TODO implement pointercancel, gotpointercapture, lostpointercapture, (pointerover, pointerout if necessary)  
+  // TODO implement pointercancel, gotpointercapture, lostpointercapture, (pointerover, pointerout if necessary)
 };
 
 /* helper for interaction: pointer, touch, mouse Listeners
     used by LGraphCanvas DragAndScale ContextMenu*/
 export function pointerListenerAdd(oDOM, sEvIn, fCall, capture = false) {
   if (!oDOM || !oDOM.addEventListener || !sEvIn || typeof fCall !== "function") {
-    //console.log("cant pointerListenerAdd "+oDOM+", "+sEvent+", "+fCall);
+    // console.log("cant pointerListenerAdd "+oDOM+", "+sEvent+", "+fCall);
     return; // -- break --
   }
 
@@ -27,7 +27,7 @@ export function pointerListenerAdd(oDOM, sEvIn, fCall, capture = false) {
       }
       case "move": {
         sMethod = "touch";
-        //sEvent = "move";
+        // sEvent = "move";
         break;
       }
       case "up": {
@@ -37,7 +37,7 @@ export function pointerListenerAdd(oDOM, sEvIn, fCall, capture = false) {
       }
       case "cancel": {
         sMethod = "touch";
-        //sEvent = "cancel";
+        // sEvent = "cancel";
         break;
       }
       case "enter": {
@@ -53,7 +53,7 @@ export function pointerListenerAdd(oDOM, sEvIn, fCall, capture = false) {
 
   switch (sEvent) {
 
-    //both pointer and move events
+    // both pointer and move events
     case "down":
     case "up":
     case "move":
@@ -79,11 +79,11 @@ export function pointerListenerAdd(oDOM, sEvIn, fCall, capture = false) {
 
 export function pointerListenerRemove(oDOM, sEvent, fCall, capture = false) {
   if (!oDOM || !oDOM.removeEventListener || !sEvent || typeof fCall !== "function") {
-    //console.log("cant pointerListenerRemove "+oDOM+", "+sEvent+", "+fCall);
+    // console.log("cant pointerListenerRemove "+oDOM+", "+sEvent+", "+fCall);
     return; // -- break --
   }
   switch (sEvent) {
-    //both pointer and move events
+    // both pointer and move events
     case "down":
     case "up":
     case "move":
