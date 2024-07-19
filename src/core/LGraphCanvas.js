@@ -6422,7 +6422,7 @@ export class LGraphCanvas {
         if (options.show_general_after_typefiltered
                         && (sIn.value || sOut.value)
         ) {
-          let filtered_extra = [];
+          const filtered_extra = [];
           for (var i in LiteGraph.registered_node_types) {
             if (inner_test_filter(i, { inTypeOverride: sIn && sIn.value ? '*' : false, outTypeOverride: sOut && sOut.value ? '*' : false })) filtered_extra.push(i);
           }
@@ -6438,7 +6438,7 @@ export class LGraphCanvas {
         if ((sIn.value || sOut.value)
             && ((helper.childNodes.length == 0 && options.show_general_if_none_on_typefilter))
         ) {
-          let filtered_extra = [];
+          const filtered_extra = [];
           for (var i in LiteGraph.registered_node_types) {
             if (inner_test_filter(i, { skipFilter: true })) filtered_extra.push(i);
           }
@@ -6471,7 +6471,7 @@ export class LGraphCanvas {
             // if (sV.toLowerCase() == "_event_") sV = LiteGraph.EVENT; // -1
 
             if (sIn && sV) {
-              console.verbose('[showSearchBox]', `will check filter against ${sV}`);
+              console.verbose('[showSearchBox]', `IN search will check filter against ${sV}`);
               if (LiteGraph.registered_slot_in_types[sV] && LiteGraph.registered_slot_in_types[sV].nodes) { // type is stored
                 console.verbose('[showSearchBox]', `check ${sType} in ${LiteGraph.registered_slot_in_types[sV].nodes}`);
                 var doesInc = LiteGraph.registered_slot_in_types[sV].nodes.includes(sType);
@@ -6489,7 +6489,7 @@ export class LGraphCanvas {
             // if (sV.toLowerCase() == "_event_") sV = LiteGraph.EVENT; // -1
 
             if (sOut && sV) {
-              console.log(`search will check filter against ${sV}`);
+              console.verbose('[showSearchBox]', `OUT search will check filter against ${sV}`);
               if (LiteGraph.registered_slot_out_types[sV] && LiteGraph.registered_slot_out_types[sV].nodes) { // type is stored
                 console.verbose('[showSearchBox]', `check ${sType} in ${LiteGraph.registered_slot_out_types[sV].nodes}`);
                 var doesInc = LiteGraph.registered_slot_out_types[sV].nodes.includes(sType);
