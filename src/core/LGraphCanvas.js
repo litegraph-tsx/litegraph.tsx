@@ -6422,7 +6422,7 @@ export class LGraphCanvas {
         if (options.show_general_after_typefiltered
                         && (sIn.value || sOut.value)
         ) {
-          filtered_extra = [];
+          let filtered_extra = [];
           for (var i in LiteGraph.registered_node_types) {
             if (inner_test_filter(i, { inTypeOverride: sIn && sIn.value ? '*' : false, outTypeOverride: sOut && sOut.value ? '*' : false })) filtered_extra.push(i);
           }
@@ -6438,7 +6438,7 @@ export class LGraphCanvas {
         if ((sIn.value || sOut.value)
                         && ((helper.childNodes.length == 0 && options.show_general_if_none_on_typefilter))
         ) {
-          filtered_extra = [];
+          let filtered_extra = [];
           for (var i in LiteGraph.registered_node_types) {
             if (inner_test_filter(i, { skipFilter: true })) filtered_extra.push(i);
           }
