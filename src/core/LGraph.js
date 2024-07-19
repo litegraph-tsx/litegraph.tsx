@@ -1,6 +1,7 @@
 import { LiteGraph } from './litegraph';
 import { LGraphGroup } from './LGraphGroup';
 import { console } from './Console';
+import { LGraphStyles } from './styles';
 
 const global = typeof (window) !== 'undefined' ? window : typeof (self) !== 'undefined' ? self : globalThis;
 
@@ -525,17 +526,17 @@ export class LGraph {
         continue;
       }
       let max_size = 100;
-      let y = margin + LiteGraph.NODE_TITLE_HEIGHT;
+      let y = margin + LGraphStyles.NODE_TITLE_HEIGHT;
       for (let j = 0; j < column.length; ++j) {
         const node = column[j];
-        node.pos[0] = (layout == LiteGraph.VERTICAL_LAYOUT) ? y : x;
-        node.pos[1] = (layout == LiteGraph.VERTICAL_LAYOUT) ? x : y;
-        const max_size_index = (layout == LiteGraph.VERTICAL_LAYOUT) ? 1 : 0;
+        node.pos[0] = (layout == LGraphStyles.VERTICAL_LAYOUT) ? y : x;
+        node.pos[1] = (layout == LGraphStyles.VERTICAL_LAYOUT) ? x : y;
+        const max_size_index = (layout == LGraphStyles.VERTICAL_LAYOUT) ? 1 : 0;
         if (node.size[max_size_index] > max_size) {
           max_size = node.size[max_size_index];
         }
-        const node_size_index = (layout == LiteGraph.VERTICAL_LAYOUT) ? 0 : 1;
-        y += node.size[node_size_index] + margin + LiteGraph.NODE_TITLE_HEIGHT;
+        const node_size_index = (layout == LGraphStyles.VERTICAL_LAYOUT) ? 0 : 1;
+        y += node.size[node_size_index] + margin + LGraphStyles.NODE_TITLE_HEIGHT;
       }
       x += max_size + margin;
     }
