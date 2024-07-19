@@ -6436,7 +6436,7 @@ export class LGraphCanvas {
 
         // check il filtering gave no results
         if ((sIn.value || sOut.value)
-                        && ((helper.childNodes.length == 0 && options.show_general_if_none_on_typefilter))
+            && ((helper.childNodes.length == 0 && options.show_general_if_none_on_typefilter))
         ) {
           let filtered_extra = [];
           for (var i in LiteGraph.registered_node_types) {
@@ -6471,15 +6471,14 @@ export class LGraphCanvas {
             // if (sV.toLowerCase() == "_event_") sV = LiteGraph.EVENT; // -1
 
             if (sIn && sV) {
-              console.log(`will check filter against ${sV}`);
+              console.verbose('[showSearchBox]', `will check filter against ${sV}`);
               if (LiteGraph.registered_slot_in_types[sV] && LiteGraph.registered_slot_in_types[sV].nodes) { // type is stored
-                console.debug(`check ${sType} in ${LiteGraph.registered_slot_in_types[sV].nodes}`);
+                console.verbose('[showSearchBox]', `check ${sType} in ${LiteGraph.registered_slot_in_types[sV].nodes}`);
                 var doesInc = LiteGraph.registered_slot_in_types[sV].nodes.includes(sType);
                 if (doesInc !== false) {
-                  console.log(`${sType} HAS ${sV}`);
+                  console.verbose('[showSearchBox]', `IN ${sType} HAS ${sV}`);
                 } else {
-                  console.debug(LiteGraph.registered_slot_in_types[sV]);
-                  console.log(+' DONT includes ' + type);
+                  console.verbose('[showSearchBox]', 'valid IN DONT includes ' + type);
                   return false;
                 }
               }
@@ -6492,13 +6491,12 @@ export class LGraphCanvas {
             if (sOut && sV) {
               console.log(`search will check filter against ${sV}`);
               if (LiteGraph.registered_slot_out_types[sV] && LiteGraph.registered_slot_out_types[sV].nodes) { // type is stored
-                console.debug(`check ${sType} in ${LiteGraph.registered_slot_out_types[sV].nodes}`);
+                console.verbose('[showSearchBox]', `check ${sType} in ${LiteGraph.registered_slot_out_types[sV].nodes}`);
                 var doesInc = LiteGraph.registered_slot_out_types[sV].nodes.includes(sType);
                 if (doesInc !== false) {
-                  console.log(`${sType} HAS ${sV}`);
+                  console.verbose('[showSearchBox]', `OUT ${sType} HAS ${sV}`);
                 } else {
-                  console.debug(LiteGraph.registered_slot_out_types[sV]);
-                  console.log(+' DONT includes ' + type);
+                  console.verbose('[showSearchBox]', 'valid OUT DONT includes ' + type);
                   return false;
                 }
               }
