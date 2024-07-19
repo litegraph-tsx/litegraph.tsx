@@ -685,7 +685,7 @@ export class LGraphCanvas {
 
       // clone node ALT dragging
       if (LiteGraph.alt_drag_do_clone_nodes && e.altKey && node && this.allow_interaction && !skip_action && !this.read_only) {
-        cloned = node.clone();
+        const cloned = node.clone();
         if (cloned) {
           cloned.pos[0] += 5;
           cloned.pos[1] += 5;
