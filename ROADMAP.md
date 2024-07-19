@@ -8,7 +8,7 @@
 - [ ] Move eslint.config.js into tools and still have it work
     Sluffing fix to "whenever"
 
-- [ ] Implement airbnb eslint stylistic rules, 0 strictness to start.
+- [x] Implement airbnb eslint stylistic rules, 0 strictness to start.
 
 - [x] Implement PRs
 
@@ -32,6 +32,8 @@
 
 - [x] Shifted build over to vite, and drop espresso
 
+- [x] Shunt migration of ES6 classes along with version so calls to constructors doesn't bomb adopter's code
+
 ## ES6 Class Step (0.7)
 
 - [x] Enable ES6 classes in LiteGraph
@@ -45,8 +47,6 @@
 - [x] Ensure all cases of previously globally available methods are bound to LiteGraph.method()
 
 - [x] Ensure all of the previously global variables are in the correct module.
-
-- [ ] Shunt migration of ES6 classes along with version so calls to constructors doesn't bomb adopter's code
 
 - [x] node/Math.js and length bug fixes
 
