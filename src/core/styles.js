@@ -30,4 +30,24 @@ export const LGraphStyles = {
   LINK_COLOR: '#9A9',
   EVENT_LINK_COLOR: '#A86',
   CONNECTING_LINK_COLOR: '#AFA',
+
+  VALID_SHAPES: ['default', 'box', 'round', 'card'],
+
+  BOX_SHAPE: 1,
+  ROUND_SHAPE: 2,
+  CIRCLE_SHAPE: 3,
+  CARD_SHAPE: 4,
+  ARROW_SHAPE: 5,
+  GRID_SHAPE: 6, // intended for slot arrays
+
+  LINK_RENDER_MODES: ['Straight', 'Linear', 'Spline'], // helper
+  STRAIGHT_LINK: 0,
+  LINEAR_LINK: 1,
+  SPLINE_LINK: 2,
+
+  NORMAL_TITLE: 0,
+  NO_TITLE: 1,
+  TRANSPARENT_TITLE: 2,
+  AUTOHIDE_TITLE: 3,
+  VERTICAL_LAYOUT: 'vertical', // arrange nodes vertically
 };

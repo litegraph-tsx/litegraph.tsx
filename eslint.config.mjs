@@ -1,6 +1,8 @@
 import js from '@eslint/js';
 import stylistic from '@stylistic/eslint-plugin';
 import stylisticJs from '@stylistic/eslint-plugin-js';
+import deprecation from 'eslint-plugin-deprecation';
+import tsParser from '@typescript-eslint/parser';
 import { FlatCompat } from '@eslint/eslintrc';
 
 import path from 'path';
@@ -33,9 +35,13 @@ export default [
           extensions: ['.js', '.jsx', '.ts', '.d.ts', '.tsx'],
         },
       },
+      'import/parsers': {
+        '@typescript-eslint/parser': ['.js', '.jsx', '.ts', '.d.ts', '.tsx'],
+      },
     },
     rules: {
       'import/no-extraneous-dependencies': ['error', { devDependencies: true }],
+      'import/no-cycle': ['off'], // Need to fix this.
     },
   },
   {
@@ -63,6 +69,7 @@ export default [
       'no-empty': ['off'],
       'no-eval': ['off'],
       'no-extend-native': ['off'],
+      'no-global-assign': ['off'],
       'no-lone-blocks': ['off'],
       'no-lonely-if': ['off'],
       'no-loop-func': ['off'],
@@ -102,10 +109,15 @@ export default [
     languageOptions: {
       ecmaVersion: 'latest',
       sourceType: 'module',
+      parser: tsParser,
+      parserOptions: {
+        project: ['./tools/tsconfig.json'],
+      },
     },
     plugins: {
       '@stylistic': stylistic,
       '@stylistic/js': stylisticJs,
+      deprecation,
     },
     rules: {
 
@@ -160,6 +172,10 @@ export default [
       '@stylistic/semi-style': [1, 'last'],
       '@stylistic/space-before-blocks': [1, 'always'],
       '@stylistic/spaced-comment': [1, 'always'],
+
+      /** Deprecation */
+      'import/no-deprecated': ['error'],
+      'deprecation/deprecation': 'off', // Set to 'error' for migration.
     },
   },
 ];

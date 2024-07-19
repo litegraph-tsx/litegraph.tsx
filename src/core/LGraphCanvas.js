@@ -46,7 +46,7 @@ export class LGraphCanvas {
     this.title_text_font = `${LGraphStyles.NODE_TEXT_SIZE}px Arial`;
     this.inner_text_font = `normal ${LGraphStyles.NODE_SUBTEXT_SIZE}px Arial`;
     this.node_title_color = LGraphStyles.NODE_TITLE_COLOR;
-    this.default_link_color = LiteGraph.LINK_COLOR;
+    this.default_link_color = LGraphStyles.LINK_COLOR;
     this.default_connection_color = {
       input_off: '#778',
       input_on: '#7F7', // "#BBD"
@@ -101,7 +101,7 @@ export class LGraphCanvas {
     this.render_title_colored = true;
     this.render_link_tooltip = true;
 
-    this.links_render_mode = LiteGraph.SPLINE_LINK;
+    this.links_render_mode = LGraphStyles.SPLINE_LINK;
 
     this.mouse = [0, 0]; // mouse in canvas coordinates, where 0,0 is the top-left corner of the blue rectangle
     this.graph_mouse = [0, 0]; // mouse in graph coordinates, where 0,0 is the top-left corner of the blue rectangle
@@ -2562,10 +2562,10 @@ export class LGraphCanvas {
 
         switch (connType) {
           case LiteGraph.EVENT:
-            link_color = LiteGraph.EVENT_LINK_COLOR;
+            link_color = LGraphStyles.EVENT_LINK_COLOR;
             break;
           default:
-            link_color = LiteGraph.CONNECTING_LINK_COLOR;
+            link_color = LGraphStyles.CONNECTING_LINK_COLOR;
         }
 
         // the connection being dragged by the mouse
@@ -2584,7 +2584,7 @@ export class LGraphCanvas {
         ctx.beginPath();
         if (
           connType === LiteGraph.EVENT
-                        || connShape === LiteGraph.BOX_SHAPE
+                        || connShape === LGraphStyles.BOX_SHAPE
         ) {
           ctx.rect(
             this.connecting_pos[0] - 6 + 0.5,
@@ -2600,7 +2600,7 @@ export class LGraphCanvas {
             14,
             10,
           );
-        } else if (connShape === LiteGraph.ARROW_SHAPE) {
+        } else if (connShape === LGraphStyles.ARROW_SHAPE) {
           ctx.moveTo(this.connecting_pos[0] + 8, this.connecting_pos[1] + 0.5);
           ctx.lineTo(this.connecting_pos[0] - 4, this.connecting_pos[1] + 6 + 0.5);
           ctx.lineTo(this.connecting_pos[0] - 4, this.connecting_pos[1] - 6 + 0.5);
@@ -2629,7 +2629,7 @@ export class LGraphCanvas {
         if (this._highlight_input) {
           ctx.beginPath();
           var { shape } = this._highlight_input_slot;
-          if (shape === LiteGraph.ARROW_SHAPE) {
+          if (shape === LGraphStyles.ARROW_SHAPE) {
             ctx.moveTo(this._highlight_input[0] + 8, this._highlight_input[1] + 0.5);
             ctx.lineTo(this._highlight_input[0] - 4, this._highlight_input[1] + 6 + 0.5);
             ctx.lineTo(this._highlight_input[0] - 4, this._highlight_input[1] - 6 + 0.5);
@@ -2647,7 +2647,7 @@ export class LGraphCanvas {
         }
         if (this._highlight_output) {
           ctx.beginPath();
-          if (shape === LiteGraph.ARROW_SHAPE) {
+          if (shape === LGraphStyles.ARROW_SHAPE) {
             ctx.moveTo(this._highlight_output[0] + 8, this._highlight_output[1] + 0.5);
             ctx.lineTo(this._highlight_output[0] - 4, this._highlight_output[1] + 6 + 0.5);
             ctx.lineTo(this._highlight_output[0] - 4, this._highlight_output[1] - 6 + 0.5);
@@ -3147,7 +3147,7 @@ export class LGraphCanvas {
     ctx.globalAlpha = editor_alpha;
 
     if (this.render_shadows && !low_quality) {
-      ctx.shadowColor = LiteGraph.DEFAULT_SHADOW_COLOR;
+      ctx.shadowColor = LGraphStyles.DEFAULT_SHADOW_COLOR;
       ctx.shadowOffsetX = 2 * this.ds.scale;
       ctx.shadowOffsetY = 2 * this.ds.scale;
       ctx.shadowBlur = 3 * this.ds.scale;
@@ -3165,7 +3165,7 @@ export class LGraphCanvas {
     }
 
     // clip if required (mask)
-    const shape = node._shape || LiteGraph.BOX_SHAPE;
+    const shape = node._shape || LGraphStyles.BOX_SHAPE;
     const size = temp_vec2;
     temp_vec2.set(node.size);
     const { horizontal } = node; // || node.flags.horizontal;
@@ -3188,11 +3188,11 @@ export class LGraphCanvas {
       // Start clipping
       ctx.save();
       ctx.beginPath();
-      if (shape == LiteGraph.BOX_SHAPE) {
+      if (shape == LGraphStyles.BOX_SHAPE) {
         ctx.rect(0, 0, size[0], size[1]);
-      } else if (shape == LiteGraph.ROUND_SHAPE) {
+      } else if (shape == LGraphStyles.ROUND_SHAPE) {
         ctx.roundRect(0, 0, size[0], size[1], [10]);
-      } else if (shape == LiteGraph.CIRCLE_SHAPE) {
+      } else if (shape == LGraphStyles.CIRCLE_SHAPE) {
         ctx.arc(
           size[0] * 0.5,
           size[1] * 0.5,
@@ -3272,14 +3272,14 @@ export class LGraphCanvas {
           ctx.beginPath();
 
           if (slot_type == 'array') {
-            slot_shape = LiteGraph.GRID_SHAPE; // place in addInput? addOutput instead?
+            slot_shape = LGraphStyles.GRID_SHAPE; // place in addInput? addOutput instead?
           }
 
           var doStroke = true;
 
           if (
             slot.type === LiteGraph.EVENT
-                            || slot.shape === LiteGraph.BOX_SHAPE
+                            || slot.shape === LGraphStyles.BOX_SHAPE
           ) {
             if (horizontal) {
               ctx.rect(
@@ -3296,12 +3296,12 @@ export class LGraphCanvas {
                 10,
               );
             }
-          } else if (slot_shape === LiteGraph.ARROW_SHAPE) {
+          } else if (slot_shape === LGraphStyles.ARROW_SHAPE) {
             ctx.moveTo(pos[0] + 8, pos[1] + 0.5);
             ctx.lineTo(pos[0] - 4, pos[1] + 6 + 0.5);
             ctx.lineTo(pos[0] - 4, pos[1] - 6 + 0.5);
             ctx.closePath();
-          } else if (slot_shape === LiteGraph.GRID_SHAPE) {
+          } else if (slot_shape === LGraphStyles.GRID_SHAPE) {
             ctx.rect(pos[0] - 4, pos[1] - 4, 2, 2);
             ctx.rect(pos[0] - 1, pos[1] - 4, 2, 2);
             ctx.rect(pos[0] + 2, pos[1] - 4, 2, 2);
@@ -3366,14 +3366,14 @@ export class LGraphCanvas {
           // ctx.rect( node.size[0] - 14,i*14,10,10);
 
           if (slot_type == 'array') {
-            slot_shape = LiteGraph.GRID_SHAPE;
+            slot_shape = LGraphStyles.GRID_SHAPE;
           }
 
           var doStroke = true;
 
           if (
             slot_type === LiteGraph.EVENT
-                            || slot_shape === LiteGraph.BOX_SHAPE
+                            || slot_shape === LGraphStyles.BOX_SHAPE
           ) {
             if (horizontal) {
               ctx.rect(
@@ -3390,12 +3390,12 @@ export class LGraphCanvas {
                 10,
               );
             }
-          } else if (slot_shape === LiteGraph.ARROW_SHAPE) {
+          } else if (slot_shape === LGraphStyles.ARROW_SHAPE) {
             ctx.moveTo(pos[0] + 8, pos[1] + 0.5);
             ctx.lineTo(pos[0] - 4, pos[1] + 6 + 0.5);
             ctx.lineTo(pos[0] - 4, pos[1] - 6 + 0.5);
             ctx.closePath();
-          } else if (slot_shape === LiteGraph.GRID_SHAPE) {
+          } else if (slot_shape === LGraphStyles.GRID_SHAPE) {
             ctx.rect(pos[0] - 4, pos[1] - 4, 2, 2);
             ctx.rect(pos[0] - 1, pos[1] - 4, 2, 2);
             ctx.rect(pos[0] + 2, pos[1] - 4, 2, 2);
@@ -3487,10 +3487,10 @@ export class LGraphCanvas {
         ctx.beginPath();
         if (
           slot.type === LiteGraph.EVENT
-                        || slot.shape === LiteGraph.BOX_SHAPE
+                        || slot.shape === LGraphStyles.BOX_SHAPE
         ) {
           ctx.rect(x - 7 + 0.5, y - 4, 14, 8);
-        } else if (slot.shape === LiteGraph.ARROW_SHAPE) {
+        } else if (slot.shape === LGraphStyles.ARROW_SHAPE) {
           ctx.moveTo(x + 8, y);
           ctx.lineTo(x + -4, y - 4);
           ctx.lineTo(x + -4, y + 4);
@@ -3513,10 +3513,10 @@ export class LGraphCanvas {
         ctx.beginPath();
         if (
           slot.type === LiteGraph.EVENT
-                        || slot.shape === LiteGraph.BOX_SHAPE
+                        || slot.shape === LGraphStyles.BOX_SHAPE
         ) {
           ctx.rect(x - 7 + 0.5, y - 4, 14, 8);
-        } else if (slot.shape === LiteGraph.ARROW_SHAPE) {
+        } else if (slot.shape === LGraphStyles.ARROW_SHAPE) {
           ctx.moveTo(x + 6, y);
           ctx.lineTo(x - 6, y - 4);
           ctx.lineTo(x - 6, y + 4);
@@ -3590,14 +3590,14 @@ export class LGraphCanvas {
     const low_quality = this.ds.scale < 0.5;
 
     // render node area depending on shape
-    const shape = node._shape || node.constructor.shape || LiteGraph.ROUND_SHAPE;
+    const shape = node._shape || node.constructor.shape || LGraphStyles.ROUND_SHAPE;
 
     const { title_mode } = node.constructor;
 
     let render_title = true;
-    if (title_mode == LiteGraph.TRANSPARENT_TITLE || title_mode == LiteGraph.NO_TITLE) {
+    if (title_mode == LGraphStyles.TRANSPARENT_TITLE || title_mode == LGraphStyles.NO_TITLE) {
       render_title = false;
-    } else if (title_mode == LiteGraph.AUTOHIDE_TITLE && mouse_over) {
+    } else if (title_mode == LGraphStyles.AUTOHIDE_TITLE && mouse_over) {
       render_title = true;
     }
 
@@ -3613,20 +3613,20 @@ export class LGraphCanvas {
     // if(node.flags.collapsed)
     {
       ctx.beginPath();
-      if (shape == LiteGraph.BOX_SHAPE || low_quality) {
+      if (shape == LGraphStyles.BOX_SHAPE || low_quality) {
         ctx.fillRect(area[0], area[1], area[2], area[3]);
       } else if (
-        shape == LiteGraph.ROUND_SHAPE
-                    || shape == LiteGraph.CARD_SHAPE
+        shape == LGraphStyles.ROUND_SHAPE
+                    || shape == LGraphStyles.CARD_SHAPE
       ) {
         ctx.roundRect(
           area[0],
           area[1],
           area[2],
           area[3],
-          shape == LiteGraph.CARD_SHAPE ? [this.round_radius, this.round_radius, 0, 0] : [this.round_radius],
+          shape == LGraphStyles.CARD_SHAPE ? [this.round_radius, this.round_radius, 0, 0] : [this.round_radius],
         );
-      } else if (shape == LiteGraph.CIRCLE_SHAPE) {
+      } else if (shape == LGraphStyles.CIRCLE_SHAPE) {
         ctx.arc(
           size[0] * 0.5,
           size[1] * 0.5,
@@ -3651,18 +3651,18 @@ export class LGraphCanvas {
     }
 
     // title bg (remember, it is rendered ABOVE the node)
-    if (render_title || title_mode == LiteGraph.TRANSPARENT_TITLE) {
+    if (render_title || title_mode == LGraphStyles.TRANSPARENT_TITLE) {
       // title bar
       if (node.onDrawTitleBar) {
         node.onDrawTitleBar(ctx, title_height, size, this.ds.scale, fgcolor);
       } else if (
-        title_mode != LiteGraph.TRANSPARENT_TITLE
+        title_mode != LGraphStyles.TRANSPARENT_TITLE
                     && (node.constructor.title_color || this.render_title_colored)
       ) {
         const title_color = node.constructor.title_color || fgcolor;
 
         if (node.flags.collapsed) {
-          ctx.shadowColor = LiteGraph.DEFAULT_SHADOW_COLOR;
+          ctx.shadowColor = LGraphStyles.DEFAULT_SHADOW_COLOR;
         }
 
         //* gradient test
@@ -3680,9 +3680,9 @@ export class LGraphCanvas {
 
         // ctx.globalAlpha = 0.5 * old_alpha;
         ctx.beginPath();
-        if (shape == LiteGraph.BOX_SHAPE || low_quality) {
+        if (shape == LGraphStyles.BOX_SHAPE || low_quality) {
           ctx.rect(0, -title_height, size[0] + 1, title_height);
-        } else if (shape == LiteGraph.ROUND_SHAPE || shape == LiteGraph.CARD_SHAPE) {
+        } else if (shape == LGraphStyles.ROUND_SHAPE || shape == LGraphStyles.CARD_SHAPE) {
           ctx.roundRect(
             0,
             -title_height,
@@ -3710,9 +3710,9 @@ export class LGraphCanvas {
       if (node.onDrawTitleBox) {
         node.onDrawTitleBox(ctx, title_height, size, this.ds.scale);
       } else if (
-        shape == LiteGraph.ROUND_SHAPE
-                    || shape == LiteGraph.CIRCLE_SHAPE
-                    || shape == LiteGraph.CARD_SHAPE
+        shape == LGraphStyles.ROUND_SHAPE
+                    || shape == LGraphStyles.CIRCLE_SHAPE
+                    || shape == LGraphStyles.CARD_SHAPE
       ) {
         if (low_quality) {
           ctx.fillStyle = 'black';
@@ -3807,7 +3807,7 @@ export class LGraphCanvas {
         const x = node.size[0] - w;
         const over = LiteGraph.isInsideRectangle(this.graph_mouse[0] - node.pos[0], this.graph_mouse[1] - node.pos[1], x + 2, -w + 2, w - 4, w - 4);
         ctx.fillStyle = over ? '#888' : '#555';
-        if (shape == LiteGraph.BOX_SHAPE || low_quality) ctx.fillRect(x + 2, -w + 2, w - 4, w - 4);
+        if (shape == LGraphStyles.BOX_SHAPE || low_quality) ctx.fillRect(x + 2, -w + 2, w - 4, w - 4);
         else {
           ctx.beginPath();
           ctx.roundRect(x + 2, -w + 2, w - 4, w - 4, [4]);
@@ -3833,14 +3833,14 @@ export class LGraphCanvas {
         node.onBounding(area);
       }
 
-      if (title_mode == LiteGraph.TRANSPARENT_TITLE) {
+      if (title_mode == LGraphStyles.TRANSPARENT_TITLE) {
         area[1] -= title_height;
         area[3] += title_height;
       }
       ctx.lineWidth = 1;
       ctx.globalAlpha = 0.8;
       ctx.beginPath();
-      if (shape == LiteGraph.BOX_SHAPE) {
+      if (shape == LGraphStyles.BOX_SHAPE) {
         ctx.rect(
           -6 + area[0],
           -6 + area[1],
@@ -3848,8 +3848,8 @@ export class LGraphCanvas {
           12 + area[3],
         );
       } else if (
-        shape == LiteGraph.ROUND_SHAPE
-                    || (shape == LiteGraph.CARD_SHAPE && node.flags.collapsed)
+        shape == LGraphStyles.ROUND_SHAPE
+                    || (shape == LGraphStyles.CARD_SHAPE && node.flags.collapsed)
       ) {
         ctx.roundRect(
           -6 + area[0],
@@ -3858,7 +3858,7 @@ export class LGraphCanvas {
           12 + area[3],
           [this.round_radius * 2],
         );
-      } else if (shape == LiteGraph.CARD_SHAPE) {
+      } else if (shape == LGraphStyles.CARD_SHAPE) {
         ctx.roundRect(
           -6 + area[0],
           -6 + area[1],
@@ -3866,7 +3866,7 @@ export class LGraphCanvas {
           12 + area[3],
           [this.round_radius * 2, 2, this.round_radius * 2, 2],
         );
-      } else if (shape == LiteGraph.CIRCLE_SHAPE) {
+      } else if (shape == LGraphStyles.CIRCLE_SHAPE) {
         ctx.arc(
           size[0] * 0.5,
           size[1] * 0.5,
@@ -4069,7 +4069,7 @@ export class LGraphCanvas {
     for (var i = 0; i < num_sublines; i += 1) {
       const offsety = (i - (num_sublines - 1) * 0.5) * 5;
 
-      if (this.links_render_mode == LiteGraph.SPLINE_LINK) {
+      if (this.links_render_mode == LGraphStyles.SPLINE_LINK) {
         ctx.moveTo(a[0], a[1] + offsety);
         var start_offset_x = 0;
         var start_offset_y = 0;
@@ -4111,7 +4111,7 @@ export class LGraphCanvas {
           b[0],
           b[1] + offsety,
         );
-      } else if (this.links_render_mode == LiteGraph.LINEAR_LINK) {
+      } else if (this.links_render_mode == LGraphStyles.LINEAR_LINK) {
         ctx.moveTo(a[0], a[1] + offsety);
         var start_offset_x = 0;
         var start_offset_y = 0;
@@ -4155,7 +4155,7 @@ export class LGraphCanvas {
           b[1] + end_offset_y * l + offsety,
         );
         ctx.lineTo(b[0], b[1] + offsety);
-      } else if (this.links_render_mode == LiteGraph.STRAIGHT_LINK) {
+      } else if (this.links_render_mode == LGraphStyles.STRAIGHT_LINK) {
         ctx.moveTo(a[0], a[1]);
         let start_x = a[0];
         let start_y = a[1];
@@ -7029,7 +7029,7 @@ export class LGraphCanvas {
       }
 
       const aLinks = [graphcanvas.links_render_mode];
-      panel.addWidget('combo', 'Render mode', LiteGraph.LINK_RENDER_MODES[graphcanvas.links_render_mode], { key: 'links_render_mode', values: LiteGraph.LINK_RENDER_MODES }, fUpdate);
+      panel.addWidget('combo', 'Render mode', LGraphStyles.LINK_RENDER_MODES[graphcanvas.links_render_mode], { key: 'links_render_mode', values: LiteGraph.LINK_RENDER_MODES }, fUpdate);
 
       panel.addSeparator();
 
@@ -7434,7 +7434,7 @@ export class LGraphCanvas {
       throw 'no node passed';
     }
 
-    new LiteGraph.ContextMenu(LiteGraph.VALID_SHAPES, {
+    new LiteGraph.ContextMenu(LGraphStyles.VALID_SHAPES, {
       event: e,
       callback: inner_clicked,
       parentMenu: menu,

@@ -1,4 +1,5 @@
 import { LiteGraph } from '@/litegraph';
+import { LGraphStyles } from '../core/styles';
 
 const global = typeof (window) !== 'undefined' ? window : typeof (self) !== 'undefined' ? self : globalThis;
 
@@ -439,7 +440,7 @@ class LGAudioSource {
     this.boxcolor = '#AA4';
 
     function inner(buffer) {
-      this.boxcolor = LiteGraph.NODE_DEFAULT_BOXCOLOR;
+      this.boxcolor = LGraphStyles.NODE_DEFAULT_BOXCOLOR;
       that._audiobuffer = buffer;
       that._loading_audio = false;
       // if is playing, then play it
