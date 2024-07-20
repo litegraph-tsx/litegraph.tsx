@@ -1,6 +1,7 @@
 import { LiteGraph } from './litegraph';
 import { console } from './Console';
 import { LGraphStyles } from './styles';
+import { LGraphEvents } from './events';
 
 const global = typeof (window) !== 'undefined' ? window : typeof (self) !== 'undefined' ? self : globalThis;
 
@@ -1945,7 +1946,7 @@ export class LGraphNode {
     else nextId = ++this.graph.last_link_id;
 
     // create link class
-    link_info = new LiteGraph.LLink(
+    link_info = new LLink(
       nextId,
       input.type || output.type,
       this.id,
