@@ -1,5 +1,5 @@
-import { LiteGraph, clamp } from '@/litegraph';
-import { colorToString } from '../core/utilities';
+import { LiteGraph } from '@/litegraph';
+import { clamp, colorToString } from '../core/utilities';
 
 class GraphicsPlot {
   constructor() {

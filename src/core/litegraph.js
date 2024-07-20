@@ -14,6 +14,7 @@ import {
   colorToString,
   compareObjects,
   distance,
+  extendClass,
   getTime,
   growBounding,
   hex2num,
@@ -817,13 +818,6 @@ export const LiteGraph = {
     }
   },
 
-  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
-  cloneObject,
-  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
-  uuidv4,
-  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
-  isValidConnection,
-
   /**
          * Register a string in the search box so when the user types it it will recommend this node
          * @method registerSearchboxExtra
@@ -889,6 +883,13 @@ export const LiteGraph = {
   },
 
   /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  cloneObject,
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  uuidv4,
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  isValidConnection,
+
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
   compareObjects,
 
   /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
@@ -923,51 +924,14 @@ export const LiteGraph = {
   /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
   num2hex,
 
-  // @TODO: Obviously belongs with ContextMenu
-  closeAllContextMenus(ref_window) {
-    ref_window = ref_window || window;
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  extendClass,
 
-    const elements = ref_window.document.querySelectorAll('.litecontextmenu');
-    if (!elements.length) {
-      return;
-    }
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  getTime,
 
-    const result = [];
-    for (var i = 0; i < elements.length; i++) {
-      result.push(elements[i]);
-    }
-
-    for (var i = 0; i < result.length; i++) {
-      if (result[i].close) {
-        result[i].close();
-      } else if (result[i].parentNode) {
-        result[i].parentNode.removeChild(result[i]);
-      }
-    }
-  },
-
-  extendClass(target, origin) {
-    // Copy static properties
-    Object.getOwnPropertyNames(origin).forEach((prop) => {
-      if (!target.hasOwnProperty(prop)) {
-        Object.defineProperty(target, prop, Object.getOwnPropertyDescriptor(origin, prop));
-      }
-    });
-
-    // Copy prototype properties
-    if (origin.prototype) {
-      Object.getOwnPropertyNames(origin.prototype).forEach((prop) => {
-        if (!target.prototype.hasOwnProperty(prop)) {
-          const descriptor = Object.getOwnPropertyDescriptor(origin.prototype, prop);
-          if (descriptor.get || descriptor.set) {
-            Object.defineProperty(target.prototype, prop, descriptor);
-          } else {
-            target.prototype[prop] = origin.prototype[prop];
-          }
-        }
-      });
-    }
-  },
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  closeAllContextMenus,
 
   // used to create nodes from wrapping functions
   getParameterNames(func) {
@@ -1086,78 +1050,6 @@ export const LiteGraph = {
   },
 };
 
-export function clamp(v, a, b) {
-  return a > v ? a : b < v ? b : v;
-}
-
-// separated just to improve if it doesn't work
-export function cloneObject(obj, target) {
-  if (obj == null) {
-    return null;
-  }
-  const r = JSON.parse(JSON.stringify(obj));
-  if (!target) {
-    return r;
-  }
-
-  for (const i in r) {
-    target[i] = r[i];
-  }
-  return target;
-}
-
-/*
-* https://gist.github.com/jed/982883?permalink_comment_id=852670#gistcomment-852670
-*/
-export function uuidv4() {
-  return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, (a) => (a ^ Math.random() * 16 >> a / 4).toString(16));
-}
-
-/**
- * Returns if the types of two slots are compatible (taking into account wildcards, etc)
- * @method isValidConnection
- * @param {String} type_a
- * @param {String} type_b
- * @return {Boolean} true if they can be connected
- */
-export function isValidConnection(type_a, type_b) {
-  if (type_a == '' || type_a === '*') type_a = 0;
-  if (type_b == '' || type_b === '*') type_b = 0;
-  if (
-    !type_a // generic output
-              || !type_b // generic input
-              || type_a == type_b // same type (is valid for triggers)
-              || (type_a == LGraphEvents.EVENT && type_b == LGraphEvents.ACTION)
-  ) {
-    return true;
-  }
-
-  // Enforce string type to handle toLowerCase call (-1 number not ok)
-  type_a = String(type_a);
-  type_b = String(type_b);
-  type_a = type_a.toLowerCase();
-  type_b = type_b.toLowerCase();
-
-  // For nodes supporting multiple connection types
-  if (type_a.indexOf(',') == -1 && type_b.indexOf(',') == -1) {
-    return type_a == type_b;
-  }
-
-  // Check all permutations to see if one is valid
-  const supported_types_a = type_a.split(',');
-  const supported_types_b = type_b.split(',');
-  for (let i = 0; i < supported_types_a.length; ++i) {
-    for (let j = 0; j < supported_types_b.length; ++j) {
-      if (this.isValidConnection(supported_types_a[i], supported_types_b[j])) {
-        // if (supported_types_a[i] == supported_types_b[j]) {
-        return true;
-      }
-    }
-  }
-
-  return false;
-}
-
 if (typeof window !== 'undefined' && !window.requestAnimationFrame) {
   window.requestAnimationFrame = window.webkitRequestAnimationFrame
     || window.mozRequestAnimationFrame
@@ -1182,77 +1074,6 @@ LGraphCanvas.link_type_colors = {
   '-1': LGraphStyles.EVENT_LINK_COLOR,
   number: '#AAA',
   node: '#DCA',
-};
-
-/** @deprecated */ // eslint-disable-next-line deprecation/deprecation
-LiteGraph.getTime = getTime;
-
-/* LiteGraph GUI elements used for canvas editing ************************************ */
-
-LiteGraph.closeAllContextMenus = function (ref_window) {
-  ref_window = ref_window || window;
-
-  const elements = ref_window.document.querySelectorAll('.litecontextmenu');
-  if (!elements.length) {
-    return;
-  }
-
-  const result = [];
-  for (var i = 0; i < elements.length; i++) {
-    result.push(elements[i]);
-  }
-
-  for (var i = 0; i < result.length; i++) {
-    if (result[i].close) {
-      result[i].close();
-    } else if (result[i].parentNode) {
-      result[i].parentNode.removeChild(result[i]);
-    }
-  }
-};
-
-// Should this just be Object.setPrototypeOf?
-LiteGraph.extendClass = function (target, origin) {
-  for (var i in origin) {
-    // copy class properties
-    if (target.hasOwnProperty(i)) {
-      continue;
-    }
-    target[i] = origin[i];
-  }
-
-  if (origin.prototype) {
-    // copy prototype properties
-    for (var i in origin.prototype) {
-      // only enumerable
-      if (!origin.prototype.hasOwnProperty(i)) {
-        continue;
-      }
-
-      if (target.prototype.hasOwnProperty(i)) {
-        // avoid overwriting existing ones
-        continue;
-      }
-
-      // copy getters
-      if (origin.prototype.__lookupGetter__(i)) {
-        target.prototype.__defineGetter__(
-          i,
-          origin.prototype.__lookupGetter__(i),
-        );
-      } else {
-        target.prototype[i] = origin.prototype[i];
-      }
-
-      // and setters
-      if (origin.prototype.__lookupSetter__(i)) {
-        target.prototype.__defineSetter__(
-          i,
-          origin.prototype.__lookupSetter__(i),
-        );
-      }
-    }
-  }
 };
 
 // used to create nodes from wrapping functions

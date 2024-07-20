@@ -1,10 +1,12 @@
-import {
-  cloneObject, isValidConnection, LiteGraph, uuidv4,
-} from './litegraph';
-import { getTime, isInsideRectangle } from './utilities';
 import { console } from './Console';
-import { LGraphStyles } from './styles';
 import { LGraphEvents } from './events';
+import {
+  LiteGraph,
+} from './litegraph';
+import { LGraphStyles } from './styles';
+import {
+  cloneObject, getTime, isInsideRectangle, isValidConnection, uuidv4,
+} from './utilities';
 
 const global = typeof (window) !== 'undefined' ? window : typeof (self) !== 'undefined' ? self : globalThis;
 

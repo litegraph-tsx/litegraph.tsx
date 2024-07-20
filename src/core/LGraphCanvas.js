@@ -1,6 +1,7 @@
-import { LiteGraph, clamp, isValidConnection } from './litegraph';
+import { LiteGraph } from './litegraph';
 import {
-  distance, getTime, isInsideRectangle, overlapBounding,
+  distance, getTime, isInsideRectangle, overlapBounding, clamp, isValidConnection,
+  closeAllContextMenus,
 } from './utilities';
 import { DragAndScale } from './DragAndScale';
 import { console } from './Console';
@@ -681,7 +682,7 @@ export class LGraphCanvas {
 
     this.canvas.focus();
 
-    LiteGraph.closeAllContextMenus(ref_window);
+    closeAllContextMenus(ref_window);
 
     if (this.onMouse) {
       if (this.onMouse(e) == true) return;
