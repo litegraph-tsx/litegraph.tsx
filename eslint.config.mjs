@@ -20,6 +20,9 @@ export default [
   js.configs.recommended,
   ...compat.extends('airbnb-base'),
   {
+    ignores: ['**/dist/'],
+  },
+  {
     settings: {
       'import/resolver': {
         node: {},
@@ -175,7 +178,13 @@ export default [
 
       /** Deprecation */
       'import/no-deprecated': ['error'],
-      'deprecation/deprecation': 'off', // Set to 'error' for migration.
+      // eslint-disable-next-line spaced-comment
+      // /* Toggle here for migration.
+      'deprecation/deprecation': 'off',
+      // eslint-disable-next-line spaced-comment, @stylistic/spaced-comment
+      /*/
+      'deprecation/deprecation': 'error',
+      // */
     },
   },
 ];

@@ -2,6 +2,7 @@ import { LiteGraph } from './litegraph';
 import { LGraphGroup } from './LGraphGroup';
 import { console } from './Console';
 import { LGraphStyles } from './styles';
+import { LGraphEvents } from './events';
 
 const global = typeof (window) !== 'undefined' ? window : typeof (self) !== 'undefined' ? self : globalThis;
 
@@ -254,7 +255,7 @@ export class LGraph {
         for (var j = 0; j < limit; ++j) {
           var node = nodes[j];
           if (LiteGraph.use_deferred_actions && node._waiting_actions && node._waiting_actions.length) node.executePendingActions();
-          if (node.mode == LiteGraph.ALWAYS && node.onExecute) {
+          if (node.mode == LGraphEvents.ALWAYS && node.onExecute) {
             // wrap node.onExecute();
             node.doExecute();
           }
@@ -276,7 +277,7 @@ export class LGraph {
           for (var j = 0; j < limit; ++j) {
             var node = nodes[j];
             if (LiteGraph.use_deferred_actions && node._waiting_actions && node._waiting_actions.length) node.executePendingActions();
-            if (node.mode == LiteGraph.ALWAYS && node.onExecute) {
+            if (node.mode == LGraphEvents.ALWAYS && node.onExecute) {
               node.onExecute();
             }
           }
@@ -581,7 +582,7 @@ export class LGraph {
                  * @param {Array} params parameters in array format
                  */
   sendEventToAllNodes(eventname, params, mode) {
-    mode = mode || LiteGraph.ALWAYS;
+    mode = mode || LGraphEvents.ALWAYS;
 
     const nodes = this._nodes_in_order ? this._nodes_in_order : this._nodes;
     if (!nodes) {
@@ -884,7 +885,7 @@ export class LGraph {
     const nRet = null;
     for (let i = nodes_list.length - 1; i >= 0; i--) {
       const n = nodes_list[i];
-      const skip_title = n.constructor.title_mode == LiteGraph.NO_TITLE;
+      const skip_title = n.constructor.title_mode == LGraphEvents.NO_TITLE;
       if (n.isPointInside(x, y, margin, skip_title)) {
         // check for lesser interest nodes (TODO check for overlapping, use the top)
         /* if (typeof n == "LGraphGroup"){
