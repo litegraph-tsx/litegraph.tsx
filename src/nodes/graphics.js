@@ -1,4 +1,5 @@
 import { LiteGraph, clamp } from '@/litegraph';
+import { colorToString } from '../core/utilities';
 
 class GraphicsPlot {
   constructor() {
@@ -243,7 +244,7 @@ class ColorPalette {
       result[i] /= 255;
     }
 
-    this.boxcolor = LiteGraph.colorToString(result);
+    this.boxcolor = colorToString(result);
     this.setOutputData(0, result);
   }
 }

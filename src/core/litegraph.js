@@ -1,15 +1,27 @@
-import { LGraph } from './LGraph';
-import { CurveEditor } from './CurveEditor';
-import { LLink } from './LLink';
-import { ContextMenu } from './ContextMenu';
-import { LGraphNode } from './LGraphNode';
-import { LGraphEvents } from './events';
-import { LGraphGroup } from './LGraphGroup';
-import { DragAndScale } from './DragAndScale';
-import { LGraphCanvas } from './LGraphCanvas';
 import { console } from './Console';
+import { ContextMenu } from './ContextMenu';
+import { CurveEditor } from './CurveEditor';
+import { DragAndScale } from './DragAndScale';
+import { LGraphEvents } from './events';
+import { LGraph } from './LGraph';
+import { LGraphCanvas } from './LGraphCanvas';
+import { LGraphGroup } from './LGraphGroup';
+import { LGraphNode } from './LGraphNode';
+import { LLink } from './LLink';
 import { PointerSettings } from './pointer_events';
 import { LGraphStyles } from './styles';
+import {
+  colorToString,
+  compareObjects,
+  distance,
+  getTime,
+  growBounding,
+  hex2num,
+  isInsideBounding,
+  isInsideRectangle,
+  num2hex,
+  overlapBounding,
+} from './utilities';
 
 // this variable name is only overridden locally.
 console.level = 5;
@@ -805,73 +817,12 @@ export const LiteGraph = {
     }
   },
 
-  // separated just to improve if it doesn't work
-  cloneObject(obj, target) {
-    if (obj == null) {
-      return null;
-    }
-    const r = JSON.parse(JSON.stringify(obj));
-    if (!target) {
-      return r;
-    }
-
-    for (const i in r) {
-      target[i] = r[i];
-    }
-    return target;
-  },
-
-  /*
-         * https://gist.github.com/jed/982883?permalink_comment_id=852670#gistcomment-852670
-         */
-  uuidv4() {
-    return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, (a) => (a ^ Math.random() * 16 >> a / 4).toString(16));
-  },
-
-  /**
-         * Returns if the types of two slots are compatible (taking into account wildcards, etc)
-         * @method isValidConnection
-         * @param {String} type_a
-         * @param {String} type_b
-         * @return {Boolean} true if they can be connected
-         */
-  isValidConnection(type_a, type_b) {
-    if (type_a == '' || type_a === '*') type_a = 0;
-    if (type_b == '' || type_b === '*') type_b = 0;
-    if (
-      !type_a // generic output
-                || !type_b // generic input
-                || type_a == type_b // same type (is valid for triggers)
-                || (type_a == LGraphEvents.EVENT && type_b == LGraphEvents.ACTION)
-    ) {
-      return true;
-    }
-
-    // Enforce string type to handle toLowerCase call (-1 number not ok)
-    type_a = String(type_a);
-    type_b = String(type_b);
-    type_a = type_a.toLowerCase();
-    type_b = type_b.toLowerCase();
-
-    // For nodes supporting multiple connection types
-    if (type_a.indexOf(',') == -1 && type_b.indexOf(',') == -1) {
-      return type_a == type_b;
-    }
-
-    // Check all permutations to see if one is valid
-    const supported_types_a = type_a.split(',');
-    const supported_types_b = type_b.split(',');
-    for (let i = 0; i < supported_types_a.length; ++i) {
-      for (let j = 0; j < supported_types_b.length; ++j) {
-        if (this.isValidConnection(supported_types_a[i], supported_types_b[j])) {
-          // if (supported_types_a[i] == supported_types_b[j]) {
-          return true;
-        }
-      }
-    }
-
-    return false;
-  },
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  cloneObject,
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  uuidv4,
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  isValidConnection,
 
   /**
          * Register a string in the search box so when the user types it it will recommend this node
@@ -937,125 +888,40 @@ export const LiteGraph = {
     return null;
   },
 
-  compareObjects(a, b) {
-    for (const i in a) {
-      if (a[i] != b[i]) {
-        return false;
-      }
-    }
-    return true;
-  },
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  compareObjects,
 
-  distance(a, b) {
-    return Math.sqrt(
-      (b[0] - a[0]) * (b[0] - a[0]) + (b[1] - a[1]) * (b[1] - a[1]),
-    );
-  },
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  distance,
 
-  colorToString(c) {
-    return (
-      `rgba(${
-        Math.round(c[0] * 255).toFixed()
-      },${
-        Math.round(c[1] * 255).toFixed()
-      },${
-        Math.round(c[2] * 255).toFixed()
-      },${
-        c.length == 4 ? c[3].toFixed(2) : '1.0'
-      })`
-    );
-  },
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  colorToString,
 
-  isInsideRectangle(x, y, left, top, width, height) {
-    if (left < x && left + width > x && top < y && top + height > y) {
-      return true;
-    }
-    return false;
-  },
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  isInsideRectangle,
 
   // [minx,miny,maxx,maxy]
-  growBounding(bounding, x, y) {
-    if (x < bounding[0]) {
-      bounding[0] = x;
-    } else if (x > bounding[2]) {
-      bounding[2] = x;
-    }
-
-    if (y < bounding[1]) {
-      bounding[1] = y;
-    } else if (y > bounding[3]) {
-      bounding[3] = y;
-    }
-  },
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  growBounding,
 
   // point inside bounding box
-  isInsideBounding(p, bb) {
-    if (
-      p[0] < bb[0][0]
-              || p[1] < bb[0][1]
-              || p[0] > bb[1][0]
-              || p[1] > bb[1][1]
-    ) {
-      return false;
-    }
-    return true;
-  },
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  isInsideBounding,
 
   // bounding overlap, format: [ startx, starty, width, height ]
-  overlapBounding(a, b) {
-    const A_end_x = a[0] + a[2];
-    const A_end_y = a[1] + a[3];
-    const B_end_x = b[0] + b[2];
-    const B_end_y = b[1] + b[3];
-
-    if (
-      a[0] > B_end_x
-              || a[1] > B_end_y
-              || A_end_x < b[0]
-              || A_end_y < b[1]
-    ) {
-      return false;
-    }
-    return true;
-  },
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  overlapBounding,
 
   // Convert a hex value to its decimal value - the inputted hex must be in the
   // format of a hex triplet - the kind we use for HTML colours. The function
   // will return an array with three values.
-  hex2num(hex) {
-    if (hex.charAt(0) == '#') {
-      hex = hex.slice(1);
-    } // Remove the '#' char - if there is one.
-    hex = hex.toUpperCase();
-    const hex_alphabets = '0123456789ABCDEF';
-    const value = new Array(3);
-    let k = 0;
-    let int1; let
-      int2;
-    for (let i = 0; i < 6; i += 2) {
-      int1 = hex_alphabets.indexOf(hex.charAt(i));
-      int2 = hex_alphabets.indexOf(hex.charAt(i + 1));
-      value[k] = int1 * 16 + int2;
-      k++;
-    }
-    return value;
-  },
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  hex2num,
 
   // Give a array with three values as the argument and the function will return
   // the corresponding hex triplet.
-  num2hex(triplet) {
-    const hex_alphabets = '0123456789ABCDEF';
-    let hex = '#';
-    let int1; let
-      int2;
-    for (let i = 0; i < 3; i++) {
-      int1 = triplet[i] / 16;
-      int2 = triplet[i] % 16;
-
-      hex += hex_alphabets.charAt(int1) + hex_alphabets.charAt(int2);
-    }
-    return hex;
-  },
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  num2hex,
 
   // @TODO: Obviously belongs with ContextMenu
   closeAllContextMenus(ref_window) {
@@ -1224,6 +1090,74 @@ export function clamp(v, a, b) {
   return a > v ? a : b < v ? b : v;
 }
 
+// separated just to improve if it doesn't work
+export function cloneObject(obj, target) {
+  if (obj == null) {
+    return null;
+  }
+  const r = JSON.parse(JSON.stringify(obj));
+  if (!target) {
+    return r;
+  }
+
+  for (const i in r) {
+    target[i] = r[i];
+  }
+  return target;
+}
+
+/*
+* https://gist.github.com/jed/982883?permalink_comment_id=852670#gistcomment-852670
+*/
+export function uuidv4() {
+  return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, (a) => (a ^ Math.random() * 16 >> a / 4).toString(16));
+}
+
+/**
+ * Returns if the types of two slots are compatible (taking into account wildcards, etc)
+ * @method isValidConnection
+ * @param {String} type_a
+ * @param {String} type_b
+ * @return {Boolean} true if they can be connected
+ */
+export function isValidConnection(type_a, type_b) {
+  if (type_a == '' || type_a === '*') type_a = 0;
+  if (type_b == '' || type_b === '*') type_b = 0;
+  if (
+    !type_a // generic output
+              || !type_b // generic input
+              || type_a == type_b // same type (is valid for triggers)
+              || (type_a == LGraphEvents.EVENT && type_b == LGraphEvents.ACTION)
+  ) {
+    return true;
+  }
+
+  // Enforce string type to handle toLowerCase call (-1 number not ok)
+  type_a = String(type_a);
+  type_b = String(type_b);
+  type_a = type_a.toLowerCase();
+  type_b = type_b.toLowerCase();
+
+  // For nodes supporting multiple connection types
+  if (type_a.indexOf(',') == -1 && type_b.indexOf(',') == -1) {
+    return type_a == type_b;
+  }
+
+  // Check all permutations to see if one is valid
+  const supported_types_a = type_a.split(',');
+  const supported_types_b = type_b.split(',');
+  for (let i = 0; i < supported_types_a.length; ++i) {
+    for (let j = 0; j < supported_types_b.length; ++j) {
+      if (this.isValidConnection(supported_types_a[i], supported_types_b[j])) {
+        // if (supported_types_a[i] == supported_types_b[j]) {
+        return true;
+      }
+    }
+  }
+
+  return false;
+}
+
 if (typeof window !== 'undefined' && !window.requestAnimationFrame) {
   window.requestAnimationFrame = window.webkitRequestAnimationFrame
     || window.mozRequestAnimationFrame
@@ -1250,153 +1184,8 @@ LGraphCanvas.link_type_colors = {
   node: '#DCA',
 };
 
-// timer that works everywhere
-if (typeof performance !== 'undefined') {
-  LiteGraph.getTime = performance.now.bind(performance);
-} else if (typeof Date !== 'undefined' && Date.now) {
-  LiteGraph.getTime = Date.now.bind(Date);
-} else if (typeof process !== 'undefined') {
-  LiteGraph.getTime = function () {
-    const t = process.hrtime();
-    return t[0] * 0.001 + t[1] * 1e-6;
-  };
-} else {
-  LiteGraph.getTime = function getTime() {
-    return new Date().getTime();
-  };
-}
-
-// API *************************************************
-function compareObjects(a, b) {
-  for (const i in a) {
-    if (a[i] != b[i]) {
-      return false;
-    }
-  }
-  return true;
-}
-LiteGraph.compareObjects = compareObjects;
-
-function distance(a, b) {
-  return Math.sqrt(
-    (b[0] - a[0]) * (b[0] - a[0]) + (b[1] - a[1]) * (b[1] - a[1]),
-  );
-}
-LiteGraph.distance = distance;
-
-function colorToString(c) {
-  return (
-    `rgba(${
-      Math.round(c[0] * 255).toFixed()
-    },${
-      Math.round(c[1] * 255).toFixed()
-    },${
-      Math.round(c[2] * 255).toFixed()
-    },${
-      c.length == 4 ? c[3].toFixed(2) : '1.0'
-    })`
-  );
-}
-LiteGraph.colorToString = colorToString;
-
-function isInsideRectangle(x, y, left, top, width, height) {
-  if (left < x && left + width > x && top < y && top + height > y) {
-    return true;
-  }
-  return false;
-}
-LiteGraph.isInsideRectangle = isInsideRectangle;
-
-// [minx,miny,maxx,maxy]
-function growBounding(bounding, x, y) {
-  if (x < bounding[0]) {
-    bounding[0] = x;
-  } else if (x > bounding[2]) {
-    bounding[2] = x;
-  }
-
-  if (y < bounding[1]) {
-    bounding[1] = y;
-  } else if (y > bounding[3]) {
-    bounding[3] = y;
-  }
-}
-LiteGraph.growBounding = growBounding;
-
-// point inside bounding box
-function isInsideBounding(p, bb) {
-  if (
-    p[0] < bb[0][0]
-            || p[1] < bb[0][1]
-            || p[0] > bb[1][0]
-            || p[1] > bb[1][1]
-  ) {
-    return false;
-  }
-  return true;
-}
-LiteGraph.isInsideBounding = isInsideBounding;
-
-// bounding overlap, format: [ startx, starty, width, height ]
-function overlapBounding(a, b) {
-  const A_end_x = a[0] + a[2];
-  const A_end_y = a[1] + a[3];
-  const B_end_x = b[0] + b[2];
-  const B_end_y = b[1] + b[3];
-
-  if (
-    a[0] > B_end_x
-            || a[1] > B_end_y
-            || A_end_x < b[0]
-            || A_end_y < b[1]
-  ) {
-    return false;
-  }
-  return true;
-}
-LiteGraph.overlapBounding = overlapBounding;
-
-// Convert a hex value to its decimal value - the inputted hex must be in the
-//    format of a hex triplet - the kind we use for HTML colours. The function
-//    will return an array with three values.
-function hex2num(hex) {
-  if (hex.charAt(0) == '#') {
-    hex = hex.slice(1);
-  } // Remove the '#' char - if there is one.
-  hex = hex.toUpperCase();
-  const hex_alphabets = '0123456789ABCDEF';
-  const value = new Array(3);
-  let k = 0;
-  let int1; let
-    int2;
-  for (let i = 0; i < 6; i += 2) {
-    int1 = hex_alphabets.indexOf(hex.charAt(i));
-    int2 = hex_alphabets.indexOf(hex.charAt(i + 1));
-    value[k] = int1 * 16 + int2;
-    k++;
-  }
-  return value;
-}
-
-LiteGraph.hex2num = hex2num;
-
-// Give a array with three values as the argument and the function will return
-//    the corresponding hex triplet.
-function num2hex(triplet) {
-  const hex_alphabets = '0123456789ABCDEF';
-  let hex = '#';
-  let int1; let
-    int2;
-  for (let i = 0; i < 3; i++) {
-    int1 = triplet[i] / 16;
-    int2 = triplet[i] % 16;
-
-    hex += hex_alphabets.charAt(int1) + hex_alphabets.charAt(int2);
-  }
-  return hex;
-}
-
-LiteGraph.num2hex = num2hex;
+/** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+LiteGraph.getTime = getTime;
 
 /* LiteGraph GUI elements used for canvas editing ************************************ */
 
@@ -1422,6 +1211,7 @@ LiteGraph.closeAllContextMenus = function (ref_window) {
   }
 };
 
+// Should this just be Object.setPrototypeOf?
 LiteGraph.extendClass = function (target, origin) {
   for (var i in origin) {
     // copy class properties

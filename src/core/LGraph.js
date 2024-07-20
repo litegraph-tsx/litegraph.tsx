@@ -1,9 +1,12 @@
 import { LiteGraph } from './litegraph';
 import { LGraphNode } from './LGraphNode';
+import { getTime, uuidv4 } from './utilities';
 import { LGraphGroup } from './LGraphGroup';
 import { console } from './Console';
 import { LGraphStyles } from './styles';
 import { LGraphEvents } from './events';
+import { GraphInput, Subgraph } from '../nodes/base';
+import { LGraphCanvas } from './LGraphCanvas';
 
 const global = typeof (window) !== 'undefined' ? window : typeof (self) !== 'undefined' ? self : globalThis;
 
@@ -117,7 +120,7 @@ export class LGraph {
                  */
 
   attachCanvas(graphcanvas) {
-    if (graphcanvas.constructor != LiteGraph.LGraphCanvas) {
+    if (graphcanvas.constructor != LGraphCanvas) {
       throw 'attachCanvas expects a LGraphCanvas instance';
     }
     if (graphcanvas.graph && graphcanvas.graph != this) {
@@ -169,7 +172,7 @@ export class LGraph {
     this.sendEventToAllNodes('onStart');
 
     // launch
-    this.starttime = LiteGraph.getTime();
+    this.starttime = getTime();
     this.last_update_time = this.starttime;
     interval = interval || 0;
     const that = this;
@@ -234,7 +237,7 @@ export class LGraph {
   runStep(num, do_not_catch_errors, limit) {
     num = num || 1;
 
-    const start = LiteGraph.getTime();
+    const start = getTime();
     this.globaltime = 0.001 * (start - this.starttime);
 
     // not optimal: executes possible pending actions in node, problem is it is not optimized
@@ -305,7 +308,7 @@ export class LGraph {
       }
     }
 
-    const now = LiteGraph.getTime();
+    const now = getTime();
     let elapsed = now - start;
     if (elapsed == 0) {
       elapsed = 1;
@@ -594,7 +597,7 @@ export class LGraph {
       const node = nodes[j];
 
       if (
-        node.constructor === LiteGraph.Subgraph
+        node.constructor === Subgraph
                             && eventname != 'onExecute'
       ) {
         if (node.mode == mode) {
@@ -654,7 +657,7 @@ export class LGraph {
     if (node.id != -1 && this._nodes_by_id[node.id] != null) {
       console.warn('LiteGraph: there is already a node with this ID, changing it');
       if (LiteGraph.use_uuids) {
-        node.id = LiteGraph.uuidv4();
+        node.id = uuidv4();
       } else {
         node.id = ++this.last_node_id;
       }
@@ -666,7 +669,7 @@ export class LGraph {
 
     // give him an id
     if (LiteGraph.use_uuids) {
-      if (node.id == null || node.id == -1) node.id = LiteGraph.uuidv4();
+      if (node.id == null || node.id == -1) node.id = uuidv4();
     } else if (node.id == null || node.id == -1) {
       node.id = ++this.last_node_id;
     } else if (this.last_node_id < node.id) {
@@ -708,7 +711,7 @@ export class LGraph {
                  */
 
   remove(node) {
-    if (node.constructor === LiteGraph.LGraphGroup) {
+    if (node.constructor === LGraphGroup) {
       const index = this._groups.indexOf(node);
       if (index != -1) {
         this._groups.splice(index, 1);
@@ -950,7 +953,7 @@ export class LGraph {
 
   onAction(action, param, options) {
     this._input_nodes = this.findNodesByClass(
-      LiteGraph.GraphInput,
+      GraphInput,
       this._input_nodes,
     );
     for (let i = 0; i < this._input_nodes.length; ++i) {

@@ -1,4 +1,7 @@
-import { LiteGraph } from './litegraph';
+import {
+  cloneObject, isValidConnection, LiteGraph, uuidv4,
+} from './litegraph';
+import { getTime, isInsideRectangle } from './utilities';
 import { console } from './Console';
 import { LGraphStyles } from './styles';
 import { LGraphEvents } from './events';
@@ -79,7 +82,7 @@ export class LGraphNode {
     this._pos = new Float32Array(10, 10);
 
     if (LiteGraph.use_uuids) {
-      this.id = LiteGraph.uuidv4();
+      this.id = uuidv4();
     } else {
       this.id = -1; // not know till not added
     }
@@ -137,7 +140,7 @@ export class LGraphNode {
         if (this[j] && this[j].configure) {
           this[j].configure(info[j]);
         } else {
-          this[j] = LiteGraph.cloneObject(info[j], this[j]);
+          this[j] = cloneObject(info[j], this[j]);
         }
       } // value
       else {
@@ -206,7 +209,7 @@ export class LGraphNode {
       type: this.type,
       pos: this.pos,
       size: this.size,
-      flags: LiteGraph.cloneObject(this.flags),
+      flags: cloneObject(this.flags),
       order: this.order,
       mode: this.mode,
     };
@@ -233,7 +236,7 @@ export class LGraphNode {
     }
 
     if (this.properties) {
-      o.properties = LiteGraph.cloneObject(this.properties);
+      o.properties = cloneObject(this.properties);
     }
 
     if (this.widgets && this.serialize_widgets) {
@@ -278,7 +281,7 @@ export class LGraphNode {
     }
 
     // we clone it because serialize returns shared containers
-    const data = LiteGraph.cloneObject(this.serialize());
+    const data = cloneObject(this.serialize());
 
     // remove links
     if (data.inputs) {
@@ -298,7 +301,7 @@ export class LGraphNode {
     delete data.id;
 
     if (LiteGraph.use_uuids) {
-      data.id = LiteGraph.uuidv4();
+      data.id = uuidv4();
     }
 
     // remove links
@@ -843,7 +846,7 @@ export class LGraphNode {
       return;
     }
 
-    if (this.graph) this.graph._last_trigger_time = LiteGraph.getTime();
+    if (this.graph) this.graph._last_trigger_time = getTime();
 
     for (let i = 0; i < this.outputs.length; ++i) {
       const output = this.outputs[i];
@@ -883,7 +886,7 @@ export class LGraphNode {
     }
 
     if (this.graph) {
-      this.graph._last_trigger_time = LiteGraph.getTime();
+      this.graph._last_trigger_time = getTime();
     }
 
     // for every link attached here
@@ -898,7 +901,7 @@ export class LGraphNode {
         // not connected
         continue;
       }
-      link_info._last_time = LiteGraph.getTime();
+      link_info._last_time = getTime();
       const node = this.graph.getNodeById(link_info.target_id);
       if (!node) {
         // node not found?
@@ -1457,7 +1460,7 @@ export class LGraphNode {
     if (this.flags && this.flags.collapsed) {
       // if ( distance([x,y], [this.pos[0] + this.size[0]*0.5, this.pos[1] + this.size[1]*0.5]) < LGraphStyles.NODE_COLLAPSED_RADIUS)
       if (
-        LiteGraph.isInsideRectangle(
+        isInsideRectangle(
           x,
           y,
           this.pos[0] - margin,
@@ -1495,7 +1498,7 @@ export class LGraphNode {
         const input = this.inputs[i];
         this.getConnectionPos(true, i, link_pos);
         if (
-          LiteGraph.isInsideRectangle(
+          isInsideRectangle(
             x,
             y,
             link_pos[0] - 10,
@@ -1514,7 +1517,7 @@ export class LGraphNode {
         const output = this.outputs[i];
         this.getConnectionPos(false, i, link_pos);
         if (
-          LiteGraph.isInsideRectangle(
+          isInsideRectangle(
             x,
             y,
             link_pos[0] - 10,
@@ -1902,7 +1905,7 @@ export class LGraphNode {
     }
 
     // check target_slot and check connection types
-    if (target_slot === false || target_slot === null || !LiteGraph.isValidConnection(output.type, input.type)) {
+    if (target_slot === false || target_slot === null || !isValidConnection(output.type, input.type)) {
       this.setDirtyCanvas(false, true);
       if (changed) this.graph.connectionChange(this, link_info);
       return null;
@@ -1942,7 +1945,7 @@ export class LGraphNode {
     }
 
     let nextId;
-    if (LiteGraph.use_uuids) nextId = LiteGraph.uuidv4();
+    if (LiteGraph.use_uuids) nextId = uuidv4();
     else nextId = ++this.graph.last_link_id;
 
     // create link class
