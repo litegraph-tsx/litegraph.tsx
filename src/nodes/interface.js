@@ -1,4 +1,5 @@
-import { LiteGraph, clamp } from '@/litegraph';
+import { LiteGraph } from '@/litegraph';
+import { clamp, colorToString } from '../core/utilities';
 
 class WidgetButton {
   constructor() {
@@ -408,7 +409,7 @@ class WidgetKnob {
 
   onExecute() {
     this.setOutputData(0, this.properties.value);
-    this.boxcolor = LiteGraph.colorToString([
+    this.boxcolor = colorToString([
       this.value,
       this.value,
       this.value,
@@ -545,7 +546,7 @@ class WidgetHSlider {
     this.properties.value = this.properties.min
               + (this.properties.max - this.properties.min) * this.value;
     this.setOutputData(0, this.properties.value);
-    this.boxcolor = LiteGraph.colorToString([
+    this.boxcolor = colorToString([
       this.value,
       this.value,
       this.value,
