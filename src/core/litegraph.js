@@ -582,19 +582,17 @@ export const LiteGraph = {
   },
 
   /**
-         * Create a node of a given type with a name. The node is not attached to any graph yet.
-         * @method createNode
-         * @param {String} type full name of the node class. p.e. "math/sin"
-         * @param {String} name a name to distinguish from other nodes
-         * @param {Object} options to set options
-         */
+   * Create a node of a given type with a name. The node is not attached to any graph yet.
+   * @method createNode
+   * @param {String} type full name of the node class. p.e. "math/sin"
+   * @param {String} name a name to distinguish from other nodes
+   * @param {Object} options to set options
+   */
 
   createNode(type, title, options) {
     const base_class = this.registered_node_types[type];
     if (!base_class) {
-      if (LiteGraph.debug) {
-        console.log(`GraphNode type "${type}" not registered.`);
-      }
+      console.warn('[LiteGraph]', '[createNode]', `GraphNode type "${type}" not registered.`);
       return null;
     }
 
@@ -608,7 +606,7 @@ export const LiteGraph = {
       try {
         node = new base_class(title);
       } catch (err) {
-        console.error(err);
+        console.error('[LiteGraph]', '[createNode]', err);
         return null;
       }
     } else {

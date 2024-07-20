@@ -1,4 +1,4 @@
-import { LiteGraph } from '@/litegraph';
+import { LiteGraph, clamp } from '@/litegraph';
 
 class WidgetButton {
   constructor() {

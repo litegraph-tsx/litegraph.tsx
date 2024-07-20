@@ -8,7 +8,7 @@
 - [ ] Move eslint.config.js into tools and still have it work
     Sluffing fix to "whenever"
 
-- [ ] Implement airbnb eslint stylistic rules, 0 strictness to start.
+- [x] Implement airbnb eslint stylistic rules, 0 strictness to start.
 
 - [x] Implement PRs
 
@@ -32,6 +32,8 @@
 
 - [x] Shifted build over to vite, and drop espresso
 
+- [x] Shunt migration of ES6 classes along with version so calls to constructors doesn't bomb adopter's code
+
 ## ES6 Class Step (0.7)
 
 - [x] Enable ES6 classes in LiteGraph
@@ -45,8 +47,6 @@
 - [x] Ensure all cases of previously globally available methods are bound to LiteGraph.method()
 
 - [x] Ensure all of the previously global variables are in the correct module.
-
-- [ ] Shunt migration of ES6 classes along with version so calls to constructors doesn't bomb adopter's code
 
 - [x] node/Math.js and length bug fixes
 
@@ -66,17 +66,18 @@
 
 - [ ] Establish tests for code functionality using browser hooks and visible indications
 
-## Make decision on PRs
+## TypeScript and AirBnB (0.9)
 
-These ones are not simple bugfixes, so warrant some discussion before pulling:
+- [ ] TypeScript passes in core with reasonably non-specific but non-any types
 
-1. `Move properties panel from double click to menu option.` https://github.com/jagenjo/litegraph.js/commit/adbbc53fa4dc60cb9073c8061fdc631a4934ce15
+- [ ] AirBnB passes for things that lint:fix automatically and things that may cause actual bugs
 
-2. `Add back roundRect so firefox ESR can work again.` https://github.com/jagenjo/litegraph.js/commit/864d0f1270b99de8e01c0d7c59bed3b80d63f793
+## Stabilization and Manual Testing of State (1.0)
 
-3. `Increase maximum number of nodes to 10k.`
-https://github.com/jagenjo/litegraph.js/commit/6a0e0124751e433dc17cbbddb414308f017a9594
+This is our first release, and an upgrade to 2016 as a bare minimum for LiteGraph variants.  Anyone running pre-2016 will be able to follow these footsteps to catch up to that year, providing a pathway out of legacy.
 
-4. `Show node title in search and also search title`
-https://github.com/jagenjo/litegraph.js/commit/5925961fa15f41dcf8f8265d051785b83b126645
+- [ ] Determine what our breadcrumb commits are that adopters can stop at, take a breather, and implement changes to catch up.  Set those up as such.
 
+- [ ] Take some time to test out each of the features and see if we're okay with things before releasing it as 1.0
+
+- [ ] Round table a new ROADMAP for next release.
