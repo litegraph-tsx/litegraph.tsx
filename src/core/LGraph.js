@@ -1,6 +1,7 @@
 import { LiteGraph } from './litegraph';
 import { LGraphGroup } from './LGraphGroup';
 import { console } from './Console';
+import { LGraphNode } from './LGraphNode';
 
 const global = typeof (window) !== 'undefined' ? window : typeof (self) !== 'undefined' ? self : globalThis;
 
