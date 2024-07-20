@@ -3,6 +3,7 @@ import { CurveEditor } from './CurveEditor';
 import { LLink } from './LLink';
 import { ContextMenu } from './ContextMenu';
 import { LGraphNode } from './LGraphNode';
+import { LGraphEvents } from './events';
 import { LGraphGroup } from './LGraphGroup';
 import { DragAndScale } from './DragAndScale';
 import { LGraphCanvas } from './LGraphCanvas';
