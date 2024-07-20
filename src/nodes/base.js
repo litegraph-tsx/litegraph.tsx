@@ -1,4 +1,5 @@
-import { LiteGraph, uuidv4 } from '@/litegraph';
+import { LiteGraph } from '@/litegraph';
+import { isValidConnection, uuidv4 } from '../core/utilities';
 
 // basic nodes
 const global = typeof (window) !== 'undefined' ? window : typeof (self) !== 'undefined' ? self : globalThis;
@@ -531,7 +532,7 @@ export class GraphInput {
 
     // update output
     if (this.outputs[0].type != type) {
-      if (!LiteGraph.isValidConnection(this.outputs[0].type, type)) { this.disconnectOutput(0); }
+      if (!isValidConnection(this.outputs[0].type, type)) { this.disconnectOutput(0); }
       this.outputs[0].type = type;
     }
 
@@ -653,7 +654,7 @@ export class GraphOutput {
     //         if (v == "action" || v == "event") {
     //             v = LiteGraph.ACTION;
     //         }
-    //         if (!LiteGraph.isValidConnection(that.inputs[0].type,v))
+    //         if (!isValidConnection(that.inputs[0].type,v))
     //             that.disconnectInput(0);
     //         that.inputs[0].type = v;
     //         if (that.name_in_graph) {
