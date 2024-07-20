@@ -148,6 +148,7 @@ class LGWebSocket {
 
   static desc = 'Send data through a websocket';
 }
+// @TODO: verify this doesn't even attempt to phone home anywhere and isn't instantiated before a node is created before re-enabling
 // LiteGraph.registerNodeType('network/websocket', LGWebSocket);
 
 // It is like a websocket but using the SillyServer.js server that bounces packets back to all clients connected:
@@ -348,6 +349,7 @@ class LGSillyClient {
 
   static desc = 'Connects to SillyServer to broadcast messages';
 }
+// @TODO: verify this doesn't even attempt to phone home anywhere and isn't instantiated before a node is created before re-enabling
 // LiteGraph.registerNodeType('network/sillyclient', LGSillyClient);
 
 class HTTPRequestNode {
@@ -402,4 +404,5 @@ class HTTPRequestNode {
 
   static desc = 'Fetch data through HTTP';
 }
+// @TODO: verify this doesn't even attempt to phone home anywhere and isn't instantiated before a node is created before re-enabling
 // LiteGraph.registerNodeType('network/httprequest', HTTPRequestNode);
