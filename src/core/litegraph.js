@@ -180,43 +180,85 @@ export const LiteGraph = {
   set GRID_SHAPE(newValue) { LGraphStyles.GRID_SHAPE = newValue; },
 
   // enums
-  INPUT: 1,
-  OUTPUT: 2,
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  get INPUT() { return LGraphStyles.INPUT; },
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  set INPUT(newValue) { LGraphStyles.INPUT = newValue; },
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  get OUTPUT() { return LGraphStyles.OUTPUT; },
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  set OUTPUT(newValue) { LGraphStyles.OUTPUT = newValue; },
 
-  EVENT: -1, // for outputs
-  ACTION: -1, // for inputs
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  get EVENT() { return LGraphStyles.EVENT; }, // for outputs
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  set EVENT(newValue) { LGraphStyles.EVENT = newValue; },
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  get ACTION() { return LGraphStyles.ACTION; }, // for inputs
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  set ACTION(newValue) { LGraphStyles.ACTION = newValue; },
 
-  NODE_MODES: ['Always', 'On Event', 'Never', 'On Trigger'], // helper, will add "On Request" and more in the future
-  NODE_MODES_COLORS: ['#666', '#422', '#333', '#224', '#626'], // use with node_box_coloured_by_mode
-  ALWAYS: 0,
-  ON_EVENT: 1,
-  NEVER: 2,
-  ON_TRIGGER: 3,
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  get NODE_MODES() { return LGraphStyles.NODE_MODES; }, // helper, will add "On Request" and more in the future
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  set NODE_MODES(newValue) { LGraphStyles.NODE_MODES = newValue; },
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  get NODE_MODES_COLORS() { return LGraphStyles.NODE_MODES_COLORS; }, // use with node_box_coloured_by_mode
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  set NODE_MODES_COLORS(newValue) { LGraphStyles.NODE_MODES_COLORS = newValue; },
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  get ALWAYS() { return LGraphStyles.ALWAYS; },
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  set ALWAYS(newValue) { LGraphStyles.ALWAYS = newValue; },
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  get ON_EVENT() { return LGraphStyles.ON_EVENT; },
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  set ON_EVENT(newValue) { LGraphStyles.ON_EVENT = newValue; },
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  get NEVER() { return LGraphStyles.NEVER; },
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  set NEVER(newValue) { LGraphStyles.NEVER = newValue; },
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  get ON_TRIGGER() { return LGraphStyles.ON_TRIGGER; },
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  set ON_TRIGGER(newValue) { LGraphStyles.ON_TRIGGER = newValue; },
 
-  UP: 1,
-  DOWN: 2,
-  LEFT: 3,
-  RIGHT: 4,
-  CENTER: 5,
-
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
   get LINK_RENDER_MODES() { return LGraphStyles.LINK_RENDER_MODES; },
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
   set LINK_RENDER_MODES(newValue) { LGraphStyles.LINK_RENDER_MODES = newValue; },
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
   get STRAIGHT_LINK() { return LGraphStyles.STRAIGHT_LINK; },
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
   set STRAIGHT_LINK(newValue) { LGraphStyles.STRAIGHT_LINK = newValue; },
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
   get LINEAR_LINK() { return LGraphStyles.LINEAR_LINK; },
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
   set LINEAR_LINK(newValue) { LGraphStyles.LINEAR_LINK = newValue; },
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
   get SPLINE_LINK() { return LGraphStyles.SPLINE_LINK; },
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
   set SPLINE_LINK(newValue) { LGraphStyles.SPLINE_LINK = newValue; },
 
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
   get NORMAL_TITLE() { return LGraphStyles.NORMAL_TITLE; },
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
   set NORMAL_TITLE(newValue) { LGraphStyles.NORMAL_TITLE = newValue; },
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
   get NO_TITLE() { return LGraphStyles.NO_TITLE; },
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
   set NO_TITLE(newValue) { LGraphStyles.NO_TITLE = newValue; },
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
   get TRANSPARENT_TITLE() { return LGraphStyles.TRANSPARENT_TITLE; },
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
   set TRANSPARENT_TITLE(newValue) { LGraphStyles.TRANSPARENT_TITLE = newValue; },
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
   get AUTOHIDE_TITLE() { return LGraphStyles.AUTOHIDE_TITLE; },
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
   set AUTOHIDE_TITLE(newValue) { LGraphStyles.AUTOHIDE_TITLE = newValue; },
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
   get VERTICAL_LAYOUT() { return LGraphStyles.VERTICAL_LAYOUT; },
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
   set VERTICAL_LAYOUT(newValue) { LGraphStyles.VERTICAL_LAYOUT = newValue; },
 
   proxy: null, // used to redirect calls
@@ -414,7 +456,7 @@ export const LiteGraph = {
     let allTypes = [];
     if (typeof slot_type === 'string') {
       allTypes = slot_type.split(',');
-    } else if (slot_type == this.EVENT || slot_type == this.ACTION) {
+    } else if (slot_type == LGraphEvents.EVENT || slot_type == LGraphEvents.ACTION) {
       allTypes = ['_event_'];
     } else {
       allTypes = ['*'];
@@ -635,7 +677,7 @@ export const LiteGraph = {
       node.pos = LiteGraph.DEFAULT_POSITION.concat();
     }
     if (!node.mode) {
-      node.mode = LiteGraph.ALWAYS;
+      node.mode = LGraphEvents.ALWAYS;
     }
 
     // extra options
@@ -798,7 +840,7 @@ export const LiteGraph = {
       !type_a // generic output
                 || !type_b // generic input
                 || type_a == type_b // same type (is valid for triggers)
-                || (type_a == LiteGraph.EVENT && type_b == LiteGraph.ACTION)
+                || (type_a == LGraphEvents.EVENT && type_b == LGraphEvents.ACTION)
     ) {
       return true;
     }
