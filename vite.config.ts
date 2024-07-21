@@ -36,7 +36,9 @@ export default defineConfig({
       fileName: format => fileName[format],
     },
   },
-  test: {},
+  test: {
+    reporters: process.env.GITHUB_ACTIONS ? ['dot', 'github-actions'] : ['default'],
+  },
   resolve: {
     alias: [
       { find: "@", replacement: path.resolve(__dirname, "src/core") },
