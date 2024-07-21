@@ -835,6 +835,9 @@ if (typeof performance != "undefined") {
      */
 
 function LGraph(o) {
+  if(!new.target) {
+    console.trace("WARNING: Use new to construct a new LGraph rather than calling it.  The current implementation is deprecated and will break in the next update.");
+  }
   if (LiteGraph.debug) {
     console.log("Graph created");
   }
@@ -2374,6 +2377,9 @@ LGraph.prototype.onNodeTrace = function(node, msg, color) {
 
 //this is the class in charge of storing link information
 function LLink(id, type, origin_id, origin_slot, target_id, target_slot) {
+  if(!new.target) {
+    console.trace("WARNING: Use new to construct a new LLink rather than calling it.  The current implementation is deprecated and will break in the next update.");
+  }
   this.id = id;
   this.type = type;
   this.origin_id = origin_id;
@@ -2478,6 +2484,9 @@ LiteGraph.LLink = LLink;
      */
 
 function LGraphNode(title) {
+  if(!new.target) {
+    console.trace("WARNING: Use new to construct a new LGraphNode rather than calling it.  The current implementation is deprecated and will break in the next update.");
+  }
   this._ctor(title);
 }
 
@@ -4985,6 +4994,9 @@ LGraphNode.prototype.localToScreen = function(x, y, graphcanvas) {
 };
 
 function LGraphGroup(title) {
+  if(!new.target) {
+    console.trace("WARNING: Use new to construct a new LGraphGroup rather than calling it.  The current implementation is deprecated and will break in the next update.");
+  }
   this._ctor(title);
 }
 
@@ -5090,6 +5102,9 @@ LGraphGroup.prototype.setDirtyCanvas = LGraphNode.prototype.setDirtyCanvas;
 
 //Scale and Offset
 function DragAndScale(element, skip_events) {
+  if(!new.target) {
+    console.trace("WARNING: Use new to construct a new DragAndScale rather than calling it.  The current implementation is deprecated and will break in the next update.");
+  }
   this.offset = new Float32Array([0, 0]);
   this.scale = 1;
   this.max_scale = 10;
@@ -5322,6 +5337,9 @@ DragAndScale.prototype.reset = function() {
      * @param {Object} options [optional] { skip_rendering, autoresize, viewport }
      */
 function LGraphCanvas(canvas, graph, options) {
+  if(!new.target) {
+    console.trace("WARNING: Use new to construct a new LGraphCanvas rather than calling it.  The current implementation is deprecated and will break in the next update.");
+  }
   this.options = options = options || {};
 
   //if(graph === undefined)
@@ -13676,6 +13694,9 @@ LiteGraph.num2hex = num2hex;
      * - event: you can pass a MouseEvent, this way the ContextMenu appears in that position
      */
 function ContextMenu(values, options) {
+  if(!new.target) {
+    console.trace("WARNING: Use new to construct a new ContextMenu rather than calling it.  The current implementation is deprecated and will break in the next update.");
+  }
   options = options || {};
   this.options = options;
   var that = this;
@@ -14130,6 +14151,9 @@ LiteGraph.extendClass = function(target, origin) {
 //used by some widgets to render a curve editor
 function CurveEditor( points )
 {
+  if(!new.target) {
+    console.trace("WARNING: Use new to construct a new CurveEditor rather than calling it.  The current implementation is deprecated and will break in the next update.");
+  }
   this.points = points;
   this.selected = -1;
   this.nearest = -1;
