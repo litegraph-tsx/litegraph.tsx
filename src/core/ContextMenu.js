@@ -1,11 +1,5 @@
 import { console } from './Console';
 import { PointerSettings, pointerListenerAdd } from './pointer_events';
-/*
-  Dependency cleanup:
-  Extracting LiteGraph.pointerListener* eliminates the dependency to LiteGraph altogether.
-  pointer* events are superior to mouse* events
-  wheel events are superior to obsolete mousewheel or DOMScrollWheel
-*/
 
 /**
  * ContextMenu from LiteGUI
@@ -200,6 +194,13 @@ export class ContextMenu {
     }
   }
 
+  /**
+   * Adds an item to the context menu.
+   * @param {string} name - Display name of the menu item.
+   * @param {Object|Function|null} value - Value associated with the menu item. Can be an object or a function.
+   * @param {Object} options - Options for the item.
+   * @returns {HTMLElement} The created menu item element.
+   */
   addItem(name, value, options) {
     const that = this;
     options = options || {};
@@ -326,6 +327,11 @@ export class ContextMenu {
     return element;
   }
 
+  /**
+   * Closes the context menu.
+   * @param {Event} e - The event that triggered the menu closure.
+   * @param {boolean} ignore_parent_menu - Whether to ignore the parent menu when closing.
+   */
   close(e, ignore_parent_menu) {
     if (this.root.parentNode) {
       this.root.parentNode.removeChild(this.root);
@@ -354,7 +360,14 @@ export class ContextMenu {
     // on key press, allow filtering/selecting the context menu elements
   }
 
-  // this code is used to trigger events easily (used in the context menu mouseleave
+  /**
+   * Triggers a custom event on an element.
+   * @param {HTMLElement} element - The element on which to trigger the event.
+   * @param {string} event_name - The name of the custom event.
+   * @param {any} params - Parameters to pass to the event.
+   * @param {any} origin - The origin of the event.
+   * @returns {CustomEvent} The created CustomEvent object.
+   */
   static trigger(element, event_name, params, origin) {
     const evt = document.createEvent('CustomEvent');
     evt.initCustomEvent(event_name, true, true, params); // canBubble, cancelable, detail
@@ -368,7 +381,10 @@ export class ContextMenu {
     return evt;
   }
 
-  // returns the top most menu
+  /**
+   * Retrieves the top-level menu.
+   * @returns {ContextMenu} The top-level context menu instance.
+   */
   getTopMenu() {
     if (this.options.parentMenu) {
       return this.options.parentMenu.getTopMenu();
@@ -376,6 +392,10 @@ export class ContextMenu {
     return this;
   }
 
+  /**
+   * Retrieves the first event associated with the menu.
+   * @returns {MouseEvent} The first MouseEvent associated with the menu.
+   */
   getFirstEvent() {
     if (this.options.parentMenu) {
       return this.options.parentMenu.getFirstEvent();
@@ -383,6 +403,12 @@ export class ContextMenu {
     return this.options.event;
   }
 
+  /**
+   * Checks if the cursor is over a given element.
+   * @param {Event} event - The event object.
+   * @param {HTMLElement} element - The HTML element to check against.
+   * @returns {boolean} True if the cursor is over the element, false otherwise.
+   */
   static isCursorOverElement(event, element) {
     const left = event.clientX;
     const top = event.clientY;
