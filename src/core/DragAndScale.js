@@ -1,13 +1,6 @@
 import { console } from './Console';
 import { pointerListenerAdd, pointerListenerRemove, PointerSettings } from './pointer_events';
 
-/*
-  Dependency cleanup:
-  Extracting LiteGraph.pointerListener* eliminates the dependency to LiteGraph altogether.
-  pointer* events are superior to mouse* events
-  wheel events are superior to obsolete mousewheel or DOMScrollWheel
-*/
-
 /**
  * Class for managing scaling and offset operations on an element, with support for dragging and zooming.
  * @constructor
