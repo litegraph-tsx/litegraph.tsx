@@ -1,4 +1,5 @@
 import { LiteGraph } from '@/litegraph';
+import { isValidConnection, uuidv4 } from '../core/utilities';
 
 // basic nodes
 const global = typeof (window) !== 'undefined' ? window : typeof (self) !== 'undefined' ? self : globalThis;
@@ -22,7 +23,7 @@ class Time {
 LiteGraph.registerNodeType('basic/time', Time);
 
 // Subgraph: a node that contains a graph
-class Subgraph {
+export class Subgraph {
   constructor() {
     const that = this;
     this.size = [140, 80];
@@ -298,7 +299,7 @@ class Subgraph {
 
     for (const node of graph.nodes) {
       const oldID = node.id;
-      const newID = LiteGraph.uuidv4();
+      const newID = uuidv4();
       node.id = newID;
 
       if (idMap.nodeIDs[oldID] || idMap.nodeIDs[newID]) {
@@ -311,7 +312,7 @@ class Subgraph {
 
     for (const link of graph.links) {
       const oldID = link[0];
-      const newID = LiteGraph.uuidv4();
+      const newID = uuidv4();
       link[0] = newID;
 
       if (idMap.linkIDs[oldID] || idMap.linkIDs[newID]) {
@@ -372,7 +373,7 @@ class Subgraph {
     if (LiteGraph.use_uuids) {
       // LGraph.serialize() seems to reuse objects in the original graph. But we
       // need to change node IDs here, so clone it first.
-      const subgraph = LiteGraph.cloneObject(data.subgraph);
+      const subgraph = cloneObject(data.subgraph);
 
       this.reassignSubgraphUUIDs(subgraph);
 
@@ -474,7 +475,7 @@ LiteGraph.Subgraph = Subgraph;
 LiteGraph.registerNodeType('graph/subgraph', Subgraph);
 
 // Input for a subgraph
-class GraphInput {
+export class GraphInput {
   constructor() {
     this.addOutput('', 'number');
 
@@ -531,7 +532,7 @@ class GraphInput {
 
     // update output
     if (this.outputs[0].type != type) {
-      if (!LiteGraph.isValidConnection(this.outputs[0].type, type)) { this.disconnectOutput(0); }
+      if (!isValidConnection(this.outputs[0].type, type)) { this.disconnectOutput(0); }
       this.outputs[0].type = type;
     }
 
@@ -617,7 +618,7 @@ LiteGraph.GraphInput = GraphInput;
 LiteGraph.registerNodeType('graph/input', GraphInput);
 
 // Output for a subgraph
-class GraphOutput {
+export class GraphOutput {
   constructor() {
     this.addInput('', '');
 
@@ -653,7 +654,7 @@ class GraphOutput {
     //         if (v == "action" || v == "event") {
     //             v = LiteGraph.ACTION;
     //         }
-    //         if (!LiteGraph.isValidConnection(that.inputs[0].type,v))
+    //         if (!isValidConnection(that.inputs[0].type,v))
     //             that.disconnectInput(0);
     //         that.inputs[0].type = v;
     //         if (that.name_in_graph) {

@@ -1,4 +1,8 @@
-import { LiteGraph, clamp } from './litegraph';
+import { LiteGraph } from './litegraph';
+import {
+  distance, getTime, isInsideRectangle, overlapBounding, clamp, isValidConnection,
+  closeAllContextMenus,
+} from './utilities';
 import { DragAndScale } from './DragAndScale';
 import { console } from './Console';
 import { pointerListenerAdd, pointerListenerRemove, PointerSettings } from './pointer_events';
@@ -659,7 +663,7 @@ export class LGraphCanvas {
     let node = this.graph.getNodeOnPos(e.canvasX, e.canvasY, this.visible_nodes, 5);
     const skip_dragging = false;
     let skip_action = false;
-    const now = LiteGraph.getTime();
+    const now = getTime();
     const is_primary = (e.isPrimary === undefined || !e.isPrimary);
     const is_double_click = (now - this.last_mouseclick < 300);
     this.mouse[0] = e.clientX;
@@ -678,7 +682,7 @@ export class LGraphCanvas {
 
     this.canvas.focus();
 
-    LiteGraph.closeAllContextMenus(ref_window);
+    closeAllContextMenus(ref_window);
 
     if (this.onMouse) {
       if (this.onMouse(e) == true) return;
@@ -730,7 +734,7 @@ export class LGraphCanvas {
           // Search for corner for resize
           if (!skip_action
                             && node.resizable !== false
-                            && LiteGraph.isInsideRectangle(
+                            && isInsideRectangle(
                               e.canvasX,
                               e.canvasY,
                               node.pos[0] + node.size[0] - 5,
@@ -750,7 +754,7 @@ export class LGraphCanvas {
                 var output = node.outputs[i];
                 var link_pos = node.getConnectionPos(false, i);
                 if (
-                  LiteGraph.isInsideRectangle(
+                  isInsideRectangle(
                     e.canvasX,
                     e.canvasY,
                     link_pos[0] - 15,
@@ -791,7 +795,7 @@ export class LGraphCanvas {
                 var input = node.inputs[i];
                 var link_pos = node.getConnectionPos(true, i);
                 if (
-                  LiteGraph.isInsideRectangle(
+                  isInsideRectangle(
                     e.canvasX,
                     e.canvasY,
                     link_pos[0] - 15,
@@ -952,7 +956,7 @@ export class LGraphCanvas {
             this.dragging_rectangle = null;
           }
 
-          const dist = LiteGraph.distance([e.canvasX, e.canvasY], [this.selected_group.pos[0] + this.selected_group.size[0], this.selected_group.pos[1] + this.selected_group.size[1]]);
+          const dist = distance([e.canvasX, e.canvasY], [this.selected_group.pos[0] + this.selected_group.size[0], this.selected_group.pos[1] + this.selected_group.size[1]]);
           if (dist * this.ds.scale < 10) {
             this.selected_group_resizing = true;
           } else {
@@ -992,7 +996,7 @@ export class LGraphCanvas {
               for (var i = 0, l = node.outputs.length; i < l; ++i) {
                 var output = node.outputs[i];
                 var link_pos = node.getConnectionPos(false, i);
-                if (LiteGraph.isInsideRectangle(e.canvasX, e.canvasY, link_pos[0] - 15, link_pos[1] - 10, 30, 20)) {
+                if (isInsideRectangle(e.canvasX, e.canvasY, link_pos[0] - 15, link_pos[1] - 10, 30, 20)) {
                   mClikSlot = output;
                   mClikSlot_index = i;
                   mClikSlot_isOut = true;
@@ -1006,7 +1010,7 @@ export class LGraphCanvas {
               for (var i = 0, l = node.inputs.length; i < l; ++i) {
                 var input = node.inputs[i];
                 var link_pos = node.getConnectionPos(true, i);
-                if (LiteGraph.isInsideRectangle(e.canvasX, e.canvasY, link_pos[0] - 15, link_pos[1] - 10, 30, 20)) {
+                if (isInsideRectangle(e.canvasX, e.canvasY, link_pos[0] - 15, link_pos[1] - 10, 30, 20)) {
                   mClikSlot = input;
                   mClikSlot_index = i;
                   mClikSlot_isOut = false;
@@ -1068,7 +1072,7 @@ export class LGraphCanvas {
 
     this.last_mouse[0] = e.clientX;
     this.last_mouse[1] = e.clientY;
-    this.last_mouseclick = LiteGraph.getTime();
+    this.last_mouseclick = getTime();
     this.last_mouse_dragging = true;
 
     /*
@@ -1226,7 +1230,7 @@ export class LGraphCanvas {
               var slot = this.isOverNodeInput(node, e.canvasX, e.canvasY, pos);
               if (slot != -1 && node.inputs[slot]) {
                 var slot_type = node.inputs[slot].type;
-                if (LiteGraph.isValidConnection(this.connecting_output.type, slot_type)) {
+                if (isValidConnection(this.connecting_output.type, slot_type)) {
                   this._highlight_input = pos;
                   this._highlight_input_slot = node.inputs[slot]; // XXX CHECK THIS
                 }
@@ -1246,7 +1250,7 @@ export class LGraphCanvas {
               var slot = this.isOverNodeOutput(node, e.canvasX, e.canvasY, pos);
               if (slot != -1 && node.outputs[slot]) {
                 var slot_type = node.outputs[slot].type;
-                if (LiteGraph.isValidConnection(this.connecting_input.type, slot_type)) {
+                if (isValidConnection(this.connecting_input.type, slot_type)) {
                   this._highlight_output = pos;
                 }
               } else {
@@ -1259,7 +1263,7 @@ export class LGraphCanvas {
         // Search for corner
         if (this.canvas) {
           if (
-            LiteGraph.isInsideRectangle(
+            isInsideRectangle(
               e.canvasX,
               e.canvasY,
               node.pos[0] + node.size[0] - 5,
@@ -1375,7 +1379,7 @@ export class LGraphCanvas {
     }
 
     this.adjustMouseEvent(e);
-    const now = LiteGraph.getTime();
+    const now = getTime();
     e.click_time = now - this.last_mouseclick;
     this.last_mouse_dragging = false;
     this.last_click_position = null;
@@ -1447,7 +1451,7 @@ export class LGraphCanvas {
               const nodeX = nodes[i];
               nodeX.getBounding(node_bounding);
               if (
-                !LiteGraph.overlapBounding(
+                !overlapBounding(
                   this.dragging_rectangle,
                   node_bounding,
                 )
@@ -1555,7 +1559,7 @@ export class LGraphCanvas {
         if (
           node
                         && e.click_time < 300
-                        && LiteGraph.isInsideRectangle(e.canvasX, e.canvasY, node.pos[0], node.pos[1] - LGraphStyles.NODE_TITLE_HEIGHT, LGraphStyles.NODE_TITLE_HEIGHT, LGraphStyles.NODE_TITLE_HEIGHT)
+                        && isInsideRectangle(e.canvasX, e.canvasY, node.pos[0], node.pos[1] - LGraphStyles.NODE_TITLE_HEIGHT, LGraphStyles.NODE_TITLE_HEIGHT, LGraphStyles.NODE_TITLE_HEIGHT)
         ) {
           node.collapse();
         }
@@ -1671,7 +1675,7 @@ export class LGraphCanvas {
   isOverNodeBox(node, canvasx, canvasy) {
     const title_height = LGraphStyles.NODE_TITLE_HEIGHT;
     if (
-      LiteGraph.isInsideRectangle(
+      isInsideRectangle(
         canvasx,
         canvasy,
         node.pos[0] + 2,
@@ -1696,7 +1700,7 @@ export class LGraphCanvas {
         const link_pos = node.getConnectionPos(true, i);
         let is_inside = false;
         if (node.horizontal) {
-          is_inside = LiteGraph.isInsideRectangle(
+          is_inside = isInsideRectangle(
             canvasx,
             canvasy,
             link_pos[0] - 5,
@@ -1705,7 +1709,7 @@ export class LGraphCanvas {
             20,
           );
         } else {
-          is_inside = LiteGraph.isInsideRectangle(
+          is_inside = isInsideRectangle(
             canvasx,
             canvasy,
             link_pos[0] - 10,
@@ -1737,7 +1741,7 @@ export class LGraphCanvas {
         const link_pos = node.getConnectionPos(false, i);
         let is_inside = false;
         if (node.horizontal) {
-          is_inside = LiteGraph.isInsideRectangle(
+          is_inside = isInsideRectangle(
             canvasx,
             canvasy,
             link_pos[0] - 5,
@@ -1746,7 +1750,7 @@ export class LGraphCanvas {
             20,
           );
         } else {
-          is_inside = LiteGraph.isInsideRectangle(
+          is_inside = isInsideRectangle(
             canvasx,
             canvasy,
             link_pos[0] - 10,
@@ -2253,7 +2257,7 @@ export class LGraphCanvas {
       if (node.block_delete) continue;
 
       // autoconnect when possible (very basic, only takes into account first input-output)
-      if (node.inputs && node.inputs.length && node.outputs && node.outputs.length && LiteGraph.isValidConnection(node.inputs[0].type, node.outputs[0].type) && node.inputs[0].link && node.outputs[0].links && node.outputs[0].links.length) {
+      if (node.inputs && node.inputs.length && node.outputs && node.outputs.length && isValidConnection(node.inputs[0].type, node.outputs[0].type) && node.inputs[0].link && node.outputs[0].links && node.outputs[0].links.length) {
         const input_link = node.graph.links[node.inputs[0].link];
         const output_link = node.graph.links[node.outputs[0].links[0]];
         const input_node = node.getInputNode(0);
@@ -2415,7 +2419,7 @@ export class LGraphCanvas {
         continue;
       }
 
-      if (!LiteGraph.overlapBounding(this.visible_area, n.getBounding(temp, true))) {
+      if (!overlapBounding(this.visible_area, n.getBounding(temp, true))) {
         continue;
       } // out of the visible area
 
@@ -2434,7 +2438,7 @@ export class LGraphCanvas {
     }
 
     // fps counting
-    const now = LiteGraph.getTime();
+    const now = getTime();
     this.render_time = (now - this.last_draw_time) * 0.001;
     this.last_draw_time = now;
 
@@ -2878,14 +2882,14 @@ export class LGraphCanvas {
     hovercolor = hovercolor || '#555';
     textcolor = textcolor || LGraphStyles.NODE_TEXT_COLOR;
     let pos = this.ds.convertOffsetToCanvas(this.graph_mouse);
-    const hover = LiteGraph.isInsideRectangle(pos[0], pos[1], x, y, w, h);
+    const hover = isInsideRectangle(pos[0], pos[1], x, y, w, h);
     pos = this.last_click_position ? [this.last_click_position[0], this.last_click_position[1]] : null;
     if (pos) {
       const rect = this.canvas.getBoundingClientRect();
       pos[0] -= rect.left;
       pos[1] -= rect.top;
     }
-    const clicked = pos && LiteGraph.isInsideRectangle(pos[0], pos[1], x, y, w, h);
+    const clicked = pos && isInsideRectangle(pos[0], pos[1], x, y, w, h);
 
     ctx.fillStyle = hover ? hovercolor : bgcolor;
     if (clicked) ctx.fillStyle = '#AAA';
@@ -2910,9 +2914,9 @@ export class LGraphCanvas {
 
   isAreaClicked(x, y, w, h, hold_click) {
     let pos = this.mouse;
-    const hover = LiteGraph.isInsideRectangle(pos[0], pos[1], x, y, w, h);
+    const hover = isInsideRectangle(pos[0], pos[1], x, y, w, h);
     pos = this.last_click_position;
-    const clicked = pos && LiteGraph.isInsideRectangle(pos[0], pos[1], x, y, w, h);
+    const clicked = pos && isInsideRectangle(pos[0], pos[1], x, y, w, h);
     const was_clicked = clicked && !this.block_click;
     if (clicked && hold_click) this.blockClick();
     return was_clicked;
@@ -3260,7 +3264,7 @@ export class LGraphCanvas {
 
           ctx.globalAlpha = editor_alpha;
           // change opacity of incompatible slots when dragging a connection
-          if (this.connecting_output && !LiteGraph.isValidConnection(slot.type, out_slot.type)) {
+          if (this.connecting_output && !isValidConnection(slot.type, out_slot.type)) {
             ctx.globalAlpha = 0.4 * editor_alpha;
           }
 
@@ -3354,7 +3358,7 @@ export class LGraphCanvas {
           var slot_shape = slot.shape;
 
           // change opacity of incompatible slots when dragging a connection
-          if (this.connecting_input && !LiteGraph.isValidConnection(slot_type, in_slot.type)) {
+          if (this.connecting_input && !isValidConnection(slot_type, in_slot.type)) {
             ctx.globalAlpha = 0.4 * editor_alpha;
           }
 
@@ -3816,7 +3820,7 @@ export class LGraphCanvas {
       if (!node.flags.collapsed && node.subgraph && !node.skip_subgraph_button) {
         const w = LGraphStyles.NODE_TITLE_HEIGHT;
         const x = node.size[0] - w;
-        const over = LiteGraph.isInsideRectangle(this.graph_mouse[0] - node.pos[0], this.graph_mouse[1] - node.pos[1], x + 2, -w + 2, w - 4, w - 4);
+        const over = isInsideRectangle(this.graph_mouse[0] - node.pos[0], this.graph_mouse[1] - node.pos[1], x + 2, -w + 2, w - 4, w - 4);
         ctx.fillStyle = over ? '#888' : '#555';
         if (shape == LGraphStyles.BOX_SHAPE || low_quality) ctx.fillRect(x + 2, -w + 2, w - 4, w - 4);
         else {
@@ -3903,7 +3907,7 @@ export class LGraphCanvas {
          * @method drawConnections
          * */
   drawConnections(ctx) {
-    const now = LiteGraph.getTime();
+    const now = getTime();
     const { visible_area } = this;
     margin_area[0] = visible_area[0] - 20;
     margin_area[1] = visible_area[1] - 20;
@@ -3972,7 +3976,7 @@ export class LGraphCanvas {
         }
 
         // skip links outside of the visible area of the canvas
-        if (!LiteGraph.overlapBounding(link_bounding, margin_area)) {
+        if (!overlapBounding(link_bounding, margin_area)) {
           continue;
         }
 
@@ -4064,7 +4068,7 @@ export class LGraphCanvas {
     start_dir = start_dir || DIRECTIONS.RIGHT;
     end_dir = end_dir || DIRECTIONS.LEFT;
 
-    const dist = LiteGraph.distance(a, b);
+    const dist = distance(a, b);
 
     if (this.render_connections_border && this.ds.scale > 0.6) {
       ctx.lineWidth = this.connections_width + 4;
@@ -4292,7 +4296,7 @@ export class LGraphCanvas {
     if (flow) {
       ctx.fillStyle = color;
       for (var i = 0; i < 5; ++i) {
-        const f = (LiteGraph.getTime() * 0.001 + i * 0.2) % 1;
+        const f = (getTime() * 0.001 + i * 0.2) % 1;
         var pos = this.computeConnectionPoint(
           a,
           b,
@@ -4312,7 +4316,7 @@ export class LGraphCanvas {
     start_dir = start_dir || DIRECTIONS.RIGHT;
     end_dir = end_dir || DIRECTIONS.LEFT;
 
-    const dist = LiteGraph.distance(a, b);
+    const dist = distance(a, b);
     const p0 = a;
     const p1 = [a[0], a[1]];
     const p2 = [b[0], b[1]];
@@ -4826,7 +4830,7 @@ export class LGraphCanvas {
     for (let i = 0; i < groups.length; ++i) {
       const group = groups[i];
 
-      if (!LiteGraph.overlapBounding(this.visible_area, group._bounding)) {
+      if (!overlapBounding(this.visible_area, group._bounding)) {
         continue;
       } // out of the visible area
 

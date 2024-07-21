@@ -1,4 +1,4 @@
-import { LiteGraph, clamp } from '@/litegraph';
+import { LiteGraph } from '@/litegraph';
 import { LGraphCanvas } from '@/LGraphCanvas';
 import { LGAudio } from './nodes/audio';
 import { LGraphPoints3D } from './nodes/geometry';
@@ -7,6 +7,7 @@ import {
 } from './nodes/glfx';
 import { LGraphTexture } from './nodes/gltextures';
 import { GL, gl } from './libs/litegl';
+import { clamp } from './core/utilities';
 
 let global = typeof (window) !== 'undefined' ? window : typeof (self) !== 'undefined' ? self : globalThis;
 

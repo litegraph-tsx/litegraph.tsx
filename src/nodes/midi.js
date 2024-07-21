@@ -1,6 +1,7 @@
 import { AudioSynth } from '@libs/audiosynth';
 import { MidiParser } from '@libs/midi-parser';
 import { LiteGraph } from '@/litegraph';
+import { getTime } from '../core/utilities';
 
 const MIDI_COLOR = '#243';
 
@@ -511,7 +512,7 @@ class LGMIDIIn {
   onMIDIEvent(data, midi_event) {
     this._last_midi_event = midi_event;
     this.boxcolor = '#AFA';
-    this._last_time = LiteGraph.getTime();
+    this._last_time = getTime();
     this.trigger('on_midi', midi_event);
     if (midi_event.cmd == MIDIEvent.NOTEON) {
       this.trigger('on_noteon', midi_event);
@@ -530,7 +531,7 @@ class LGMIDIIn {
     this.boxcolor = '#AAA';
     if (!this.flags.collapsed && this._last_midi_event) {
       ctx.fillStyle = 'white';
-      const now = LiteGraph.getTime();
+      const now = getTime();
       const f = 1.0 - Math.max(0, (now - this._last_time) * 0.001);
       if (f > 0) {
         const t = ctx.globalAlpha;
