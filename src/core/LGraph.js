@@ -1,7 +1,7 @@
 import { LiteGraph } from './litegraph';
 import { LGraphNode } from './LGraphNode';
 import { LGraphGroup } from './LGraphGroup';
-import { LLink } from "./LLink";
+import { LLink } from './LLink';
 import { LGraphCanvas } from './LGraphCanvas';
 import { console } from './Console';
 

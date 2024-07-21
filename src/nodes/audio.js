@@ -29,7 +29,7 @@ export const LGAudio = {
   },
 
   connect(audionodeA, audionodeB) {
-    if(typeof(audionodeA)=="undefined" || typeof(audionodeB)=="undefined" || !audionodeA || !audionodeB){
+    if (typeof (audionodeA) == 'undefined' || typeof (audionodeB) == 'undefined' || !audionodeA || !audionodeB) {
       return;
     }
     try {
@@ -161,10 +161,10 @@ export const LGAudio = {
 
     // do the connection/disconnection
     if (connected) {
-      console.debug("[audio]", "[onConnectionsChange]", "will connect", local_audionode, "to", target_audionode, "arguments", ...arguments);
+      console.debug('[audio]', '[onConnectionsChange]', 'will connect', local_audionode, 'to', target_audionode, 'arguments', ...arguments);
       LGAudio.connect(local_audionode, target_audionode);
     } else {
-      console.debug("[audio]", "[onConnectionsChange]", "will discconnect", local_audionode, "from", target_audionode, "arguments", ...arguments);
+      console.debug('[audio]', '[onConnectionsChange]', 'will discconnect', local_audionode, 'from', target_audionode, 'arguments', ...arguments);
       LGAudio.disconnect(local_audionode, target_audionode);
     }
   },

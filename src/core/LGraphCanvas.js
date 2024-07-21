@@ -6478,7 +6478,7 @@ export class LGraphCanvas {
                 if (doesInc !== false) {
                   console.verbose('[showSearchBox]', `IN ${sType} HAS ${sV}`);
                 } else {
-                  console.verbose('[showSearchBox]', 'valid IN DONT includes ' + type);
+                  console.verbose('[showSearchBox]', `valid IN DONT includes ${type}`);
                   return false;
                 }
               }
@@ -6496,7 +6496,7 @@ export class LGraphCanvas {
                 if (doesInc !== false) {
                   console.verbose('[showSearchBox]', `OUT ${sType} HAS ${sV}`);
                 } else {
-                  console.verbose('[showSearchBox]', 'valid OUT DONT includes ' + type);
+                  console.verbose('[showSearchBox]', `valid OUT DONT includes ${type}`);
                   return false;
                 }
               }
