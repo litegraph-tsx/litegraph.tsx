@@ -1,6 +1,8 @@
 import { LiteGraph } from './litegraph';
 import { LGraphNode } from './LGraphNode';
 import { LGraphGroup } from './LGraphGroup';
+import { LLink } from "./LLink";
+import { LGraphCanvas } from './LGraphCanvas';
 import { console } from './Console';
 
 const global = typeof (window) !== 'undefined' ? window : typeof (self) !== 'undefined' ? self : globalThis;
@@ -115,7 +117,7 @@ export class LGraph {
                  */
 
   attachCanvas(graphcanvas) {
-    if (graphcanvas.constructor != LiteGraph.LGraphCanvas) {
+    if (graphcanvas.constructor != LGraphCanvas) {
       throw 'attachCanvas expects a LGraphCanvas instance';
     }
     if (graphcanvas.graph && graphcanvas.graph != this) {
@@ -706,7 +708,7 @@ export class LGraph {
                  */
 
   remove(node) {
-    if (node.constructor === LiteGraph.LGraphGroup) {
+    if (node.constructor === LGraphGroup) {
       const index = this._groups.indexOf(node);
       if (index != -1) {
         this._groups.splice(index, 1);
@@ -1357,7 +1359,7 @@ export class LGraph {
       if (!link.serialize) {
         // weird bug I havent solved yet
         console.warn('weird LLink bug, link info is not a LLink but a regular object');
-        const link2 = new LiteGraph.LLink();
+        const link2 = new LLink();
         for (const j in link) {
           link2[j] = link[j];
         }
@@ -1416,7 +1418,7 @@ export class LGraph {
           console.warn('serialized graph link data contains errors, skipping.');
           continue;
         }
-        const link = new LiteGraph.LLink();
+        const link = new LLink();
         link.configure(link_data);
         links[link.id] = link;
       }
@@ -1469,7 +1471,7 @@ export class LGraph {
     this._groups.length = 0;
     if (data.groups) {
       for (var i = 0; i < data.groups.length; ++i) {
-        const group = new LiteGraph.LGraphGroup();
+        const group = new LGraphGroup();
         group.configure(data.groups[i]);
         this.add(group);
       }

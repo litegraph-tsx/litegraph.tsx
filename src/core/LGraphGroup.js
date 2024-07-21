@@ -1,4 +1,4 @@
-import { LiteGraph } from './litegraph';
+import { LiteGraph } from './litegraph'; // only used for overlapBounding
 import { LGraphCanvas } from './LGraphCanvas';
 import { LGraphNode } from './LGraphNode';
 
