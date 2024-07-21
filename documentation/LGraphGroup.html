@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Class: CurveEditor</title>
+    <title>JSDoc: Class: LGraphGroup</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Class: CurveEditor</h1>
+    <h1 class="page-title">Class: LGraphGroup</h1>
 
     
 
@@ -28,9 +28,9 @@
 
 <header>
     
-        <h2><span class="attribs"><span class="type-signature"></span></span>CurveEditor<span class="signature">(points)</span><span class="type-signature"></span></h2>
+        <h2><span class="attribs"><span class="type-signature"></span></span>LGraphGroup<span class="signature">(title)</span><span class="type-signature"></span></h2>
         
-            <div class="class-description">Class representing a curve editor used by widgets to render and interact with curves.</div>
+            <div class="class-description">LGraphGroup</div>
         
     
 </header>
@@ -45,12 +45,16 @@
     
 
     
-    <h4 class="name" id="CurveEditor"><span class="type-signature"></span>new CurveEditor<span class="signature">(points)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="LGraphGroup"><span class="type-signature"></span>new LGraphGroup<span class="signature">(title)</span><span class="type-signature"></span></h4>
     
 
     
 
 
+
+<div class="description">
+    Constructs an instance of LGraphGroup.
+</div>
 
 
 
@@ -85,13 +89,13 @@
 
         <tr>
             
-                <td class="name"><code>points</code></td>
+                <td class="name"><code>title</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">Array.&lt;Array.&lt;number>></span>
+<span class="param-type">string</span>
 
 
             
@@ -101,7 +105,7 @@
 
             
 
-            <td class="description last">Array of control points defining the curve.</td>
+            <td class="description last">The title of the group.</td>
         </tr>
 
     
@@ -142,7 +146,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_CurveEditor.js.html">core/CurveEditor.js</a>, <a href="core_CurveEditor.js.html#line6">line 6</a>
+        <a href="core_LGraphGroup.js.html">core/LGraphGroup.js</a>, <a href="core_LGraphGroup.js.html#line14">line 14</a>
     </li></ul></dd>
     
 
@@ -183,7 +187,7 @@
         <h3 class="subsection-title">Classes</h3>
 
         <dl>
-            <dt><a href="CurveEditor.html">CurveEditor</a></dt>
+            <dt><a href="LGraphGroup.html">LGraphGroup</a></dt>
             <dd></dd>
         </dl>
     
@@ -205,7 +209,7 @@
     
 
     
-    <h4 class="name" id="draw"><span class="type-signature"></span>draw<span class="signature">(ctx, size, graphcanvas, background_color<span class="signature-attributes">opt</span>, line_color<span class="signature-attributes">opt</span>, inactive<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="configure"><span class="type-signature"></span>configure<span class="signature">(o)</span><span class="type-signature"></span></h4>
     
 
     
@@ -213,7 +217,7 @@
 
 
 <div class="description">
-    Draw the curve editor on a canvas context.
+    Configures the group with provided options.
 </div>
 
 
@@ -237,8 +241,6 @@
         <th>Type</th>
 
         
-        <th>Attributes</th>
-        
 
         
 
@@ -251,69 +253,7 @@
 
         <tr>
             
-                <td class="name"><code>ctx</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">CanvasRenderingContext2D</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last">The canvas context to draw on.</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>size</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Array.&lt;number></span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last">The size of the canvas [width, height].</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>graphcanvas</code></td>
+                <td class="name"><code>o</code></td>
             
 
             <td class="type">
@@ -326,117 +266,10 @@
             </td>
 
             
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
 
             
 
-            <td class="description last">Object containing properties related to the canvas.</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>background_color</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last">Optional background color for the editor.</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>line_color</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last">Color of the curve line.</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>inactive</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">boolean</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last">Flag indicating if the editor is inactive.</td>
+            <td class="description last">Configuration options.</td>
         </tr>
 
     
@@ -477,7 +310,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_CurveEditor.js.html">core/CurveEditor.js</a>, <a href="core_CurveEditor.js.html#line46">line 46</a>
+        <a href="core_LGraphGroup.js.html">core/LGraphGroup.js</a>, <a href="core_LGraphGroup.js.html#line66">line 66</a>
     </li></ul></dd>
     
 
@@ -513,7 +346,7 @@
     
 
     
-    <h4 class="name" id="getCloserPoint"><span class="type-signature"></span>getCloserPoint<span class="signature">(pos, max_dist<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {number}</span></h4>
+    <h4 class="name" id="isPointInside"><span class="type-signature"></span>isPointInside<span class="signature">(event)</span><span class="type-signature"> &rarr; {boolean}</span></h4>
     
 
     
@@ -521,7 +354,7 @@
 
 
 <div class="description">
-    Find the index of the closest control point to a given position within a maximum distance.
+    Checks if a point is inside the bounding area of the group.
 </div>
 
 
@@ -545,8 +378,6 @@
         <th>Type</th>
 
         
-        <th>Attributes</th>
-        
 
         
 
@@ -559,64 +390,23 @@
 
         <tr>
             
-                <td class="name"><code>pos</code></td>
+                <td class="name"><code>event</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">Array.&lt;number></span>
+<span class="param-type">object</span>
 
 
             
             </td>
 
             
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
 
             
 
-            <td class="description last">Position to find the closest point to.</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>max_dist</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last">Maximum distance to consider for proximity.</td>
+            <td class="description last">The event object containing coordinates.</td>
         </tr>
 
     
@@ -657,7 +447,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_CurveEditor.js.html">core/CurveEditor.js</a>, <a href="core_CurveEditor.js.html#line167">line 167</a>
+        <a href="core_LGraphGroup.js.html">core/LGraphGroup.js</a>, <a href="core_LGraphGroup.js.html#line131">line 131</a>
     </li></ul></dd>
     
 
@@ -686,189 +476,7 @@
 
         
 <div class="param-desc">
-    Index of the closest control point, or -1 if no points are found.
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">number</span>
-
-
-    </dd>
-</dl>
-
-    
-
-
-
-
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="onMouseDown"><span class="type-signature"></span>onMouseDown<span class="signature">(localpos, graphcanvas)</span><span class="type-signature"> &rarr; {boolean}</span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    Handle mouse down event within the curve editor.
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>localpos</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Array.&lt;number></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">Mouse position relative to the curve editor.  is mouse in curve editor space</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>graphcanvas</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">object</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">Object containing properties related to the canvas.</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_CurveEditor.js.html">core/CurveEditor.js</a>, <a href="core_CurveEditor.js.html#line93">line 93</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-<div class="param-desc">
-    True if the event was handled, false otherwise.
+    True if the point is inside the group, false otherwise.
 </div>
 
 
@@ -897,7 +505,7 @@
     
 
     
-    <h4 class="name" id="onMouseMove"><span class="type-signature"></span>onMouseMove<span class="signature">(localpos, graphcanvas)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="move"><span class="type-signature"></span>move<span class="signature">(deltax, deltay, ignore_nodes)</span><span class="type-signature"></span></h4>
     
 
     
@@ -905,7 +513,7 @@
 
 
 <div class="description">
-    Handle mouse move event within the curve editor.
+    Moves the group by a specified delta.
 </div>
 
 
@@ -941,13 +549,13 @@
 
         <tr>
             
-                <td class="name"><code>localpos</code></td>
+                <td class="name"><code>deltax</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">Array.&lt;number></span>
+<span class="param-type">number</span>
 
 
             
@@ -957,20 +565,20 @@
 
             
 
-            <td class="description last">Mouse position relative to the curve editor.</td>
+            <td class="description last">Delta movement along the X-axis.</td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>graphcanvas</code></td>
+                <td class="name"><code>deltay</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">object</span>
+<span class="param-type">number</span>
 
 
             
@@ -980,318 +588,22 @@
 
             
 
-            <td class="description last">Object containing properties related to the canvas.</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_CurveEditor.js.html">core/CurveEditor.js</a>, <a href="core_CurveEditor.js.html#line123">line 123</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="onMouseUp"><span class="type-signature"></span>onMouseUp<span class="signature">(localpos, graphcanvas)</span><span class="type-signature"> &rarr; {boolean}</span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    Handle mouse up event within the curve editor.
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>localpos</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Array.&lt;number></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">Mouse position relative to the curve editor.</td>
+            <td class="description last">Delta movement along the Y-axis.</td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>graphcanvas</code></td>
+                <td class="name"><code>ignore_nodes</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">object</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">Object containing properties related to the canvas.</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_CurveEditor.js.html">core/CurveEditor.js</a>, <a href="core_CurveEditor.js.html#line156">line 156</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-<div class="param-desc">
-    Always returns false.
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
 <span class="param-type">boolean</span>
 
 
-    </dd>
-</dl>
-
-    
-
-
-
-
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id=".sampleCurve"><span class="type-signature">(static) </span>sampleCurve<span class="signature">(f, points)</span><span class="type-signature"> &rarr; {number}</span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    Sample a curve at a given point using linear interpolation between control points.
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>f</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
             
             </td>
 
@@ -1299,30 +611,7 @@
 
             
 
-            <td class="description last">The input value where the curve is sampled.</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>points</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Array.&lt;Array.&lt;number>></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">Array of control points defining the curve.</td>
+            <td class="description last">Whether to ignore moving child nodes.</td>
         </tr>
 
     
@@ -1363,7 +652,183 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="core_CurveEditor.js.html">core/CurveEditor.js</a>, <a href="core_CurveEditor.js.html#line23">line 23</a>
+        <a href="core_LGraphGroup.js.html">core/LGraphGroup.js</a>, <a href="core_LGraphGroup.js.html#line100">line 100</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="recomputeInsideNodes"><span class="type-signature"></span>recomputeInsideNodes<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Recomputes the list of nodes inside the group based on the current graph state.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core_LGraphGroup.js.html">core/LGraphGroup.js</a>, <a href="core_LGraphGroup.js.html#line116">line 116</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="serialize"><span class="type-signature"></span>serialize<span class="signature">()</span><span class="type-signature"> &rarr; {object}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Serializes the group to a JSON-compatible object.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core_LGraphGroup.js.html">core/LGraphGroup.js</a>, <a href="core_LGraphGroup.js.html#line79">line 79</a>
     </li></ul></dd>
     
 
@@ -1392,7 +857,7 @@
 
         
 <div class="param-desc">
-    The interpolated value on the curve at point 'f'.
+    Serialized representation of the group.
 </div>
 
 
@@ -1403,13 +868,150 @@
     </dt>
     <dd>
         
-<span class="param-type">number</span>
+<span class="param-type">object</span>
 
 
     </dd>
 </dl>
 
     
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="setDirtyCanvas"><span class="type-signature"></span>setDirtyCanvas<span class="signature">(force)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Marks the canvas as dirty, triggering a redraw.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>force</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Whether to force the canvas to redraw immediately.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="core_LGraphGroup.js.html">core/LGraphGroup.js</a>, <a href="core_LGraphGroup.js.html#line140">line 140</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
