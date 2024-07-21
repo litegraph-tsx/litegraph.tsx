@@ -258,7 +258,8 @@ export const LiteGraph = {
 
     // TODO one would want to know input and ouput :: this would allow through registerNodeAndSlotType to get all the slots types
     if (this.auto_load_slot_types) {
-      new base_class(base_class.title || 'tmpnode');
+      // @TODO: provide an optional callback without instantiating an instance of every possible node
+      // new base_class(base_class.title || 'tmpnode');
     }
   },
 
