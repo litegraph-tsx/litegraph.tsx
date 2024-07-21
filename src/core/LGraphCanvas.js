@@ -5972,7 +5972,16 @@ export class LGraphCanvas {
     return false;
   }
 
-  // TODO refactor :: this is used fot title but not for properties!
+  /**
+   * Displays a property editor dialog for a given item on the graph canvas.
+   * @param {object} item - The item associated with the property editor.
+   * @param {object} options - Options for configuring the property editor.
+   * @param {Event} e - The event that triggered the property editor display.
+   * @param {object} menu - The menu object related to the property editor.
+   * @param {object} node - The node object containing the property to edit.
+   * @returns {void}
+   * @TODO refactor :: this is used for title but not for properties!
+   */
   static onShowPropertyEditor(item, options, e, menu, node) {
     const input_html = '';
     const property = item.property || 'title';
@@ -6063,7 +6072,16 @@ export class LGraphCanvas {
     }
   }
 
-  // refactor: there are different dialogs, some uses createDialog some dont
+  /**
+   * Displays a prompt dialog with title and input field for user interaction.
+   * @param {string} title - The title of the prompt dialog.
+   * @param {string} value - The initial value displayed in the input field.
+   * @param {Function} callback - Callback function invoked when user confirms the input.
+   * @param {Event} event - The event triggering the prompt dialog display.
+   * @param {boolean} multiline - Flag indicating if the input should be multiline (textarea).
+   * @returns {HTMLElement} The created dialog element.
+   * @TODO refactor: there are different dialogs, some use createDialog, some don't.
+   */
   prompt(title, value, callback, event, multiline) {
     const that = this;
     const input_html = '';
@@ -6179,6 +6197,24 @@ export class LGraphCanvas {
     return dialog;
   }
 
+  /**
+   * Displays a search box dialog for node selection with optional type filtering.
+   * @param {Event} event - The event triggering the search box display.
+   * @param {Object} options - Options for configuring the search box behavior.
+   * @param {HTMLElement} options.slot_from - The originating slot element.
+   * @param {HTMLElement} options.node_from - The originating node element.
+   * @param {HTMLElement} options.node_to - The target node element.
+   * @param {boolean} options.do_type_filter - Flag indicating whether to filter nodes by slot type.
+   * @param {boolean} options.type_filter_in - Flag for filtering input slots.
+   * @param {boolean} options.type_filter_out - Flag for filtering output slots.
+   * @param {boolean} options.show_general_if_none_on_typefilter - Flag to show general types if no results found with type filters.
+   * @param {boolean} options.show_general_after_typefiltered - Flag to show general types after applying type filters.
+   * @param {boolean} options.hide_on_mouse_leave - Flag to hide the search box on mouse leave.
+   * @param {boolean} options.show_all_if_empty - Flag to show all results if search input is empty.
+   * @param {boolean} options.show_all_on_open - Flag to show all results when the search box is opened.
+   * @returns {HTMLElement} The created search box dialog element.
+   * @TODO refactor: there are different dialogs, some use createDialog, some don't.
+   */
   showSearchBox(event, options) {
     // proposed defaults
     const def_options = {
@@ -6731,6 +6767,14 @@ export class LGraphCanvas {
     return dialog;
   }
 
+  /**
+   * Displays a dialog for editing a specific property of a node.
+   * @param {Node} node - The node whose property is being edited.
+   * @param {string} property - The name of the property to edit.
+   * @param {Object} options - Options for configuring the dialog behavior.
+   * @param {Function} options.onclose - Callback function to invoke when the dialog is closed.
+   * @returns {HTMLElement} The created dialog element.
+   */
   showEditPropertyValue(node, property, options) {
     if (!node || node.properties[property] === undefined) {
       return;
@@ -6859,7 +6903,19 @@ export class LGraphCanvas {
     return dialog;
   }
 
-  // TODO refactor, theer are different dialog, some uses createDialog, some dont
+  /**
+   * Creates a dialog box with specified HTML content and options.
+   *
+   * @param {string} html - The HTML content to be placed inside the dialog.
+   * @param {Object} options - Options for configuring the dialog behavior.
+   * @param {boolean} [options.checkForInput=false] - Whether to handle input events (e.g., Enter/Escape).
+   * @param {boolean} [options.closeOnLeave=true] - Whether to close the dialog when mouse leaves.
+   * @param {boolean} [options.closeOnLeave_checkModified=true] - Whether to check if dialog is modified before closing on leave.
+   * @param {Array} [options.position] - Position of the dialog [x, y].
+   * @param {MouseEvent} [options.event] - Mouse event triggering the dialog creation.
+   * @returns {HTMLElement} The created dialog element.
+   * @TODO refactor, there are different dialog creation approaches to unify and simplify.
+   */
   createDialog(html, options) {
     const def_options = { checkForInput: false, closeOnLeave: true, closeOnLeave_checkModified: true };
     options = Object.assign(def_options, options || {});
@@ -6954,6 +7010,17 @@ export class LGraphCanvas {
     return dialog;
   }
 
+  /**
+   * Creates a panel with specified title and options.
+   *
+   * @param {string} title - The title of the panel.
+   * @param {Object} options - Options for configuring the panel.
+   * @param {Window} [options.window=window] - The window context in which the panel operates.
+   * @param {number} [options.width] - The width of the panel.
+   * @param {number} [options.height] - The height of the panel.
+   * @param {boolean} [options.closable=false] - Whether the panel can be closed by user interaction.
+   * @returns {HTMLElement} The created panel element.
+   */
   createPanel(title, options) {
     options = options || {};
 
@@ -7133,6 +7200,13 @@ export class LGraphCanvas {
     return root;
   }
 
+  /**
+   * Returns a printable representation of a property value based on provided value and value mappings.
+   *
+   * @param {*} value - The property value to convert to a printable format.
+   * @param {Array|Object} values - The optional array or object containing value mappings.
+   * @returns {string} The printable representation of the property value.
+   */
   static getPropertyPrintableValue(value, values) {
     if (!values) return String(value);
 
@@ -7151,6 +7225,9 @@ export class LGraphCanvas {
     }
   }
 
+  /**
+   * Closes specific panels by querying their IDs and calling their 'close' method if available.
+   */
   closePanels() {
     var panel = document.querySelector('#node-panel');
     if (panel) panel.close();
@@ -7158,6 +7235,13 @@ export class LGraphCanvas {
     if (panel) panel.close();
   }
 
+  /**
+   * Shows the graph options panel for configuring canvas settings.
+   * @param {Object} refOpts - Reference to options.
+   * @param {Object} obEv - Optional event object.
+   * @param {Object} refMenu - Reference to menu object.
+   * @param {Object} refMenu2 - Reference to second menu object.
+   */
   showShowGraphOptionsPanel(refOpts, obEv, refMenu, refMenu2) {
     if (this.constructor && this.constructor.name == 'HTMLDivElement') {
       // assume coming from the menu event click
@@ -7243,6 +7327,10 @@ export class LGraphCanvas {
     graphcanvas.canvas.parentNode.appendChild(panel);
   }
 
+  /**
+   * Shows the node panel for configuring properties of a given node.
+   * @param {Object} node - The node object to display in the panel.
+   */
   showShowNodePanel(node) {
     this.SELECTED_NODE = node;
     this.closePanels();
@@ -7386,6 +7474,12 @@ export class LGraphCanvas {
     this.canvas.parentNode.appendChild(panel);
   }
 
+  /**
+   * Shows a dialog to manage subgraph properties for a given node.
+   * Allows adding and removing inputs from the subgraph node.
+   * @param {Object} node - The node object representing the subgraph.
+   * @returns {HTMLElement} The created panel element.
+   */
   showSubgraphPropertiesDialog(node) {
     console.log('showing subgraph properties dialog');
 
@@ -7437,6 +7531,12 @@ export class LGraphCanvas {
     return panel;
   }
 
+  /**
+   * Shows a dialog to manage subgraph output properties for a given node.
+   * Allows adding and removing outputs from the subgraph node.
+   * @param {Object} node - The node object representing the subgraph.
+   * @returns {HTMLElement} The created panel element.
+   */
   showSubgraphPropertiesDialogRight(node) {
     console.log('showing subgraph properties dialog');
     const that = this;
@@ -7496,6 +7596,11 @@ export class LGraphCanvas {
     return panel;
   }
 
+  /**
+   * Checks and closes any open panels that belong to a different graph or have no associated graph.
+   * Panels without associated graph or belonging to a different graph are closed.
+   * This method is typically used to ensure panel integrity when interacting with nodes and graphs.
+   */
   checkPanels() {
     if (!this.canvas) return;
     const panels = this.canvas.parentNode.querySelectorAll('.litegraph.dialog');
@@ -7506,6 +7611,17 @@ export class LGraphCanvas {
     }
   }
 
+  /**
+   * Callback function for handling node collapse operation from a menu option.
+   * Collapses the provided node or all selected nodes in the graph canvas.
+   * This function ensures proper handling of graph changes before and after collapsing nodes.
+   *
+   * @param {any} value - The value associated with the menu option.
+   * @param {any} options - Options related to the menu or the operation.
+   * @param {Event} e - The event object triggering the callback.
+   * @param {LiteGraph.ContextMenu} menu - The context menu instance where the option was selected.
+   * @param {LiteGraphNode} node - The node on which the collapse operation is applied.
+   */
   static onMenuNodeCollapse(value, options, e, menu, node) {
     node.graph.beforeChange(/* ? */);
 
@@ -7525,10 +7641,31 @@ export class LGraphCanvas {
     node.graph.afterChange(/* ? */);
   }
 
+  /**
+   * Callback function for handling node pinning from a menu option.
+   * Pins the provided node.
+   *
+   * @param {any} value - The value associated with the menu option.
+   * @param {any} options - Options related to the menu or the operation.
+   * @param {Event} e - The event object triggering the callback.
+   * @param {LiteGraph.ContextMenu} menu - The context menu instance where the option was selected.
+   * @param {LiteGraphNode} node - The node to be pinned.
+   */
   static onMenuNodePin(value, options, e, menu, node) {
     node.pin();
   }
 
+  /**
+   * Callback function for handling node mode change from a menu option.
+   * Displays a context menu with available node modes and applies the selected mode to the node(s).
+   *
+   * @param {any} value - The value associated with the menu option.
+   * @param {any} options - Options related to the menu or the operation.
+   * @param {Event} e - The event object triggering the callback.
+   * @param {LiteGraph.ContextMenu} menu - The context menu instance where the option was selected.
+   * @param {LiteGraphNode} node - The node to apply the mode change to.
+   * @returns {boolean} Always returns false to prevent default browser behavior.
+   */
   static onMenuNodeMode(value, options, e, menu, node) {
     new LiteGraph.ContextMenu(
       LiteGraph.NODE_MODES,
@@ -7563,6 +7700,17 @@ export class LGraphCanvas {
     return false;
   }
 
+  /**
+   * Callback function for handling node color change from a menu option.
+   * Displays a context menu with available node colors and applies the selected color to the node(s).
+   *
+   * @param {any} value - The value associated with the menu option.
+   * @param {any} options - Options related to the menu or the operation.
+   * @param {Event} e - The event object triggering the callback.
+   * @param {LiteGraph.ContextMenu} menu - The context menu instance where the option was selected.
+   * @param {LiteGraphNode} node - The node to apply the color change to.
+   * @returns {boolean} Always returns false to prevent default browser behavior.
+   */
   static onMenuNodeColors(value, options, e, menu, node) {
     if (!node) {
       throw 'no node for color';
@@ -7632,6 +7780,17 @@ export class LGraphCanvas {
     return false;
   }
 
+  /**
+   * Callback function for handling node shape change from a menu option.
+   * Displays a context menu with available node shapes and applies the selected shape to the node(s).
+   *
+   * @param {any} value - The value associated with the menu option.
+   * @param {any} options - Options related to the menu or the operation.
+   * @param {Event} e - The event object triggering the callback.
+   * @param {LiteGraph.ContextMenu} menu - The context menu instance where the option was selected.
+   * @param {LiteGraphNode} node - The node to apply the shape change to.
+   * @returns {boolean} Always returns false to prevent default browser behavior.
+   */
   static onMenuNodeShapes(value, options, e, menu, node) {
     if (!node) {
       throw 'no node passed';
@@ -7670,6 +7829,17 @@ export class LGraphCanvas {
     return false;
   }
 
+  /**
+   * Callback function for handling node removal from a menu option.
+   * Removes the selected node or nodes from the graph.
+   *
+   * @param {any} value - The value associated with the menu option.
+   * @param {any} options - Options related to the menu or the operation.
+   * @param {Event} e - The event object triggering the callback.
+   * @param {LiteGraph.ContextMenu} menu - The context menu instance where the option was selected.
+   * @param {LiteGraphNode} node - The node to remove from the graph.
+   * @returns {boolean} Always returns false to prevent default browser behavior.
+   */
   static onMenuNodeRemove(value, options, e, menu, node) {
     if (!node) {
       throw 'no node passed';
@@ -7698,6 +7868,17 @@ export class LGraphCanvas {
     node.setDirtyCanvas(true, true);
   }
 
+  /**
+   * Callback function for converting selected nodes into a subgraph from a menu option.
+   * Creates a subgraph node and encapsulates the selected nodes or the single node into it.
+   *
+   * @param {any} value - The value associated with the menu option.
+   * @param {any} options - Options related to the menu or the operation.
+   * @param {Event} e - The event object triggering the callback.
+   * @param {LiteGraph.ContextMenu} menu - The context menu instance where the option was selected.
+   * @param {LiteGraphNode} node - The node to convert into a subgraph.
+   * @returns {boolean} Always returns false to prevent default browser behavior.
+   */
   static onMenuNodeToSubgraph(value, options, e, menu, node) {
     const { graph } = node;
     const graphcanvas = LGraphCanvas.active_canvas;
@@ -7717,6 +7898,17 @@ export class LGraphCanvas {
     node.setDirtyCanvas(true, true);
   }
 
+  /**
+   * Callback function for cloning nodes from a menu option.
+   * Clones the selected node or nodes and adds the clone(s) to the graph.
+   *
+   * @param {any} value - The value associated with the menu option.
+   * @param {any} options - Options related to the menu or the operation.
+   * @param {Event} e - The event object triggering the callback.
+   * @param {LiteGraph.ContextMenu} menu - The context menu instance where the option was selected.
+   * @param {LiteGraphNode} node - The node to clone.
+   * @returns {boolean} Always returns false to prevent default browser behavior.
+   */
   static onMenuNodeClone(value, options, e, menu, node) {
     node.graph.beforeChange();
 
@@ -7753,6 +7945,11 @@ export class LGraphCanvas {
     node.setDirtyCanvas(true, true);
   }
 
+  /**
+   * Retrieves the menu options for the canvas context menu.
+   *
+   * @returns {Array} An array containing the menu options.
+   */
   getCanvasMenuOptions() {
     let options = null;
     const that = this;
@@ -7799,7 +7996,12 @@ export class LGraphCanvas {
     return options;
   }
 
-  // called by processContextMenu to extract the menu list
+  /**
+   * Retrieves the menu options for a specific node's context menu.
+   *
+   * @param {LiteGraphNode} node - The node for which to generate menu options.
+   * @returns {Array} An array containing the menu options for the node.
+   */
   getNodeMenuOptions(node) {
     let options = null;
 
@@ -7915,6 +8117,12 @@ export class LGraphCanvas {
     return options;
   }
 
+  /**
+   * Retrieves the menu options for a group node's context menu.
+   *
+   * @param {LiteGraphNode} node - The group node for which to generate menu options.
+   * @returns {Array} An array containing the menu options for the group node.
+   */
   getGroupMenuOptions(node) {
     const o = [
       { content: 'Title', callback: LGraphCanvas.onShowPropertyEditor },
@@ -7936,6 +8144,12 @@ export class LGraphCanvas {
     return o;
   }
 
+  /**
+   * Processes the context menu for nodes, slots, and the canvas itself.
+   *
+   * @param {LiteGraphNode} node - The node associated with the context menu.
+   * @param {Event} event - The event object triggering the context menu.
+   */
   processContextMenu(node, event) {
     const that = this;
     const canvas = LGraphCanvas.active_canvas;
