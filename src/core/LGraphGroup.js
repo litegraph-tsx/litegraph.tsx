@@ -1,14 +1,26 @@
 import { LiteGraph } from './litegraph'; // only used for overlapBounding
-import { LGraphCanvas } from './LGraphCanvas';
-import { LGraphNode } from './LGraphNode';
+import { LGraphCanvas } from './LGraphCanvas'; // only used to get pale_blue
+import { LGraphNode } from './LGraphNode'; // only used to inherit two methods at the end of file
 
 const global = typeof (window) !== 'undefined' ? window : typeof (self) !== 'undefined' ? self : globalThis;
 
+/**
+ * LGraphGroup class represents a group in a LiteGraph graph.
+ *
+ * @class LGraphGroup
+ * @constructor
+ * @param {string} title - The title of the group.
+ */
 export class LGraphGroup {
+  /**
+   * Constructs an instance of LGraphGroup.
+   * @param {string} title - The title of the group.
+   */
   constructor(title) {
     this._ctor(title);
   }
 
+  // @TODO: deprecate separate _ctor method
   _ctor(title) {
     this.title = title || 'Group';
     this.font_size = 24;
@@ -47,6 +59,10 @@ export class LGraphGroup {
     return this._size;
   }
 
+  /**
+   * Configures the group with provided options.
+   * @param {object} o - Configuration options.
+   */
   configure(o) {
     this.title = o.title;
     this._bounding.set(o.bounding);
@@ -56,6 +72,10 @@ export class LGraphGroup {
     }
   }
 
+  /**
+   * Serializes the group to a JSON-compatible object.
+   * @returns {object} Serialized representation of the group.
+   */
   serialize() {
     const b = this._bounding;
     return {
@@ -71,6 +91,12 @@ export class LGraphGroup {
     };
   }
 
+  /**
+   * Moves the group by a specified delta.
+   * @param {number} deltax - Delta movement along the X-axis.
+   * @param {number} deltay - Delta movement along the Y-axis.
+   * @param {boolean} ignore_nodes - Whether to ignore moving child nodes.
+   */
   move(deltax, deltay, ignore_nodes) {
     this._pos[0] += deltax;
     this._pos[1] += deltay;
@@ -84,6 +110,9 @@ export class LGraphGroup {
     }
   }
 
+  /**
+   * Recomputes the list of nodes inside the group based on the current graph state.
+   */
   recomputeInsideNodes() {
     this._nodes.length = 0;
     const nodes = this.graph._nodes;
@@ -98,9 +127,23 @@ export class LGraphGroup {
       this._nodes.push(node);
     }
   }
-}
 
-LGraphGroup.prototype.isPointInside = LGraphNode.prototype.isPointInside;
-LGraphGroup.prototype.setDirtyCanvas = LGraphNode.prototype.setDirtyCanvas;
+  /**
+   * Checks if a point is inside the bounding area of the group.
+   * @method isPointInside
+   * @memberof LGraphGroup.prototype
+   * @param {object} event - The event object containing coordinates.
+   * @returns {boolean} True if the point is inside the group, false otherwise.
+   */
+  isPointInside = LGraphNode.prototype.isPointInside;
+
+  /**
+   * Marks the canvas as dirty, triggering a redraw.
+   * @method setDirtyCanvas
+   * @memberof LGraphGroup.prototype
+   * @param {boolean} force - Whether to force the canvas to redraw immediately.
+   */
+  setDirtyCanvas = LGraphNode.prototype.setDirtyCanvas;
+}
 
 global.LGraphGroup = LGraphGroup; // OG
