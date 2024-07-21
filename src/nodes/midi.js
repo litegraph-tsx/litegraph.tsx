@@ -3,7 +3,7 @@ import { MidiParser } from '@libs/midi-parser';
 import { LiteGraph } from '@/litegraph';
 import { LGraphEvents } from '../core/events';
 import { getTime } from '../core/utilities';
-import { registerNodeType } from '../core/nodes';
+import { registerNodeType } from '../core/LGraphNode';
 
 const MIDI_COLOR = '#243';
 

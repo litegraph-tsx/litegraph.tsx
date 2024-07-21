@@ -1,4 +1,4 @@
-import { wrapFunctionAsNode, registerNodeType } from '../core/nodes';
+import { wrapFunctionAsNode, registerNodeType } from '../core/LGraphNode';
 
 // basic nodes
 

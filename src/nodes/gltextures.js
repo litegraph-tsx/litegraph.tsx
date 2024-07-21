@@ -2,7 +2,7 @@ import { GL } from '@libs/litegl';
 import { LiteGraph } from '@/litegraph';
 import { LGraphSettings } from '@/settings';
 import { LGraphCanvas } from '@/LGraphCanvas';
-import { registerNodeType } from '../core/nodes';
+import { registerNodeType } from '../core/LGraphNode';
 
 const global = typeof (window) !== 'undefined' ? window : typeof (self) !== 'undefined' ? self : globalThis;
 // Works with Litegl.js to create WebGL nodes

@@ -3,7 +3,7 @@ import { LiteGraph } from '@/litegraph';
 import { LGraphSettings } from '@/settings';
 import { LGraphTexture } from './gltextures';
 import { LGraphStyles } from '../core/styles';
-import { registerNodeType } from '../core/nodes';
+import { registerNodeType } from '../core/LGraphNode';
 
 const global = typeof (window) !== 'undefined' ? window : typeof (self) !== 'undefined' ? self : globalThis;
 if (typeof GL !== 'undefined') {

@@ -1,7 +1,7 @@
 import { LiteGraph } from '@/litegraph';
 import { LGraphSettings } from '@/settings';
 import { LGraphStyles } from '../core/styles';
-import { registerNodeType } from '../core/nodes';
+import { registerNodeType } from '../core/LGraphNode';
 
 class Converter {
   constructor() {

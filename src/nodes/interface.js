@@ -1,7 +1,6 @@
-import { LiteGraph } from '@/litegraph';
 import { LGraphEvents } from '../core/events';
 import { clamp, colorToString } from '../core/utilities';
-import { registerNodeType } from '../core/nodes';
+import { registerNodeType } from '../core/LGraphNode';
 
 class WidgetButton {
   constructor() {
@@ -423,7 +422,7 @@ class WidgetKnob {
     this.radius = this.size[0] * 0.5;
     if (
       e.canvasY - this.pos[1] < 20
-              || LiteGraph.distance(
+              || distance(
                 [e.canvasX, e.canvasY],
                 [this.pos[0] + this.center[0], this.pos[1] + this.center[1]],
               ) > this.radius

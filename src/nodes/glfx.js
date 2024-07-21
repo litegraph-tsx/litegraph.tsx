@@ -1,7 +1,7 @@
 import { GL } from '@libs/litegl';
 import { LiteGraph } from '@/litegraph';
 import { LGraphTexture } from './gltextures';
-import { registerNodeType } from '../core/nodes';
+import { registerNodeType } from '../core/LGraphNode';
 
 const global = typeof (window) !== 'undefined' ? window : typeof (self) !== 'undefined' ? self : globalThis;
 

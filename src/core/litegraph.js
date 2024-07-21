@@ -1,3 +1,4 @@
+import { GraphInput, GraphOutput, Subgraph } from '../nodes/base';
 import { console } from './Console';
 import { ContextMenu } from './ContextMenu';
 import { CurveEditor } from './CurveEditor';
@@ -5,11 +6,15 @@ import { DragAndScale } from './DragAndScale';
 import { LGraph } from './LGraph';
 import { LGraphCanvas } from './LGraphCanvas';
 import { LGraphGroup } from './LGraphGroup';
-import { createNode } from './LGraphNode';
+import { addNodeMethod, createNode, registerNodeType, wrapFunctionAsNode } from './LGraphNode';
 import { LLink } from './LLink';
+import {
+  buildNodeClassFromObject,
+  clearRegisteredTypes, getNodeType, getNodeTypesCategories, getNodeTypesInCategory, LGraphNodeRegistry, registerNodeAndSlotType, unregisterNodeType,
+} from './nodes';
 import { pointerListenerAdd, pointerListenerRemove, PointerSettings } from './pointer_events';
-import { LGraphStyles } from './styles';
 import { LGraphSettings } from './settings';
+import { LGraphStyles } from './styles';
 import {
   clamp,
   cloneObject,
@@ -29,12 +34,6 @@ import {
   overlapBounding,
   uuidv4,
 } from './utilities';
-import {
-  addNodeMethod,
-  buildNodeClassFromObject,
-  clearRegisteredTypes, getNodeType, getNodeTypesCategories, getNodeTypesInCategory, LGraphNodeRegistry, registerNodeAndSlotType, registerNodeType, unregisterNodeType, wrapFunctionAsNode,
-} from './nodes';
-import { GraphInput, GraphOutput, Subgraph } from '../nodes/base';
 
 // this variable name is only overridden locally.
 console.level = 5;

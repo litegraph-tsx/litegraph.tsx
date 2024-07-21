@@ -1,5 +1,5 @@
 import { LGraphEvents } from '../core/events';
-import { registerNodeType } from '../core/nodes';
+import { registerNodeType } from '../core/LGraphNode';
 
 class GamepadInput {
   constructor() {

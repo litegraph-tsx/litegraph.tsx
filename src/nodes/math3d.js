@@ -3,7 +3,7 @@ import {
 } from '@libs/gl-matrix-min';
 import { LiteGraph } from '@/litegraph';
 import { LGraphSettings } from '@/settings';
-import { registerNodeType } from '../core/nodes';
+import { registerNodeType } from '../core/LGraphNode';
 
 const global = typeof (window) !== 'undefined' ? window : typeof (self) !== 'undefined' ? self : globalThis;
 

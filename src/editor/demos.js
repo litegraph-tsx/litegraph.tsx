@@ -1,5 +1,5 @@
 import { LiteGraph } from '@/litegraph';
-import { registerNodeType } from '../core/nodes';
+import { registerNodeType } from '../core/LGraphNode';
 
 function demo() {
   multiConnection();

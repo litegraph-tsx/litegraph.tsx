@@ -1,6 +1,6 @@
 import { SillyClient } from '@libs/sillyclient';
 import { LiteGraph } from '@/litegraph';
-import { registerNodeType } from '../core/nodes';
+import { registerNodeType } from '../core/LGraphNode';
 import { LGraphEvents } from '../core/events';
 
 // event related nodes

@@ -3,9 +3,9 @@ import { console } from './Console';
 import { LGraphEvents } from './events';
 import { LGraphStyles } from './styles';
 import {
-  cloneObject, getTime, isInsideRectangle, isValidConnection, uuidv4,
+  cloneObject, getParameterNames, getTime, isInsideRectangle, isValidConnection, uuidv4,
 } from './utilities';
-import { registerNodeAndSlotType } from './nodes';
+import { LGraphNodeRegistry, registerNodeAndSlotType } from './nodes';
 
 const global = typeof (window) !== 'undefined' ? window : typeof (self) !== 'undefined' ? self : globalThis;
 
@@ -1043,10 +1043,10 @@ export class LGraphNode {
   }
 
   /**
-         * add a new output slot to use in this node
-         * @method addOutputs
-         * @param {Array} array of triplets like [[name,type,extra_info],[...]]
-         */
+   * add a new output slot to use in this node
+   * @method addOutputs
+   * @param {Array} array of triplets like [[name,type,extra_info],[...]]
+   */
   addOutputs(array) {
     for (let i = 0; i < array.length; ++i) {
       const info = array[i];
@@ -2568,4 +2568,183 @@ export function createNode(type, title, options) {
   }
 
   return node;
+}
+
+/**
+ * Adds this method to all nodetypes, existing and to be created
+ * (You can add it to LGraphNode.prototype but then existing node types wont have it)
+ * @method addNodeMethod
+ * @param {Function} func
+ */
+export function addNodeMethod(name, func) {
+  LGraphNode.prototype[name] = func;
+  for (const i in LGraphNodeRegistry.registered_node_types) {
+    const type = LGraphNodeRegistry.registered_node_types[i];
+    if (type.prototype[name]) {
+      type.prototype[`_${name}`] = type.prototype[name];
+    } // keep old in case of replacing
+    type.prototype[name] = func;
+  }
+}
+
+/**
+ * Register a node class so it can be listed when the user wants to create a new one
+ * @method registerNodeType
+ * @param {String} type name of the node and path
+ * @param {Class} base_class class containing the structure of a node
+ */
+export function registerNodeType(type, base_class) {
+  if (!base_class.prototype) {
+    throw 'Cannot register a simple object, it must be a class with a prototype';
+  }
+  base_class.type = type;
+
+  if (LGraphSettings.debug) {
+    console.log(`Node registered: ${type}`);
+  }
+
+  const classname = base_class.name;
+
+  const pos = type.lastIndexOf('/');
+  base_class.category = type.substring(0, pos);
+
+  if (!base_class.title) {
+    base_class.title = classname;
+  }
+
+  // extend class
+  const propertyDescriptors = Object.getOwnPropertyDescriptors(LGraphNode.prototype);
+  Object.keys(propertyDescriptors).forEach((propertyName) => {
+    if (!base_class.prototype.hasOwnProperty(propertyName)) {
+      Object.defineProperty(base_class.prototype, propertyName, propertyDescriptors[propertyName]);
+    }
+  });
+
+  const prev = LGraphNodeRegistry.registered_node_types[type];
+  if (prev) {
+    console.log(`replacing node type: ${type}`);
+  }
+  if (!Object.prototype.hasOwnProperty.call(base_class.prototype, 'shape')) {
+    Object.defineProperty(base_class.prototype, 'shape', {
+      set(v) {
+        switch (v) {
+          case 'default':
+            delete this._shape;
+            break;
+          case 'box':
+            this._shape = LGraphStyles.BOX_SHAPE;
+            break;
+          case 'round':
+            this._shape = LGraphStyles.ROUND_SHAPE;
+            break;
+          case 'circle':
+            this._shape = LGraphStyles.CIRCLE_SHAPE;
+            break;
+          case 'card':
+            this._shape = LGraphStyles.CARD_SHAPE;
+            break;
+          default:
+            this._shape = v;
+        }
+      },
+      get() {
+        return this._shape;
+      },
+      enumerable: true,
+      configurable: true,
+    });
+
+    // used to know which nodes to create when dragging files to the canvas
+    if (base_class.supported_extensions) {
+      for (const i in base_class.supported_extensions) {
+        const ext = base_class.supported_extensions[i];
+        if (ext && ext.constructor === String) {
+          LGraphNodeRegistry.node_types_by_file_extension[ext.toLowerCase()] = base_class;
+        }
+      }
+    }
+  }
+
+  LGraphNodeRegistry.registered_node_types[type] = base_class;
+  if (base_class.constructor.name) {
+    LGraphNodeRegistry.Nodes[classname] = base_class;
+  }
+  if (LGraphNodeRegistry.onNodeTypeRegistered) {
+    LGraphNodeRegistry.onNodeTypeRegistered(type, base_class);
+  }
+  if (prev && LGraphNodeRegistry.onNodeTypeReplaced) {
+    LGraphNodeRegistry.onNodeTypeReplaced(type, base_class, prev);
+  }
+
+  // warnings
+  if (base_class.prototype.onPropertyChange) {
+    console.warn(`LiteGraph node class ${type} has onPropertyChange method, it must be called onPropertyChanged with d at the end`);
+  }
+
+  // TODO one would want to know input and ouput :: this would allow through registerNodeAndSlotType to get all the slots types
+  if (LGraphSettings.auto_load_slot_types) {
+    new base_class(base_class.title || 'tmpnode');
+  }
+}
+
+/**
+ * Create a new nodetype by passing a function, it wraps it with a proper class and generates inputs according to the parameters of the function.
+ * Useful to wrap simple methods that do not require properties, and that only process some input to generate an output.
+ * @method wrapFunctionAsNode
+ * @param {String} name node name with namespace (p.e.: 'math/sum')
+ * @param {Function} func
+ * @param {Array} param_types [optional] an array containing the type of every parameter, otherwise parameters will accept any type
+ * @param {String} return_type [optional] string with the return type, otherwise it will be generic
+ * @param {Object} properties [optional] properties to be configurable
+ */
+export function wrapFunctionAsNode(
+  name,
+  func,
+  param_types,
+  return_type,
+  properties,
+) {
+  const params = Array(func.length);
+  let code = '';
+  if (param_types !== null) // null means no inputs
+  {
+    const names = getParameterNames(func);
+    for (let i = 0; i < names.length; ++i) {
+      let type = 0;
+      if (param_types) {
+        // type = param_types[i] != null ? "'" + param_types[i] + "'" : "0";
+        if (param_types[i] != null && param_types[i].constructor === String) type = `'${param_types[i]}'`;
+        else if (param_types[i] != null) type = param_types[i];
+      }
+      code
+                        += `this.addInput('${
+          names[i]
+        }',${
+          type
+        });\n`;
+    }
+  }
+  if (return_type !== null) // null means no output
+  {
+    code
+                += `this.addOutput('out',${
+        return_type != null ? (return_type.constructor === String ? `'${return_type}'` : return_type) : 0
+      });\n`;
+  }
+  if (properties) {
+    code
+                    += `this.properties = ${JSON.stringify(properties)};\n`;
+  }
+  const classobj = Function(code);
+  classobj.title = name.split('/').pop();
+  classobj.desc = `Generated from ${func.name}`;
+  classobj.prototype.onExecute = function onExecute() {
+    for (let i = 0; i < params.length; ++i) {
+      params[i] = this.getInputData(i);
+    }
+    const r = func.apply(this, params);
+    this.setOutputData(0, r);
+  };
+  registerNodeType(name, classobj);
+  return classobj;
 }

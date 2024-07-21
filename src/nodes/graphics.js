@@ -2,7 +2,7 @@ import { LiteGraph } from '@/litegraph';
 import { LGraphSettings } from '@/settings';
 import { LGraphEvents } from '../core/events';
 import { clamp, colorToString } from '../core/utilities';
-import { registerNodeType } from '../core/nodes';
+import { registerNodeType } from '../core/LGraphNode';
 
 class GraphicsPlot {
   constructor() {
