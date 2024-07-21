@@ -34,6 +34,10 @@ export default [
         },
       },
     },
+    languageOptions: {
+      ecmaVersion: 'latest',
+      sourceType: 'module',
+    },
     rules: {
       'import/no-extraneous-dependencies': ['error', { devDependencies: true }],
     },
@@ -95,20 +99,8 @@ export default [
       camelcase: ['off'],
       eqeqeq: ['off'],
       radix: ['off'],
-    },
-  },
-  {
-    name: 'litegraph.tsx/standard',
-    languageOptions: {
-      ecmaVersion: 'latest',
-      sourceType: 'module',
-    },
-    plugins: {
-      '@stylistic': stylistic,
-      '@stylistic/js': stylisticJs,
-    },
-    rules: {
-      /* ESLint */
+
+      /* These are deprecated and from pre-airbnb, but we need to fix the code for these to not error */
       'no-inner-declarations': 0,
       'no-prototype-builtins': 0,
       'no-redeclare': 0,
@@ -119,5 +111,5 @@ export default [
         caughtErrorsIgnorePattern: '^_',
       }],
     },
-  },
+  }
 ];
