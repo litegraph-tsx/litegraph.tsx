@@ -703,6 +703,12 @@ export class LGraphNode {
     return r;
   }
 
+  /**
+   * Adds an 'onTrigger' input slot to the node if it doesn't already exist.
+   * If the slot already exists, returns its index.
+   *
+   * @returns {number} Index of the 'onTrigger' input slot.
+   */
   addOnTriggerInput() {
     const trigS = this.findInputSlot('onTrigger');
     if (trigS == -1) { // !trigS ||
@@ -712,6 +718,12 @@ export class LGraphNode {
     return trigS;
   }
 
+  /**
+   * Adds an 'onExecuted' output slot to the node if it doesn't already exist.
+   * If the slot already exists, returns its index.
+   *
+   * @returns {number} Index of the 'onExecuted' output slot.
+   */
   addOnExecutedOutput() {
     const trigS = this.findOutputSlot('onExecuted');
     if (trigS == -1) { // !trigS ||
@@ -721,6 +733,12 @@ export class LGraphNode {
     return trigS;
   }
 
+  /**
+   * Executes the 'onExecuted' output slot of the node if it exists, passing the provided parameters.
+   *
+   * @param {*} param - The parameter to pass to the output slot.
+   * @param {*} options - Options to be passed along with the parameter.
+   */
   onAfterExecuteNode(param, options) {
     const trigS = this.findOutputSlot('onExecuted');
     if (trigS != -1) {
@@ -731,6 +749,14 @@ export class LGraphNode {
     }
   }
 
+  /**
+   * Changes the execution mode of the node based on the provided modeTo value.
+   *
+   * @param {number} modeTo - The mode to change to. Should be one of the LiteGraph mode constants:
+   *                          LiteGraph.ON_EVENT, LiteGraph.ON_TRIGGER, LiteGraph.NEVER,
+   *                          LiteGraph.ALWAYS, LiteGraph.ON_REQUEST.
+   * @returns {boolean} - Returns true if the mode change was successful, false otherwise.
+   */
   changeMode(modeTo) {
     switch (modeTo) {
       case LiteGraph.ON_EVENT:
@@ -1383,6 +1409,12 @@ export class LGraphNode {
     return w;
   }
 
+  /**
+   * Adds a custom widget to the node.
+   *
+   * @param {*} custom_widget - The custom widget object to add.
+   * @returns {*} - The added custom widget.
+   */
   addCustomWidget(custom_widget) {
     if (!this.widgets) {
       this.widgets = [];
@@ -2343,7 +2375,9 @@ export class LGraphNode {
     return out;
   }
 
-  /* Force align to grid */
+  /**
+   * Forces the node position to align to the grid defined by CANVAS_GRID_SIZE.
+   */
   alignToGrid() {
     this.pos[0] = LiteGraph.CANVAS_GRID_SIZE
                 * Math.round(this.pos[0] / LiteGraph.CANVAS_GRID_SIZE);
@@ -2351,7 +2385,10 @@ export class LGraphNode {
                 * Math.round(this.pos[1] / LiteGraph.CANVAS_GRID_SIZE);
   }
 
-  /* Console output */
+  /**
+   * Logs a message to the node's console and notifies the graph's trace handler.
+   * @param {string} msg The message to log.
+   */
   trace(msg) {
     if (!this.console) {
       this.console = [];
@@ -2365,7 +2402,11 @@ export class LGraphNode {
     if (this.graph.onNodeTrace) this.graph.onNodeTrace(this, msg);
   }
 
-  /* Forces to redraw or the main canvas (LGraphNode) or the bg canvas (links) */
+  /**
+   * Forces the main canvas (LGraphNode) or the background canvas (links) to redraw.
+   * @param {boolean} dirty_foreground Indicates whether the foreground canvas should be marked dirty.
+   * @param {boolean} dirty_background Indicates whether the background canvas should be marked dirty.
+   */
   setDirtyCanvas(dirty_foreground, dirty_background) {
     if (!this.graph) {
       return;
@@ -2376,6 +2417,11 @@ export class LGraphNode {
     ]);
   }
 
+  /**
+   * Loads an image asynchronously.
+   * @param {string} url The URL of the image to load.
+   * @returns {HTMLImageElement} The image element representing the loaded image.
+   */
   loadImage(url) {
     const img = new Image();
     img.src = LiteGraph.node_images_path + url;
@@ -2428,7 +2474,10 @@ export class LGraphNode {
     }
     */
 
-  /* Allows to get onMouseMove and onMouseUp events even if the mouse is out of focus */
+  /**
+   * Captures or releases input events for the node.
+   * @param {boolean} v - Whether to capture input (`true`) or release capture (`false`).
+   */
   captureInput(v) {
     if (!this.graph || !this.graph.list_of_graphcanvas) {
       return;
@@ -2478,6 +2527,13 @@ export class LGraphNode {
     }
   }
 
+  /**
+   * Converts local coordinates relative to the node to screen coordinates.
+   * @param {number} x - The local x-coordinate relative to the node.
+   * @param {number} y - The local y-coordinate relative to the node.
+   * @param {GraphCanvas} graphcanvas - The graph canvas object containing scale and offset.
+   * @returns {Array} Screen coordinates [screenX, screenY].
+   */
   localToScreen(x, y, graphcanvas) {
     return [
       (x + this.pos[0]) * graphcanvas.scale + graphcanvas.offset[0],
