@@ -1,4 +1,5 @@
 import { LiteGraph } from '@/litegraph';
+import { LGraphSettings } from '@/settings';
 import { LGraphStyles } from '../core/styles';
 
 class Converter {
@@ -1107,14 +1108,14 @@ class MathFormula {
         node.properties.formula = v;
       },
     );
-    this.addWidget('toggle', 'allow', LiteGraph.allow_scripts, (v) => {
-      LiteGraph.allow_scripts = v;
+    this.addWidget('toggle', 'allow', LGraphSettings.allow_scripts, (v) => {
+      LGraphSettings.allow_scripts = v;
     });
     this._func = null;
   }
 
   onExecute() {
-    if (!LiteGraph.allow_scripts) {
+    if (!LGraphSettings.allow_scripts) {
       return;
     }
 

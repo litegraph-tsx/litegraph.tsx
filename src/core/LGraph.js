@@ -7,6 +7,7 @@ import { LGraphStyles } from './styles';
 import { LGraphEvents } from './events';
 import { GraphInput, Subgraph } from '../nodes/base';
 import { LGraphCanvas } from './LGraphCanvas';
+import { LGraphSettings } from './settings';
 
 const global = typeof (window) !== 'undefined' ? window : typeof (self) !== 'undefined' ? self : globalThis;
 
@@ -28,7 +29,7 @@ const global = typeof (window) !== 'undefined' ? window : typeof (self) !== 'und
 
 export class LGraph {
   constructor(o) {
-    if (LiteGraph.debug) {
+    if (LGraphSettings.debug) {
       console.log('Graph created');
     }
     this.list_of_graphcanvas = null;
@@ -258,7 +259,7 @@ export class LGraph {
       for (var i = 0; i < num; i++) {
         for (var j = 0; j < limit; ++j) {
           var node = nodes[j];
-          if (LiteGraph.use_deferred_actions && node._waiting_actions && node._waiting_actions.length) node.executePendingActions();
+          if (LGraphSettings.use_deferred_actions && node._waiting_actions && node._waiting_actions.length) node.executePendingActions();
           if (node.mode == LGraphEvents.ALWAYS && node.onExecute) {
             // wrap node.onExecute();
             node.doExecute();
@@ -280,7 +281,7 @@ export class LGraph {
         for (var i = 0; i < num; i++) {
           for (var j = 0; j < limit; ++j) {
             var node = nodes[j];
-            if (LiteGraph.use_deferred_actions && node._waiting_actions && node._waiting_actions.length) node.executePendingActions();
+            if (LGraphSettings.use_deferred_actions && node._waiting_actions && node._waiting_actions.length) node.executePendingActions();
             if (node.mode == LGraphEvents.ALWAYS && node.onExecute) {
               node.onExecute();
             }
@@ -298,10 +299,10 @@ export class LGraph {
         this.errors_in_execution = false;
       } catch (err) {
         this.errors_in_execution = true;
-        if (LiteGraph.throw_errors) {
+        if (LGraphSettings.throw_errors) {
           throw err;
         }
-        if (LiteGraph.debug) {
+        if (LGraphSettings.debug) {
           console.log(`Error during execution: ${err}`);
         }
         this.stop();
@@ -442,7 +443,7 @@ export class LGraph {
       L.push(M[i]);
     }
 
-    if (L.length != this._nodes.length && LiteGraph.debug) {
+    if (L.length != this._nodes.length && LGraphSettings.debug) {
       console.warn('something went wrong, nodes missing');
     }
 
@@ -656,19 +657,19 @@ export class LGraph {
     // nodes
     if (node.id != -1 && this._nodes_by_id[node.id] != null) {
       console.warn('LiteGraph: there is already a node with this ID, changing it');
-      if (LiteGraph.use_uuids) {
+      if (LGraphSettings.use_uuids) {
         node.id = uuidv4();
       } else {
         node.id = ++this.last_node_id;
       }
     }
 
-    if (this._nodes.length >= LiteGraph.MAX_NUMBER_OF_NODES) {
+    if (this._nodes.length >= LGraphSettings.MAX_NUMBER_OF_NODES) {
       throw 'LiteGraph: max number of nodes in a graph reached';
     }
 
     // give him an id
-    if (LiteGraph.use_uuids) {
+    if (LGraphSettings.use_uuids) {
       if (node.id == null || node.id == -1) node.id = uuidv4();
     } else if (node.id == null || node.id == -1) {
       node.id = ++this.last_node_id;
@@ -1313,7 +1314,7 @@ export class LGraph {
 
   /* Called when something visually changed (not the graph!) */
   change() {
-    if (LiteGraph.debug) {
+    if (LGraphSettings.debug) {
       console.log('Graph changed');
     }
     this.sendActionToCanvas('setDirty', [true, true]);
@@ -1386,7 +1387,7 @@ export class LGraph {
       groups: groups_info,
       config: this.config,
       extra: this.extra,
-      version: LiteGraph.VERSION,
+      version: LGraphSettings.VERSION,
     };
 
     if (this.onSerialize) this.onSerialize(data);
@@ -1444,7 +1445,7 @@ export class LGraph {
         var n_info = nodes[i]; // stored info
         var node = LiteGraph.createNode(n_info.type, n_info.title);
         if (!node) {
-          if (LiteGraph.debug) {
+          if (LGraphSettings.debug) {
             console.log(`Node not found or has errors: ${n_info.type}`);
           }
 

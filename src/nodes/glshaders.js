@@ -1,5 +1,6 @@
 import { GL } from '@libs/litegl';
 import { LiteGraph } from '@/litegraph';
+import { LGraphSettings } from '@/settings';
 import { LGraphTexture } from './gltextures';
 import { LGraphStyles } from '../core/styles';
 
@@ -374,7 +375,7 @@ if (typeof GL !== 'undefined') {
       const finalcode = this.computeShaderCode(graph);
       console.log(finalcode.vs_code, finalcode.fs_code);
 
-      if (!LiteGraph.catch_exceptions) {
+      if (!LGraphSettings.catch_exceptions) {
         this._shader_error = true;
         if (shader) { shader.updateShader(finalcode.vs_code, finalcode.fs_code); } else { shader = new GL.Shader(finalcode.vs_code, finalcode.fs_code); }
         this._shader_error = false;

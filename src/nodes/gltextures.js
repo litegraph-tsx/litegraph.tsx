@@ -1,5 +1,6 @@
 import { GL } from '@libs/litegl';
 import { LiteGraph } from '@/litegraph';
+import { LGraphSettings } from '@/settings';
 import { LGraphCanvas } from '@/LGraphCanvas';
 
 const global = typeof (window) !== 'undefined' ? window : typeof (self) !== 'undefined' ? self : globalThis;
@@ -29,9 +30,9 @@ export class LGraphTexture {
     options = options || {};
     let url = name;
     if (url.substr(0, 7) == 'http://') {
-      if (LiteGraph.proxy) {
+      if (LGraphSettings.proxy) {
         // proxy external files
-        url = LiteGraph.proxy + url.substr(7);
+        url = LGraphSettings.proxy + url.substr(7);
       }
     }
 
@@ -5177,7 +5178,7 @@ class LGraphTextureCanvas2D {
 
   compileCode(code) {
     this._func = null;
-    if (!LiteGraph.allow_scripts) return;
+    if (!LGraphSettings.allow_scripts) return;
 
     try {
       this._func = new Function('canvas', 'ctx', 'time', 'script', 'v', code);

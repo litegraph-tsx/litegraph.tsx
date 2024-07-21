@@ -1,3 +1,4 @@
+import { LGraphSettings } from './settings';
 import { console } from './Console';
 import { LGraphEvents } from './events';
 import {
@@ -83,7 +84,7 @@ export class LGraphNode {
 
     this._pos = new Float32Array(10, 10);
 
-    if (LiteGraph.use_uuids) {
+    if (LGraphSettings.use_uuids) {
       this.id = uuidv4();
     } else {
       this.id = -1; // not know till not added
@@ -302,7 +303,7 @@ export class LGraphNode {
 
     delete data.id;
 
-    if (LiteGraph.use_uuids) {
+    if (LGraphSettings.use_uuids) {
       data.id = uuidv4();
     }
 
@@ -927,7 +928,7 @@ export class LGraphNode {
         var target_connection = node.inputs[link_info.target_slot];
 
         // instead of executing them now, it will be executed in the next graph loop, to ensure data flow
-        if (LiteGraph.use_deferred_actions && node.onExecute) {
+        if (LGraphSettings.use_deferred_actions && node.onExecute) {
           if (!node._waiting_actions) node._waiting_actions = [];
           node._waiting_actions.push([target_connection.name, param, options, link_info.target_slot]);
         } else {
@@ -1036,7 +1037,7 @@ export class LGraphNode {
       this.onOutputAdded(output);
     }
 
-    if (LiteGraph.auto_load_slot_types) LiteGraph.registerNodeAndSlotType(this, type, true);
+    if (LGraphSettings.auto_load_slot_types) LiteGraph.registerNodeAndSlotType(this, type, true);
 
     this.setSize(this.computeSize());
     this.setDirtyCanvas(true, true);
@@ -1066,7 +1067,7 @@ export class LGraphNode {
         this.onOutputAdded(o);
       }
 
-      if (LiteGraph.auto_load_slot_types) LiteGraph.registerNodeAndSlotType(this, info[1], true);
+      if (LGraphSettings.auto_load_slot_types) LiteGraph.registerNodeAndSlotType(this, info[1], true);
     }
 
     this.setSize(this.computeSize());
@@ -1794,7 +1795,7 @@ export class LGraphNode {
 
     if (opts.createEventInCase && source_slotType == LGraphEvents.EVENT) {
       // WILL CREATE THE onExecuted OUT SLOT
-      if (LiteGraph.do_add_triggers_slots) {
+      if (LGraphSettings.do_add_triggers_slots) {
         var source_slot = source_node.addOnExecutedOutput();
         return source_node.connect(source_slot, this, slot);
       }
@@ -1835,13 +1836,13 @@ export class LGraphNode {
     if (slot.constructor === String) {
       slot = this.findOutputSlot(slot);
       if (slot == -1) {
-        if (LiteGraph.debug) {
+        if (LGraphSettings.debug) {
           console.log(`Connect: Error, no slot of name ${slot}`);
         }
         return null;
       }
     } else if (!this.outputs || slot >= this.outputs.length) {
-      if (LiteGraph.debug) {
+      if (LGraphSettings.debug) {
         console.log('Connect: Error, slot number not found');
       }
       return null;
@@ -1863,13 +1864,13 @@ export class LGraphNode {
     if (target_slot.constructor === String) {
       target_slot = target_node.findInputSlot(target_slot);
       if (target_slot == -1) {
-        if (LiteGraph.debug) {
+        if (LGraphSettings.debug) {
           console.log(`Connect: Error, no slot of name ${target_slot}`);
         }
         return null;
       }
     } else if (target_slot === LGraphEvents.EVENT) {
-      if (LiteGraph.do_add_triggers_slots) {
+      if (LGraphSettings.do_add_triggers_slots) {
         // search for first slot with event? :: NO this is done outside
         console.log('Connect: Creating triggerEvent');
         // force mode
@@ -1882,7 +1883,7 @@ export class LGraphNode {
       !target_node.inputs
                 || target_slot >= target_node.inputs.length
     ) {
-      if (LiteGraph.debug) {
+      if (LGraphSettings.debug) {
         console.log('Connect: Error, slot number not found');
       }
       return null;
@@ -1935,7 +1936,7 @@ export class LGraphNode {
     if (output.links !== null && output.links.length) {
       switch (output.type) {
         case LGraphEvents.EVENT:
-          if (!LiteGraph.allow_multi_output_for_events) {
+          if (!LGraphSettings.allow_multi_output_for_events) {
             this.graph.beforeChange();
             this.disconnectOutput(slot, false, { doProcessChange: false }); // Input(target_slot, {doProcessChange: false});
             changed = true;
@@ -1947,7 +1948,7 @@ export class LGraphNode {
     }
 
     let nextId;
-    if (LiteGraph.use_uuids) nextId = uuidv4();
+    if (LGraphSettings.use_uuids) nextId = uuidv4();
     else nextId = ++this.graph.last_link_id;
 
     // create link class
@@ -2026,13 +2027,13 @@ export class LGraphNode {
     if (slot.constructor === String) {
       slot = this.findOutputSlot(slot);
       if (slot == -1) {
-        if (LiteGraph.debug) {
+        if (LGraphSettings.debug) {
           console.log(`Connect: Error, no slot of name ${slot}`);
         }
         return false;
       }
     } else if (!this.outputs || slot >= this.outputs.length) {
-      if (LiteGraph.debug) {
+      if (LGraphSettings.debug) {
         console.log('Connect: Error, slot number not found');
       }
       return false;
@@ -2183,13 +2184,13 @@ export class LGraphNode {
     if (slot.constructor === String) {
       slot = this.findInputSlot(slot);
       if (slot == -1) {
-        if (LiteGraph.debug) {
+        if (LGraphSettings.debug) {
           console.log(`Connect: Error, no slot of name ${slot}`);
         }
         return false;
       }
     } else if (!this.inputs || slot >= this.inputs.length) {
-      if (LiteGraph.debug) {
+      if (LGraphSettings.debug) {
         console.log('Connect: Error, slot number not found');
       }
       return false;
@@ -2387,7 +2388,7 @@ export class LGraphNode {
 
   loadImage(url) {
     const img = new Image();
-    img.src = LiteGraph.node_images_path + url;
+    img.src = LGraphSettings.node_images_path + url;
     img.ready = false;
 
     const that = this;

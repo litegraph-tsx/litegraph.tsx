@@ -2,6 +2,7 @@ import {
   afterEach, beforeEach, describe, expect, test, vi,
 } from 'vitest';
 import { LiteGraph } from '@/litegraph';
+import { LGraphSettings } from '@/settings';
 import { LGraphNode } from '@/LGraphNode';
 import { LGraphStyles } from './core/styles';
 
@@ -150,7 +151,7 @@ describe('register node types', () => {
     expect(LiteGraph.registered_slot_out_types).toEqual({});
 
     // Test slot type registration with first type
-    LiteGraph.auto_load_slot_types = true;
+    LGraphSettings.auto_load_slot_types = true;
     LiteGraph.registerNodeType('math/sum', Sum);
     expect(LiteGraph.registered_slot_in_types).toEqual({
       number: { nodes: ['math/sum'] },

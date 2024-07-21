@@ -1,4 +1,5 @@
 import { LiteGraph } from '@/litegraph';
+import { LGraphSettings } from '@/settings';
 import { clamp, colorToString } from '../core/utilities';
 
 class GraphicsPlot {
@@ -129,8 +130,8 @@ class GraphicsImage {
 
     this.img = document.createElement('img');
 
-    if (url.substr(0, 4) == 'http' && LiteGraph.proxy) {
-      url = LiteGraph.proxy + url.substr(url.indexOf(':') + 3);
+    if (url.substr(0, 4) == 'http' && LGraphSettings.proxy) {
+      url = LGraphSettings.proxy + url.substr(url.indexOf(':') + 3);
     }
 
     this.img.src = url;
@@ -619,10 +620,10 @@ class ImageVideo {
     if (
       this.properties.use_proxy
               && protocol
-              && LiteGraph.proxy
+              && LGraphSettings.proxy
               && host != location.host
     ) {
-      url = LiteGraph.proxy + url.substr(url.indexOf(':') + 3);
+      url = LGraphSettings.proxy + url.substr(url.indexOf(':') + 3);
     }
 
     this._video = document.createElement('video');

@@ -10,6 +10,7 @@ import { LGraphNode } from './LGraphNode';
 import { LLink } from './LLink';
 import { PointerSettings } from './pointer_events';
 import { LGraphStyles } from './styles';
+import { LGraphSettings } from './settings';
 import {
   colorToString,
   compareObjects,
@@ -41,7 +42,8 @@ const global = typeof (window) !== 'undefined' ? window : typeof (self) !== 'und
      */
 
 export const LiteGraph = {
-  VERSION: 0.4,
+  get VERSION() { return LGraphSettings.VERSION; },
+  set VERSION(newValue) { LGraphSettings.VERSION = newValue; },
 
   /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
   get CANVAS_GRID_SIZE() { return LGraphStyles.CANVAS_GRID_SIZE; },
@@ -159,8 +161,10 @@ export const LiteGraph = {
   /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
   set CONNECTING_LINK_COLOR(newValue) { LGraphStyles.CONNECTING_LINK_COLOR = newValue; },
 
-  MAX_NUMBER_OF_NODES: 1000, // avoid infinite loops
-  DEFAULT_POSITION: [100, 100], // default node position
+  get MAX_NUMBER_OF_NODES() { return LGraphSettings.MAX_NUMBER_OF_NODES; },
+  set MAX_NUMBER_OF_NODES(newValue) { LGraphSettings.MAX_NUMBER_OF_NODES = newValue; },
+  get DEFAULT_POSITION() { return LGraphSettings.DEFAULT_POSITION; },
+  set DEFAULT_POSITION(newValue) { LGraphSettings.DEFAULT_POSITION = newValue; },
 
   /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
   get VALID_SHAPES() { return LGraphStyles.VALID_SHAPES; },
@@ -275,36 +279,90 @@ export const LiteGraph = {
   /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
   set VERTICAL_LAYOUT(newValue) { LGraphStyles.VERTICAL_LAYOUT = newValue; },
 
-  proxy: null, // used to redirect calls
-  node_images_path: '',
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  get proxy() { return LGraphSettings.proxy; },
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  set proxy(newValue) { LGraphSettings.proxy = newValue; },
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  get node_images_path() { return LGraphSettings.node_images_path; },
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  set node_images_path(newValue) { LGraphSettings.node_images_path = newValue; },
 
-  debug: false,
-  catch_exceptions: true,
-  throw_errors: true,
-  allow_scripts: false, // if set to true some nodes like Formula would be allowed to evaluate code that comes from unsafe sources (like node configuration), which could lead to exploits
-  use_deferred_actions: true, // executes actions during the graph execution flow
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  get debug() { return LGraphSettings.debug; },
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  set debug(newValue) { LGraphSettings.debug = newValue; },
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  get catch_exceptions() { return LGraphSettings.catch_exceptions; },
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  set catch_exceptions(newValue) { LGraphSettings.catch_exceptions = newValue; },
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  get throw_errors() { return LGraphSettings.throw_errors; },
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  set throw_errors(newValue) { LGraphSettings.throw_errors = newValue; },
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  get allow_scripts() { return LGraphSettings.allow_scripts; },
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  set allow_scripts(newValue) { LGraphSettings.allow_scripts = newValue; },
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  get use_deferred_actions() { return LGraphSettings.use_deferred_actions; },
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  set use_deferred_actions(newValue) { LGraphSettings.use_deferred_actions = newValue; },
   registered_node_types: {}, // nodetypes by string
   node_types_by_file_extension: {}, // used for dropping files in the canvas
   Nodes: {}, // node types by classname
   Globals: {}, // used to store vars between graphs
 
   searchbox_extras: {}, // used to add extra features to the search box
-  auto_sort_node_types: false, // [true!] If set to true, will automatically sort node types / categories in the context menus
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  get auto_sort_node_types() { return LGraphSettings.auto_sort_node_types; },
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  set auto_sort_node_types(newValue) { LGraphSettings.auto_sort_node_types = newValue; },
 
-  node_box_coloured_when_on: false, // [true!] this make the nodes box (top left circle) coloured when triggered (execute/action), visual feedback
-  node_box_coloured_by_mode: false, // [true!] nodebox based on node mode, visual feedback
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  get node_box_coloured_when_on() { return LGraphSettings.node_box_coloured_when_on; },
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  set node_box_coloured_when_on(newValue) { LGraphSettings.node_box_coloured_when_on = newValue; },
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  get node_box_coloured_by_mode() { return LGraphSettings.node_box_coloured_by_mode; },
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  set node_box_coloured_by_mode(newValue) { LGraphSettings.node_box_coloured_by_mode = newValue; },
 
-  dialog_close_on_mouse_leave: false, // [false on mobile] better true if not touch device, TODO add an helper/listener to close if false
-  dialog_close_on_mouse_leave_delay: 500,
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  get dialog_close_on_mouse_leave() { return LGraphSettings.dialog_close_on_mouse_leave; },
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  set dialog_close_on_mouse_leave(newValue) { LGraphSettings.dialog_close_on_mouse_leave = newValue; },
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  get dialog_close_on_mouse_leave_delay() { return LGraphSettings.dialog_close_on_mouse_leave_delay; },
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  set dialog_close_on_mouse_leave_delay(newValue) { LGraphSettings.dialog_close_on_mouse_leave_delay = newValue; },
 
-  shift_click_do_break_link_from: false, // [false!] prefer false if results too easy to break links - implement with ALT or TODO custom keys
-  click_do_break_link_to: false, // [false!]prefer false, way too easy to break links
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  get shift_click_do_break_link_from() { return LGraphSettings.shift_click_do_break_link_from; },
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  set shift_click_do_break_link_from(newValue) { LGraphSettings.shift_click_do_break_link_from = newValue; },
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  get click_do_break_link_to() { return LGraphSettings.click_do_break_link_to; },
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  set click_do_break_link_to(newValue) { LGraphSettings.click_do_break_link_to = newValue; },
 
-  search_hide_on_mouse_leave: true, // [false on mobile] better true if not touch device, TODO add an helper/listener to close if false
-  search_filter_enabled: false, // [true!] enable filtering slots type in the search widget, !requires auto_load_slot_types or manual set registered_slot_[in/out]_types and slot_types_[in/out]
-  search_show_all_on_open: true, // [true!] opens the results list when opening the search widget
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  get search_hide_on_mouse_leave() { return LGraphSettings.search_hide_on_mouse_leave; },
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  set search_hide_on_mouse_leave(newValue) { LGraphSettings.search_hide_on_mouse_leave = newValue; },
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  get search_filter_enabled() { return LGraphSettings.search_filter_enabled; },
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  set search_filter_enabled(newValue) { LGraphSettings.search_filter_enabled = newValue; },
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  get search_show_all_on_open() { return LGraphSettings.search_show_all_on_open; },
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  set search_show_all_on_open(newValue) { LGraphSettings.search_show_all_on_open = newValue; },
 
-  auto_load_slot_types: false, // [if want false, use true, run, get vars values to be statically set, than disable] nodes types and nodeclass association with node types need to be calculated, if dont want this, calculate once and set registered_slot_[in/out]_types and slot_types_[in/out]
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  get auto_load_slot_types() { return LGraphSettings.auto_load_slot_types; },
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  set auto_load_slot_types(newValue) { LGraphSettings.auto_load_slot_types = newValue; },
 
   // set these values if not using auto_load_slot_types
   registered_slot_in_types: {}, // slot types for nodeclass
@@ -314,39 +372,59 @@ export const LiteGraph = {
   slot_types_default_in: [], // specify for each IN slot type a(/many) default node(s), use single string, array, or object (with node, title, parameters, ..) like for search
   slot_types_default_out: [], // specify for each OUT slot type a(/many) default node(s), use single string, array, or object (with node, title, parameters, ..) like for search
 
-  alt_drag_do_clone_nodes: false, // [true!] very handy, ALT click to clone and drag the new node
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  get alt_drag_do_clone_nodes() { return LGraphSettings.alt_drag_do_clone_nodes; },
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  set alt_drag_do_clone_nodes(newValue) { LGraphSettings.alt_drag_do_clone_nodes = newValue; },
 
-  do_add_triggers_slots: false, // [true!] will create and connect event slots when using action/events connections, !WILL CHANGE node mode when using onTrigger (enable mode colors), onExecuted does not need this
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  get do_add_triggers_slots() { return LGraphSettings.do_add_triggers_slots; },
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  set do_add_triggers_slots(newValue) { LGraphSettings.do_add_triggers_slots = newValue; },
 
-  allow_multi_output_for_events: true, // [false!] being events, it is strongly reccomended to use them sequentially, one by one
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  get allow_multi_output_for_events() { return LGraphSettings.allow_multi_output_for_events; },
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  set allow_multi_output_for_events(newValue) { LGraphSettings.allow_multi_output_for_events = newValue; },
 
-  middle_click_slot_add_default_node: false, // [true!] allows to create and connect a ndoe clicking with the third button (wheel)
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  get middle_click_slot_add_default_node() { return LGraphSettings.middle_click_slot_add_default_node; },
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  set middle_click_slot_add_default_node(newValue) { LGraphSettings.middle_click_slot_add_default_node = newValue; },
 
-  release_link_on_empty_shows_menu: false, // [true!] dragging a link to empty space will open a menu, add from list, search or defaults
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  get release_link_on_empty_shows_menu() { return LGraphSettings.release_link_on_empty_shows_menu; },
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  set release_link_on_empty_shows_menu(newValue) { LGraphSettings.release_link_on_empty_shows_menu = newValue; },
 
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
   get pointerevents_method() { return PointerSettings.pointerevents_method; },
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
   set pointerevents_method(newMethod) { PointerSettings.pointerevents_method = newMethod; },
 
-  ctrl_shift_v_paste_connect_unselected_outputs: true, // [true!] allows ctrl + shift + v to paste nodes with the outputs of the unselected nodes connected with the inputs of the newly pasted nodes
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  get ctrl_shift_v_paste_connect_unselected_outputs() { return LGraphSettings.ctrl_shift_v_paste_connect_unselected_outputs; },
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  set ctrl_shift_v_paste_connect_unselected_outputs(newValue) { LGraphSettings.ctrl_shift_v_paste_connect_unselected_outputs = newValue; },
 
-  // if true, all newly created nodes/links will use string UUIDs for their id fields instead of integers.
-  // use this if you must have node IDs that are unique across all graphs and subgraphs.
-  use_uuids: false,
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  get use_uuids() { return LGraphSettings.use_uuids; },
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  set use_uuids(newValue) { LGraphSettings.use_uuids = newValue; },
 
   /**
-         * Register a node class so it can be listed when the user wants to create a new one
-         * @method registerNodeType
-         * @param {String} type name of the node and path
-         * @param {Class} base_class class containing the structure of a node
-         */
-
+   * Register a node class so it can be listed when the user wants to create a new one
+   * @method registerNodeType
+   * @param {String} type name of the node and path
+   * @param {Class} base_class class containing the structure of a node
+   */
   registerNodeType(type, base_class) {
     if (!base_class.prototype) {
       throw 'Cannot register a simple object, it must be a class with a prototype';
     }
     base_class.type = type;
 
-    if (LiteGraph.debug) {
+    if (LGraphSettings.debug) {
       console.log(`Node registered: ${type}`);
     }
 
@@ -429,7 +507,7 @@ export const LiteGraph = {
     }
 
     // TODO one would want to know input and ouput :: this would allow through registerNodeAndSlotType to get all the slots types
-    if (this.auto_load_slot_types) {
+    if (LGraphSettings.auto_load_slot_types) {
       // TODO: figure out a way to do this without instantiating a node instance.
       // new base_class(base_class.title || 'tmpnode');
     }
@@ -659,7 +737,7 @@ export const LiteGraph = {
 
     let node = null;
 
-    if (LiteGraph.catch_exceptions) {
+    if (LGraphSettings.catch_exceptions) {
       try {
         node = new base_class(title);
       } catch (err) {
@@ -689,7 +767,7 @@ export const LiteGraph = {
       // call onresize?
     }
     if (!node.pos) {
-      node.pos = LiteGraph.DEFAULT_POSITION.concat();
+      node.pos = LGraphSettings.DEFAULT_POSITION.concat();
     }
     if (!node.mode) {
       node.mode = LGraphEvents.ALWAYS;
@@ -744,7 +822,7 @@ export const LiteGraph = {
       }
     }
 
-    if (this.auto_sort_node_types) {
+    if (LGraphSettings.auto_sort_node_types) {
       r.sort((a, b) => a.title.localeCompare(b.title));
     }
 
@@ -770,7 +848,7 @@ export const LiteGraph = {
     for (var i in categories) {
       result.push(i);
     }
-    return this.auto_sort_node_types ? result.sort() : result;
+    return LGraphSettings.auto_sort_node_types ? result.sort() : result;
   },
 
   // debug purposes: reloads all the js scripts that matches a wildcard
@@ -795,7 +873,7 @@ export const LiteGraph = {
       }
 
       try {
-        if (LiteGraph.debug) {
+        if (LGraphSettings.debug) {
           console.log(`Reloading: ${src}`);
         }
         const dynamicScript = document.createElement('script');
@@ -804,16 +882,16 @@ export const LiteGraph = {
         docHeadObj.appendChild(dynamicScript);
         docHeadObj.removeChild(script_files[i]);
       } catch (err) {
-        if (LiteGraph.throw_errors) {
+        if (LGraphSettings.throw_errors) {
           throw err;
         }
-        if (LiteGraph.debug) {
+        if (LGraphSettings.debug) {
           console.log(`Error while reloading ${src}`);
         }
       }
     }
 
-    if (LiteGraph.debug) {
+    if (LGraphSettings.debug) {
       console.log('Nodes reloaded');
     }
   },
@@ -849,8 +927,8 @@ export const LiteGraph = {
 
     type = type || 'text';
     if (url.constructor === String) {
-      if (url.substr(0, 4) == 'http' && LiteGraph.proxy) {
-        url = LiteGraph.proxy + url.substr(url.indexOf(':') + 3);
+      if (url.substr(0, 4) == 'http' && LGraphSettings.proxy) {
+        url = LGraphSettings.proxy + url.substr(url.indexOf(':') + 3);
       }
       return fetch(url)
         .then((response) => {
@@ -953,7 +1031,7 @@ export const LiteGraph = {
       return; // -- break --
     }
 
-    let sMethod = LiteGraph.pointerevents_method;
+    let sMethod = PointerSettings.pointerevents_method;
     var sEvent = sEvIn;
 
     // UNDER CONSTRUCTION
@@ -1030,8 +1108,8 @@ export const LiteGraph = {
       case 'over':
       case 'out':
       case 'enter':
-        if (LiteGraph.pointerevents_method == 'pointer' || LiteGraph.pointerevents_method == 'mouse') {
-          oDOM.removeEventListener(LiteGraph.pointerevents_method + sEvent, fCall, capture);
+        if (PointerSettings.pointerevents_method == 'pointer' || PointerSettings.pointerevents_method == 'mouse') {
+          oDOM.removeEventListener(PointerSettings.pointerevents_method + sEvent, fCall, capture);
         }
         return;
 
@@ -1040,8 +1118,8 @@ export const LiteGraph = {
       case 'cancel':
       case 'gotpointercapture':
       case 'lostpointercapture':
-        if (LiteGraph.pointerevents_method == 'pointer') {
-          oDOM.removeEventListener(LiteGraph.pointerevents_method + sEvent, fCall, capture);
+        if (PointerSettings.pointerevents_method == 'pointer') {
+          oDOM.removeEventListener(PointerSettings.pointerevents_method + sEvent, fCall, capture);
         }
         return;
     }

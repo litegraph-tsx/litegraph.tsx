@@ -2,7 +2,7 @@ import {
   glMatrix, mat2, mat2d, mat3, mat4, quat, quat2, vec2, vec3, vec4,
 } from '@libs/gl-matrix-min';
 import { LiteGraph } from '@/litegraph';
-import { LGraphNode } from '../core/LGraphNode';
+import { LGraphSettings } from '@/settings';
 
 const global = typeof (window) !== 'undefined' ? window : typeof (self) !== 'undefined' ? self : globalThis;
 
@@ -582,6 +582,6 @@ if (global.glMatrix) {
   }
   LiteGraph.registerNodeType('math3d/remap_range', Math3DRemapRange);
 } // glMatrix
-else if (LiteGraph.debug) {
+else if (LGraphSettings.debug) {
   console.warn('No glmatrix found, some Math3D nodes may not work');
 }

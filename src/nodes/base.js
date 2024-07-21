@@ -1,4 +1,5 @@
 import { LiteGraph } from '@/litegraph';
+import { LGraphSettings } from '@/settings';
 import { isValidConnection, uuidv4 } from '../core/utilities';
 
 // basic nodes
@@ -370,7 +371,7 @@ export class Subgraph {
     const node = LiteGraph.createNode(this.type);
     const data = this.serialize();
 
-    if (LiteGraph.use_uuids) {
+    if (LGraphSettings.use_uuids) {
       // LGraph.serialize() seems to reuse objects in the original graph. But we
       // need to change node IDs here, so clone it first.
       const subgraph = cloneObject(data.subgraph);
@@ -894,8 +895,8 @@ class ConstantFile {
 
     this._url = url;
     this._type = this.properties.type;
-    if (url.substr(0, 4) == 'http' && LiteGraph.proxy) {
-      url = LiteGraph.proxy + url.substr(url.indexOf(':') + 3);
+    if (url.substr(0, 4) == 'http' && LGraphSettings.proxy) {
+      url = LGraphSettings.proxy + url.substr(url.indexOf(':') + 3);
     }
     fetch(url)
       .then((response) => {
@@ -1543,11 +1544,11 @@ class NodeScript {
   }
 
   onConfigure(o) {
-    if (o.properties.onExecute && LiteGraph.allow_scripts) { this.compileCode(o.properties.onExecute); } else { console.warn('Script not compiled, LiteGraph.allow_scripts is false'); }
+    if (o.properties.onExecute && LGraphSettings.allow_scripts) { this.compileCode(o.properties.onExecute); } else { console.warn('Script not compiled, LGraphSettings.allow_scripts is false'); }
   }
 
   onPropertyChanged(name, value) {
-    if (name == 'onExecute' && LiteGraph.allow_scripts) { this.compileCode(value); } else { console.warn('Script not compiled, LiteGraph.allow_scripts is false'); }
+    if (name == 'onExecute' && LGraphSettings.allow_scripts) { this.compileCode(value); } else { console.warn('Script not compiled, LGraphSettings.allow_scripts is false'); }
   }
 
   compileCode(code) {
