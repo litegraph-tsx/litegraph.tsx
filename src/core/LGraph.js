@@ -1,4 +1,5 @@
 import { LiteGraph } from './litegraph';
+import { LGraphNode } from './LGraphNode';
 import { LGraphGroup } from './LGraphGroup';
 import { console } from './Console';
 
