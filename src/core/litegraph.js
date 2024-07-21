@@ -14,17 +14,11 @@ console.level = 5;
 
 const global = typeof (window) !== 'undefined' ? window : typeof (self) !== 'undefined' ? self : globalThis;
 
-// *************************************************************
-//   LiteGraph CLASS                                     *******
-// *************************************************************
-
 /**
-     * The Global Scope. It contains all the registered node classes.
-     *
-     * @class LiteGraph
-     * @constructor
-     */
-
+ * The LiteGraph singleton. It contains all the registered node classes, tons of settings, and a ball of methods
+ * as well as acting as the global namespace.  This perhaps isn't the best design choice, and offshoring and reducing
+ * this is planned.
+ */
 export const LiteGraph = {
   VERSION: 0.4,
 
@@ -162,12 +156,11 @@ export const LiteGraph = {
   use_uuids: false,
 
   /**
-         * Register a node class so it can be listed when the user wants to create a new one
-         * @method registerNodeType
-         * @param {String} type name of the node and path
-         * @param {Class} base_class class containing the structure of a node
-         */
-
+   * Register a node class so it can be listed when the user wants to create a new one
+   * @method registerNodeType
+   * @param {String} type name of the node and path
+   * @param {Class} base_class class containing the structure of a node
+   */
   registerNodeType(type, base_class) {
     if (!base_class.prototype) {
       throw 'Cannot register a simple object, it must be a class with a prototype';
@@ -263,10 +256,10 @@ export const LiteGraph = {
   },
 
   /**
-         * removes a node type from the system
-         * @method unregisterNodeType
-         * @param {String|Object} type name of the node or the node constructor itself
-         */
+   * removes a node type from the system
+   * @method unregisterNodeType
+   * @param {String|Object} type name of the node or the node constructor itself
+   */
   unregisterNodeType(type) {
     const base_class = type.constructor === String
       ? this.registered_node_types[type]
@@ -281,11 +274,11 @@ export const LiteGraph = {
   },
 
   /**
-        * Save a slot type and his node
-        * @method registerSlotType
-        * @param {String|Object} type name of the node or the node constructor itself
-        * @param {String} slot_type name of the slot type (variable type), eg. string, number, array, boolean, ..
-        */
+  * Save a slot type and his node
+  * @method registerSlotType
+  * @param {String|Object} type name of the node or the node constructor itself
+  * @param {String} slot_type name of the slot type (variable type), eg. string, number, array, boolean, ..
+  */
   registerNodeAndSlotType(type, slot_type, out) {
     out = out || false;
     const base_class = type.constructor === String
@@ -333,12 +326,12 @@ export const LiteGraph = {
   },
 
   /**
-         * Create a new nodetype by passing an object with some properties
-         * like onCreate, inputs:Array, outputs:Array, properties, onExecute
-         * @method buildNodeClassFromObject
-         * @param {String} name node name with namespace (p.e.: 'math/sum')
-         * @param {Object} object methods expected onCreate, inputs, outputs, properties, onExecute
-         */
+   * Create a new nodetype by passing an object with some properties
+   * like onCreate, inputs:Array, outputs:Array, properties, onExecute
+   * @method buildNodeClassFromObject
+   * @param {String} name node name with namespace (p.e.: 'math/sum')
+   * @param {Object} object methods expected onCreate, inputs, outputs, properties, onExecute
+   */
   buildNodeClassFromObject(
     name,
     object,
@@ -377,15 +370,15 @@ export const LiteGraph = {
   },
 
   /**
-         * Create a new nodetype by passing a function, it wraps it with a proper class and generates inputs according to the parameters of the function.
-         * Useful to wrap simple methods that do not require properties, and that only process some input to generate an output.
-         * @method wrapFunctionAsNode
-         * @param {String} name node name with namespace (p.e.: 'math/sum')
-         * @param {Function} func
-         * @param {Array} param_types [optional] an array containing the type of every parameter, otherwise parameters will accept any type
-         * @param {String} return_type [optional] string with the return type, otherwise it will be generic
-         * @param {Object} properties [optional] properties to be configurable
-         */
+   * Create a new nodetype by passing a function, it wraps it with a proper class and generates inputs according to the parameters of the function.
+   * Useful to wrap simple methods that do not require properties, and that only process some input to generate an output.
+   * @method wrapFunctionAsNode
+   * @param {String} name node name with namespace (p.e.: 'math/sum')
+   * @param {Function} func
+   * @param {Array} param_types [optional] an array containing the type of every parameter, otherwise parameters will accept any type
+   * @param {String} return_type [optional] string with the return type, otherwise it will be generic
+   * @param {Object} properties [optional] properties to be configurable
+   */
   wrapFunctionAsNode(
     name,
     func,
@@ -439,8 +432,8 @@ export const LiteGraph = {
   },
 
   /**
-         * Removes all previously registered node's types
-         */
+   * Removes all previously registered node's types
+   */
   clearRegisteredTypes() {
     this.registered_node_types = {};
     this.node_types_by_file_extension = {};
@@ -449,11 +442,11 @@ export const LiteGraph = {
   },
 
   /**
-         * Adds this method to all nodetypes, existing and to be created
-         * (You can add it to LGraphNode.prototype but then existing node types wont have it)
-         * @method addNodeMethod
-         * @param {Function} func
-         */
+   * Adds this method to all nodetypes, existing and to be created
+   * (You can add it to LGraphNode.prototype but then existing node types wont have it)
+   * @method addNodeMethod
+   * @param {Function} func
+   */
   addNodeMethod(name, func) {
     LGraphNode.prototype[name] = func;
     for (const i in this.registered_node_types) {
@@ -472,7 +465,6 @@ export const LiteGraph = {
    * @param {String} name a name to distinguish from other nodes
    * @param {Object} options to set options
    */
-
   createNode(type, title, options) {
     const base_class = this.registered_node_types[type];
     if (!base_class) {
@@ -538,22 +530,21 @@ export const LiteGraph = {
   },
 
   /**
-         * Returns a registered node type with a given name
-         * @method getNodeType
-         * @param {String} type full name of the node class. p.e. "math/sin"
-         * @return {Class} the node class
-         */
+   * Returns a registered node type with a given name
+   * @method getNodeType
+   * @param {String} type full name of the node class. p.e. "math/sin"
+   * @return {Class} the node class
+   */
   getNodeType(type) {
     return this.registered_node_types[type];
   },
 
   /**
-         * Returns a list of node types matching one category
-         * @method getNodeType
-         * @param {String} category category name
-         * @return {Array} array with all the node classes
-         */
-
+   * Returns a list of node types matching one category
+   * @method getNodeType
+   * @param {String} category category name
+   * @return {Array} array with all the node classes
+   */
   getNodeTypesInCategory(category, filter) {
     const r = [];
     for (const i in this.registered_node_types) {
@@ -579,11 +570,11 @@ export const LiteGraph = {
   },
 
   /**
-         * Returns a list with all the node type categories
-         * @method getNodeTypesCategories
-         * @param {String} filter only nodes with ctor.filter equal can be shown
-         * @return {Array} array with all the names of the categories
-         */
+   * Returns a list with all the node type categories
+   * @method getNodeTypesCategories
+   * @param {String} filter only nodes with ctor.filter equal can be shown
+   * @return {Array} array with all the names of the categories
+   */
   getNodeTypesCategories(filter) {
     const categories = { '': 1 };
     for (var i in this.registered_node_types) {
@@ -600,7 +591,15 @@ export const LiteGraph = {
     return this.auto_sort_node_types ? result.sort() : result;
   },
 
-  // debug purposes: reloads all the js scripts that matches a wildcard
+  /**
+   * Reloads all JavaScript scripts that match a wildcard for debug purposes.
+   * It searches for `<script>` elements in the document head that match the `folder_wildcard`
+   * and reloads them dynamically by replacing the old script elements with new ones.
+   * Logs each script reload if `LiteGraph.debug` is enabled.
+   * @method reloadNodes
+   * @memberof LGraph.prototype
+   * @param {string} folder_wildcard - The wildcard string to match against script URLs.
+   */
   reloadNodes(folder_wildcard) {
     const tmp = document.getElementsByTagName('script');
     // weird, this array changes by its own, so we use a copy
@@ -645,7 +644,17 @@ export const LiteGraph = {
     }
   },
 
-  // separated just to improve if it doesn't work
+  /**
+   * Clones an object by deep copying its properties.
+   * If `obj` is `null` or `undefined`, returns `null`.
+   * Otherwise, creates a deep copy of `obj` using JSON serialization and deserialization.
+   * If `target` is provided, copies the properties of the cloned object (`r`) into `target`.
+   * @method cloneObject
+   * @memberof LGraph.prototype
+   * @param {object} obj - The object to clone.
+   * @param {object} [target] - Optional target object to merge the cloned properties into.
+   * @returns {object|null} The cloned object or `null` if `obj` was `null`.
+   */
   cloneObject(obj, target) {
     if (obj == null) {
       return null;
@@ -661,20 +670,24 @@ export const LiteGraph = {
     return target;
   },
 
-  /*
-         * https://gist.github.com/jed/982883?permalink_comment_id=852670#gistcomment-852670
-         */
+  /**
+   * Generates a Version 4 UUID (Universally Unique Identifier) as per RFC4122.
+   * @method uuidv4
+   * @memberof LGraph.prototype
+   * @returns {string} A randomly generated UUID string.
+   * https://gist.github.com/jed/982883?permalink_comment_id=852670#gistcomment-852670
+   */
   uuidv4() {
     return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, (a) => (a ^ Math.random() * 16 >> a / 4).toString(16));
   },
 
   /**
-         * Returns if the types of two slots are compatible (taking into account wildcards, etc)
-         * @method isValidConnection
-         * @param {String} type_a
-         * @param {String} type_b
-         * @return {Boolean} true if they can be connected
-         */
+   * Returns if the types of two slots are compatible (taking into account wildcards, etc)
+   * @method isValidConnection
+   * @param {String} type_a
+   * @param {String} type_b
+   * @return {Boolean} true if they can be connected
+   */
   isValidConnection(type_a, type_b) {
     if (type_a == '' || type_a === '*') type_a = 0;
     if (type_b == '' || type_b === '*') type_b = 0;
@@ -714,13 +727,13 @@ export const LiteGraph = {
   },
 
   /**
-         * Register a string in the search box so when the user types it it will recommend this node
-         * @method registerSearchboxExtra
-         * @param {String} node_type the node recommended
-         * @param {String} description text to show next to it
-         * @param {Object} data it could contain info of how the node should be configured
-         * @return {Boolean} true if they can be connected
-         */
+   * Register a string in the search box so when the user types it it will recommend this node
+   * @method registerSearchboxExtra
+   * @param {String} node_type the node recommended
+   * @param {String} description text to show next to it
+   * @param {Object} data it could contain info of how the node should be configured
+   * @return {Boolean} true if they can be connected
+   */
   registerSearchboxExtra(node_type, description, data) {
     this.searchbox_extras[description.toLowerCase()] = {
       type: node_type,
@@ -730,14 +743,14 @@ export const LiteGraph = {
   },
 
   /**
-         * Wrapper to load files (from url using fetch or from file using FileReader)
-         * @method fetchFile
-         * @param {String|File|Blob} url the url of the file (or the file itself)
-         * @param {String} type an string to know how to fetch it: "text","arraybuffer","json","blob"
-         * @param {Function} on_complete callback(data)
-         * @param {Function} on_error in case of an error
-         * @return {FileReader|Promise} returns the object used to
-         */
+   * Wrapper to load files (from url using fetch or from file using FileReader)
+   * @method fetchFile
+   * @param {String|File|Blob} url the url of the file (or the file itself)
+   * @param {String} type an string to know how to fetch it: "text","arraybuffer","json","blob"
+   * @param {Function} on_complete callback(data)
+   * @param {Function} on_error in case of an error
+   * @return {FileReader|Promise} returns the object used to
+   */
   fetchFile(url, type, on_complete, on_error) {
     const that = this;
     if (!url) return null;
@@ -777,6 +790,16 @@ export const LiteGraph = {
     return null;
   },
 
+  /**
+   * Compares two objects `a` and `b` by shallow property comparison.
+   * Returns `true` if all enumerable own properties of `a` have the same value as those of `b`,
+   * or `false` otherwise.
+   * @method compareObjects
+   * @memberof LGraph.prototype
+   * @param {object} a - The first object to compare.
+   * @param {object} b - The second object to compare.
+   * @returns {boolean} `true` if the objects have the same enumerable own properties with equal values, otherwise `false`.
+   */
   compareObjects(a, b) {
     for (const i in a) {
       if (a[i] != b[i]) {
@@ -786,12 +809,27 @@ export const LiteGraph = {
     return true;
   },
 
+  /**
+   * Calculates the Euclidean distance between two points `a` and `b` in a 2D space.
+   * @method distance
+   * @memberof LGraph.prototype
+   * @param {number[]} a - The coordinates of the first point [x, y].
+   * @param {number[]} b - The coordinates of the second point [x, y].
+   * @returns {number} The Euclidean distance between points `a` and `b`.
+   */
   distance(a, b) {
     return Math.sqrt(
       (b[0] - a[0]) * (b[0] - a[0]) + (b[1] - a[1]) * (b[1] - a[1]),
     );
   },
 
+  /**
+   * Converts a color array `c` representing RGBA values into a CSS rgba() string.
+   * @method colorToString
+   * @memberof LGraph.prototype
+   * @param {number[]} c - The color array [r, g, b, a] where r, g, b are in the range [0, 1] and a is optional.
+   * @returns {string} The CSS rgba() string representing the color.
+   */
   colorToString(c) {
     return (
       `rgba(${
@@ -806,6 +844,19 @@ export const LiteGraph = {
     );
   },
 
+  /**
+   * Checks if a point (x, y) is inside the bounds of a rectangle defined by its top-left corner (left, top),
+   * width, and height.
+   * @method isInsideRectangle
+   * @memberof LGraph.prototype
+   * @param {number} x - The x-coordinate of the point to check.
+   * @param {number} y - The y-coordinate of the point to check.
+   * @param {number} left - The x-coordinate of the top-left corner of the rectangle.
+   * @param {number} top - The y-coordinate of the top-left corner of the rectangle.
+   * @param {number} width - The width of the rectangle.
+   * @param {number} height - The height of the rectangle.
+   * @returns {boolean} `true` if the point (x, y) is inside the rectangle, otherwise `false`.
+   */
   isInsideRectangle(x, y, left, top, width, height) {
     if (left < x && left + width > x && top < y && top + height > y) {
       return true;
@@ -813,7 +864,15 @@ export const LiteGraph = {
     return false;
   },
 
-  // [minx,miny,maxx,maxy]
+  /**
+   * Modifies the bounding box `bounding` to include the point (x, y).
+   * Updates the bounding box coordinates in place [minx, miny, maxx, maxy].
+   * @method growBounding
+   * @memberof LGraph.prototype
+   * @param {number[]} bounding - The bounding box coordinates [minx, miny, maxx, maxy].
+   * @param {number} x - The x-coordinate of the point to include in the bounding box.
+   * @param {number} y - The y-coordinate of the point to include in the bounding box.
+   */
   growBounding(bounding, x, y) {
     if (x < bounding[0]) {
       bounding[0] = x;
@@ -828,7 +887,15 @@ export const LiteGraph = {
     }
   },
 
-  // point inside bounding box
+  /**
+   * Checks if a point `p` is inside the bounding box defined by `bb`.
+   * The bounding box is represented by an array [[minx, miny], [maxx, maxy]].
+   * @method isInsideBounding
+   * @memberof LGraph.prototype
+   * @param {number[]} p - The point coordinates [x, y] to check.
+   * @param {number[][]} bb - The bounding box coordinates [[minx, miny], [maxx, maxy]].
+   * @returns {boolean} `true` if the point `p` is inside the bounding box `bb`, otherwise `false`.
+   */
   isInsideBounding(p, bb) {
     if (
       p[0] < bb[0][0]
@@ -841,7 +908,15 @@ export const LiteGraph = {
     return true;
   },
 
-  // bounding overlap, format: [ startx, starty, width, height ]
+  /**
+   * Checks if two bounding boxes overlap.
+   * The bounding boxes are defined by their coordinates [startx, starty, width, height].
+   * @method overlapBounding
+   * @memberof LGraph
+   * @param {number[]} a - Coordinates of the first bounding box [startx, starty, width, height].
+   * @param {number[]} b - Coordinates of the second bounding box [startx, starty, width, height].
+   * @returns {boolean} `true` if the bounding boxes `a` and `b` overlap, otherwise `false`.
+   */
   overlapBounding(a, b) {
     const A_end_x = a[0] + a[2];
     const A_end_y = a[1] + a[3];
@@ -859,9 +934,14 @@ export const LiteGraph = {
     return true;
   },
 
-  // Convert a hex value to its decimal value - the inputted hex must be in the
-  // format of a hex triplet - the kind we use for HTML colours. The function
-  // will return an array with three values.
+  /**
+   * Converts a hexadecimal color value to its decimal RGB equivalent.
+   * The inputted hex must be in the format of a hex triplet (e.g., "RRGGBB").
+   * @method hex2num
+   * @memberof LGraph
+   * @param {string} hex - Hexadecimal color value (with or without '#').
+   * @returns {number[]} Array containing three values: [red, green, blue].
+   */
   hex2num(hex) {
     if (hex.charAt(0) == '#') {
       hex = hex.slice(1);
@@ -881,8 +961,13 @@ export const LiteGraph = {
     return value;
   },
 
-  // Give a array with three values as the argument and the function will return
-  // the corresponding hex triplet.
+  /**
+   * Converts an array of three decimal RGB values to a hexadecimal color triplet.
+   * @method num2hex
+   * @memberof LGraph
+   * @param {number[]} triplet - Array containing three decimal RGB values [red, green, blue].
+   * @returns {string} Hexadecimal color triplet in the format "#RRGGBB".
+   */
   num2hex(triplet) {
     const hex_alphabets = '0123456789ABCDEF';
     let hex = '#';
@@ -897,7 +982,13 @@ export const LiteGraph = {
     return hex;
   },
 
-  // @TODO: Obviously belongs with ContextMenu
+  /**
+   * Closes all context menus of class 'litecontextmenu' within a specified window or the global window.
+   * @TODO: Obviously belongs with ContextMenu
+   * @method closeAllContextMenus
+   * @memberof ContextMenu
+   * @param {Window} [ref_window=window] - Reference to the window object containing the context menus.
+   */
   closeAllContextMenus(ref_window) {
     ref_window = ref_window || window;
 
@@ -920,6 +1011,13 @@ export const LiteGraph = {
     }
   },
 
+  /**
+   * Extends the target class with static and prototype properties from the origin class.
+   * @method extendClass
+   * @memberof Utility
+   * @param {Function} target - The target class to extend.
+   * @param {Function} origin - The origin class from which to inherit properties.
+   */
   extendClass(target, origin) {
     // Copy static properties
     Object.getOwnPropertyNames(origin).forEach((prop) => {
@@ -943,7 +1041,13 @@ export const LiteGraph = {
     }
   },
 
-  // used to create nodes from wrapping functions
+  /**
+   * Retrieves the parameter names of a function.
+   * @method getParameterNames
+   * @memberof Utility
+   * @param {Function} func - The function from which to extract parameter names.
+   * @returns {Array.<string>} An array containing the parameter names of the function.
+   */
   getParameterNames(func) {
     return (`${func}`)
       .replace(/[/][/].*$/gm, '') // strip single-line comments
@@ -956,7 +1060,18 @@ export const LiteGraph = {
       .filter(Boolean); // split & filter [""]
   },
 
-  /* helper for interaction: pointer, touch, mouse Listeners used by LGraphCanvas DragAndScale ContextMenu */
+  /**
+   * Adds an event listener to the specified DOM element for pointer, touch, or mouse events,
+   * based on browser support and event type.
+   * @method pointerListenerAdd
+   * @memberof Utility
+   * @param {HTMLElement} oDOM - The DOM element to which the listener is added.
+   * @param {string} sEvIn - The event type ('down', 'up', 'move', 'over', 'out', 'enter', etc.).
+   * @param {Function} fCall - The callback function to be executed when the event occurs.
+   * @param {boolean} [capture=false] - Indicates whether events of this type will be dispatched to
+   *                                   the registered listener before being dispatched to any EventTarget
+   *                                   beneath it in the DOM tree.
+   */
   pointerListenerAdd(oDOM, sEvIn, fCall, capture = false) {
     if (!oDOM || !oDOM.addEventListener || !sEvIn || typeof fCall !== 'function') {
       console.log(`cant pointerListenerAdd ${oDOM}, ${sEvent}, ${fCall}`);
@@ -1027,6 +1142,17 @@ export const LiteGraph = {
     oDOM.addEventListener(sEvent, fCall, capture);
   },
 
+  /**
+   * Removes an event listener from the specified DOM element for pointer, touch, or mouse events,
+   * based on browser support and event type.
+   * @method pointerListenerRemove
+   * @memberof Utility
+   * @param {HTMLElement} oDOM - The DOM element from which the listener is removed.
+   * @param {string} sEvent - The event type ('down', 'up', 'move', 'over', 'out', 'enter', etc.).
+   * @param {Function} fCall - The callback function to be removed.
+   * @param {boolean} [capture=false] - Indicates whether events of this type were originally registered
+   *                                   as capturing or bubbling.
+   */
   pointerListenerRemove(oDOM, sEvent, fCall, capture = false) {
     if (!oDOM || !oDOM.removeEventListener || !sEvent || typeof fCall !== 'function') {
       console.log(`cant pointerListenerRemove ${oDOM}, ${sEvent}, ${fCall}`);
@@ -1060,6 +1186,13 @@ export const LiteGraph = {
   },
 };
 
+/**
+ * Clamps a value `v` between a minimum value `a` and a maximum value `b`.
+ * @param {number} v - The value to clamp.
+ * @param {number} a - The minimum value.
+ * @param {number} b - The maximum value.
+ * @returns {number} The clamped value between `a` and `b`.
+ */
 export function clamp(v, a, b) {
   return a > v ? a : b < v ? b : v;
 }
@@ -1105,217 +1238,5 @@ if (typeof performance !== 'undefined') {
     return new Date().getTime();
   };
 }
-
-// API *************************************************
-function compareObjects(a, b) {
-  for (const i in a) {
-    if (a[i] != b[i]) {
-      return false;
-    }
-  }
-  return true;
-}
-LiteGraph.compareObjects = compareObjects;
-
-function distance(a, b) {
-  return Math.sqrt(
-    (b[0] - a[0]) * (b[0] - a[0]) + (b[1] - a[1]) * (b[1] - a[1]),
-  );
-}
-LiteGraph.distance = distance;
-
-function colorToString(c) {
-  return (
-    `rgba(${
-      Math.round(c[0] * 255).toFixed()
-    },${
-      Math.round(c[1] * 255).toFixed()
-    },${
-      Math.round(c[2] * 255).toFixed()
-    },${
-      c.length == 4 ? c[3].toFixed(2) : '1.0'
-    })`
-  );
-}
-LiteGraph.colorToString = colorToString;
-
-function isInsideRectangle(x, y, left, top, width, height) {
-  if (left < x && left + width > x && top < y && top + height > y) {
-    return true;
-  }
-  return false;
-}
-LiteGraph.isInsideRectangle = isInsideRectangle;
-
-// [minx,miny,maxx,maxy]
-function growBounding(bounding, x, y) {
-  if (x < bounding[0]) {
-    bounding[0] = x;
-  } else if (x > bounding[2]) {
-    bounding[2] = x;
-  }
-
-  if (y < bounding[1]) {
-    bounding[1] = y;
-  } else if (y > bounding[3]) {
-    bounding[3] = y;
-  }
-}
-LiteGraph.growBounding = growBounding;
-
-// point inside bounding box
-function isInsideBounding(p, bb) {
-  if (
-    p[0] < bb[0][0]
-            || p[1] < bb[0][1]
-            || p[0] > bb[1][0]
-            || p[1] > bb[1][1]
-  ) {
-    return false;
-  }
-  return true;
-}
-LiteGraph.isInsideBounding = isInsideBounding;
-
-// bounding overlap, format: [ startx, starty, width, height ]
-function overlapBounding(a, b) {
-  const A_end_x = a[0] + a[2];
-  const A_end_y = a[1] + a[3];
-  const B_end_x = b[0] + b[2];
-  const B_end_y = b[1] + b[3];
-
-  if (
-    a[0] > B_end_x
-            || a[1] > B_end_y
-            || A_end_x < b[0]
-            || A_end_y < b[1]
-  ) {
-    return false;
-  }
-  return true;
-}
-LiteGraph.overlapBounding = overlapBounding;
-
-// Convert a hex value to its decimal value - the inputted hex must be in the
-//    format of a hex triplet - the kind we use for HTML colours. The function
-//    will return an array with three values.
-function hex2num(hex) {
-  if (hex.charAt(0) == '#') {
-    hex = hex.slice(1);
-  } // Remove the '#' char - if there is one.
-  hex = hex.toUpperCase();
-  const hex_alphabets = '0123456789ABCDEF';
-  const value = new Array(3);
-  let k = 0;
-  let int1; let
-    int2;
-  for (let i = 0; i < 6; i += 2) {
-    int1 = hex_alphabets.indexOf(hex.charAt(i));
-    int2 = hex_alphabets.indexOf(hex.charAt(i + 1));
-    value[k] = int1 * 16 + int2;
-    k++;
-  }
-  return value;
-}
-
-LiteGraph.hex2num = hex2num;
-
-// Give a array with three values as the argument and the function will return
-//    the corresponding hex triplet.
-function num2hex(triplet) {
-  const hex_alphabets = '0123456789ABCDEF';
-  let hex = '#';
-  let int1; let
-    int2;
-  for (let i = 0; i < 3; i++) {
-    int1 = triplet[i] / 16;
-    int2 = triplet[i] % 16;
-
-    hex += hex_alphabets.charAt(int1) + hex_alphabets.charAt(int2);
-  }
-  return hex;
-}
-
-LiteGraph.num2hex = num2hex;
-
-/* LiteGraph GUI elements used for canvas editing ************************************ */
-
-LiteGraph.closeAllContextMenus = function (ref_window) {
-  ref_window = ref_window || window;
-
-  const elements = ref_window.document.querySelectorAll('.litecontextmenu');
-  if (!elements.length) {
-    return;
-  }
-
-  const result = [];
-  for (var i = 0; i < elements.length; i++) {
-    result.push(elements[i]);
-  }
-
-  for (var i = 0; i < result.length; i++) {
-    if (result[i].close) {
-      result[i].close();
-    } else if (result[i].parentNode) {
-      result[i].parentNode.removeChild(result[i]);
-    }
-  }
-};
-
-LiteGraph.extendClass = function (target, origin) {
-  for (var i in origin) {
-    // copy class properties
-    if (target.hasOwnProperty(i)) {
-      continue;
-    }
-    target[i] = origin[i];
-  }
-
-  if (origin.prototype) {
-    // copy prototype properties
-    for (var i in origin.prototype) {
-      // only enumerable
-      if (!origin.prototype.hasOwnProperty(i)) {
-        continue;
-      }
-
-      if (target.prototype.hasOwnProperty(i)) {
-        // avoid overwriting existing ones
-        continue;
-      }
-
-      // copy getters
-      if (origin.prototype.__lookupGetter__(i)) {
-        target.prototype.__defineGetter__(
-          i,
-          origin.prototype.__lookupGetter__(i),
-        );
-      } else {
-        target.prototype[i] = origin.prototype[i];
-      }
-
-      // and setters
-      if (origin.prototype.__lookupSetter__(i)) {
-        target.prototype.__defineSetter__(
-          i,
-          origin.prototype.__lookupSetter__(i),
-        );
-      }
-    }
-  }
-};
-
-// used to create nodes from wrapping functions
-LiteGraph.getParameterNames = function (func) {
-  return (`${func}`)
-    .replace(/[/][/].*$/gm, '') // strip single-line comments
-    .replace(/\s+/g, '') // strip white space
-    .replace(/[/][*][^/*]*[*][/]/g, '') // strip multi-line comments  /**/
-    .split('){', 1)[0]
-    .replace(/^[^(]*[(]/, '') // extract the parameters
-    .replace(/=[^,]+/g, '') // strip any ES6 defaults
-    .split(',')
-    .filter(Boolean); // split & filter [""]
-};
 
 global.clamp = clamp;
