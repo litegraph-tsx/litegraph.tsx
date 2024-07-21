@@ -1,6 +1,6 @@
-import { LiteGraph } from './litegraph';
-import { LGraphCanvas } from './LGraphCanvas';
 import { LGraphNode } from './LGraphNode';
+import { node_colors } from './styles';
+import { overlapBounding } from './utilities';
 
 const global = typeof (window) !== 'undefined' ? window : typeof (self) !== 'undefined' ? self : globalThis;
 
@@ -12,8 +12,8 @@ export class LGraphGroup {
   _ctor(title) {
     this.title = title || 'Group';
     this.font_size = 24;
-    this.color = LGraphCanvas.node_colors.pale_blue
-      ? LGraphCanvas.node_colors.pale_blue.groupcolor
+    this.color = node_colors.pale_blue
+      ? node_colors.pale_blue.groupcolor
       : '#AAA';
     this._bounding = new Float32Array([10, 10, 140, 80]);
     this._pos = this._bounding.subarray(0, 2);
@@ -92,7 +92,7 @@ export class LGraphGroup {
     for (let i = 0; i < nodes.length; ++i) {
       const node = nodes[i];
       node.getBounding(node_bounding);
-      if (!LiteGraph.overlapBounding(this._bounding, node_bounding)) {
+      if (!overlapBounding(this._bounding, node_bounding)) {
         continue;
       } // out of the visible area
       this._nodes.push(node);

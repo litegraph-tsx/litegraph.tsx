@@ -1,4 +1,5 @@
 import { LiteGraph } from '@/litegraph';
+import { registerNodeType } from '../core/LGraphNode';
 
 function demo() {
   multiConnection();
@@ -134,7 +135,7 @@ function TestWidgetsNode() {
 
 TestWidgetsNode.title = 'Widgets';
 
-LiteGraph.registerNodeType('features/widgets', TestWidgetsNode);
+registerNodeType('features/widgets', TestWidgetsNode);
 
 // Show value inside the debug console
 function TestSpecialNode() {
@@ -204,7 +205,7 @@ TestSpecialNode.prototype.onBounding = function (rect) {
   if (!this.flags.collapsed && this.mouseOver) rect[3] = this.size[1] + 20;
 };
 
-LiteGraph.registerNodeType('features/shape', TestSpecialNode);
+registerNodeType('features/shape', TestSpecialNode);
 
 // Show value inside the debug console
 function TestSlotsNode() {
@@ -217,7 +218,7 @@ function TestSlotsNode() {
 
 TestSlotsNode.title = 'Flat Slots';
 
-LiteGraph.registerNodeType('features/slots', TestSlotsNode);
+registerNodeType('features/slots', TestSlotsNode);
 
 // Show value inside the debug console
 function TestPropertyEditorsNode() {
@@ -240,7 +241,7 @@ function TestPropertyEditorsNode() {
 
 TestPropertyEditorsNode.title = 'Properties';
 
-LiteGraph.registerNodeType('features/properties_editor', TestPropertyEditorsNode);
+registerNodeType('features/properties_editor', TestPropertyEditorsNode);
 
 // Show value inside the debug console
 function LargeInputNode() {
@@ -269,4 +270,4 @@ function LargeInputNode() {
 
 LargeInputNode.title = 'Large Input Node';
 
-LiteGraph.registerNodeType('features/largeinput_editor', LargeInputNode);
+registerNodeType('features/largeinput_editor', LargeInputNode);

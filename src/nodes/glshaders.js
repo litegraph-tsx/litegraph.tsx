@@ -1,7 +1,9 @@
 import { GL } from '@libs/litegl';
 import { LiteGraph } from '@/litegraph';
+import { LGraphSettings } from '@/settings';
 import { LGraphTexture } from './gltextures';
 import { LGraphStyles } from '../core/styles';
+import { registerNodeType } from '../core/LGraphNode';
 
 const global = typeof (window) !== 'undefined' ? window : typeof (self) !== 'undefined' ? self : globalThis;
 if (typeof GL !== 'undefined') {
@@ -132,7 +134,7 @@ if (typeof GL !== 'undefined') {
             }
         */
 
-    LiteGraph.registerNodeType(`shader::${type}`, node_ctor);
+    registerNodeType(`shader::${type}`, node_ctor);
   }
 
   function getShaderNodeVarName(node, name) {
@@ -374,7 +376,7 @@ if (typeof GL !== 'undefined') {
       const finalcode = this.computeShaderCode(graph);
       console.log(finalcode.vs_code, finalcode.fs_code);
 
-      if (!LiteGraph.catch_exceptions) {
+      if (!LGraphSettings.catch_exceptions) {
         this._shader_error = true;
         if (shader) { shader.updateShader(finalcode.vs_code, finalcode.fs_code); } else { shader = new GL.Shader(finalcode.vs_code, finalcode.fs_code); }
         this._shader_error = false;
@@ -642,7 +644,7 @@ if (typeof GL !== 'undefined') {
       }\n\
     ';
   }
-  LiteGraph.registerNodeType('texture/shaderGraph', LGraphShaderGraph);
+  registerNodeType('texture/shaderGraph', LGraphShaderGraph);
 
   function shaderNodeFromFunction(classname, params, return_type, code) {
     // TODO

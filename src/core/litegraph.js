@@ -1,15 +1,41 @@
-import { LGraph } from './LGraph';
-import { CurveEditor } from './CurveEditor';
-import { LLink } from './LLink';
-import { ContextMenu } from './ContextMenu';
-import { LGraphNode } from './LGraphNode';
-import { LGraphEvents } from './events';
-import { LGraphGroup } from './LGraphGroup';
-import { DragAndScale } from './DragAndScale';
-import { LGraphCanvas } from './LGraphCanvas';
+import { GraphInput, GraphOutput, Subgraph } from '../nodes/base';
 import { console } from './Console';
-import { PointerSettings } from './pointer_events';
+import { ContextMenu } from './ContextMenu';
+import { CurveEditor } from './CurveEditor';
+import { DragAndScale } from './DragAndScale';
+import { LGraph } from './LGraph';
+import { LGraphCanvas } from './LGraphCanvas';
+import { LGraphGroup } from './LGraphGroup';
+import {
+  addNodeMethod, createNode, registerNodeType, wrapFunctionAsNode,
+} from './LGraphNode';
+import { LLink } from './LLink';
+import {
+  buildNodeClassFromObject,
+  clearRegisteredTypes, getNodeType, getNodeTypesCategories, getNodeTypesInCategory, LGraphNodeRegistry, registerNodeAndSlotType, unregisterNodeType,
+} from './nodes';
+import { pointerListenerAdd, pointerListenerRemove, PointerSettings } from './pointer_events';
+import { LGraphSettings } from './settings';
 import { LGraphStyles } from './styles';
+import {
+  clamp,
+  cloneObject,
+  closeAllContextMenus,
+  colorToString,
+  compareObjects,
+  distance,
+  extendClass,
+  getParameterNames,
+  getTime,
+  growBounding,
+  hex2num,
+  isInsideBounding,
+  isInsideRectangle,
+  isValidConnection,
+  num2hex,
+  overlapBounding,
+  uuidv4,
+} from './utilities';
 
 // this variable name is only overridden locally.
 console.level = 5;
@@ -28,7 +54,8 @@ const global = typeof (window) !== 'undefined' ? window : typeof (self) !== 'und
      */
 
 export const LiteGraph = {
-  VERSION: 0.4,
+  get VERSION() { return LGraphSettings.VERSION; },
+  set VERSION(newValue) { LGraphSettings.VERSION = newValue; },
 
   /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
   get CANVAS_GRID_SIZE() { return LGraphStyles.CANVAS_GRID_SIZE; },
@@ -146,8 +173,10 @@ export const LiteGraph = {
   /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
   set CONNECTING_LINK_COLOR(newValue) { LGraphStyles.CONNECTING_LINK_COLOR = newValue; },
 
-  MAX_NUMBER_OF_NODES: 1000, // avoid infinite loops
-  DEFAULT_POSITION: [100, 100], // default node position
+  get MAX_NUMBER_OF_NODES() { return LGraphSettings.MAX_NUMBER_OF_NODES; },
+  set MAX_NUMBER_OF_NODES(newValue) { LGraphSettings.MAX_NUMBER_OF_NODES = newValue; },
+  get DEFAULT_POSITION() { return LGraphSettings.DEFAULT_POSITION; },
+  set DEFAULT_POSITION(newValue) { LGraphSettings.DEFAULT_POSITION = newValue; },
 
   /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
   get VALID_SHAPES() { return LGraphStyles.VALID_SHAPES; },
@@ -262,503 +291,159 @@ export const LiteGraph = {
   /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
   set VERTICAL_LAYOUT(newValue) { LGraphStyles.VERTICAL_LAYOUT = newValue; },
 
-  proxy: null, // used to redirect calls
-  node_images_path: '',
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  get proxy() { return LGraphSettings.proxy; },
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  set proxy(newValue) { LGraphSettings.proxy = newValue; },
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  get node_images_path() { return LGraphSettings.node_images_path; },
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  set node_images_path(newValue) { LGraphSettings.node_images_path = newValue; },
 
-  debug: false,
-  catch_exceptions: true,
-  throw_errors: true,
-  allow_scripts: false, // if set to true some nodes like Formula would be allowed to evaluate code that comes from unsafe sources (like node configuration), which could lead to exploits
-  use_deferred_actions: true, // executes actions during the graph execution flow
-  registered_node_types: {}, // nodetypes by string
-  node_types_by_file_extension: {}, // used for dropping files in the canvas
-  Nodes: {}, // node types by classname
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  get debug() { return LGraphSettings.debug; },
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  set debug(newValue) { LGraphSettings.debug = newValue; },
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  get catch_exceptions() { return LGraphSettings.catch_exceptions; },
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  set catch_exceptions(newValue) { LGraphSettings.catch_exceptions = newValue; },
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  get throw_errors() { return LGraphSettings.throw_errors; },
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  set throw_errors(newValue) { LGraphSettings.throw_errors = newValue; },
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  get allow_scripts() { return LGraphSettings.allow_scripts; },
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  set allow_scripts(newValue) { LGraphSettings.allow_scripts = newValue; },
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  get use_deferred_actions() { return LGraphSettings.use_deferred_actions; },
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  set use_deferred_actions(newValue) { LGraphSettings.use_deferred_actions = newValue; },
+  get registered_node_types() { return LGraphNodeRegistry.registered_node_types; },
+  set registered_node_types(newValue) { LGraphNodeRegistry.registered_node_types = newValue; },
+  get node_types_by_file_extension() { return LGraphNodeRegistry.node_types_by_file_extension; },
+  set node_types_by_file_extension(newValue) { LGraphNodeRegistry.node_types_by_file_extension = newValue; },
+  get Nodes() { return LGraphNodeRegistry.Nodes; },
+  set Nodes(newValue) { LGraphNodeRegistry.Nodes = newValue; },
   Globals: {}, // used to store vars between graphs
 
   searchbox_extras: {}, // used to add extra features to the search box
-  auto_sort_node_types: false, // [true!] If set to true, will automatically sort node types / categories in the context menus
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  get auto_sort_node_types() { return LGraphSettings.auto_sort_node_types; },
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  set auto_sort_node_types(newValue) { LGraphSettings.auto_sort_node_types = newValue; },
 
-  node_box_coloured_when_on: false, // [true!] this make the nodes box (top left circle) coloured when triggered (execute/action), visual feedback
-  node_box_coloured_by_mode: false, // [true!] nodebox based on node mode, visual feedback
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  get node_box_coloured_when_on() { return LGraphSettings.node_box_coloured_when_on; },
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  set node_box_coloured_when_on(newValue) { LGraphSettings.node_box_coloured_when_on = newValue; },
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  get node_box_coloured_by_mode() { return LGraphSettings.node_box_coloured_by_mode; },
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  set node_box_coloured_by_mode(newValue) { LGraphSettings.node_box_coloured_by_mode = newValue; },
 
-  dialog_close_on_mouse_leave: false, // [false on mobile] better true if not touch device, TODO add an helper/listener to close if false
-  dialog_close_on_mouse_leave_delay: 500,
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  get dialog_close_on_mouse_leave() { return LGraphSettings.dialog_close_on_mouse_leave; },
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  set dialog_close_on_mouse_leave(newValue) { LGraphSettings.dialog_close_on_mouse_leave = newValue; },
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  get dialog_close_on_mouse_leave_delay() { return LGraphSettings.dialog_close_on_mouse_leave_delay; },
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  set dialog_close_on_mouse_leave_delay(newValue) { LGraphSettings.dialog_close_on_mouse_leave_delay = newValue; },
 
-  shift_click_do_break_link_from: false, // [false!] prefer false if results too easy to break links - implement with ALT or TODO custom keys
-  click_do_break_link_to: false, // [false!]prefer false, way too easy to break links
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  get shift_click_do_break_link_from() { return LGraphSettings.shift_click_do_break_link_from; },
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  set shift_click_do_break_link_from(newValue) { LGraphSettings.shift_click_do_break_link_from = newValue; },
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  get click_do_break_link_to() { return LGraphSettings.click_do_break_link_to; },
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  set click_do_break_link_to(newValue) { LGraphSettings.click_do_break_link_to = newValue; },
 
-  search_hide_on_mouse_leave: true, // [false on mobile] better true if not touch device, TODO add an helper/listener to close if false
-  search_filter_enabled: false, // [true!] enable filtering slots type in the search widget, !requires auto_load_slot_types or manual set registered_slot_[in/out]_types and slot_types_[in/out]
-  search_show_all_on_open: true, // [true!] opens the results list when opening the search widget
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  get search_hide_on_mouse_leave() { return LGraphSettings.search_hide_on_mouse_leave; },
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  set search_hide_on_mouse_leave(newValue) { LGraphSettings.search_hide_on_mouse_leave = newValue; },
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  get search_filter_enabled() { return LGraphSettings.search_filter_enabled; },
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  set search_filter_enabled(newValue) { LGraphSettings.search_filter_enabled = newValue; },
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  get search_show_all_on_open() { return LGraphSettings.search_show_all_on_open; },
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  set search_show_all_on_open(newValue) { LGraphSettings.search_show_all_on_open = newValue; },
 
-  auto_load_slot_types: false, // [if want false, use true, run, get vars values to be statically set, than disable] nodes types and nodeclass association with node types need to be calculated, if dont want this, calculate once and set registered_slot_[in/out]_types and slot_types_[in/out]
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  get auto_load_slot_types() { return LGraphSettings.auto_load_slot_types; },
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  set auto_load_slot_types(newValue) { LGraphSettings.auto_load_slot_types = newValue; },
 
   // set these values if not using auto_load_slot_types
-  registered_slot_in_types: {}, // slot types for nodeclass
-  registered_slot_out_types: {}, // slot types for nodeclass
-  slot_types_in: [], // slot types IN
-  slot_types_out: [], // slot types OUT
-  slot_types_default_in: [], // specify for each IN slot type a(/many) default node(s), use single string, array, or object (with node, title, parameters, ..) like for search
-  slot_types_default_out: [], // specify for each OUT slot type a(/many) default node(s), use single string, array, or object (with node, title, parameters, ..) like for search
+  get registered_slot_in_types() { return LGraphNodeRegistry.registered_slot_in_types; },
+  set registered_slot_in_types(newValue) { LGraphNodeRegistry.registered_slot_in_types = newValue; },
+  get registered_slot_out_types() { return LGraphNodeRegistry.registered_slot_out_types; },
+  set registered_slot_out_types(newValue) { LGraphNodeRegistry.registered_slot_out_types = newValue; },
+  get slot_types_in() { return LGraphNodeRegistry.slot_types_in; },
+  set slot_types_in(newValue) { LGraphNodeRegistry.slot_types_in = newValue; },
+  get slot_types_out() { return LGraphNodeRegistry.slot_types_out; },
+  set slot_types_out(newValue) { LGraphNodeRegistry.slot_types_out = newValue; },
+  get slot_types_default_in() { return LGraphNodeRegistry.slot_types_default_in; },
+  set slot_types_default_in(newValue) { LGraphNodeRegistry.slot_types_default_in = newValue; },
+  get slot_types_default_out() { return LGraphNodeRegistry.slot_types_default_out; },
+  set slot_types_default_out(newValue) { LGraphNodeRegistry.slot_types_default_out = newValue; },
 
-  alt_drag_do_clone_nodes: false, // [true!] very handy, ALT click to clone and drag the new node
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  get alt_drag_do_clone_nodes() { return LGraphSettings.alt_drag_do_clone_nodes; },
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  set alt_drag_do_clone_nodes(newValue) { LGraphSettings.alt_drag_do_clone_nodes = newValue; },
 
-  do_add_triggers_slots: false, // [true!] will create and connect event slots when using action/events connections, !WILL CHANGE node mode when using onTrigger (enable mode colors), onExecuted does not need this
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  get do_add_triggers_slots() { return LGraphSettings.do_add_triggers_slots; },
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  set do_add_triggers_slots(newValue) { LGraphSettings.do_add_triggers_slots = newValue; },
 
-  allow_multi_output_for_events: true, // [false!] being events, it is strongly reccomended to use them sequentially, one by one
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  get allow_multi_output_for_events() { return LGraphSettings.allow_multi_output_for_events; },
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  set allow_multi_output_for_events(newValue) { LGraphSettings.allow_multi_output_for_events = newValue; },
 
-  middle_click_slot_add_default_node: false, // [true!] allows to create and connect a ndoe clicking with the third button (wheel)
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  get middle_click_slot_add_default_node() { return LGraphSettings.middle_click_slot_add_default_node; },
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  set middle_click_slot_add_default_node(newValue) { LGraphSettings.middle_click_slot_add_default_node = newValue; },
 
-  release_link_on_empty_shows_menu: false, // [true!] dragging a link to empty space will open a menu, add from list, search or defaults
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  get release_link_on_empty_shows_menu() { return LGraphSettings.release_link_on_empty_shows_menu; },
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  set release_link_on_empty_shows_menu(newValue) { LGraphSettings.release_link_on_empty_shows_menu = newValue; },
 
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
   get pointerevents_method() { return PointerSettings.pointerevents_method; },
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
   set pointerevents_method(newMethod) { PointerSettings.pointerevents_method = newMethod; },
 
-  ctrl_shift_v_paste_connect_unselected_outputs: true, // [true!] allows ctrl + shift + v to paste nodes with the outputs of the unselected nodes connected with the inputs of the newly pasted nodes
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  get ctrl_shift_v_paste_connect_unselected_outputs() { return LGraphSettings.ctrl_shift_v_paste_connect_unselected_outputs; },
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  set ctrl_shift_v_paste_connect_unselected_outputs(newValue) { LGraphSettings.ctrl_shift_v_paste_connect_unselected_outputs = newValue; },
 
-  // if true, all newly created nodes/links will use string UUIDs for their id fields instead of integers.
-  // use this if you must have node IDs that are unique across all graphs and subgraphs.
-  use_uuids: false,
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  get use_uuids() { return LGraphSettings.use_uuids; },
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  set use_uuids(newValue) { LGraphSettings.use_uuids = newValue; },
 
-  /**
-         * Register a node class so it can be listed when the user wants to create a new one
-         * @method registerNodeType
-         * @param {String} type name of the node and path
-         * @param {Class} base_class class containing the structure of a node
-         */
-
-  registerNodeType(type, base_class) {
-    if (!base_class.prototype) {
-      throw 'Cannot register a simple object, it must be a class with a prototype';
-    }
-    base_class.type = type;
-
-    if (LiteGraph.debug) {
-      console.log(`Node registered: ${type}`);
-    }
-
-    const classname = base_class.name;
-
-    const pos = type.lastIndexOf('/');
-    base_class.category = type.substring(0, pos);
-
-    if (!base_class.title) {
-      base_class.title = classname;
-    }
-
-    // extend class
-    const propertyDescriptors = Object.getOwnPropertyDescriptors(LGraphNode.prototype);
-    Object.keys(propertyDescriptors).forEach((propertyName) => {
-      if (!base_class.prototype.hasOwnProperty(propertyName)) {
-        Object.defineProperty(base_class.prototype, propertyName, propertyDescriptors[propertyName]);
-      }
-    });
-
-    const prev = this.registered_node_types[type];
-    if (prev) {
-      console.log(`replacing node type: ${type}`);
-    }
-    if (!Object.prototype.hasOwnProperty.call(base_class.prototype, 'shape')) {
-      Object.defineProperty(base_class.prototype, 'shape', {
-        set(v) {
-          switch (v) {
-            case 'default':
-              delete this._shape;
-              break;
-            case 'box':
-              this._shape = LGraphStyles.BOX_SHAPE;
-              break;
-            case 'round':
-              this._shape = LGraphStyles.ROUND_SHAPE;
-              break;
-            case 'circle':
-              this._shape = LGraphStyles.CIRCLE_SHAPE;
-              break;
-            case 'card':
-              this._shape = LGraphStyles.CARD_SHAPE;
-              break;
-            default:
-              this._shape = v;
-          }
-        },
-        get() {
-          return this._shape;
-        },
-        enumerable: true,
-        configurable: true,
-      });
-
-      // used to know which nodes to create when dragging files to the canvas
-      if (base_class.supported_extensions) {
-        for (const i in base_class.supported_extensions) {
-          const ext = base_class.supported_extensions[i];
-          if (ext && ext.constructor === String) {
-            this.node_types_by_file_extension[ext.toLowerCase()] = base_class;
-          }
-        }
-      }
-    }
-
-    this.registered_node_types[type] = base_class;
-    if (base_class.constructor.name) {
-      this.Nodes[classname] = base_class;
-    }
-    if (LiteGraph.onNodeTypeRegistered) {
-      LiteGraph.onNodeTypeRegistered(type, base_class);
-    }
-    if (prev && LiteGraph.onNodeTypeReplaced) {
-      LiteGraph.onNodeTypeReplaced(type, base_class, prev);
-    }
-
-    // warnings
-    if (base_class.prototype.onPropertyChange) {
-      console.warn(`LiteGraph node class ${type} has onPropertyChange method, it must be called onPropertyChanged with d at the end`);
-    }
-
-    // TODO one would want to know input and ouput :: this would allow through registerNodeAndSlotType to get all the slots types
-    if (this.auto_load_slot_types) {
-      // TODO: figure out a way to do this without instantiating a node instance.
-      // new base_class(base_class.title || 'tmpnode');
-    }
-  },
-
-  /**
-         * removes a node type from the system
-         * @method unregisterNodeType
-         * @param {String|Object} type name of the node or the node constructor itself
-         */
-  unregisterNodeType(type) {
-    const base_class = type.constructor === String
-      ? this.registered_node_types[type]
-      : type;
-    if (!base_class) {
-      throw `node type not found: ${type}`;
-    }
-    delete this.registered_node_types[base_class.type];
-    if (base_class.constructor.name) {
-      delete this.Nodes[base_class.constructor.name];
-    }
-  },
-
-  /**
-        * Save a slot type and his node
-        * @method registerSlotType
-        * @param {String|Object} type name of the node or the node constructor itself
-        * @param {String} slot_type name of the slot type (variable type), eg. string, number, array, boolean, ..
-        */
-  registerNodeAndSlotType(type, slot_type, out) {
-    out = out || false;
-    const base_class = type.constructor === String
-                && this.registered_node_types[type] !== 'anonymous'
-      ? this.registered_node_types[type]
-      : type;
-
-    const class_type = base_class.constructor.type;
-
-    let allTypes = [];
-    if (typeof slot_type === 'string') {
-      allTypes = slot_type.split(',');
-    } else if (slot_type == LGraphEvents.EVENT || slot_type == LGraphEvents.ACTION) {
-      allTypes = ['_event_'];
-    } else {
-      allTypes = ['*'];
-    }
-
-    for (let i = 0; i < allTypes.length; ++i) {
-      let slotType = allTypes[i];
-      if (slotType === '') {
-        slotType = '*';
-      }
-      const registerTo = out
-        ? 'registered_slot_out_types'
-        : 'registered_slot_in_types';
-      if (this[registerTo][slotType] === undefined) {
-        this[registerTo][slotType] = { nodes: [] };
-      }
-      if (!this[registerTo][slotType].nodes.includes(class_type)) {
-        this[registerTo][slotType].nodes.push(class_type);
-      }
-
-      // check if is a new type
-      if (!out) {
-        if (!this.slot_types_in.includes(slotType.toLowerCase())) {
-          this.slot_types_in.push(slotType.toLowerCase());
-          this.slot_types_in.sort();
-        }
-      } else if (!this.slot_types_out.includes(slotType.toLowerCase())) {
-        this.slot_types_out.push(slotType.toLowerCase());
-        this.slot_types_out.sort();
-      }
-    }
-  },
-
-  /**
-         * Create a new nodetype by passing an object with some properties
-         * like onCreate, inputs:Array, outputs:Array, properties, onExecute
-         * @method buildNodeClassFromObject
-         * @param {String} name node name with namespace (p.e.: 'math/sum')
-         * @param {Object} object methods expected onCreate, inputs, outputs, properties, onExecute
-         */
-  buildNodeClassFromObject(
-    name,
-    object,
-  ) {
-    let ctor_code = '';
-    if (object.inputs) {
-      for (var i = 0; i < object.inputs.length; ++i) {
-        var _name = object.inputs[i][0];
-        var _type = object.inputs[i][1];
-        if (_type && _type.constructor === String) _type = `"${_type}"`;
-        ctor_code += `this.addInput('${_name}',${_type});\n`;
-      }
-    }
-    if (object.outputs) {
-      for (var i = 0; i < object.outputs.length; ++i) {
-        var _name = object.outputs[i][0];
-        var _type = object.outputs[i][1];
-        if (_type && _type.constructor === String) _type = `"${_type}"`;
-        ctor_code += `this.addOutput('${_name}',${_type});\n`;
-      }
-    }
-    if (object.properties) {
-      for (var i in object.properties) {
-        let prop = object.properties[i];
-        if (prop && prop.constructor === String) prop = `"${prop}"`;
-        ctor_code += `this.addProperty('${i}',${prop});\n`;
-      }
-    }
-    ctor_code += 'if(this.onCreate)this.onCreate()';
-    const classobj = Function(ctor_code);
-    for (var i in object) if (i != 'inputs' && i != 'outputs' && i != 'properties') classobj.prototype[i] = object[i];
-    classobj.title = object.title || name.split('/').pop();
-    classobj.desc = object.desc || 'Generated from object';
-    this.registerNodeType(name, classobj);
-    return classobj;
-  },
-
-  /**
-         * Create a new nodetype by passing a function, it wraps it with a proper class and generates inputs according to the parameters of the function.
-         * Useful to wrap simple methods that do not require properties, and that only process some input to generate an output.
-         * @method wrapFunctionAsNode
-         * @param {String} name node name with namespace (p.e.: 'math/sum')
-         * @param {Function} func
-         * @param {Array} param_types [optional] an array containing the type of every parameter, otherwise parameters will accept any type
-         * @param {String} return_type [optional] string with the return type, otherwise it will be generic
-         * @param {Object} properties [optional] properties to be configurable
-         */
-  wrapFunctionAsNode(
-    name,
-    func,
-    param_types,
-    return_type,
-    properties,
-  ) {
-    const params = Array(func.length);
-    let code = '';
-    if (param_types !== null) // null means no inputs
-    {
-      const names = LiteGraph.getParameterNames(func);
-      for (let i = 0; i < names.length; ++i) {
-        let type = 0;
-        if (param_types) {
-          // type = param_types[i] != null ? "'" + param_types[i] + "'" : "0";
-          if (param_types[i] != null && param_types[i].constructor === String) type = `'${param_types[i]}'`;
-          else if (param_types[i] != null) type = param_types[i];
-        }
-        code
-                        += `this.addInput('${
-            names[i]
-          }',${
-            type
-          });\n`;
-      }
-    }
-    if (return_type !== null) // null means no output
-    {
-      code
-                += `this.addOutput('out',${
-          return_type != null ? (return_type.constructor === String ? `'${return_type}'` : return_type) : 0
-        });\n`;
-    }
-    if (properties) {
-      code
-                    += `this.properties = ${JSON.stringify(properties)};\n`;
-    }
-    const classobj = Function(code);
-    classobj.title = name.split('/').pop();
-    classobj.desc = `Generated from ${func.name}`;
-    classobj.prototype.onExecute = function onExecute() {
-      for (let i = 0; i < params.length; ++i) {
-        params[i] = this.getInputData(i);
-      }
-      const r = func.apply(this, params);
-      this.setOutputData(0, r);
-    };
-    this.registerNodeType(name, classobj);
-    return classobj;
-  },
-
-  /**
-         * Removes all previously registered node's types
-         */
-  clearRegisteredTypes() {
-    this.registered_node_types = {};
-    this.node_types_by_file_extension = {};
-    this.Nodes = {};
-    this.searchbox_extras = {};
-  },
-
-  /**
-         * Adds this method to all nodetypes, existing and to be created
-         * (You can add it to LGraphNode.prototype but then existing node types wont have it)
-         * @method addNodeMethod
-         * @param {Function} func
-         */
-  addNodeMethod(name, func) {
-    LGraphNode.prototype[name] = func;
-    for (const i in this.registered_node_types) {
-      const type = this.registered_node_types[i];
-      if (type.prototype[name]) {
-        type.prototype[`_${name}`] = type.prototype[name];
-      } // keep old in case of replacing
-      type.prototype[name] = func;
-    }
-  },
-
-  /**
-   * Create a node of a given type with a name. The node is not attached to any graph yet.
-   * @method createNode
-   * @param {String} type full name of the node class. p.e. "math/sin"
-   * @param {String} name a name to distinguish from other nodes
-   * @param {Object} options to set options
-   */
-
-  createNode(type, title, options) {
-    const base_class = this.registered_node_types[type];
-    if (!base_class) {
-      console.warn('[LiteGraph]', '[createNode]', `GraphNode type "${type}" not registered.`);
-      return null;
-    }
-
-    const prototype = base_class.prototype || base_class;
-
-    title = title || base_class.title || type;
-
-    let node = null;
-
-    if (LiteGraph.catch_exceptions) {
-      try {
-        node = new base_class(title);
-      } catch (err) {
-        console.error('[LiteGraph]', '[createNode]', err);
-        return null;
-      }
-    } else {
-      node = new base_class(title);
-    }
-
-    node.type = type;
-
-    if (!node.title && title) {
-      node.title = title;
-    }
-    if (!node.properties) {
-      node.properties = {};
-    }
-    if (!node.properties_info) {
-      node.properties_info = [];
-    }
-    if (!node.flags) {
-      node.flags = {};
-    }
-    if (!node.size) {
-      node.size = node.computeSize();
-      // call onresize?
-    }
-    if (!node.pos) {
-      node.pos = LiteGraph.DEFAULT_POSITION.concat();
-    }
-    if (!node.mode) {
-      node.mode = LGraphEvents.ALWAYS;
-    }
-
-    // extra options
-    if (options) {
-      for (const i in options) {
-        node[i] = options[i];
-      }
-    }
-
-    // callback
-    if (node.onNodeCreated) {
-      node.onNodeCreated();
-    }
-
-    return node;
-  },
-
-  /**
-         * Returns a registered node type with a given name
-         * @method getNodeType
-         * @param {String} type full name of the node class. p.e. "math/sin"
-         * @return {Class} the node class
-         */
-  getNodeType(type) {
-    return this.registered_node_types[type];
-  },
-
-  /**
-         * Returns a list of node types matching one category
-         * @method getNodeType
-         * @param {String} category category name
-         * @return {Array} array with all the node classes
-         */
-
-  getNodeTypesInCategory(category, filter) {
-    const r = [];
-    for (const i in this.registered_node_types) {
-      const type = this.registered_node_types[i];
-      if (type.filter != filter) {
-        continue;
-      }
-
-      if (category == '') {
-        if (type.category == null) {
-          r.push(type);
-        }
-      } else if (type.category == category) {
-        r.push(type);
-      }
-    }
-
-    if (this.auto_sort_node_types) {
-      r.sort((a, b) => a.title.localeCompare(b.title));
-    }
-
-    return r;
-  },
-
-  /**
-         * Returns a list with all the node type categories
-         * @method getNodeTypesCategories
-         * @param {String} filter only nodes with ctor.filter equal can be shown
-         * @return {Array} array with all the names of the categories
-         */
-  getNodeTypesCategories(filter) {
-    const categories = { '': 1 };
-    for (var i in this.registered_node_types) {
-      const type = this.registered_node_types[i];
-      if (type.category && !type.skip_list) {
-        if (type.filter != filter) continue;
-        categories[type.category] = 1;
-      }
-    }
-    const result = [];
-    for (var i in categories) {
-      result.push(i);
-    }
-    return this.auto_sort_node_types ? result.sort() : result;
-  },
+  registerNodeType,
+  unregisterNodeType,
+  registerNodeAndSlotType,
+  buildNodeClassFromObject,
+  wrapFunctionAsNode,
+  clearRegisteredTypes,
+  addNodeMethod,
+  createNode,
+  getNodeType,
+  getNodeTypesInCategory,
+  getNodeTypesCategories,
 
   // debug purposes: reloads all the js scripts that matches a wildcard
   reloadNodes(folder_wildcard) {
@@ -782,7 +467,7 @@ export const LiteGraph = {
       }
 
       try {
-        if (LiteGraph.debug) {
+        if (LGraphSettings.debug) {
           console.log(`Reloading: ${src}`);
         }
         const dynamicScript = document.createElement('script');
@@ -791,98 +476,30 @@ export const LiteGraph = {
         docHeadObj.appendChild(dynamicScript);
         docHeadObj.removeChild(script_files[i]);
       } catch (err) {
-        if (LiteGraph.throw_errors) {
+        if (LGraphSettings.throw_errors) {
           throw err;
         }
-        if (LiteGraph.debug) {
+        if (LGraphSettings.debug) {
           console.log(`Error while reloading ${src}`);
         }
       }
     }
 
-    if (LiteGraph.debug) {
+    if (LGraphSettings.debug) {
       console.log('Nodes reloaded');
     }
   },
 
-  // separated just to improve if it doesn't work
-  cloneObject(obj, target) {
-    if (obj == null) {
-      return null;
-    }
-    const r = JSON.parse(JSON.stringify(obj));
-    if (!target) {
-      return r;
-    }
-
-    for (const i in r) {
-      target[i] = r[i];
-    }
-    return target;
-  },
-
-  /*
-         * https://gist.github.com/jed/982883?permalink_comment_id=852670#gistcomment-852670
-         */
-  uuidv4() {
-    return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, (a) => (a ^ Math.random() * 16 >> a / 4).toString(16));
-  },
-
   /**
-         * Returns if the types of two slots are compatible (taking into account wildcards, etc)
-         * @method isValidConnection
-         * @param {String} type_a
-         * @param {String} type_b
-         * @return {Boolean} true if they can be connected
-         */
-  isValidConnection(type_a, type_b) {
-    if (type_a == '' || type_a === '*') type_a = 0;
-    if (type_b == '' || type_b === '*') type_b = 0;
-    if (
-      !type_a // generic output
-                || !type_b // generic input
-                || type_a == type_b // same type (is valid for triggers)
-                || (type_a == LGraphEvents.EVENT && type_b == LGraphEvents.ACTION)
-    ) {
-      return true;
-    }
-
-    // Enforce string type to handle toLowerCase call (-1 number not ok)
-    type_a = String(type_a);
-    type_b = String(type_b);
-    type_a = type_a.toLowerCase();
-    type_b = type_b.toLowerCase();
-
-    // For nodes supporting multiple connection types
-    if (type_a.indexOf(',') == -1 && type_b.indexOf(',') == -1) {
-      return type_a == type_b;
-    }
-
-    // Check all permutations to see if one is valid
-    const supported_types_a = type_a.split(',');
-    const supported_types_b = type_b.split(',');
-    for (let i = 0; i < supported_types_a.length; ++i) {
-      for (let j = 0; j < supported_types_b.length; ++j) {
-        if (this.isValidConnection(supported_types_a[i], supported_types_b[j])) {
-          // if (supported_types_a[i] == supported_types_b[j]) {
-          return true;
-        }
-      }
-    }
-
-    return false;
-  },
-
-  /**
-         * Register a string in the search box so when the user types it it will recommend this node
-         * @method registerSearchboxExtra
-         * @param {String} node_type the node recommended
-         * @param {String} description text to show next to it
-         * @param {Object} data it could contain info of how the node should be configured
-         * @return {Boolean} true if they can be connected
-         */
+   * Register a string in the search box so when the user types it it will recommend this node
+   * @method registerSearchboxExtra
+   * @param {String} node_type the node recommended
+   * @param {String} description text to show next to it
+   * @param {Object} data it could contain info of how the node should be configured
+   * @return {Boolean} true if they can be connected
+   */
   registerSearchboxExtra(node_type, description, data) {
-    this.searchbox_extras[description.toLowerCase()] = {
+    LGraphNodeRegistry.searchbox_extras[description.toLowerCase()] = {
       type: node_type,
       desc: description,
       data,
@@ -904,8 +521,8 @@ export const LiteGraph = {
 
     type = type || 'text';
     if (url.constructor === String) {
-      if (url.substr(0, 4) == 'http' && LiteGraph.proxy) {
-        url = LiteGraph.proxy + url.substr(url.indexOf(':') + 3);
+      if (url.substr(0, 4) == 'http' && LGraphSettings.proxy) {
+        url = LGraphSettings.proxy + url.substr(url.indexOf(':') + 3);
       }
       return fetch(url)
         .then((response) => {
@@ -937,292 +554,63 @@ export const LiteGraph = {
     return null;
   },
 
-  compareObjects(a, b) {
-    for (const i in a) {
-      if (a[i] != b[i]) {
-        return false;
-      }
-    }
-    return true;
-  },
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  cloneObject,
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  uuidv4,
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  isValidConnection,
 
-  distance(a, b) {
-    return Math.sqrt(
-      (b[0] - a[0]) * (b[0] - a[0]) + (b[1] - a[1]) * (b[1] - a[1]),
-    );
-  },
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  compareObjects,
 
-  colorToString(c) {
-    return (
-      `rgba(${
-        Math.round(c[0] * 255).toFixed()
-      },${
-        Math.round(c[1] * 255).toFixed()
-      },${
-        Math.round(c[2] * 255).toFixed()
-      },${
-        c.length == 4 ? c[3].toFixed(2) : '1.0'
-      })`
-    );
-  },
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  distance,
 
-  isInsideRectangle(x, y, left, top, width, height) {
-    if (left < x && left + width > x && top < y && top + height > y) {
-      return true;
-    }
-    return false;
-  },
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  colorToString,
+
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  isInsideRectangle,
 
   // [minx,miny,maxx,maxy]
-  growBounding(bounding, x, y) {
-    if (x < bounding[0]) {
-      bounding[0] = x;
-    } else if (x > bounding[2]) {
-      bounding[2] = x;
-    }
-
-    if (y < bounding[1]) {
-      bounding[1] = y;
-    } else if (y > bounding[3]) {
-      bounding[3] = y;
-    }
-  },
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  growBounding,
 
   // point inside bounding box
-  isInsideBounding(p, bb) {
-    if (
-      p[0] < bb[0][0]
-              || p[1] < bb[0][1]
-              || p[0] > bb[1][0]
-              || p[1] > bb[1][1]
-    ) {
-      return false;
-    }
-    return true;
-  },
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  isInsideBounding,
 
   // bounding overlap, format: [ startx, starty, width, height ]
-  overlapBounding(a, b) {
-    const A_end_x = a[0] + a[2];
-    const A_end_y = a[1] + a[3];
-    const B_end_x = b[0] + b[2];
-    const B_end_y = b[1] + b[3];
-
-    if (
-      a[0] > B_end_x
-              || a[1] > B_end_y
-              || A_end_x < b[0]
-              || A_end_y < b[1]
-    ) {
-      return false;
-    }
-    return true;
-  },
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  overlapBounding,
 
   // Convert a hex value to its decimal value - the inputted hex must be in the
   // format of a hex triplet - the kind we use for HTML colours. The function
   // will return an array with three values.
-  hex2num(hex) {
-    if (hex.charAt(0) == '#') {
-      hex = hex.slice(1);
-    } // Remove the '#' char - if there is one.
-    hex = hex.toUpperCase();
-    const hex_alphabets = '0123456789ABCDEF';
-    const value = new Array(3);
-    let k = 0;
-    let int1; let
-      int2;
-    for (let i = 0; i < 6; i += 2) {
-      int1 = hex_alphabets.indexOf(hex.charAt(i));
-      int2 = hex_alphabets.indexOf(hex.charAt(i + 1));
-      value[k] = int1 * 16 + int2;
-      k++;
-    }
-    return value;
-  },
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  hex2num,
 
   // Give a array with three values as the argument and the function will return
   // the corresponding hex triplet.
-  num2hex(triplet) {
-    const hex_alphabets = '0123456789ABCDEF';
-    let hex = '#';
-    let int1; let
-      int2;
-    for (let i = 0; i < 3; i++) {
-      int1 = triplet[i] / 16;
-      int2 = triplet[i] % 16;
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  num2hex,
 
-      hex += hex_alphabets.charAt(int1) + hex_alphabets.charAt(int2);
-    }
-    return hex;
-  },
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  extendClass,
 
-  // @TODO: Obviously belongs with ContextMenu
-  closeAllContextMenus(ref_window) {
-    ref_window = ref_window || window;
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  getTime,
 
-    const elements = ref_window.document.querySelectorAll('.litecontextmenu');
-    if (!elements.length) {
-      return;
-    }
+  /** @deprecated */ // eslint-disable-next-line deprecation/deprecation
+  closeAllContextMenus,
 
-    const result = [];
-    for (var i = 0; i < elements.length; i++) {
-      result.push(elements[i]);
-    }
-
-    for (var i = 0; i < result.length; i++) {
-      if (result[i].close) {
-        result[i].close();
-      } else if (result[i].parentNode) {
-        result[i].parentNode.removeChild(result[i]);
-      }
-    }
-  },
-
-  extendClass(target, origin) {
-    // Copy static properties
-    Object.getOwnPropertyNames(origin).forEach((prop) => {
-      if (!target.hasOwnProperty(prop)) {
-        Object.defineProperty(target, prop, Object.getOwnPropertyDescriptor(origin, prop));
-      }
-    });
-
-    // Copy prototype properties
-    if (origin.prototype) {
-      Object.getOwnPropertyNames(origin.prototype).forEach((prop) => {
-        if (!target.prototype.hasOwnProperty(prop)) {
-          const descriptor = Object.getOwnPropertyDescriptor(origin.prototype, prop);
-          if (descriptor.get || descriptor.set) {
-            Object.defineProperty(target.prototype, prop, descriptor);
-          } else {
-            target.prototype[prop] = origin.prototype[prop];
-          }
-        }
-      });
-    }
-  },
-
-  // used to create nodes from wrapping functions
-  getParameterNames(func) {
-    return (`${func}`)
-      .replace(/[/][/].*$/gm, '') // strip single-line comments
-      .replace(/\s+/g, '') // strip white space
-      .replace(/[/][*][^/*]*[*][/]/g, '') // strip multi-line comments  /**/
-      .split('){', 1)[0]
-      .replace(/^[^(]*[(]/, '') // extract the parameters
-      .replace(/=[^,]+/g, '') // strip any ES6 defaults
-      .split(',')
-      .filter(Boolean); // split & filter [""]
-  },
+  getParameterNames,
 
   /* helper for interaction: pointer, touch, mouse Listeners used by LGraphCanvas DragAndScale ContextMenu */
-  pointerListenerAdd(oDOM, sEvIn, fCall, capture = false) {
-    if (!oDOM || !oDOM.addEventListener || !sEvIn || typeof fCall !== 'function') {
-      console.log(`cant pointerListenerAdd ${oDOM}, ${sEvent}, ${fCall}`);
-      return; // -- break --
-    }
-
-    let sMethod = LiteGraph.pointerevents_method;
-    var sEvent = sEvIn;
-
-    // UNDER CONSTRUCTION
-    // convert pointerevents to touch event when not available
-    if (sMethod == 'pointer' && !window.PointerEvent) {
-      console.warn("sMethod=='pointer' && !window.PointerEvent");
-      console.log(`Converting pointer[${sEvent}] : down move up cancel enter TO touchstart touchmove touchend, etc ..`);
-      switch (sEvent) {
-        case 'down': {
-          sMethod = 'touch';
-          sEvent = 'start';
-          break;
-        }
-        case 'move': {
-          sMethod = 'touch';
-          // sEvent = "move";
-          break;
-        }
-        case 'up': {
-          sMethod = 'touch';
-          sEvent = 'end';
-          break;
-        }
-        case 'cancel': {
-          sMethod = 'touch';
-          // sEvent = "cancel";
-          break;
-        }
-        case 'enter': {
-          console.log('debug: Should I send a move event?'); // ??? Should you?
-          break;
-        }
-        // case "over": case "out": not used at now
-        default: {
-          console.warn(`PointerEvent not available in this browser ? The event ${sEvent} would not be called`);
-        }
-      }
-    }
-
-    switch (sEvent) {
-      // both pointer and move events
-      case 'down':
-      case 'up':
-      case 'move':
-      case 'over':
-      case 'out':
-      case 'enter':
-        oDOM.addEventListener(sMethod + sEvent, fCall, capture);
-        return;
-
-        // only pointerevents
-      case 'leave':
-      case 'cancel':
-      case 'gotpointercapture':
-      case 'lostpointercapture':
-        if (sMethod != 'mouse') {
-          oDOM.addEventListener(sMethod + sEvent, fCall, capture);
-          return;
-        }
-    }
-    oDOM.addEventListener(sEvent, fCall, capture);
-  },
-
-  pointerListenerRemove(oDOM, sEvent, fCall, capture = false) {
-    if (!oDOM || !oDOM.removeEventListener || !sEvent || typeof fCall !== 'function') {
-      console.log(`cant pointerListenerRemove ${oDOM}, ${sEvent}, ${fCall}`);
-      return;
-    }
-    switch (sEvent) {
-      // both pointer and move events
-      case 'down':
-      case 'up':
-      case 'move':
-      case 'over':
-      case 'out':
-      case 'enter':
-        if (LiteGraph.pointerevents_method == 'pointer' || LiteGraph.pointerevents_method == 'mouse') {
-          oDOM.removeEventListener(LiteGraph.pointerevents_method + sEvent, fCall, capture);
-        }
-        return;
-
-        // only pointerevents
-      case 'leave':
-      case 'cancel':
-      case 'gotpointercapture':
-      case 'lostpointercapture':
-        if (LiteGraph.pointerevents_method == 'pointer') {
-          oDOM.removeEventListener(LiteGraph.pointerevents_method + sEvent, fCall, capture);
-        }
-        return;
-    }
-    // not "pointer" || "mouse"
-    oDOM.removeEventListener(sEvent, fCall, capture);
-  },
+  pointerListenerAdd,
+  pointerListenerRemove,
 };
-
-export function clamp(v, a, b) {
-  return a > v ? a : b < v ? b : v;
-}
 
 if (typeof window !== 'undefined' && !window.requestAnimationFrame) {
   window.requestAnimationFrame = window.webkitRequestAnimationFrame
@@ -1240,242 +628,17 @@ LiteGraph.ContextMenu = ContextMenu; // OG
 LiteGraph.LGraphGroup = LGraphGroup; // OG
 LiteGraph.DragAndScale = DragAndScale; // OG
 LiteGraph.LGraphCanvas = LGraphCanvas;
+LiteGraph.Subgraph = Subgraph;
+LiteGraph.GraphInput = GraphInput;
+LiteGraph.GraphOutput = GraphOutput;
 
 // Bind things onto LiteGraph object as necessary to not break dep chains:
 
-// Bind this here because otherwise LiteGraph.EVENT_LINK_COLOR doesn't resolve:
+// Bind this here because otherwise LGraphEvents.EVENT_LINK_COLOR doesn't resolve:
 LGraphCanvas.link_type_colors = {
   '-1': LGraphStyles.EVENT_LINK_COLOR,
   number: '#AAA',
   node: '#DCA',
-};
-
-// timer that works everywhere
-if (typeof performance !== 'undefined') {
-  LiteGraph.getTime = performance.now.bind(performance);
-} else if (typeof Date !== 'undefined' && Date.now) {
-  LiteGraph.getTime = Date.now.bind(Date);
-} else if (typeof process !== 'undefined') {
-  LiteGraph.getTime = function () {
-    const t = process.hrtime();
-    return t[0] * 0.001 + t[1] * 1e-6;
-  };
-} else {
-  LiteGraph.getTime = function getTime() {
-    return new Date().getTime();
-  };
-}
-
-// API *************************************************
-function compareObjects(a, b) {
-  for (const i in a) {
-    if (a[i] != b[i]) {
-      return false;
-    }
-  }
-  return true;
-}
-LiteGraph.compareObjects = compareObjects;
-
-function distance(a, b) {
-  return Math.sqrt(
-    (b[0] - a[0]) * (b[0] - a[0]) + (b[1] - a[1]) * (b[1] - a[1]),
-  );
-}
-LiteGraph.distance = distance;
-
-function colorToString(c) {
-  return (
-    `rgba(${
-      Math.round(c[0] * 255).toFixed()
-    },${
-      Math.round(c[1] * 255).toFixed()
-    },${
-      Math.round(c[2] * 255).toFixed()
-    },${
-      c.length == 4 ? c[3].toFixed(2) : '1.0'
-    })`
-  );
-}
-LiteGraph.colorToString = colorToString;
-
-function isInsideRectangle(x, y, left, top, width, height) {
-  if (left < x && left + width > x && top < y && top + height > y) {
-    return true;
-  }
-  return false;
-}
-LiteGraph.isInsideRectangle = isInsideRectangle;
-
-// [minx,miny,maxx,maxy]
-function growBounding(bounding, x, y) {
-  if (x < bounding[0]) {
-    bounding[0] = x;
-  } else if (x > bounding[2]) {
-    bounding[2] = x;
-  }
-
-  if (y < bounding[1]) {
-    bounding[1] = y;
-  } else if (y > bounding[3]) {
-    bounding[3] = y;
-  }
-}
-LiteGraph.growBounding = growBounding;
-
-// point inside bounding box
-function isInsideBounding(p, bb) {
-  if (
-    p[0] < bb[0][0]
-            || p[1] < bb[0][1]
-            || p[0] > bb[1][0]
-            || p[1] > bb[1][1]
-  ) {
-    return false;
-  }
-  return true;
-}
-LiteGraph.isInsideBounding = isInsideBounding;
-
-// bounding overlap, format: [ startx, starty, width, height ]
-function overlapBounding(a, b) {
-  const A_end_x = a[0] + a[2];
-  const A_end_y = a[1] + a[3];
-  const B_end_x = b[0] + b[2];
-  const B_end_y = b[1] + b[3];
-
-  if (
-    a[0] > B_end_x
-            || a[1] > B_end_y
-            || A_end_x < b[0]
-            || A_end_y < b[1]
-  ) {
-    return false;
-  }
-  return true;
-}
-LiteGraph.overlapBounding = overlapBounding;
-
-// Convert a hex value to its decimal value - the inputted hex must be in the
-//    format of a hex triplet - the kind we use for HTML colours. The function
-//    will return an array with three values.
-function hex2num(hex) {
-  if (hex.charAt(0) == '#') {
-    hex = hex.slice(1);
-  } // Remove the '#' char - if there is one.
-  hex = hex.toUpperCase();
-  const hex_alphabets = '0123456789ABCDEF';
-  const value = new Array(3);
-  let k = 0;
-  let int1; let
-    int2;
-  for (let i = 0; i < 6; i += 2) {
-    int1 = hex_alphabets.indexOf(hex.charAt(i));
-    int2 = hex_alphabets.indexOf(hex.charAt(i + 1));
-    value[k] = int1 * 16 + int2;
-    k++;
-  }
-  return value;
-}
-
-LiteGraph.hex2num = hex2num;
-
-// Give a array with three values as the argument and the function will return
-//    the corresponding hex triplet.
-function num2hex(triplet) {
-  const hex_alphabets = '0123456789ABCDEF';
-  let hex = '#';
-  let int1; let
-    int2;
-  for (let i = 0; i < 3; i++) {
-    int1 = triplet[i] / 16;
-    int2 = triplet[i] % 16;
-
-    hex += hex_alphabets.charAt(int1) + hex_alphabets.charAt(int2);
-  }
-  return hex;
-}
-
-LiteGraph.num2hex = num2hex;
-
-/* LiteGraph GUI elements used for canvas editing ************************************ */
-
-LiteGraph.closeAllContextMenus = function (ref_window) {
-  ref_window = ref_window || window;
-
-  const elements = ref_window.document.querySelectorAll('.litecontextmenu');
-  if (!elements.length) {
-    return;
-  }
-
-  const result = [];
-  for (var i = 0; i < elements.length; i++) {
-    result.push(elements[i]);
-  }
-
-  for (var i = 0; i < result.length; i++) {
-    if (result[i].close) {
-      result[i].close();
-    } else if (result[i].parentNode) {
-      result[i].parentNode.removeChild(result[i]);
-    }
-  }
-};
-
-LiteGraph.extendClass = function (target, origin) {
-  for (var i in origin) {
-    // copy class properties
-    if (target.hasOwnProperty(i)) {
-      continue;
-    }
-    target[i] = origin[i];
-  }
-
-  if (origin.prototype) {
-    // copy prototype properties
-    for (var i in origin.prototype) {
-      // only enumerable
-      if (!origin.prototype.hasOwnProperty(i)) {
-        continue;
-      }
-
-      if (target.prototype.hasOwnProperty(i)) {
-        // avoid overwriting existing ones
-        continue;
-      }
-
-      // copy getters
-      if (origin.prototype.__lookupGetter__(i)) {
-        target.prototype.__defineGetter__(
-          i,
-          origin.prototype.__lookupGetter__(i),
-        );
-      } else {
-        target.prototype[i] = origin.prototype[i];
-      }
-
-      // and setters
-      if (origin.prototype.__lookupSetter__(i)) {
-        target.prototype.__defineSetter__(
-          i,
-          origin.prototype.__lookupSetter__(i),
-        );
-      }
-    }
-  }
-};
-
-// used to create nodes from wrapping functions
-LiteGraph.getParameterNames = function (func) {
-  return (`${func}`)
-    .replace(/[/][/].*$/gm, '') // strip single-line comments
-    .replace(/\s+/g, '') // strip white space
-    .replace(/[/][*][^/*]*[*][/]/g, '') // strip multi-line comments  /**/
-    .split('){', 1)[0]
-    .replace(/^[^(]*[(]/, '') // extract the parameters
-    .replace(/=[^,]+/g, '') // strip any ES6 defaults
-    .split(',')
-    .filter(Boolean); // split & filter [""]
 };
 
 global.clamp = clamp;

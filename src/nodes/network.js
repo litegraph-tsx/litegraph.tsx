@@ -1,13 +1,15 @@
 import { SillyClient } from '@libs/sillyclient';
 import { LiteGraph } from '@/litegraph';
+import { registerNodeType } from '../core/LGraphNode';
+import { LGraphEvents } from '../core/events';
 
 // event related nodes
 
 class LGWebSocket {
   constructor() {
     this.size = [60, 20];
-    this.addInput('send', LiteGraph.ACTION);
-    this.addOutput('received', LiteGraph.EVENT);
+    this.addInput('send', LGraphEvents.ACTION);
+    this.addOutput('received', LGraphEvents.EVENT);
     this.addInput('in', 0);
     this.addOutput('out', 0);
     this.properties = {
@@ -148,8 +150,7 @@ class LGWebSocket {
 
   static desc = 'Send data through a websocket';
 }
-// @TODO: verify this doesn't even attempt to phone home anywhere and isn't instantiated before a node is created before re-enabling
-// LiteGraph.registerNodeType('network/websocket', LGWebSocket);
+registerNodeType('network/websocket', LGWebSocket);
 
 // It is like a websocket but using the SillyServer.js server that bounces packets back to all clients connected:
 // For more information: https://github.com/jagenjo/SillyServer.js
@@ -169,8 +170,8 @@ class LGSillyClient {
       this.connectSocket.bind(this),
     );
 
-    this.addInput('send', LiteGraph.ACTION);
-    this.addOutput('received', LiteGraph.EVENT);
+    this.addInput('send', LGraphEvents.ACTION);
+    this.addOutput('received', LGraphEvents.EVENT);
     this.addInput('in', 0);
     this.addOutput('out', 0);
     this.properties = {
@@ -348,16 +349,15 @@ class LGSillyClient {
 
   static desc = 'Connects to SillyServer to broadcast messages';
 }
-// @TODO: verify this doesn't even attempt to phone home anywhere and isn't instantiated before a node is created before re-enabling
-// LiteGraph.registerNodeType('network/sillyclient', LGSillyClient);
+registerNodeType('network/sillyclient', LGSillyClient);
 
 class HTTPRequestNode {
   constructor() {
     const that = this;
-    this.addInput('request', LiteGraph.ACTION);
+    this.addInput('request', LGraphEvents.ACTION);
     this.addInput('url', 'string');
     this.addProperty('url', '');
-    this.addOutput('ready', LiteGraph.EVENT);
+    this.addOutput('ready', LGraphEvents.EVENT);
     this.addOutput('data', 'string');
     this.addWidget('button', 'Fetch', null, this.fetch.bind(this));
     this._data = null;
@@ -396,12 +396,11 @@ class HTTPRequestNode {
   }
 
   onGetOutputs() {
-    return [['error', LiteGraph.EVENT]];
+    return [['error', LGraphEvents.EVENT]];
   }
 
   static title = 'HTTP Request';
 
   static desc = 'Fetch data through HTTP';
 }
-// @TODO: verify this doesn't even attempt to phone home anywhere and isn't instantiated before a node is created before re-enabling
-// LiteGraph.registerNodeType('network/httprequest', HTTPRequestNode);
+registerNodeType('network/httprequest', HTTPRequestNode);

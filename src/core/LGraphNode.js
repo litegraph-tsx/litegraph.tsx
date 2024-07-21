@@ -1,7 +1,11 @@
-import { LiteGraph } from './litegraph';
+import { LGraphSettings } from './settings';
 import { console } from './Console';
-import { LGraphStyles } from './styles';
 import { LGraphEvents } from './events';
+import { LGraphStyles } from './styles';
+import {
+  cloneObject, getParameterNames, getTime, isInsideRectangle, isValidConnection, uuidv4,
+} from './utilities';
+import { LGraphNodeRegistry, registerNodeAndSlotType } from './nodes';
 
 const global = typeof (window) !== 'undefined' ? window : typeof (self) !== 'undefined' ? self : globalThis;
 
@@ -61,10 +65,10 @@ const global = typeof (window) !== 'undefined' ? window : typeof (self) !== 'und
 */
 
 /**
-     * Base Class for all the node type classes
-     * @class LGraphNode
-     * @param {String} name a name for the node
-     */
+ * Base Class for all the node type classes
+ * @class LGraphNode
+ * @param {String} name a name for the node
+ */
 
 export class LGraphNode {
   constructor(title) {
@@ -78,8 +82,8 @@ export class LGraphNode {
 
     this._pos = new Float32Array(10, 10);
 
-    if (LiteGraph.use_uuids) {
-      this.id = LiteGraph.uuidv4();
+    if (LGraphSettings.use_uuids) {
+      this.id = uuidv4();
     } else {
       this.id = -1; // not know till not added
     }
@@ -137,7 +141,7 @@ export class LGraphNode {
         if (this[j] && this[j].configure) {
           this[j].configure(info[j]);
         } else {
-          this[j] = LiteGraph.cloneObject(info[j], this[j]);
+          this[j] = cloneObject(info[j], this[j]);
         }
       } // value
       else {
@@ -206,7 +210,7 @@ export class LGraphNode {
       type: this.type,
       pos: this.pos,
       size: this.size,
-      flags: LiteGraph.cloneObject(this.flags),
+      flags: cloneObject(this.flags),
       order: this.order,
       mode: this.mode,
     };
@@ -233,7 +237,7 @@ export class LGraphNode {
     }
 
     if (this.properties) {
-      o.properties = LiteGraph.cloneObject(this.properties);
+      o.properties = cloneObject(this.properties);
     }
 
     if (this.widgets && this.serialize_widgets) {
@@ -272,13 +276,13 @@ export class LGraphNode {
 
   /* Creates a clone of this node */
   clone() {
-    const node = LiteGraph.createNode(this.type);
+    const node = createNode(this.type);
     if (!node) {
       return null;
     }
 
     // we clone it because serialize returns shared containers
-    const data = LiteGraph.cloneObject(this.serialize());
+    const data = cloneObject(this.serialize());
 
     // remove links
     if (data.inputs) {
@@ -297,8 +301,8 @@ export class LGraphNode {
 
     delete data.id;
 
-    if (LiteGraph.use_uuids) {
-      data.id = LiteGraph.uuidv4();
+    if (LGraphSettings.use_uuids) {
+      data.id = uuidv4();
     }
 
     // remove links
@@ -843,7 +847,7 @@ export class LGraphNode {
       return;
     }
 
-    if (this.graph) this.graph._last_trigger_time = LiteGraph.getTime();
+    if (this.graph) this.graph._last_trigger_time = getTime();
 
     for (let i = 0; i < this.outputs.length; ++i) {
       const output = this.outputs[i];
@@ -883,7 +887,7 @@ export class LGraphNode {
     }
 
     if (this.graph) {
-      this.graph._last_trigger_time = LiteGraph.getTime();
+      this.graph._last_trigger_time = getTime();
     }
 
     // for every link attached here
@@ -898,7 +902,7 @@ export class LGraphNode {
         // not connected
         continue;
       }
-      link_info._last_time = LiteGraph.getTime();
+      link_info._last_time = getTime();
       const node = this.graph.getNodeById(link_info.target_id);
       if (!node) {
         // node not found?
@@ -922,7 +926,7 @@ export class LGraphNode {
         var target_connection = node.inputs[link_info.target_slot];
 
         // instead of executing them now, it will be executed in the next graph loop, to ensure data flow
-        if (LiteGraph.use_deferred_actions && node.onExecute) {
+        if (LGraphSettings.use_deferred_actions && node.onExecute) {
           if (!node._waiting_actions) node._waiting_actions = [];
           node._waiting_actions.push([target_connection.name, param, options, link_info.target_slot]);
         } else {
@@ -1031,7 +1035,7 @@ export class LGraphNode {
       this.onOutputAdded(output);
     }
 
-    if (LiteGraph.auto_load_slot_types) LiteGraph.registerNodeAndSlotType(this, type, true);
+    if (LGraphSettings.auto_load_slot_types) registerNodeAndSlotType(this, type, true);
 
     this.setSize(this.computeSize());
     this.setDirtyCanvas(true, true);
@@ -1039,10 +1043,10 @@ export class LGraphNode {
   }
 
   /**
-         * add a new output slot to use in this node
-         * @method addOutputs
-         * @param {Array} array of triplets like [[name,type,extra_info],[...]]
-         */
+   * add a new output slot to use in this node
+   * @method addOutputs
+   * @param {Array} array of triplets like [[name,type,extra_info],[...]]
+   */
   addOutputs(array) {
     for (let i = 0; i < array.length; ++i) {
       const info = array[i];
@@ -1061,7 +1065,7 @@ export class LGraphNode {
         this.onOutputAdded(o);
       }
 
-      if (LiteGraph.auto_load_slot_types) LiteGraph.registerNodeAndSlotType(this, info[1], true);
+      if (LGraphSettings.auto_load_slot_types) registerNodeAndSlotType(this, info[1], true);
     }
 
     this.setSize(this.computeSize());
@@ -1124,7 +1128,7 @@ export class LGraphNode {
       this.onInputAdded(input);
     }
 
-    LiteGraph.registerNodeAndSlotType(this, type);
+    registerNodeAndSlotType(this, type);
 
     this.setDirtyCanvas(true, true);
     return input;
@@ -1153,7 +1157,7 @@ export class LGraphNode {
         this.onInputAdded(o);
       }
 
-      LiteGraph.registerNodeAndSlotType(this, info[1]);
+      registerNodeAndSlotType(this, info[1]);
     }
 
     this.setSize(this.computeSize());
@@ -1457,7 +1461,7 @@ export class LGraphNode {
     if (this.flags && this.flags.collapsed) {
       // if ( distance([x,y], [this.pos[0] + this.size[0]*0.5, this.pos[1] + this.size[1]*0.5]) < LGraphStyles.NODE_COLLAPSED_RADIUS)
       if (
-        LiteGraph.isInsideRectangle(
+        isInsideRectangle(
           x,
           y,
           this.pos[0] - margin,
@@ -1495,7 +1499,7 @@ export class LGraphNode {
         const input = this.inputs[i];
         this.getConnectionPos(true, i, link_pos);
         if (
-          LiteGraph.isInsideRectangle(
+          isInsideRectangle(
             x,
             y,
             link_pos[0] - 10,
@@ -1514,7 +1518,7 @@ export class LGraphNode {
         const output = this.outputs[i];
         this.getConnectionPos(false, i, link_pos);
         if (
-          LiteGraph.isInsideRectangle(
+          isInsideRectangle(
             x,
             y,
             link_pos[0] - 10,
@@ -1789,7 +1793,7 @@ export class LGraphNode {
 
     if (opts.createEventInCase && source_slotType == LGraphEvents.EVENT) {
       // WILL CREATE THE onExecuted OUT SLOT
-      if (LiteGraph.do_add_triggers_slots) {
+      if (LGraphSettings.do_add_triggers_slots) {
         var source_slot = source_node.addOnExecutedOutput();
         return source_node.connect(source_slot, this, slot);
       }
@@ -1830,13 +1834,13 @@ export class LGraphNode {
     if (slot.constructor === String) {
       slot = this.findOutputSlot(slot);
       if (slot == -1) {
-        if (LiteGraph.debug) {
+        if (LGraphSettings.debug) {
           console.log(`Connect: Error, no slot of name ${slot}`);
         }
         return null;
       }
     } else if (!this.outputs || slot >= this.outputs.length) {
-      if (LiteGraph.debug) {
+      if (LGraphSettings.debug) {
         console.log('Connect: Error, slot number not found');
       }
       return null;
@@ -1858,13 +1862,13 @@ export class LGraphNode {
     if (target_slot.constructor === String) {
       target_slot = target_node.findInputSlot(target_slot);
       if (target_slot == -1) {
-        if (LiteGraph.debug) {
+        if (LGraphSettings.debug) {
           console.log(`Connect: Error, no slot of name ${target_slot}`);
         }
         return null;
       }
     } else if (target_slot === LGraphEvents.EVENT) {
-      if (LiteGraph.do_add_triggers_slots) {
+      if (LGraphSettings.do_add_triggers_slots) {
         // search for first slot with event? :: NO this is done outside
         console.log('Connect: Creating triggerEvent');
         // force mode
@@ -1877,7 +1881,7 @@ export class LGraphNode {
       !target_node.inputs
                 || target_slot >= target_node.inputs.length
     ) {
-      if (LiteGraph.debug) {
+      if (LGraphSettings.debug) {
         console.log('Connect: Error, slot number not found');
       }
       return null;
@@ -1902,7 +1906,7 @@ export class LGraphNode {
     }
 
     // check target_slot and check connection types
-    if (target_slot === false || target_slot === null || !LiteGraph.isValidConnection(output.type, input.type)) {
+    if (target_slot === false || target_slot === null || !isValidConnection(output.type, input.type)) {
       this.setDirtyCanvas(false, true);
       if (changed) this.graph.connectionChange(this, link_info);
       return null;
@@ -1930,7 +1934,7 @@ export class LGraphNode {
     if (output.links !== null && output.links.length) {
       switch (output.type) {
         case LGraphEvents.EVENT:
-          if (!LiteGraph.allow_multi_output_for_events) {
+          if (!LGraphSettings.allow_multi_output_for_events) {
             this.graph.beforeChange();
             this.disconnectOutput(slot, false, { doProcessChange: false }); // Input(target_slot, {doProcessChange: false});
             changed = true;
@@ -1942,7 +1946,7 @@ export class LGraphNode {
     }
 
     let nextId;
-    if (LiteGraph.use_uuids) nextId = LiteGraph.uuidv4();
+    if (LGraphSettings.use_uuids) nextId = uuidv4();
     else nextId = ++this.graph.last_link_id;
 
     // create link class
@@ -2021,13 +2025,13 @@ export class LGraphNode {
     if (slot.constructor === String) {
       slot = this.findOutputSlot(slot);
       if (slot == -1) {
-        if (LiteGraph.debug) {
+        if (LGraphSettings.debug) {
           console.log(`Connect: Error, no slot of name ${slot}`);
         }
         return false;
       }
     } else if (!this.outputs || slot >= this.outputs.length) {
-      if (LiteGraph.debug) {
+      if (LGraphSettings.debug) {
         console.log('Connect: Error, slot number not found');
       }
       return false;
@@ -2178,13 +2182,13 @@ export class LGraphNode {
     if (slot.constructor === String) {
       slot = this.findInputSlot(slot);
       if (slot == -1) {
-        if (LiteGraph.debug) {
+        if (LGraphSettings.debug) {
           console.log(`Connect: Error, no slot of name ${slot}`);
         }
         return false;
       }
     } else if (!this.inputs || slot >= this.inputs.length) {
-      if (LiteGraph.debug) {
+      if (LGraphSettings.debug) {
         console.log('Connect: Error, slot number not found');
       }
       return false;
@@ -2382,7 +2386,7 @@ export class LGraphNode {
 
   loadImage(url) {
     const img = new Image();
-    img.src = LiteGraph.node_images_path + url;
+    img.src = LGraphSettings.node_images_path + url;
     img.ready = false;
 
     const that = this;
@@ -2492,3 +2496,255 @@ export class LGraphNode {
 }
 
 global.LGraphNode = LGraphNode;
+
+/**
+ * Create a node of a given type with a name. The node is not attached to any graph yet.
+ * @method createNode
+ * @param {String} type full name of the node class. p.e. "math/sin"
+ * @param {String} name a name to distinguish from other nodes
+ * @param {Object} options to set options
+ */
+export function createNode(type, title, options) {
+  const base_class = LGraphNodeRegistry.registered_node_types[type];
+  if (!base_class) {
+    if (LGraphSettings.debug) {
+      console.log(`GraphNode type "${type}" not registered.`);
+    }
+    return null;
+  }
+
+  const prototype = base_class.prototype || base_class;
+
+  title = title || base_class.title || type;
+
+  let node = null;
+
+  if (LGraphSettings.catch_exceptions) {
+    try {
+      node = new base_class(title);
+    } catch (err) {
+      console.error(err);
+      return null;
+    }
+  } else {
+    node = new base_class(title);
+  }
+
+  node.type = type;
+
+  if (!node.title && title) {
+    node.title = title;
+  }
+  if (!node.properties) {
+    node.properties = {};
+  }
+  if (!node.properties_info) {
+    node.properties_info = [];
+  }
+  if (!node.flags) {
+    node.flags = {};
+  }
+  if (!node.size) {
+    node.size = node.computeSize();
+    // call onresize?
+  }
+  if (!node.pos) {
+    node.pos = LGraphSettings.DEFAULT_POSITION.concat();
+  }
+  if (!node.mode) {
+    node.mode = LGraphEvents.ALWAYS;
+  }
+
+  // extra options
+  if (options) {
+    for (const i in options) {
+      node[i] = options[i];
+    }
+  }
+
+  // callback
+  if (node.onNodeCreated) {
+    node.onNodeCreated();
+  }
+
+  return node;
+}
+
+/**
+ * Adds this method to all nodetypes, existing and to be created
+ * (You can add it to LGraphNode.prototype but then existing node types wont have it)
+ * @method addNodeMethod
+ * @param {Function} func
+ */
+export function addNodeMethod(name, func) {
+  LGraphNode.prototype[name] = func;
+  for (const i in LGraphNodeRegistry.registered_node_types) {
+    const type = LGraphNodeRegistry.registered_node_types[i];
+    if (type.prototype[name]) {
+      type.prototype[`_${name}`] = type.prototype[name];
+    } // keep old in case of replacing
+    type.prototype[name] = func;
+  }
+}
+
+/**
+ * Register a node class so it can be listed when the user wants to create a new one
+ * @method registerNodeType
+ * @param {String} type name of the node and path
+ * @param {Class} base_class class containing the structure of a node
+ */
+export function registerNodeType(type, base_class) {
+  if (!base_class.prototype) {
+    throw 'Cannot register a simple object, it must be a class with a prototype';
+  }
+  base_class.type = type;
+
+  if (LGraphSettings.debug) {
+    console.log(`Node registered: ${type}`);
+  }
+
+  const classname = base_class.name;
+
+  const pos = type.lastIndexOf('/');
+  base_class.category = type.substring(0, pos);
+
+  if (!base_class.title) {
+    base_class.title = classname;
+  }
+
+  // extend class
+  const propertyDescriptors = Object.getOwnPropertyDescriptors(LGraphNode.prototype);
+  Object.keys(propertyDescriptors).forEach((propertyName) => {
+    if (!base_class.prototype.hasOwnProperty(propertyName)) {
+      Object.defineProperty(base_class.prototype, propertyName, propertyDescriptors[propertyName]);
+    }
+  });
+
+  const prev = LGraphNodeRegistry.registered_node_types[type];
+  if (prev) {
+    console.log(`replacing node type: ${type}`);
+  }
+  if (!Object.prototype.hasOwnProperty.call(base_class.prototype, 'shape')) {
+    Object.defineProperty(base_class.prototype, 'shape', {
+      set(v) {
+        switch (v) {
+          case 'default':
+            delete this._shape;
+            break;
+          case 'box':
+            this._shape = LGraphStyles.BOX_SHAPE;
+            break;
+          case 'round':
+            this._shape = LGraphStyles.ROUND_SHAPE;
+            break;
+          case 'circle':
+            this._shape = LGraphStyles.CIRCLE_SHAPE;
+            break;
+          case 'card':
+            this._shape = LGraphStyles.CARD_SHAPE;
+            break;
+          default:
+            this._shape = v;
+        }
+      },
+      get() {
+        return this._shape;
+      },
+      enumerable: true,
+      configurable: true,
+    });
+
+    // used to know which nodes to create when dragging files to the canvas
+    if (base_class.supported_extensions) {
+      for (const i in base_class.supported_extensions) {
+        const ext = base_class.supported_extensions[i];
+        if (ext && ext.constructor === String) {
+          LGraphNodeRegistry.node_types_by_file_extension[ext.toLowerCase()] = base_class;
+        }
+      }
+    }
+  }
+
+  LGraphNodeRegistry.registered_node_types[type] = base_class;
+  if (base_class.constructor.name) {
+    LGraphNodeRegistry.Nodes[classname] = base_class;
+  }
+  if (LGraphNodeRegistry.onNodeTypeRegistered) {
+    LGraphNodeRegistry.onNodeTypeRegistered(type, base_class);
+  }
+  if (prev && LGraphNodeRegistry.onNodeTypeReplaced) {
+    LGraphNodeRegistry.onNodeTypeReplaced(type, base_class, prev);
+  }
+
+  // warnings
+  if (base_class.prototype.onPropertyChange) {
+    console.warn(`LiteGraph node class ${type} has onPropertyChange method, it must be called onPropertyChanged with d at the end`);
+  }
+
+  // TODO one would want to know input and ouput :: this would allow through registerNodeAndSlotType to get all the slots types
+  if (LGraphSettings.auto_load_slot_types) {
+    new base_class(base_class.title || 'tmpnode');
+  }
+}
+
+/**
+ * Create a new nodetype by passing a function, it wraps it with a proper class and generates inputs according to the parameters of the function.
+ * Useful to wrap simple methods that do not require properties, and that only process some input to generate an output.
+ * @method wrapFunctionAsNode
+ * @param {String} name node name with namespace (p.e.: 'math/sum')
+ * @param {Function} func
+ * @param {Array} param_types [optional] an array containing the type of every parameter, otherwise parameters will accept any type
+ * @param {String} return_type [optional] string with the return type, otherwise it will be generic
+ * @param {Object} properties [optional] properties to be configurable
+ */
+export function wrapFunctionAsNode(
+  name,
+  func,
+  param_types,
+  return_type,
+  properties,
+) {
+  const params = Array(func.length);
+  let code = '';
+  if (param_types !== null) // null means no inputs
+  {
+    const names = getParameterNames(func);
+    for (let i = 0; i < names.length; ++i) {
+      let type = 0;
+      if (param_types) {
+        // type = param_types[i] != null ? "'" + param_types[i] + "'" : "0";
+        if (param_types[i] != null && param_types[i].constructor === String) type = `'${param_types[i]}'`;
+        else if (param_types[i] != null) type = param_types[i];
+      }
+      code
+                        += `this.addInput('${
+          names[i]
+        }',${
+          type
+        });\n`;
+    }
+  }
+  if (return_type !== null) // null means no output
+  {
+    code
+                += `this.addOutput('out',${
+        return_type != null ? (return_type.constructor === String ? `'${return_type}'` : return_type) : 0
+      });\n`;
+  }
+  if (properties) {
+    code
+                    += `this.properties = ${JSON.stringify(properties)};\n`;
+  }
+  const classobj = Function(code);
+  classobj.title = name.split('/').pop();
+  classobj.desc = `Generated from ${func.name}`;
+  classobj.prototype.onExecute = function onExecute() {
+    for (let i = 0; i < params.length; ++i) {
+      params[i] = this.getInputData(i);
+    }
+    const r = func.apply(this, params);
+    this.setOutputData(0, r);
+  };
+  registerNodeType(name, classobj);
+  return classobj;
+}

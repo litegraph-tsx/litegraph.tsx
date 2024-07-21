@@ -1,4 +1,12 @@
-import { LiteGraph } from '@/litegraph';
+import { LGraphSettings } from '@/settings';
+import { isInsideRectangle, isValidConnection, uuidv4 } from '../core/utilities';
+import {
+  LGraphNodeRegistry,
+} from '../core/nodes';
+import {
+  createNode, wrapFunctionAsNode, registerNodeType, LGraphNode,
+} from '../core/LGraphNode';
+import { LGraphEvents } from '../core/events';
 
 // basic nodes
 const global = typeof (window) !== 'undefined' ? window : typeof (self) !== 'undefined' ? self : globalThis;
@@ -19,10 +27,10 @@ class Time {
 
   static desc = 'Time';
 }
-LiteGraph.registerNodeType('basic/time', Time);
+registerNodeType('basic/time', Time);
 
 // Subgraph: a node that contains a graph
-class Subgraph {
+export class Subgraph {
   constructor() {
     const that = this;
     this.size = [140, 80];
@@ -135,8 +143,8 @@ class Subgraph {
     if (this.flags.collapsed) { return; }
     const y = this.size[1] - LGraphStyles.NODE_TITLE_HEIGHT + 0.5;
     // button
-    const over = LiteGraph.isInsideRectangle(pos[0], pos[1], this.pos[0], this.pos[1] + y, this.size[0], LGraphStyles.NODE_TITLE_HEIGHT);
-    const overleft = LiteGraph.isInsideRectangle(pos[0], pos[1], this.pos[0], this.pos[1] + y, this.size[0] / 2, LGraphStyles.NODE_TITLE_HEIGHT);
+    const over = isInsideRectangle(pos[0], pos[1], this.pos[0], this.pos[1] + y, this.size[0], LGraphStyles.NODE_TITLE_HEIGHT);
+    const overleft = isInsideRectangle(pos[0], pos[1], this.pos[0], this.pos[1] + y, this.size[0] / 2, LGraphStyles.NODE_TITLE_HEIGHT);
     ctx.fillStyle = over ? '#555' : '#222';
     ctx.beginPath();
     if (this._shape == LGraphStyles.BOX_SHAPE) {
@@ -286,7 +294,7 @@ class Subgraph {
   }
 
   serialize() {
-    const data = LiteGraph.LGraphNode.prototype.serialize.call(this);
+    const data = LGraphNode.prototype.serialize.call(this);
     data.subgraph = this.subgraph.serialize();
     return data;
   }
@@ -298,7 +306,7 @@ class Subgraph {
 
     for (const node of graph.nodes) {
       const oldID = node.id;
-      const newID = LiteGraph.uuidv4();
+      const newID = uuidv4();
       node.id = newID;
 
       if (idMap.nodeIDs[oldID] || idMap.nodeIDs[newID]) {
@@ -311,7 +319,7 @@ class Subgraph {
 
     for (const link of graph.links) {
       const oldID = link[0];
-      const newID = LiteGraph.uuidv4();
+      const newID = uuidv4();
       link[0] = newID;
 
       if (idMap.linkIDs[oldID] || idMap.linkIDs[newID]) {
@@ -366,13 +374,13 @@ class Subgraph {
   }
 
   clone() {
-    const node = LiteGraph.createNode(this.type);
+    const node = createNode(this.type);
     const data = this.serialize();
 
-    if (LiteGraph.use_uuids) {
+    if (LGraphSettings.use_uuids) {
       // LGraph.serialize() seems to reuse objects in the original graph. But we
       // need to change node IDs here, so clone it first.
-      const subgraph = LiteGraph.cloneObject(data.subgraph);
+      const subgraph = cloneObject(data.subgraph);
 
       this.reassignSubgraphUUIDs(subgraph);
 
@@ -470,11 +478,10 @@ class Subgraph {
 
   static title_color = '#334';
 }
-LiteGraph.Subgraph = Subgraph;
-LiteGraph.registerNodeType('graph/subgraph', Subgraph);
+registerNodeType('graph/subgraph', Subgraph);
 
 // Input for a subgraph
-class GraphInput {
+export class GraphInput {
   constructor() {
     this.addOutput('', 'number');
 
@@ -531,7 +538,7 @@ class GraphInput {
 
     // update output
     if (this.outputs[0].type != type) {
-      if (!LiteGraph.isValidConnection(this.outputs[0].type, type)) { this.disconnectOutput(0); }
+      if (!isValidConnection(this.outputs[0].type, type)) { this.disconnectOutput(0); }
       this.outputs[0].type = type;
     }
 
@@ -586,7 +593,7 @@ class GraphInput {
   }
 
   onAction(action, param) {
-    if (this.properties.type == LiteGraph.EVENT) {
+    if (this.properties.type == LGraphEvents.EVENT) {
       this.triggerSlot(0, param);
     }
   }
@@ -613,11 +620,10 @@ class GraphInput {
 
   static desc = 'Input of the graph';
 }
-LiteGraph.GraphInput = GraphInput;
-LiteGraph.registerNodeType('graph/input', GraphInput);
+registerNodeType('graph/input', GraphInput);
 
 // Output for a subgraph
-class GraphOutput {
+export class GraphOutput {
   constructor() {
     this.addInput('', '');
 
@@ -651,9 +657,9 @@ class GraphOutput {
     //     },
     //     set: function(v) {
     //         if (v == "action" || v == "event") {
-    //             v = LiteGraph.ACTION;
+    //             v = LGraphEvents.ACTION;
     //         }
-    //         if (!LiteGraph.isValidConnection(that.inputs[0].type,v))
+    //         if (!isValidConnection(that.inputs[0].type,v))
     //             that.disconnectInput(0);
     //         that.inputs[0].type = v;
     //         if (that.name_in_graph) {
@@ -700,8 +706,8 @@ class GraphOutput {
 
     // update output
     if (this.inputs[0].type != type) {
-      if (type == 'action' || type == 'event') { type = LiteGraph.EVENT; }
-      if (!LiteGraph.isValidConnection(this.inputs[0].type, type)) { this.disconnectInput(0); }
+      if (type == 'action' || type == 'event') { type = LGraphEvents.EVENT; }
+      if (!isValidConnection(this.inputs[0].type, type)) { this.disconnectInput(0); }
       this.inputs[0].type = type;
     }
 
@@ -717,7 +723,7 @@ class GraphOutput {
   }
 
   onAction(action, param) {
-    if (this.properties.type == LiteGraph.ACTION) {
+    if (this.properties.type == LGraphEvents.ACTION) {
       this.graph.trigger(this.properties.name, param);
     }
   }
@@ -739,8 +745,7 @@ class GraphOutput {
 
   static desc = 'Output of the graph';
 }
-LiteGraph.GraphOutput = GraphOutput;
-LiteGraph.registerNodeType('graph/output', GraphOutput);
+registerNodeType('graph/output', GraphOutput);
 
 // Constant
 class ConstantNumber {
@@ -776,7 +781,7 @@ class ConstantNumber {
 
   static desc = 'Constant number';
 }
-LiteGraph.registerNodeType('basic/const', ConstantNumber);
+registerNodeType('basic/const', ConstantNumber);
 
 class ConstantBoolean {
   constructor() {
@@ -793,7 +798,7 @@ class ConstantBoolean {
   }
 
   onGetInputs() {
-    return [['toggle', LiteGraph.ACTION]];
+    return [['toggle', LGraphEvents.ACTION]];
   }
 
   onAction(action) {
@@ -808,7 +813,7 @@ class ConstantBoolean {
 
   static desc = 'Constant boolean';
 }
-LiteGraph.registerNodeType('basic/boolean', ConstantBoolean);
+registerNodeType('basic/boolean', ConstantBoolean);
 
 class ConstantString {
   constructor() {
@@ -840,7 +845,7 @@ class ConstantString {
 
   static desc = 'Constant string';
 }
-LiteGraph.registerNodeType('basic/string', ConstantString);
+registerNodeType('basic/string', ConstantString);
 
 class ConstantObject {
   constructor() {
@@ -857,7 +862,7 @@ class ConstantObject {
 
   static desc = 'Constant Object';
 }
-LiteGraph.registerNodeType('basic/object', ConstantObject);
+registerNodeType('basic/object', ConstantObject);
 
 class ConstantFile {
   constructor() {
@@ -893,8 +898,8 @@ class ConstantFile {
 
     this._url = url;
     this._type = this.properties.type;
-    if (url.substr(0, 4) == 'http' && LiteGraph.proxy) {
-      url = LiteGraph.proxy + url.substr(url.indexOf(':') + 3);
+    if (url.substr(0, 4) == 'http' && LGraphSettings.proxy) {
+      url = LGraphSettings.proxy + url.substr(url.indexOf(':') + 3);
     }
     fetch(url)
       .then((response) => {
@@ -939,14 +944,14 @@ class ConstantFile {
 
   static '@type' = { type: 'enum', values: ['text', 'arraybuffer', 'blob', 'json'] };
 }
-LiteGraph.registerNodeType('basic/file', ConstantFile);
+registerNodeType('basic/file', ConstantFile);
 
 // to store json objects
 class JSONParse {
   constructor() {
-    this.addInput('parse', LiteGraph.ACTION);
+    this.addInput('parse', LGraphEvents.ACTION);
     this.addInput('json', 'string');
-    this.addOutput('done', LiteGraph.EVENT);
+    this.addOutput('done', LGraphEvents.EVENT);
     this.addOutput('object', 'object');
     this.widget = this.addWidget('button', 'parse', '', this.parse.bind(this));
     this._str = null;
@@ -979,7 +984,7 @@ class JSONParse {
 
   static desc = 'Parses JSON String into object';
 }
-LiteGraph.registerNodeType('basic/jsonparse', JSONParse);
+registerNodeType('basic/jsonparse', JSONParse);
 
 // to store json objects
 class ConstantData {
@@ -1016,7 +1021,7 @@ class ConstantData {
 
   static desc = 'Constant Data';
 }
-LiteGraph.registerNodeType('basic/data', ConstantData);
+registerNodeType('basic/data', ConstantData);
 
 // to store json objects
 class ConstantArray {
@@ -1063,7 +1068,7 @@ class ConstantArray {
 
   static desc = 'Constant Array';
 }
-LiteGraph.registerNodeType('basic/array', ConstantArray);
+registerNodeType('basic/array', ConstantArray);
 
 class SetArray {
   constructor() {
@@ -1087,7 +1092,7 @@ class SetArray {
 
   static desc = 'Sets index of array';
 }
-LiteGraph.registerNodeType('basic/set_array', SetArray);
+registerNodeType('basic/set_array', SetArray);
 
 class ArrayElement {
   constructor() {
@@ -1109,7 +1114,7 @@ class ArrayElement {
 
   static desc = 'Returns an element from an array';
 }
-LiteGraph.registerNodeType('basic/array[]', ArrayElement);
+registerNodeType('basic/array[]', ArrayElement);
 
 class TableElement {
   constructor() {
@@ -1136,7 +1141,7 @@ class TableElement {
 
   static desc = 'Returns an element from a table';
 }
-LiteGraph.registerNodeType('basic/table[][]', TableElement);
+registerNodeType('basic/table[][]', TableElement);
 
 class ObjectProperty {
   constructor() {
@@ -1176,7 +1181,7 @@ class ObjectProperty {
 
   static desc = 'Outputs the property of an object';
 }
-LiteGraph.registerNodeType('basic/object_property', ObjectProperty);
+registerNodeType('basic/object_property', ObjectProperty);
 
 class ObjectKeys {
   constructor() {
@@ -1196,7 +1201,7 @@ class ObjectKeys {
 
   static desc = 'Outputs an array with the keys of an object';
 }
-LiteGraph.registerNodeType('basic/object_keys', ObjectKeys);
+registerNodeType('basic/object_keys', ObjectKeys);
 
 class SetObject {
   constructor() {
@@ -1220,7 +1225,7 @@ class SetObject {
 
   static desc = 'Adds propertiesrty to object';
 }
-LiteGraph.registerNodeType('basic/set_object', SetObject);
+registerNodeType('basic/set_object', SetObject);
 
 class MergeObjects {
   constructor() {
@@ -1252,7 +1257,7 @@ class MergeObjects {
 
   static desc = 'Creates an object copying properties from others';
 }
-LiteGraph.registerNodeType('basic/merge_objects', MergeObjects);
+registerNodeType('basic/merge_objects', MergeObjects);
 
 // Store as variable
 class Variable {
@@ -1286,7 +1291,7 @@ class Variable {
         return global;
       case Variable.LITEGRAPH:
       default:
-        return LiteGraph.Globals;
+        return LGraphNodeRegistry.Globals;
     }
   }
 
@@ -1306,21 +1311,21 @@ class Variable {
 
   static '@container' = { type: 'enum', values: { litegraph: Variable.LITEGRAPH, graph: Variable.GRAPH, global: Variable.GLOBALSCOPE } };
 }
-LiteGraph.registerNodeType('basic/variable', Variable);
+registerNodeType('basic/variable', Variable);
 
 function length(v) {
   if (v && v.length != null) { return Number(v.length); }
   return 0;
 }
 
-LiteGraph.wrapFunctionAsNode(
+wrapFunctionAsNode(
   'basic/length',
   length,
   [''],
   'number',
 );
 
-LiteGraph.wrapFunctionAsNode(
+wrapFunctionAsNode(
   'basic/not',
   (a) => !a,
   [''],
@@ -1331,7 +1336,7 @@ class DownloadData {
   constructor() {
     this.size = [60, 30];
     this.addInput('data', 0);
-    this.addInput('download', LiteGraph.ACTION);
+    this.addInput('download', LGraphEvents.ACTION);
     this.properties = { filename: 'data.json' };
     this.value = null;
     const that = this;
@@ -1381,7 +1386,7 @@ class DownloadData {
 
   static desc = 'Download some data';
 }
-LiteGraph.registerNodeType('basic/download', DownloadData);
+registerNodeType('basic/download', DownloadData);
 
 // Watch a value in the editor
 class Watch {
@@ -1429,7 +1434,7 @@ class Watch {
 
   static desc = 'Show value of input';
 }
-LiteGraph.registerNodeType('basic/watch', Watch);
+registerNodeType('basic/watch', Watch);
 
 // in case one type doesnt match other type but you want to connect them anyway
 class Cast {
@@ -1447,15 +1452,15 @@ class Cast {
 
   static desc = 'Allows to connect different types';
 }
-LiteGraph.registerNodeType('basic/cast', Cast);
+registerNodeType('basic/cast', Cast);
 
 // Show value inside the debug console
 class Console {
   constructor() {
-    this.mode = LiteGraph.ON_EVENT;
+    this.mode = LGraphEvents.ON_EVENT;
     this.size = [80, 30];
     this.addProperty('msg', '');
-    this.addInput('log', LiteGraph.EVENT);
+    this.addInput('log', LGraphEvents.EVENT);
     this.addInput('msg', 0);
   }
 
@@ -1485,9 +1490,9 @@ class Console {
 
   onGetInputs() {
     return [
-      ['log', LiteGraph.ACTION],
-      ['warn', LiteGraph.ACTION],
-      ['error', LiteGraph.ACTION],
+      ['log', LGraphEvents.ACTION],
+      ['warn', LGraphEvents.ACTION],
+      ['error', LGraphEvents.ACTION],
     ];
   }
 
@@ -1495,14 +1500,14 @@ class Console {
 
   static desc = 'Show value inside the console';
 }
-LiteGraph.registerNodeType('basic/console', Console);
+registerNodeType('basic/console', Console);
 
 // Show value inside the debug console
 class Alert {
   constructor() {
-    this.mode = LiteGraph.ON_EVENT;
+    this.mode = LGraphEvents.ON_EVENT;
     this.addProperty('msg', '');
-    this.addInput('', LiteGraph.EVENT);
+    this.addInput('', LGraphEvents.EVENT);
     const that = this;
     this.widget = this.addWidget('text', 'Text', '', 'msg');
     this.widgets_up = true;
@@ -1526,7 +1531,7 @@ class Alert {
 
   static color = '#510';
 }
-LiteGraph.registerNodeType('basic/alert', Alert);
+registerNodeType('basic/alert', Alert);
 
 // Execites simple code
 class NodeScript {
@@ -1542,11 +1547,11 @@ class NodeScript {
   }
 
   onConfigure(o) {
-    if (o.properties.onExecute && LiteGraph.allow_scripts) { this.compileCode(o.properties.onExecute); } else { console.warn('Script not compiled, LiteGraph.allow_scripts is false'); }
+    if (o.properties.onExecute && LGraphSettings.allow_scripts) { this.compileCode(o.properties.onExecute); } else { console.warn('Script not compiled, LGraphSettings.allow_scripts is false'); }
   }
 
   onPropertyChanged(name, value) {
-    if (name == 'onExecute' && LiteGraph.allow_scripts) { this.compileCode(value); } else { console.warn('Script not compiled, LiteGraph.allow_scripts is false'); }
+    if (name == 'onExecute' && LGraphSettings.allow_scripts) { this.compileCode(value); } else { console.warn('Script not compiled, LGraphSettings.allow_scripts is false'); }
   }
 
   compileCode(code) {
@@ -1606,7 +1611,7 @@ class NodeScript {
     onExecute: { type: 'code' },
   };
 }
-LiteGraph.registerNodeType('basic/script', NodeScript);
+registerNodeType('basic/script', NodeScript);
 
 class GenericCompare {
   constructor() {
@@ -1705,4 +1710,4 @@ class GenericCompare {
     values: GenericCompare.values,
   };
 }
-LiteGraph.registerNodeType('basic/CompareValues', GenericCompare);
+registerNodeType('basic/CompareValues', GenericCompare);

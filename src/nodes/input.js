@@ -1,10 +1,11 @@
-import { LiteGraph } from '@/litegraph';
+import { LGraphEvents } from '../core/events';
+import { registerNodeType } from '../core/LGraphNode';
 
 class GamepadInput {
   constructor() {
     this.addOutput('left_x_axis', 'number');
     this.addOutput('left_y_axis', 'number');
-    this.addOutput('button_pressed', LiteGraph.EVENT);
+    this.addOutput('button_pressed', LGraphEvents.EVENT);
     this.properties = { gamepad_index: 0, threshold: 0.1 };
 
     this._left_axis = new Float32Array(2);
@@ -293,22 +294,22 @@ class GamepadInput {
       ['rs_button', 'number'],
       ['start_button', 'number'],
       ['back_button', 'number'],
-      ['a_button_event', LiteGraph.EVENT],
-      ['b_button_event', LiteGraph.EVENT],
-      ['x_button_event', LiteGraph.EVENT],
-      ['y_button_event', LiteGraph.EVENT],
-      ['lb_button_event', LiteGraph.EVENT],
-      ['rb_button_event', LiteGraph.EVENT],
-      ['ls_button_event', LiteGraph.EVENT],
-      ['rs_button_event', LiteGraph.EVENT],
-      ['start_button_event', LiteGraph.EVENT],
-      ['back_button_event', LiteGraph.EVENT],
+      ['a_button_event', LGraphEvents.EVENT],
+      ['b_button_event', LGraphEvents.EVENT],
+      ['x_button_event', LGraphEvents.EVENT],
+      ['y_button_event', LGraphEvents.EVENT],
+      ['lb_button_event', LGraphEvents.EVENT],
+      ['rb_button_event', LGraphEvents.EVENT],
+      ['ls_button_event', LGraphEvents.EVENT],
+      ['rs_button_event', LGraphEvents.EVENT],
+      ['start_button_event', LGraphEvents.EVENT],
+      ['back_button_event', LGraphEvents.EVENT],
       ['hat_left', 'number'],
       ['hat_right', 'number'],
       ['hat_up', 'number'],
       ['hat_down', 'number'],
       ['hat', 'number'],
-      ['button_pressed', LiteGraph.EVENT],
+      ['button_pressed', LGraphEvents.EVENT],
     ];
   }
 
@@ -350,4 +351,4 @@ class GamepadInput {
 
   static mapping_array = ['a', 'b', 'x', 'y', 'lb', 'rb', 'lt', 'rt', 'back', 'start', 'ls', 'rs'];
 }
-LiteGraph.registerNodeType('input/gamepad', GamepadInput);
+registerNodeType('input/gamepad', GamepadInput);

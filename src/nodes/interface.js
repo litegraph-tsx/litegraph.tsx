@@ -1,8 +1,10 @@
-import { LiteGraph, clamp } from '@/litegraph';
+import { LGraphEvents } from '../core/events';
+import { clamp, colorToString } from '../core/utilities';
+import { registerNodeType } from '../core/LGraphNode';
 
 class WidgetButton {
   constructor() {
-    this.addOutput('', LiteGraph.EVENT);
+    this.addOutput('', LGraphEvents.EVENT);
     this.addOutput('', 'boolean');
     this.addProperty('text', 'click me');
     this.addProperty('font_size', 30);
@@ -84,14 +86,14 @@ class WidgetButton {
 
   static font = 'Arial';
 }
-LiteGraph.registerNodeType('widget/button', WidgetButton);
+registerNodeType('widget/button', WidgetButton);
 
 class WidgetToggle {
   constructor() {
     this.addInput('', 'boolean');
-    this.addInput('e', LiteGraph.ACTION);
+    this.addInput('e', LGraphEvents.ACTION);
     this.addOutput('v', 'boolean');
-    this.addOutput('e', LiteGraph.EVENT);
+    this.addOutput('e', LGraphEvents.EVENT);
     this.properties = { font: '', value: false };
     this.size = [160, 44];
   }
@@ -156,7 +158,7 @@ class WidgetToggle {
 
   static desc = 'Toggles between true or false';
 }
-LiteGraph.registerNodeType('widget/toggle', WidgetToggle);
+registerNodeType('widget/toggle', WidgetToggle);
 
 class WidgetNumber {
   constructor() {
@@ -276,12 +278,12 @@ class WidgetNumber {
 
   static markers_color = '#666';
 }
-LiteGraph.registerNodeType('widget/number', WidgetNumber);
+registerNodeType('widget/number', WidgetNumber);
 
 class WidgetCombo {
   constructor() {
     this.addOutput('', 'string');
-    this.addOutput('change', LiteGraph.EVENT);
+    this.addOutput('change', LGraphEvents.EVENT);
     this.size = [80, 60];
     this.properties = { value: 'A', values: 'A;B;C' };
     this.old_y = -1;
@@ -312,7 +314,7 @@ class WidgetCombo {
 
   static desc = 'Widget to select from a list';
 }
-LiteGraph.registerNodeType('widget/combo', WidgetCombo);
+registerNodeType('widget/combo', WidgetCombo);
 
 class WidgetKnob {
   constructor() {
@@ -408,7 +410,7 @@ class WidgetKnob {
 
   onExecute() {
     this.setOutputData(0, this.properties.value);
-    this.boxcolor = LiteGraph.colorToString([
+    this.boxcolor = colorToString([
       this.value,
       this.value,
       this.value,
@@ -420,7 +422,7 @@ class WidgetKnob {
     this.radius = this.size[0] * 0.5;
     if (
       e.canvasY - this.pos[1] < 20
-              || LiteGraph.distance(
+              || distance(
                 [e.canvasX, e.canvasY],
                 [this.pos[0] + this.center[0], this.pos[1] + this.center[1]],
               ) > this.radius
@@ -473,7 +475,7 @@ class WidgetKnob {
 
   static size = [80, 100];
 }
-LiteGraph.registerNodeType('widget/knob', WidgetKnob);
+registerNodeType('widget/knob', WidgetKnob);
 
 // Show value inside the debug console
 class WidgetSliderGUI {
@@ -511,7 +513,7 @@ class WidgetSliderGUI {
 
   static title = 'Inner Slider';
 }
-LiteGraph.registerNodeType('widget/internal_slider', WidgetSliderGUI);
+registerNodeType('widget/internal_slider', WidgetSliderGUI);
 
 class WidgetHSlider {
   constructor() {
@@ -545,7 +547,7 @@ class WidgetHSlider {
     this.properties.value = this.properties.min
               + (this.properties.max - this.properties.min) * this.value;
     this.setOutputData(0, this.properties.value);
-    this.boxcolor = LiteGraph.colorToString([
+    this.boxcolor = colorToString([
       this.value,
       this.value,
       this.value,
@@ -597,7 +599,7 @@ class WidgetHSlider {
 
   static desc = 'Linear slider controller';
 }
-LiteGraph.registerNodeType('widget/hslider', WidgetHSlider);
+registerNodeType('widget/hslider', WidgetHSlider);
 
 class WidgetProgress {
   constructor() {
@@ -630,7 +632,7 @@ class WidgetProgress {
 
   static desc = 'Shows data in linear progress';
 }
-LiteGraph.registerNodeType('widget/progress', WidgetProgress);
+registerNodeType('widget/progress', WidgetProgress);
 
 class WidgetText {
   constructor() {
@@ -728,7 +730,7 @@ class WidgetText {
     { name: 'normal_text', text: 'Normal', type: 'minibutton' },
   ];
 }
-LiteGraph.registerNodeType('widget/text', WidgetText);
+registerNodeType('widget/text', WidgetText);
 
 class WidgetPanel {
   constructor() {
@@ -801,4 +803,4 @@ class WidgetPanel {
 
   static widgets = [{ name: 'update', text: 'Update', type: 'button' }];
 }
-LiteGraph.registerNodeType('widget/panel', WidgetPanel);
+registerNodeType('widget/panel', WidgetPanel);
