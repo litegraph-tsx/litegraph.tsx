@@ -1,9 +1,11 @@
 import { LGraphSettings } from '@/settings';
 import { isInsideRectangle, isValidConnection, uuidv4 } from '../core/utilities';
 import {
-  LGraphNodeRegistry
+  LGraphNodeRegistry,
 } from '../core/nodes';
-import { createNode, wrapFunctionAsNode,registerNodeType, LGraphNode } from '../core/LGraphNode';
+import {
+  createNode, wrapFunctionAsNode, registerNodeType, LGraphNode,
+} from '../core/LGraphNode';
 import { LGraphEvents } from '../core/events';
 
 // basic nodes

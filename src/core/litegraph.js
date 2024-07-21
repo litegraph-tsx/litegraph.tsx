@@ -6,7 +6,9 @@ import { DragAndScale } from './DragAndScale';
 import { LGraph } from './LGraph';
 import { LGraphCanvas } from './LGraphCanvas';
 import { LGraphGroup } from './LGraphGroup';
-import { addNodeMethod, createNode, registerNodeType, wrapFunctionAsNode } from './LGraphNode';
+import {
+  addNodeMethod, createNode, registerNodeType, wrapFunctionAsNode,
+} from './LGraphNode';
 import { LLink } from './LLink';
 import {
   buildNodeClassFromObject,

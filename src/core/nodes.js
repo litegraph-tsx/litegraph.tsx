@@ -98,7 +98,6 @@ export function unregisterNodeType(type) {
   }
 }
 
-
 /**
  * Removes all previously registered node's types
  */
@@ -204,4 +203,3 @@ export function buildNodeClassFromObject(
   registerNodeType(name, classobj);
   return classobj;
 }
-
