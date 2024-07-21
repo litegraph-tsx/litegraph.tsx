@@ -490,6 +490,11 @@ export class LGraphCanvas {
     this._events_binded = false;
   }
 
+  /**
+   * Extracts and returns the file extension from a given URL.
+   * @param {string} url - The URL from which to extract the file extension.
+   * @returns {string} The extracted file extension in lowercase. Returns an empty string if no extension is found.
+   */
   static getFileExtension(url) {
     const question = url.indexOf('?');
     if (question != -1) {
@@ -608,6 +613,11 @@ export class LGraphCanvas {
     this.last_mouseclick = 0;
   }
 
+  /**
+   * Processes mouse down event within the graph canvas.
+   * @param {MouseEvent} e - The mouse event object.
+   * @returns {boolean} Returns false to prevent default behavior.
+   */
   processMouseDown(e) {
     if (this.set_canvas_dirty_on_mouse_event) this.dirty_canvas = true;
 
@@ -1854,6 +1864,10 @@ export class LGraphCanvas {
     }
   }
 
+  /**
+   * Copies the selected nodes and their connections to the clipboard.
+   * @param {object} [nodes] - Optional. The nodes to copy. If not provided, copies selected nodes.
+   */
   copyToClipboard(nodes) {
     const clipboard_info = {
       nodes: [],
@@ -1911,6 +1925,10 @@ export class LGraphCanvas {
     );
   }
 
+  /**
+   * Pastes nodes and their connections from the clipboard into the graph.
+   * @param {boolean} [isConnectUnselected=false] - Flag indicating whether to connect unselected nodes from the clipboard.
+   */
   pasteFromClipboard(isConnectUnselected = false) {
     // if ctrl + shift + v is off, return when isConnectUnselected is true (shift is pressed) to maintain old behavior
     if (!LiteGraph.ctrl_shift_v_paste_connect_unselected_outputs && isConnectUnselected) {
@@ -2062,7 +2080,10 @@ export class LGraphCanvas {
     return false;
   }
 
-  // called if the graph doesn't have a default drop item behaviour
+  /**
+   * Checks if a dropped item (file) can be processed as a node in the graph.
+   * @param {DragEvent} e - The drag event object containing data about the dropped item.
+   */
   checkDropItem(e) {
     if (e.dataTransfer.files.length) {
       const file = e.dataTransfer.files[0];
@@ -2081,6 +2102,11 @@ export class LGraphCanvas {
     }
   }
 
+  /**
+   * Processes actions when a node is double-clicked.
+   * Calls the appropriate callbacks and sets the canvas dirty.
+   * @param {LGraphNode} n - The node that was double-clicked.
+   */
   processNodeDblClicked(n) {
     if (this.onShowNodePanel) {
       this.onShowNodePanel(n);
@@ -2095,6 +2121,12 @@ export class LGraphCanvas {
     this.setDirty(true);
   }
 
+  /**
+   * Processes actions when a node is selected.
+   * Selects the node based on the event modifiers and invokes the onNodeSelected callback if defined.
+   * @param {LGraphNode} node - The node to be selected.
+   * @param {MouseEvent} [e] - The mouse event object that triggered the selection.
+   */
   processNodeSelected(node, e) {
     this.selectNode(node, e && (e.shiftKey || e.ctrlKey || this.multi_select));
     if (this.onNodeSelected) {
@@ -2346,7 +2378,11 @@ export class LGraphCanvas {
     return this.ds.convertCanvasToOffset(pos, out);
   }
 
-  // converts event coordinates from canvas2D to graph coordinates
+  /**
+   * Converts event coordinates from canvas 2D space to graph coordinates.
+   * @param {MouseEvent} e - The mouse event object containing clientX and clientY coordinates.
+   * @returns {Array} An array containing the converted canvas offset [x, y].
+   */
   convertEventToCanvasOffset(e) {
     const rect = this.canvas.getBoundingClientRect();
     return this.convertCanvasToOffset([
@@ -2719,6 +2755,12 @@ export class LGraphCanvas {
     this.drawSubgraphPanelRight(subgraph, subnode, ctx);
   }
 
+  /**
+   * Draws the left panel for a subgraph node, displaying its inputs and options.
+   * @param {LGraph} subgraph - The subgraph containing nodes.
+   * @param {GraphNode} subnode - The subgraph node itself.
+   * @param {CanvasRenderingContext2D} ctx - The 2D context of the canvas.
+   */
   drawSubgraphPanelLeft(subgraph, subnode, ctx) {
     const num = subnode.inputs ? subnode.inputs.length : 0;
     const w = 200;
@@ -2786,6 +2828,12 @@ export class LGraphCanvas {
     }
   }
 
+  /**
+   * Draws the right panel for a subgraph node, displaying its outputs and options.
+   * @param {LGraph} subgraph - The subgraph containing nodes.
+   * @param {GraphNode} subnode - The subgraph node itself.
+   * @param {CanvasRenderingContext2D} ctx - The 2D context of the canvas.
+   */
   drawSubgraphPanelRight(subgraph, subnode, ctx) {
     const num = subnode.outputs ? subnode.outputs.length : 0;
     const canvas_w = this.bgcanvas.width;
@@ -2855,7 +2903,18 @@ export class LGraphCanvas {
     }
   }
 
-  // Draws a button into the canvas overlay and computes if it was clicked using the immediate gui paradigm
+  /**
+   * Draws a button into the canvas overlay and computes if it was clicked using the immediate GUI paradigm.
+   * @param {number} x - The x-coordinate of the button's top-left corner.
+   * @param {number} y - The y-coordinate of the button's top-left corner.
+   * @param {number} w - The width of the button.
+   * @param {number} h - The height of the button.
+   * @param {string} text - The text displayed on the button (optional).
+   * @param {string} [bgcolor=LiteGraph.NODE_DEFAULT_COLOR] - The background color of the button.
+   * @param {string} [hovercolor='#555'] - The background color when hovering over the button.
+   * @param {string} [textcolor=LiteGraph.NODE_TEXT_COLOR] - The color of the text displayed on the button.
+   * @returns {boolean} Whether the button was clicked.
+   */
   drawButton(x, y, w, h, text, bgcolor, hovercolor, textcolor) {
     const { ctx } = this;
     bgcolor = bgcolor || LiteGraph.NODE_DEFAULT_COLOR;
@@ -2892,6 +2951,15 @@ export class LGraphCanvas {
     return was_clicked;
   }
 
+  /**
+   * Checks if the specified area is clicked based on current mouse position and previous click position.
+   * @param {number} x - The x-coordinate of the area's top-left corner.
+   * @param {number} y - The y-coordinate of the area's top-left corner.
+   * @param {number} w - The width of the area.
+   * @param {number} h - The height of the area.
+   * @param {boolean} hold_click - Indicates whether to hold the click (block further clicks).
+   * @returns {boolean} Whether the area was clicked.
+   */
   isAreaClicked(x, y, w, h, hold_click) {
     let pos = this.mouse;
     const hover = LiteGraph.isInsideRectangle(pos[0], pos[1], x, y, w, h);
@@ -3531,7 +3599,11 @@ export class LGraphCanvas {
     ctx.globalAlpha = 1.0;
   }
 
-  // used by this.over_link_center
+  /**
+   * Draws a tooltip for the link on the canvas context.
+   * @param {CanvasRenderingContext2D} ctx - The canvas 2D rendering context.
+   * @param {object} link - The link object containing information about the link.
+   */
   drawLinkTooltip(ctx, link) {
     const pos = link._pos;
     ctx.fillStyle = 'black';
@@ -3576,6 +3648,16 @@ export class LGraphCanvas {
     ctx.fillText(text, pos[0], pos[1] - 15 - h * 0.3);
   }
 
+  /**
+   * Draws the shape and background of a node on the canvas.
+   * @param {object} node - The node to draw.
+   * @param {CanvasRenderingContext2D} ctx - The canvas 2D rendering context.
+   * @param {Array<number>} size - The size of the node [width, height].
+   * @param {string} fgcolor - The foreground color of the node.
+   * @param {string} bgcolor - The background color of the node.
+   * @param {boolean} selected - Whether the node is selected.
+   * @param {boolean} mouse_over - Whether the mouse is over the node.
+   */
   drawNodeShape(node, ctx, size, fgcolor, bgcolor, selected, mouse_over) {
     // bg rect
     ctx.strokeStyle = fgcolor;
@@ -4291,7 +4373,15 @@ export class LGraphCanvas {
     }
   }
 
-  // returns the link center point based on curvature
+  /**
+   * Computes the point on a cubic Bezier curve based on the interpolation parameter `t`.
+   * @param {Array<number>} a - The starting point of the curve [x, y].
+   * @param {Array<number>} b - The ending point of the curve [x, y].
+   * @param {number} t - The interpolation parameter, typically between 0 and 1.
+   * @param {number} [start_dir=LiteGraph.RIGHT] - The direction of the start point (LEFT, RIGHT, UP, DOWN).
+   * @param {number} [end_dir=LiteGraph.LEFT] - The direction of the end point (LEFT, RIGHT, UP, DOWN).
+   * @returns {Array<number>} - The computed point [x, y] on the curve.
+   */
   computeConnectionPoint(a, b, t, start_dir, end_dir) {
     start_dir = start_dir || LiteGraph.RIGHT;
     end_dir = end_dir || LiteGraph.LEFT;
@@ -4341,6 +4431,10 @@ export class LGraphCanvas {
     return [x, y];
   }
 
+  /**
+   * Draws execution order indicators for visible nodes on the canvas.
+   * @param {CanvasRenderingContext2D} ctx - The canvas 2D rendering context.
+   */
   drawExecutionOrder(ctx) {
     ctx.shadowColor = 'transparent';
     ctx.globalAlpha = 0.25;
@@ -4840,6 +4934,10 @@ export class LGraphCanvas {
     ctx.restore();
   }
 
+  /**
+   * Adjusts the size of all nodes in the graph based on their computed size.
+   * Updates the visual representation on the canvas.
+   */
   adjustNodesSize() {
     const nodes = this.graph._nodes;
     for (let i = 0; i < nodes.length; ++i) {
@@ -4969,8 +5067,13 @@ export class LGraphCanvas {
             event.preventDefault();
         }; */
 
-  /* CONTEXT MENU ******************* */
-
+  /**
+   * Static method called when a group is added to the graph.
+   *
+   * @param {Object} info Information related to the group.
+   * @param {Object} entry Entry related to the group.
+   * @param {MouseEvent} mouse_event Mouse event that triggered the group addition.
+   */
   static onGroupAdd(info, entry, mouse_event) {
     const canvas = LGraphCanvas.active_canvas;
     const ref_window = canvas.getCanvasWindow();
@@ -5070,6 +5173,15 @@ export class LGraphCanvas {
     canvas.dirty_bgcanvas = true;
   }
 
+  /**
+   * Static method called to align nodes based on the specified value.
+   *
+   * @param {string} value - Alignment value ('Top', 'Bottom', 'Left', 'Right').
+   * @param {Object} options - Options related to the alignment.
+   * @param {MouseEvent} event - Mouse event that triggered the alignment.
+   * @param {Object} prev_menu - Previous menu related to the alignment.
+   * @param {Object} node - Node object related to the alignment.
+   */
   static onNodeAlign(value, options, event, prev_menu, node) {
     new LiteGraph.ContextMenu(['Top', 'Bottom', 'Left', 'Right'], {
       event,
@@ -5082,6 +5194,14 @@ export class LGraphCanvas {
     }
   }
 
+  /**
+   * Static method called to align groups of nodes based on the specified value.
+   *
+   * @param {string} value - Alignment value ('Top', 'Bottom', 'Left', 'Right').
+   * @param {Object} options - Options related to the alignment.
+   * @param {MouseEvent} event - Mouse event that triggered the alignment.
+   * @param {Object} prev_menu - Previous menu related to the alignment.
+   */
   static onGroupAlign(value, options, event, prev_menu) {
     new LiteGraph.ContextMenu(['Top', 'Bottom', 'Left', 'Right'], {
       event,
@@ -5094,6 +5214,17 @@ export class LGraphCanvas {
     }
   }
 
+  // Context Menu Related:
+  /**
+   * Static method called when adding a menu for node creation.
+   *
+   * @param {LGraphNode} node - The node associated with the menu.
+   * @param {Object} options - Options related to the menu.
+   * @param {MouseEvent} e - The mouse event that triggered the menu.
+   * @param {Object} prev_menu - Previous menu related to the node.
+   * @param {Function} callback - Optional callback function triggered after node creation.
+   * @returns {boolean} Returns false to prevent default behavior.
+   */
   static onMenuAdd(node, options, e, prev_menu, callback) {
     const canvas = LGraphCanvas.active_canvas;
     const ref_window = canvas.getCanvasWindow();
@@ -5163,6 +5294,16 @@ export class LGraphCanvas {
 
   static onMenuNodeEdit() {}
 
+  /**
+   * Static method to show a menu for optional node inputs.
+   *
+   * @param {any} v - The value associated with the menu.
+   * @param {Object} options - Options related to the menu.
+   * @param {MouseEvent} e - The mouse event that triggered the menu.
+   * @param {Object} prev_menu - Previous menu related to the node.
+   * @param {LGraphNode} node - The node associated with the menu.
+   * @returns {boolean} Returns false to prevent default behavior.
+   */
   static showMenuNodeOptionalInputs(v, options, e, prev_menu, node) {
     if (!node) {
       return;
@@ -5246,6 +5387,16 @@ export class LGraphCanvas {
     return false;
   }
 
+  /**
+   * Static method to show a menu for optional node outputs.
+   *
+   * @param {any} v - The value associated with the menu.
+   * @param {Object} options - Options related to the menu.
+   * @param {MouseEvent} e - The mouse event that triggered the menu.
+   * @param {Object} prev_menu - Previous menu related to the node.
+   * @param {LGraphNode} node - The node associated with the menu.
+   * @returns {boolean} Returns false to prevent default behavior.
+   */
   static showMenuNodeOptionalOutputs(v, options, e, prev_menu, node) {
     if (!node) {
       return;
@@ -5365,6 +5516,16 @@ export class LGraphCanvas {
     return false;
   }
 
+  /**
+   * Static method to show a menu for node properties.
+   *
+   * @param {any} value - The value associated with the menu.
+   * @param {Object} options - Options related to the menu.
+   * @param {MouseEvent} e - The mouse event that triggered the menu.
+   * @param {Object} prev_menu - Previous menu related to the node.
+   * @param {LGraphNode} node - The node associated with the menu.
+   * @returns {boolean} Returns false to prevent default behavior.
+   */
   static onShowMenuNodeProperties(value, options, e, prev_menu, node) {
     if (!node || !node.properties) {
       return;
@@ -5423,12 +5584,27 @@ export class LGraphCanvas {
     return false;
   }
 
+  /**
+   * Decodes HTML entities in a given string.
+   *
+   * @param {string} str - The string containing HTML entities to decode.
+   * @returns {string} Returns the decoded string without HTML entities.
+   */
   static decodeHTML(str) {
     const e = document.createElement('div');
     e.innerText = str;
     return e.innerHTML;
   }
 
+  /**
+   * Handles the resizing of a single node or multiple selected nodes in the graph canvas.
+   *
+   * @param {any} value - The value associated with the menu item.
+   * @param {any} options - Additional options.
+   * @param {MouseEvent} e - The mouse event that triggered the menu.
+   * @param {LiteGraph.ContextMenu} menu - The context menu instance.
+   * @param {LiteGraph.LGraphNode} node - The node on which the resize operation is performed.
+   */
   static onMenuResizeNode(value, options, e, menu, node) {
     if (!node) {
       return;
@@ -5451,6 +5627,13 @@ export class LGraphCanvas {
     node.setDirtyCanvas(true, true);
   }
 
+  /**
+   * Displays a context menu for a given link on the canvas, allowing options like adding a new node or deleting the link.
+   *
+   * @param {LiteGraph.LGraphLink} link - The link object.
+   * @param {MouseEvent} e - The mouse event that triggered the menu.
+   * @returns {boolean} Returns false to prevent default behavior.
+   */
   showLinkMenu(link, e) {
     const that = this;
     console.log(link);
@@ -5507,6 +5690,20 @@ export class LGraphCanvas {
     return false;
   }
 
+  /**
+   * Creates a default node based on the connection options provided and adds it to the graph.
+   *
+   * @param {Object} optPass - Options object for configuring the node creation.
+   * @param {LiteGraph.LGraphNode} [optPass.nodeFrom] - The node where the connection originates.
+   * @param {string|number|Object} [optPass.slotFrom] - The slot from which the connection originates.
+   * @param {LiteGraph.LGraphNode} [optPass.nodeTo] - The node where the connection terminates.
+   * @param {string|number|Object} [optPass.slotTo] - The slot to which the connection terminates.
+   * @param {Array<number>} [optPass.position] - The position on the canvas where the node should be placed.
+   * @param {string} [optPass.nodeType] - The type of node to create. Use 'AUTO' to determine automatically.
+   * @param {Array<number>} [optPass.posAdd=[0, 0]] - Additional x, y adjustments to the node position.
+   * @param {Array<number>} [optPass.posSizeFix=[0, 0]] - Alpha adjustments to the position x, y based on the new node size w,h.
+   * @returns {boolean} Returns true if the node creation and connection were successful, otherwise false.
+   */
   createDefaultNodeForSlot(optPass) { // addNodeMenu for connection
     var optPass = optPass || {};
     const opts = {
@@ -5654,6 +5851,17 @@ export class LGraphCanvas {
     return false;
   }
 
+  /**
+   * Displays a context menu for adding nodes or performing actions related to a connection.
+   *
+   * @param {Object} optPass - Options object for configuring the connection menu.
+   * @param {LiteGraph.LGraphNode} [optPass.nodeFrom] - The node where the connection originates.
+   * @param {string|number|Object} [optPass.slotFrom] - The slot from which the connection originates.
+   * @param {LiteGraph.LGraphNode} [optPass.nodeTo] - The node where the connection terminates.
+   * @param {string|number|Object} [optPass.slotTo] - The slot to which the connection terminates.
+   * @param {MouseEvent} optPass.e - The mouse event that triggered the context menu.
+   * @returns {boolean} Returns false after handling the context menu options.
+   */
   showConnectionMenu(optPass) { // addNodeMenu for connection
     var optPass = optPass || {};
     const opts = {
