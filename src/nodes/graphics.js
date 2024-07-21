@@ -1,6 +1,8 @@
 import { LiteGraph } from '@/litegraph';
 import { LGraphSettings } from '@/settings';
+import { LGraphEvents } from '../core/events';
 import { clamp, colorToString } from '../core/utilities';
+import { registerNodeType } from '../core/nodes';
 
 class GraphicsPlot {
   constructor() {
@@ -76,7 +78,7 @@ GraphicsPlot.title = 'Plot';
 GraphicsPlot.desc = 'Plots data over time';
 GraphicsPlot.colors = ['#FFF', '#F99', '#9F9', '#99F'];
 
-LiteGraph.registerNodeType('graphics/plot', GraphicsPlot);
+registerNodeType('graphics/plot', GraphicsPlot);
 
 class GraphicsImage {
   constructor() {
@@ -176,7 +178,7 @@ GraphicsImage.widgets = [{ name: 'load', text: 'Load', type: 'button' }];
 
 GraphicsImage.supported_extensions = ['jpg', 'jpeg', 'png', 'gif'];
 
-LiteGraph.registerNodeType('graphics/image', GraphicsImage);
+registerNodeType('graphics/image', GraphicsImage);
 
 class ColorPalette {
   constructor() {
@@ -253,7 +255,7 @@ class ColorPalette {
 ColorPalette.title = 'Palette';
 ColorPalette.desc = 'Generates a color';
 
-LiteGraph.registerNodeType('color/palette', ColorPalette);
+registerNodeType('color/palette', ColorPalette);
 
 class ImageFrame {
   constructor() {
@@ -307,7 +309,7 @@ class ImageFrame {
     { name: 'view', text: 'View Image', type: 'button' },
   ];
 }
-LiteGraph.registerNodeType('graphics/frame', ImageFrame);
+registerNodeType('graphics/frame', ImageFrame);
 
 class ImageFade {
   constructor() {
@@ -367,7 +369,7 @@ class ImageFade {
     { name: 'resizeB', text: 'Resize to B', type: 'button' },
   ];
 }
-LiteGraph.registerNodeType('graphics/imagefade', ImageFade);
+registerNodeType('graphics/imagefade', ImageFade);
 
 class ImageCrop {
   constructor() {
@@ -452,12 +454,12 @@ class ImageCrop {
 
   static desc = 'Crop Image';
 }
-LiteGraph.registerNodeType('graphics/cropImage', ImageCrop);
+registerNodeType('graphics/cropImage', ImageCrop);
 
 // CANVAS stuff
 class CanvasNode {
   constructor() {
-    this.addInput('clear', LiteGraph.ACTION);
+    this.addInput('clear', LGraphEvents.ACTION);
     this.addOutput('', 'canvas');
     this.properties = { width: 512, height: 512, autoclear: true };
 
@@ -492,7 +494,7 @@ class CanvasNode {
 
   static desc = 'Canvas to render stuff';
 }
-LiteGraph.registerNodeType('graphics/canvas', CanvasNode);
+registerNodeType('graphics/canvas', CanvasNode);
 
 class DrawImageNode {
   constructor() {
@@ -524,7 +526,7 @@ class DrawImageNode {
 
   static desc = 'Draws image into a canvas';
 }
-LiteGraph.registerNodeType('graphics/drawImage', DrawImageNode);
+registerNodeType('graphics/drawImage', DrawImageNode);
 
 class DrawRectangleNode {
   constructor() {
@@ -561,7 +563,7 @@ class DrawRectangleNode {
 
   static desc = 'Draws rectangle in canvas';
 }
-LiteGraph.registerNodeType('graphics/drawRectangle', DrawRectangleNode);
+registerNodeType('graphics/drawRectangle', DrawRectangleNode);
 
 class ImageVideo {
   constructor() {
@@ -750,7 +752,7 @@ class ImageVideo {
     { name: 'mute', text: 'Mute video', type: 'button' },
   ];
 }
-LiteGraph.registerNodeType('graphics/video', ImageVideo);
+registerNodeType('graphics/video', ImageVideo);
 
 // Texture Webcam *****************************************
 class ImageWebcam {
@@ -904,9 +906,9 @@ class ImageWebcam {
     return [
       ['width', 'number'],
       ['height', 'number'],
-      ['stream_ready', LiteGraph.EVENT],
-      ['stream_closed', LiteGraph.EVENT],
-      ['stream_error', LiteGraph.EVENT],
+      ['stream_ready', LGraphEvents.EVENT],
+      ['stream_closed', LGraphEvents.EVENT],
+      ['stream_error', LGraphEvents.EVENT],
     ];
   }
 
@@ -916,4 +918,4 @@ class ImageWebcam {
 
   static is_webcam_open = false;
 }
-LiteGraph.registerNodeType('graphics/webcam', ImageWebcam);
+registerNodeType('graphics/webcam', ImageWebcam);

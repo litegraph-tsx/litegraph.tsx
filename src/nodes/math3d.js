@@ -3,6 +3,7 @@ import {
 } from '@libs/gl-matrix-min';
 import { LiteGraph } from '@/litegraph';
 import { LGraphSettings } from '@/settings';
+import { registerNodeType } from '../core/nodes';
 
 const global = typeof (window) !== 'undefined' ? window : typeof (self) !== 'undefined' ? self : globalThis;
 
@@ -63,7 +64,7 @@ class Math3DMat4 {
 
   static temp_vec3 = new Float32Array(3);
 }
-LiteGraph.registerNodeType('math3d/mat4', Math3DMat4);
+registerNodeType('math3d/mat4', Math3DMat4);
 
 class Math3DOperation {
   constructor() {
@@ -172,7 +173,7 @@ LiteGraph.registerSearchboxExtra('math3d/operation', 'DOT()', {
   properties: { OP: 'dot' },
   title: 'DOT()',
 });
-LiteGraph.registerNodeType('math3d/operation', Math3DOperation);
+registerNodeType('math3d/operation', Math3DOperation);
 
 class Math3DVec3Scale {
   constructor() {
@@ -204,7 +205,7 @@ class Math3DVec3Scale {
 
   static desc = 'scales the components of a vec3';
 }
-LiteGraph.registerNodeType('math3d/vec3-scale', Math3DVec3Scale);
+registerNodeType('math3d/vec3-scale', Math3DVec3Scale);
 
 class Math3DVec3Length {
   constructor() {
@@ -225,7 +226,7 @@ class Math3DVec3Length {
 
   static desc = 'returns the module of a vector';
 }
-LiteGraph.registerNodeType('math3d/vec3-length', Math3DVec3Length);
+registerNodeType('math3d/vec3-length', Math3DVec3Length);
 
 class Math3DVec3Normalize {
   constructor() {
@@ -252,7 +253,7 @@ class Math3DVec3Normalize {
 
   static desc = 'returns the vector normalized';
 }
-LiteGraph.registerNodeType('math3d/vec3-normalize', Math3DVec3Normalize);
+registerNodeType('math3d/vec3-normalize', Math3DVec3Normalize);
 
 class Math3DVec3Lerp {
   constructor() {
@@ -287,7 +288,7 @@ class Math3DVec3Lerp {
 
   static desc = 'returns the interpolated vector';
 }
-LiteGraph.registerNodeType('math3d/vec3-lerp', Math3DVec3Lerp);
+registerNodeType('math3d/vec3-lerp', Math3DVec3Lerp);
 
 class Math3DVec3Dot {
   constructor() {
@@ -314,7 +315,7 @@ class Math3DVec3Dot {
 
   static desc = 'returns the dot product';
 }
-LiteGraph.registerNodeType('math3d/vec3-dot', Math3DVec3Dot);
+registerNodeType('math3d/vec3-dot', Math3DVec3Dot);
 
 // if glMatrix is installed...
 if (global.glMatrix) {
@@ -351,7 +352,7 @@ if (global.glMatrix) {
 
     static desc = 'quaternion';
   }
-  LiteGraph.registerNodeType('math3d/quaternion', Math3DQuaternion);
+  registerNodeType('math3d/quaternion', Math3DQuaternion);
 
   class Math3DRotation {
     constructor() {
@@ -380,7 +381,7 @@ if (global.glMatrix) {
 
     static desc = 'quaternion rotation';
   }
-  LiteGraph.registerNodeType('math3d/rotation', Math3DRotation);
+  registerNodeType('math3d/rotation', Math3DRotation);
 
   class MathEulerToQuat {
     constructor() {
@@ -406,7 +407,7 @@ if (global.glMatrix) {
 
     static desc = 'Converts euler angles (in degrees) to quaternion';
   }
-  LiteGraph.registerNodeType('math3d/euler_to_quat', MathEulerToQuat);
+  registerNodeType('math3d/euler_to_quat', MathEulerToQuat);
 
   class MathQuatToEuler {
     constructor() {
@@ -427,7 +428,7 @@ if (global.glMatrix) {
 
     static desc = 'Converts rotX,rotY,rotZ in degrees to quat';
   }
-  LiteGraph.registerNodeType('math3d/quat_to_euler', MathQuatToEuler);
+  registerNodeType('math3d/quat_to_euler', MathQuatToEuler);
 
   class Math3DRotateVec3 {
     constructor() {
@@ -456,7 +457,7 @@ if (global.glMatrix) {
 
     static desc = 'rotate a point';
   }
-  LiteGraph.registerNodeType('math3d/rotate_vec3', Math3DRotateVec3);
+  registerNodeType('math3d/rotate_vec3', Math3DRotateVec3);
 
   class Math3DMultQuat {
     constructor() {
@@ -484,7 +485,7 @@ if (global.glMatrix) {
 
     static desc = 'rotate quaternion';
   }
-  LiteGraph.registerNodeType('math3d/mult-quat', Math3DMultQuat);
+  registerNodeType('math3d/mult-quat', Math3DMultQuat);
 
   class Math3DQuatSlerp {
     constructor() {
@@ -521,7 +522,7 @@ if (global.glMatrix) {
 
     static desc = 'quaternion spherical interpolation';
   }
-  LiteGraph.registerNodeType('math3d/quat-slerp', Math3DQuatSlerp);
+  registerNodeType('math3d/quat-slerp', Math3DQuatSlerp);
 
   class Math3DRemapRange {
     constructor() {
@@ -580,7 +581,7 @@ if (global.glMatrix) {
 
     static desc = 'remap a 3D range';
   }
-  LiteGraph.registerNodeType('math3d/remap_range', Math3DRemapRange);
+  registerNodeType('math3d/remap_range', Math3DRemapRange);
 } // glMatrix
 else if (LGraphSettings.debug) {
   console.warn('No glmatrix found, some Math3D nodes may not work');

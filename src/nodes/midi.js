@@ -1,7 +1,9 @@
 import { AudioSynth } from '@libs/audiosynth';
 import { MidiParser } from '@libs/midi-parser';
 import { LiteGraph } from '@/litegraph';
+import { LGraphEvents } from '../core/events';
 import { getTime } from '../core/utilities';
+import { registerNodeType } from '../core/nodes';
 
 const MIDI_COLOR = '#243';
 
@@ -464,7 +466,7 @@ class MIDIInterface {
 
 class LGMIDIIn {
   constructor() {
-    this.addOutput('on_midi', LiteGraph.EVENT);
+    this.addOutput('on_midi', LGraphEvents.EVENT);
     this.addOutput('out', 'midi');
     this.properties = { port: 0 };
     this._last_midi_event = null;
@@ -572,12 +574,12 @@ class LGMIDIIn {
   onGetOutputs() {
     return [
       ['last_midi', 'midi'],
-      ['on_midi', LiteGraph.EVENT],
-      ['on_noteon', LiteGraph.EVENT],
-      ['on_noteoff', LiteGraph.EVENT],
-      ['on_cc', LiteGraph.EVENT],
-      ['on_pc', LiteGraph.EVENT],
-      ['on_pitchbend', LiteGraph.EVENT],
+      ['on_midi', LGraphEvents.EVENT],
+      ['on_noteon', LGraphEvents.EVENT],
+      ['on_noteoff', LGraphEvents.EVENT],
+      ['on_cc', LGraphEvents.EVENT],
+      ['on_pc', LGraphEvents.EVENT],
+      ['on_pitchbend', LGraphEvents.EVENT],
     ];
   }
 
@@ -589,11 +591,11 @@ class LGMIDIIn {
 
   static MIDIInterface = MIDIInterface;
 }
-LiteGraph.registerNodeType('midi/input', LGMIDIIn);
+registerNodeType('midi/input', LGMIDIIn);
 
 class LGMIDIOut {
   constructor() {
-    this.addInput('send', LiteGraph.EVENT);
+    this.addInput('send', LGraphEvents.EVENT);
     this.properties = { port: 0 };
 
     const that = this;
@@ -642,11 +644,11 @@ class LGMIDIOut {
   }
 
   onGetInputs() {
-    return [['send', LiteGraph.ACTION]];
+    return [['send', LGraphEvents.ACTION]];
   }
 
   onGetOutputs() {
-    return [['on_midi', LiteGraph.EVENT]];
+    return [['on_midi', LGraphEvents.EVENT]];
   }
 
   static title = 'MIDI Output';
@@ -659,11 +661,11 @@ class LGMIDIOut {
 
   static default_ports = { 0: 'unknown' };
 }
-LiteGraph.registerNodeType('midi/output', LGMIDIOut);
+registerNodeType('midi/output', LGMIDIOut);
 
 class LGMIDIShow {
   constructor() {
-    this.addInput('on_midi', LiteGraph.EVENT);
+    this.addInput('on_midi', LGraphEvents.EVENT);
     this._str = '';
     this.size = [200, 40];
   }
@@ -696,11 +698,11 @@ class LGMIDIShow {
   }
 
   onGetInputs() {
-    return [['in', LiteGraph.ACTION]];
+    return [['in', LGraphEvents.ACTION]];
   }
 
   onGetOutputs() {
-    return [['on_midi', LiteGraph.EVENT]];
+    return [['on_midi', LGraphEvents.EVENT]];
   }
 
   static title = 'MIDI Show';
@@ -709,7 +711,7 @@ class LGMIDIShow {
 
   static color = MIDI_COLOR;
 }
-LiteGraph.registerNodeType('midi/show', LGMIDIShow);
+registerNodeType('midi/show', LGMIDIShow);
 
 class LGMIDIFilter {
   constructor() {
@@ -727,8 +729,8 @@ class LGMIDIFilter {
       that.boxcolor = '#FA3';
     });
 
-    this.addInput('in', LiteGraph.EVENT);
-    this.addOutput('on_midi', LiteGraph.EVENT);
+    this.addInput('in', LGraphEvents.EVENT);
+    this.addOutput('on_midi', LGraphEvents.EVENT);
     this.boxcolor = '#AAA';
   }
 
@@ -819,7 +821,7 @@ class LGMIDIFilter {
     values: MIDIEvent.commands_reversed,
   };
 }
-LiteGraph.registerNodeType('midi/filter', LGMIDIFilter);
+registerNodeType('midi/filter', LGMIDIFilter);
 
 class LGMIDIEvent {
   constructor() {
@@ -830,9 +832,9 @@ class LGMIDIEvent {
       value2: 1,
     };
 
-    this.addInput('send', LiteGraph.EVENT);
-    this.addInput('assign', LiteGraph.EVENT);
-    this.addOutput('on_midi', LiteGraph.EVENT);
+    this.addInput('send', LGraphEvents.EVENT);
+    this.addInput('assign', LGraphEvents.EVENT);
+    this.addOutput('on_midi', LGraphEvents.EVENT);
 
     this.midi_event = new MIDIEvent();
     this.gate = false;
@@ -975,7 +977,7 @@ class LGMIDIEvent {
   onGetOutputs() {
     return [
       ['midi', 'midi'],
-      ['on_midi', LiteGraph.EVENT],
+      ['on_midi', LGraphEvents.EVENT],
       ['command', 'number'],
       ['note', 'number'],
       ['velocity', 'number'],
@@ -993,7 +995,7 @@ class LGMIDIEvent {
 
   static color = MIDI_COLOR;
 }
-LiteGraph.registerNodeType('midi/event', LGMIDIEvent);
+registerNodeType('midi/event', LGMIDIEvent);
 
 class LGMIDICC {
   constructor() {
@@ -1020,14 +1022,14 @@ class LGMIDICC {
 
   static color = MIDI_COLOR;
 }
-LiteGraph.registerNodeType('midi/cc', LGMIDICC);
+registerNodeType('midi/cc', LGMIDICC);
 
 class LGMIDIGenerator {
   constructor() {
-    this.addInput('generate', LiteGraph.ACTION);
+    this.addInput('generate', LGraphEvents.ACTION);
     this.addInput('scale', 'string');
     this.addInput('octave', 'number');
-    this.addOutput('note', LiteGraph.EVENT);
+    this.addOutput('note', LGraphEvents.EVENT);
     this.properties = {
       notes: 'A,A#,B,C,C#,D,D#,E,F,F#,G,G#',
       octave: 2,
@@ -1114,16 +1116,16 @@ class LGMIDIGenerator {
 
   static color = MIDI_COLOR;
 }
-LiteGraph.registerNodeType('midi/generator', LGMIDIGenerator);
+registerNodeType('midi/generator', LGMIDIGenerator);
 
 class LGMIDITranspose {
   constructor() {
     this.properties = {
       amount: 0,
     };
-    this.addInput('in', LiteGraph.ACTION);
+    this.addInput('in', LGraphEvents.ACTION);
     this.addInput('amount', 'number');
-    this.addOutput('out', LiteGraph.EVENT);
+    this.addOutput('out', LGraphEvents.EVENT);
 
     this.midi_event = new MIDIEvent();
   }
@@ -1161,16 +1163,16 @@ class LGMIDITranspose {
 
   static color = MIDI_COLOR;
 }
-LiteGraph.registerNodeType('midi/transpose', LGMIDITranspose);
+registerNodeType('midi/transpose', LGMIDITranspose);
 
 class LGMIDIQuantize {
   constructor() {
     this.properties = {
       scale: 'A,A#,B,C,C#,D,D#,E,F,F#,G,G#',
     };
-    this.addInput('note', LiteGraph.ACTION);
+    this.addInput('note', LGraphEvents.ACTION);
     this.addInput('scale', 'string');
-    this.addOutput('out', LiteGraph.EVENT);
+    this.addOutput('out', LGraphEvents.EVENT);
 
     this.valid_notes = new Array(12);
     this.offset_notes = new Array(12);
@@ -1241,7 +1243,7 @@ class LGMIDIQuantize {
 
   static color = MIDI_COLOR;
 }
-LiteGraph.registerNodeType('midi/quantize', LGMIDIQuantize);
+registerNodeType('midi/quantize', LGMIDIQuantize);
 
 class LGMIDIFromFile {
   constructor() {
@@ -1250,9 +1252,9 @@ class LGMIDIFromFile {
       autoplay: true,
     };
 
-    this.addInput('play', LiteGraph.ACTION);
-    this.addInput('pause', LiteGraph.ACTION);
-    this.addOutput('note', LiteGraph.EVENT);
+    this.addInput('play', LGraphEvents.ACTION);
+    this.addInput('pause', LGraphEvents.ACTION);
+    this.addOutput('note', LGraphEvents.EVENT);
     this._midi = null;
     this._current_time = 0;
     this._playing = false;
@@ -1338,7 +1340,7 @@ class LGMIDIFromFile {
 
   static color = MIDI_COLOR;
 }
-LiteGraph.registerNodeType('midi/fromFile', LGMIDIFromFile);
+registerNodeType('midi/fromFile', LGMIDIFromFile);
 
 class LGMIDIPlay {
   constructor() {
@@ -1346,10 +1348,10 @@ class LGMIDIPlay {
       volume: 0.5,
       duration: 1,
     };
-    this.addInput('note', LiteGraph.ACTION);
+    this.addInput('note', LGraphEvents.ACTION);
     this.addInput('volume', 'number');
     this.addInput('duration', 'number');
-    this.addOutput('note', LiteGraph.EVENT);
+    this.addOutput('note', LGraphEvents.EVENT);
 
     if (typeof AudioSynth === 'undefined') {
       console.error(
@@ -1400,7 +1402,7 @@ class LGMIDIPlay {
 
   static color = MIDI_COLOR;
 }
-LiteGraph.registerNodeType('midi/play', LGMIDIPlay);
+registerNodeType('midi/play', LGMIDIPlay);
 
 class LGMIDIKeys {
   constructor() {
@@ -1408,9 +1410,9 @@ class LGMIDIKeys {
       num_octaves: 2,
       start_octave: 2,
     };
-    this.addInput('note', LiteGraph.ACTION);
-    this.addInput('reset', LiteGraph.ACTION);
-    this.addOutput('note', LiteGraph.EVENT);
+    this.addInput('note', LGraphEvents.ACTION);
+    this.addInput('reset', LGraphEvents.ACTION);
+    this.addOutput('note', LGraphEvents.EVENT);
     this.size = [400, 100];
     this.keys = [];
     this._last_key = -1;
@@ -1606,7 +1608,7 @@ class LGMIDIKeys {
     },
   ];
 }
-LiteGraph.registerNodeType('midi/keys', LGMIDIKeys);
+registerNodeType('midi/keys', LGMIDIKeys);
 
 function now() {
   return window.performance.now();

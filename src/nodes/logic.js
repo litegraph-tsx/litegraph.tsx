@@ -1,4 +1,6 @@
 import { LiteGraph } from '@/litegraph';
+import { LGraphEvents } from '../core/events';
+import { registerNodeType } from '../core/nodes';
 
 class Selector {
   constructor() {
@@ -43,7 +45,7 @@ class Selector {
 
   static desc = 'selects an output';
 }
-LiteGraph.registerNodeType('logic/selector', Selector);
+registerNodeType('logic/selector', Selector);
 
 class Sequence {
   constructor() {
@@ -83,7 +85,7 @@ class Sequence {
 
   static desc = 'select one element from a sequence from a string';
 }
-LiteGraph.registerNodeType('logic/sequence', Sequence);
+registerNodeType('logic/sequence', Sequence);
 
 class logicAnd {
   constructor() {
@@ -114,7 +116,7 @@ class logicAnd {
 
   static desc = 'Return true if all inputs are true';
 }
-LiteGraph.registerNodeType('logic/AND', logicAnd);
+registerNodeType('logic/AND', logicAnd);
 
 class logicOr {
   constructor() {
@@ -144,7 +146,7 @@ class logicOr {
 
 logicOr.title = 'OR';
 logicOr.desc = 'Return true if at least one input is true';
-LiteGraph.registerNodeType('logic/OR', logicOr);
+registerNodeType('logic/OR', logicOr);
 
 class logicNot {
   constructor() {
@@ -162,7 +164,7 @@ class logicNot {
 
   static desc = 'Return the logical negation';
 }
-LiteGraph.registerNodeType('logic/NOT', logicNot);
+registerNodeType('logic/NOT', logicNot);
 
 class logicCompare {
   constructor() {
@@ -196,15 +198,15 @@ class logicCompare {
 
   static desc = 'Compare for logical equality';
 }
-LiteGraph.registerNodeType('logic/CompareBool', logicCompare);
+registerNodeType('logic/CompareBool', logicCompare);
 
 class logicBranch {
   constructor() {
     this.properties = { };
-    this.addInput('onTrigger', LiteGraph.ACTION);
+    this.addInput('onTrigger', LGraphEvents.ACTION);
     this.addInput('condition', 'boolean');
-    this.addOutput('true', LiteGraph.EVENT);
-    this.addOutput('false', LiteGraph.EVENT);
+    this.addOutput('true', LGraphEvents.EVENT);
+    this.addOutput('false', LGraphEvents.EVENT);
     this.mode = LiteGraph.ON_TRIGGER;
   }
 
@@ -221,4 +223,4 @@ class logicBranch {
 
   static desc = 'Branch execution on condition';
 }
-LiteGraph.registerNodeType('logic/IF', logicBranch);
+registerNodeType('logic/IF', logicBranch);

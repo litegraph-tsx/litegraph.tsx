@@ -1,13 +1,11 @@
 import { LGraphSettings } from './settings';
 import { console } from './Console';
 import { LGraphEvents } from './events';
-import {
-  LiteGraph,
-} from './litegraph';
 import { LGraphStyles } from './styles';
 import {
   cloneObject, getTime, isInsideRectangle, isValidConnection, uuidv4,
 } from './utilities';
+import { registerNodeAndSlotType } from './nodes';
 
 const global = typeof (window) !== 'undefined' ? window : typeof (self) !== 'undefined' ? self : globalThis;
 
@@ -67,10 +65,10 @@ const global = typeof (window) !== 'undefined' ? window : typeof (self) !== 'und
 */
 
 /**
-     * Base Class for all the node type classes
-     * @class LGraphNode
-     * @param {String} name a name for the node
-     */
+ * Base Class for all the node type classes
+ * @class LGraphNode
+ * @param {String} name a name for the node
+ */
 
 export class LGraphNode {
   constructor(title) {
@@ -278,7 +276,7 @@ export class LGraphNode {
 
   /* Creates a clone of this node */
   clone() {
-    const node = LiteGraph.createNode(this.type);
+    const node = createNode(this.type);
     if (!node) {
       return null;
     }
@@ -1037,7 +1035,7 @@ export class LGraphNode {
       this.onOutputAdded(output);
     }
 
-    if (LGraphSettings.auto_load_slot_types) LiteGraph.registerNodeAndSlotType(this, type, true);
+    if (LGraphSettings.auto_load_slot_types) registerNodeAndSlotType(this, type, true);
 
     this.setSize(this.computeSize());
     this.setDirtyCanvas(true, true);
@@ -1067,7 +1065,7 @@ export class LGraphNode {
         this.onOutputAdded(o);
       }
 
-      if (LGraphSettings.auto_load_slot_types) LiteGraph.registerNodeAndSlotType(this, info[1], true);
+      if (LGraphSettings.auto_load_slot_types) registerNodeAndSlotType(this, info[1], true);
     }
 
     this.setSize(this.computeSize());
@@ -1130,7 +1128,7 @@ export class LGraphNode {
       this.onInputAdded(input);
     }
 
-    LiteGraph.registerNodeAndSlotType(this, type);
+    registerNodeAndSlotType(this, type);
 
     this.setDirtyCanvas(true, true);
     return input;
@@ -1159,7 +1157,7 @@ export class LGraphNode {
         this.onInputAdded(o);
       }
 
-      LiteGraph.registerNodeAndSlotType(this, info[1]);
+      registerNodeAndSlotType(this, info[1]);
     }
 
     this.setSize(this.computeSize());
@@ -2498,3 +2496,76 @@ export class LGraphNode {
 }
 
 global.LGraphNode = LGraphNode;
+
+/**
+ * Create a node of a given type with a name. The node is not attached to any graph yet.
+ * @method createNode
+ * @param {String} type full name of the node class. p.e. "math/sin"
+ * @param {String} name a name to distinguish from other nodes
+ * @param {Object} options to set options
+ */
+export function createNode(type, title, options) {
+  const base_class = LGraphNodeRegistry.registered_node_types[type];
+  if (!base_class) {
+    if (LGraphSettings.debug) {
+      console.log(`GraphNode type "${type}" not registered.`);
+    }
+    return null;
+  }
+
+  const prototype = base_class.prototype || base_class;
+
+  title = title || base_class.title || type;
+
+  let node = null;
+
+  if (LGraphSettings.catch_exceptions) {
+    try {
+      node = new base_class(title);
+    } catch (err) {
+      console.error(err);
+      return null;
+    }
+  } else {
+    node = new base_class(title);
+  }
+
+  node.type = type;
+
+  if (!node.title && title) {
+    node.title = title;
+  }
+  if (!node.properties) {
+    node.properties = {};
+  }
+  if (!node.properties_info) {
+    node.properties_info = [];
+  }
+  if (!node.flags) {
+    node.flags = {};
+  }
+  if (!node.size) {
+    node.size = node.computeSize();
+    // call onresize?
+  }
+  if (!node.pos) {
+    node.pos = LGraphSettings.DEFAULT_POSITION.concat();
+  }
+  if (!node.mode) {
+    node.mode = LGraphEvents.ALWAYS;
+  }
+
+  // extra options
+  if (options) {
+    for (const i in options) {
+      node[i] = options[i];
+    }
+  }
+
+  // callback
+  if (node.onNodeCreated) {
+    node.onNodeCreated();
+  }
+
+  return node;
+}

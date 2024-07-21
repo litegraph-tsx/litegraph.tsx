@@ -1,5 +1,7 @@
 import { LiteGraph } from '@/litegraph';
 import { LGraphStyles } from '../core/styles';
+import { registerNodeType } from '../core/nodes';
+import { LGraphEvents } from '../core/events';
 
 const global = typeof (window) !== 'undefined' ? window : typeof (self) !== 'undefined' ? self : globalThis;
 
@@ -460,13 +462,13 @@ class LGAudioSource {
     return [
       ['playbackRate', 'number'],
       ['src', 'string'],
-      ['Play', LiteGraph.ACTION],
-      ['Stop', LiteGraph.ACTION],
+      ['Play', LGraphEvents.ACTION],
+      ['Stop', LGraphEvents.ACTION],
     ];
   }
 
   onGetOutputs() {
-    return [['buffer', 'audiobuffer'], ['start', LiteGraph.EVENT], ['ended', LiteGraph.EVENT]];
+    return [['buffer', 'audiobuffer'], ['start', LGraphEvents.EVENT], ['ended', LGraphEvents.EVENT]];
   }
 
   onDropFile(file) {
@@ -490,7 +492,7 @@ class LGAudioSource {
 
   static supported_extensions = ['wav', 'ogg', 'mp3'];
 }
-LiteGraph.registerNodeType('audio/source', LGAudioSource);
+registerNodeType('audio/source', LGAudioSource);
 
 class LGAudioMediaSource {
   constructor() {
@@ -629,8 +631,8 @@ class LGAudioMediaSource {
   onGetInputs() {
     return [
       ['playbackRate', 'number'],
-      ['Play', LiteGraph.ACTION],
-      ['Stop', LiteGraph.ACTION],
+      ['Play', LGraphEvents.ACTION],
+      ['Stop', LGraphEvents.ACTION],
     ];
   }
 
@@ -641,7 +643,7 @@ class LGAudioMediaSource {
 
   static desc = 'Plays microphone';
 }
-LiteGraph.registerNodeType('audio/media_source', LGAudioMediaSource);
+registerNodeType('audio/media_source', LGAudioMediaSource);
 
 class LGAudioAnalyser {
   constructor() {
@@ -727,7 +729,7 @@ class LGAudioAnalyser {
 
   static desc = 'Audio Analyser';
 }
-LiteGraph.registerNodeType('audio/analyser', LGAudioAnalyser);
+registerNodeType('audio/analyser', LGAudioAnalyser);
 
 class LGAudioGain {
   constructor() {
@@ -761,7 +763,7 @@ class LGAudioGain {
   static desc = 'Audio gain';
 }
 LGAudio.createAudioNodeWrapper(LGAudioGain);
-LiteGraph.registerNodeType('audio/gain', LGAudioGain);
+registerNodeType('audio/gain', LGAudioGain);
 
 class LGAudioConvolver {
   constructor() {
@@ -833,7 +835,7 @@ class LGAudioConvolver {
   static desc = 'Convolves the signal (used for reverb)';
 }
 LGAudio.createAudioNodeWrapper(LGAudioConvolver);
-LiteGraph.registerNodeType('audio/convolver', LGAudioConvolver);
+registerNodeType('audio/convolver', LGAudioConvolver);
 
 class LGAudioDynamicsCompressor {
   constructor() {
@@ -884,7 +886,7 @@ class LGAudioDynamicsCompressor {
   static desc = 'Dynamics Compressor';
 }
 LGAudio.createAudioNodeWrapper(LGAudioDynamicsCompressor);
-LiteGraph.registerNodeType('audio/dynamicsCompressor', LGAudioDynamicsCompressor);
+registerNodeType('audio/dynamicsCompressor', LGAudioDynamicsCompressor);
 
 /*
 class LGAudioWaveShaper {
@@ -919,7 +921,7 @@ LGAudio.createAudioNodeWrapper(LGAudioWaveShaper);
   Disabled till I dont find a way to do a wave shape
   LGAudioWaveShaper.title = "WaveShaper";
   LGAudioWaveShaper.desc = "Distortion using wave shape";
-  LiteGraph.registerNodeType("audio/waveShaper", LGAudioWaveShaper);
+  registerNodeType("audio/waveShaper", LGAudioWaveShaper);
 */
 
 class LGAudioMixer {
@@ -995,7 +997,7 @@ class LGAudioMixer {
 }
 
 LGAudio.createAudioNodeWrapper(LGAudioMixer);
-LiteGraph.registerNodeType('audio/mixer', LGAudioMixer);
+registerNodeType('audio/mixer', LGAudioMixer);
 
 class LGAudioADSR {
   constructor() {
@@ -1056,7 +1058,7 @@ class LGAudioADSR {
 }
 
 LGAudio.createAudioNodeWrapper(LGAudioADSR);
-LiteGraph.registerNodeType('audio/adsr', LGAudioADSR);
+registerNodeType('audio/adsr', LGAudioADSR);
 
 class LGAudioDelay {
   constructor() {
@@ -1085,7 +1087,7 @@ class LGAudioDelay {
 }
 
 LGAudio.createAudioNodeWrapper(LGAudioDelay);
-LiteGraph.registerNodeType('audio/delay', LGAudioDelay);
+registerNodeType('audio/delay', LGAudioDelay);
 
 class LGAudioBiquadFilter {
   constructor() {
@@ -1142,7 +1144,7 @@ class LGAudioBiquadFilter {
   static desc = 'Audio Biquad filter';
 }
 LGAudio.createAudioNodeWrapper(LGAudioBiquadFilter);
-LiteGraph.registerNodeType('audio/biquadfilter', LGAudioBiquadFilter);
+registerNodeType('audio/biquadfilter', LGAudioBiquadFilter);
 
 class LGAudioOscillatorNode {
   constructor() {
@@ -1220,7 +1222,7 @@ class LGAudioOscillatorNode {
 }
 
 LGAudio.createAudioNodeWrapper(LGAudioOscillatorNode);
-LiteGraph.registerNodeType('audio/oscillator', LGAudioOscillatorNode);
+registerNodeType('audio/oscillator', LGAudioOscillatorNode);
 
 class LGAudioVisualization {
   constructor() {
@@ -1295,7 +1297,7 @@ class LGAudioVisualization {
 
   static desc = 'Audio Visualization';
 }
-LiteGraph.registerNodeType('audio/visualization', LGAudioVisualization);
+registerNodeType('audio/visualization', LGAudioVisualization);
 
 class LGAudioBandSignal {
   constructor() {
@@ -1349,7 +1351,7 @@ class LGAudioBandSignal {
 
   static desc = 'extract the signal of some frequency';
 }
-LiteGraph.registerNodeType('audio/signal', LGAudioBandSignal);
+registerNodeType('audio/signal', LGAudioBandSignal);
 
 class LGAudioScript {
   constructor() {
@@ -1472,7 +1474,7 @@ class LGAudioScript {
   static '@code' = { widget: 'code', type: 'code' };
 }
 LGAudio.createAudioNodeWrapper(LGAudioScript);
-LiteGraph.registerNodeType('audio/script', LGAudioScript);
+registerNodeType('audio/script', LGAudioScript);
 
 class LGAudioDestination {
   constructor() {
@@ -1484,6 +1486,6 @@ class LGAudioDestination {
 
   static desc = 'Audio output';
 }
-LiteGraph.registerNodeType('audio/destination', LGAudioDestination);
+registerNodeType('audio/destination', LGAudioDestination);
 
 global.LGAudio = LGAudio;

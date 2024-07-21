@@ -1,5 +1,3 @@
-import { LiteGraph } from './litegraph';
-import { LGraphNode } from './LGraphNode';
 import { getTime, uuidv4 } from './utilities';
 import { LGraphGroup } from './LGraphGroup';
 import { console } from './Console';
@@ -8,6 +6,8 @@ import { LGraphEvents } from './events';
 import { GraphInput, Subgraph } from '../nodes/base';
 import { LGraphCanvas } from './LGraphCanvas';
 import { LGraphSettings } from './settings';
+import { LGraphNodeRegistry } from './nodes';
+import { createNode } from './LGraphNode';
 
 const global = typeof (window) !== 'undefined' ? window : typeof (self) !== 'undefined' ? self : globalThis;
 
@@ -929,12 +929,12 @@ export class LGraph {
     let changes = false;
     for (let i = 0; i < this._nodes.length; i++) {
       const node = this._nodes[i];
-      const ctor = LiteGraph.registered_node_types[node.type];
+      const ctor = LGraphNodeRegistry.registered_node_types[node.type];
       if (node.constructor == ctor) {
         continue;
       }
       console.log(`node being replaced by newer version: ${node.type}`);
-      const newnode = LiteGraph.createNode(node.type);
+      const newnode = createNode(node.type);
       changes = true;
       this._nodes[i] = newnode;
       newnode.configure(node.serialize());
@@ -1443,7 +1443,7 @@ export class LGraph {
     if (nodes) {
       for (var i = 0, l = nodes.length; i < l; ++i) {
         var n_info = nodes[i]; // stored info
-        var node = LiteGraph.createNode(n_info.type, n_info.title);
+        var node = createNode(n_info.type, n_info.title);
         if (!node) {
           if (LGraphSettings.debug) {
             console.log(`Node not found or has errors: ${n_info.type}`);

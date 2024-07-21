@@ -1,6 +1,7 @@
 import { GL } from '@libs/litegl';
 import { LiteGraph } from '@/litegraph';
 import { LGraphTexture } from './gltextures';
+import { registerNodeType } from '../core/nodes';
 
 const global = typeof (window) !== 'undefined' ? window : typeof (self) !== 'undefined' ? self : globalThis;
 
@@ -122,7 +123,7 @@ export class LGraphFXLens {
     }\n\
     ';
 }
-LiteGraph.registerNodeType('fx/lens', LGraphFXLens);
+registerNodeType('fx/lens', LGraphFXLens);
 
 /* not working yet
     function LGraphDepthOfField()
@@ -233,7 +234,7 @@ LiteGraph.registerNodeType('fx/lens', LGraphFXLens);
         }\n\
         ";
 
-    LiteGraph.registerNodeType("fx/DOF", LGraphDepthOfField );
+    registerNodeType("fx/DOF", LGraphDepthOfField );
     global.LGraphDepthOfField = LGraphDepthOfField;
     */
 
@@ -474,7 +475,7 @@ export class LGraphFXBokeh {
         gl_FragColor = color;\n\
       }\n";
 */
-LiteGraph.registerNodeType('fx/bokeh', LGraphFXBokeh);
+registerNodeType('fx/bokeh', LGraphFXBokeh);
 
 export class LGraphFXGeneric {
   constructor() {
@@ -646,7 +647,7 @@ export class LGraphFXGeneric {
         gl_FragColor = vec4( pow( color.xyz, vec3(gamma) ), color.a );\n\
     }\n';
 }
-LiteGraph.registerNodeType('fx/generic', LGraphFXGeneric);
+registerNodeType('fx/generic', LGraphFXGeneric);
 
 export class LGraphFXVigneting {
   constructor() {
@@ -739,7 +740,7 @@ export class LGraphFXVigneting {
     }\n\
     ';
 }
-LiteGraph.registerNodeType('fx/vigneting', LGraphFXVigneting);
+registerNodeType('fx/vigneting', LGraphFXVigneting);
 
 global.LGraphFXLens = LGraphFXLens;
 global.LGraphFXBokeh = LGraphFXBokeh;

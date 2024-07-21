@@ -1,4 +1,4 @@
-import { LiteGraph } from '@/litegraph';
+import { wrapFunctionAsNode, registerNodeType } from '../core/nodes';
 
 // basic nodes
 
@@ -13,13 +13,13 @@ function toString(a) {
   return String(a);
 }
 
-LiteGraph.wrapFunctionAsNode('string/toString', toString, [''], 'string');
+wrapFunctionAsNode('string/toString', toString, [''], 'string');
 
 function compare(a, b) {
   return a == b;
 }
 
-LiteGraph.wrapFunctionAsNode(
+wrapFunctionAsNode(
   'string/compare',
   compare,
   ['string', 'string'],
@@ -36,7 +36,7 @@ function concatenate(a, b) {
   return a + b;
 }
 
-LiteGraph.wrapFunctionAsNode(
+wrapFunctionAsNode(
   'string/concatenate',
   concatenate,
   ['string', 'string'],
@@ -50,7 +50,7 @@ function contains(a, b) {
   return a.indexOf(b) != -1;
 }
 
-LiteGraph.wrapFunctionAsNode(
+wrapFunctionAsNode(
   'string/contains',
   contains,
   ['string', 'string'],
@@ -64,7 +64,7 @@ function toUpperCase(a) {
   return a;
 }
 
-LiteGraph.wrapFunctionAsNode(
+wrapFunctionAsNode(
   'string/toUpperCase',
   toUpperCase,
   ['string'],
@@ -85,7 +85,7 @@ function split(str, separator) {
   return null;
 }
 
-LiteGraph.wrapFunctionAsNode(
+wrapFunctionAsNode(
   'string/split',
   split,
   ['string,array', 'string'],
@@ -100,7 +100,7 @@ function toFixed(a) {
   return a;
 }
 
-LiteGraph.wrapFunctionAsNode(
+wrapFunctionAsNode(
   'string/toFixed',
   toFixed,
   ['number'],
@@ -135,4 +135,4 @@ class StringToTable {
 
   static desc = 'Splits a string to table';
 }
-LiteGraph.registerNodeType('string/toTable', StringToTable);
+registerNodeType('string/toTable', StringToTable);

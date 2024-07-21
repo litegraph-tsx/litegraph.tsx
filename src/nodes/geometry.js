@@ -1,5 +1,6 @@
 import { GL } from '@libs/litegl';
 import { LiteGraph } from '@/litegraph';
+import { registerNodeType } from '../core/nodes';
 
 const global = typeof (window) !== 'undefined' ? window : typeof (self) !== 'undefined' ? self : globalThis;
 
@@ -426,7 +427,7 @@ function findRandomTriangle(areas, f) {
   return imid;
 }
 
-LiteGraph.registerNodeType('geometry/points3D', LGraphPoints3D);
+registerNodeType('geometry/points3D', LGraphPoints3D);
 
 class LGraphPointsToInstances {
   constructor() {
@@ -563,7 +564,7 @@ class LGraphPointsToInstances {
     mode: { widget: 'combo', values: LGraphPointsToInstances.modes },
   };
 }
-LiteGraph.registerNodeType('geometry/points_to_instances', LGraphPointsToInstances);
+registerNodeType('geometry/points_to_instances', LGraphPointsToInstances);
 
 class LGraphGeometryTransform {
   constructor() {
@@ -670,7 +671,7 @@ class LGraphGeometryTransform {
 
   static desc = '';
 }
-LiteGraph.registerNodeType('geometry/transform', LGraphGeometryTransform);
+registerNodeType('geometry/transform', LGraphGeometryTransform);
 
 class LGraphGeometryPolygon {
   constructor() {
@@ -733,7 +734,7 @@ class LGraphGeometryPolygon {
 
   static desc = '';
 }
-LiteGraph.registerNodeType('geometry/polygon', LGraphGeometryPolygon);
+registerNodeType('geometry/polygon', LGraphGeometryPolygon);
 
 class LGraphGeometryExtrude {
   constructor() {
@@ -813,7 +814,7 @@ class LGraphGeometryExtrude {
 
   static desc = '';
 }
-LiteGraph.registerNodeType('geometry/extrude', LGraphGeometryExtrude);
+registerNodeType('geometry/extrude', LGraphGeometryExtrude);
 
 class LGraphGeometryEval {
   constructor() {
@@ -908,7 +909,7 @@ class LGraphGeometryEval {
     code: { widget: 'code' },
   };
 }
-LiteGraph.registerNodeType('geometry/eval', LGraphGeometryEval);
+registerNodeType('geometry/eval', LGraphGeometryEval);
 
 /*
 function LGraphGeometryDisplace() {
@@ -975,7 +976,7 @@ function LGraphGeometryDisplace() {
         this.setOutputData(0,this.geometry);
     }
 
-    LiteGraph.registerNodeType( "geometry/displace", LGraphGeometryDisplace );
+    registerNodeType( "geometry/displace", LGraphGeometryDisplace );
 */
 
 class LGraphConnectPoints {
@@ -1053,7 +1054,7 @@ class LGraphConnectPoints {
   static desc = 'adds indices between near points';
 }
 
-LiteGraph.registerNodeType('geometry/connectPoints', LGraphConnectPoints);
+registerNodeType('geometry/connectPoints', LGraphConnectPoints);
 
 // Works with Litegl.js to create WebGL nodes
 if (typeof GL !== 'undefined') {
@@ -1090,7 +1091,7 @@ if (typeof GL !== 'undefined') {
 
     static desc = 'converts a mesh to geometry';
   }
-  LiteGraph.registerNodeType('geometry/toGeometry', LGraphToGeometry);
+  registerNodeType('geometry/toGeometry', LGraphToGeometry);
 
   class LGraphGeometryToMesh {
     constructor() {
@@ -1148,7 +1149,7 @@ if (typeof GL !== 'undefined') {
 
     static title = 'Geo to Mesh';
   }
-  LiteGraph.registerNodeType('geometry/toMesh', LGraphGeometryToMesh);
+  registerNodeType('geometry/toMesh', LGraphGeometryToMesh);
 
   class LGraphRenderMesh {
     constructor() {
@@ -1240,7 +1241,7 @@ if (typeof GL !== 'undefined') {
       color: { widget: 'color' },
     };
   }
-  LiteGraph.registerNodeType('geometry/render_mesh', LGraphRenderMesh);
+  registerNodeType('geometry/render_mesh', LGraphRenderMesh);
 
   class LGraphGeometryPrimitive {
     constructor() {
@@ -1324,7 +1325,7 @@ if (typeof GL !== 'undefined') {
       type: { widget: 'combo', values: LGraphGeometryPrimitive.VALID },
     };
   }
-  LiteGraph.registerNodeType('geometry/mesh_primitive', LGraphGeometryPrimitive);
+  registerNodeType('geometry/mesh_primitive', LGraphGeometryPrimitive);
 
   class LGraphRenderPoints {
     constructor() {
@@ -1506,7 +1507,7 @@ if (typeof GL !== 'undefined') {
       }\
     ';
   }
-  LiteGraph.registerNodeType('geometry/render_points', LGraphRenderPoints);
+  registerNodeType('geometry/render_points', LGraphRenderPoints);
 
   // based on https://inconvergent.net/2019/depth-of-field/
   /*
@@ -1632,7 +1633,7 @@ if (typeof GL !== 'undefined') {
         gl.depthMask( true );
     }
 
-    LiteGraph.registerNodeType( "geometry/render_dof", LGraphRenderGeometryDOF );
+    registerNodeType( "geometry/render_dof", LGraphRenderGeometryDOF );
 
     LGraphRenderGeometryDOF.vertex_shader_code = '\
         precision mediump float;\n\

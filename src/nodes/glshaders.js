@@ -3,6 +3,7 @@ import { LiteGraph } from '@/litegraph';
 import { LGraphSettings } from '@/settings';
 import { LGraphTexture } from './gltextures';
 import { LGraphStyles } from '../core/styles';
+import { registerNodeType } from '../core/nodes';
 
 const global = typeof (window) !== 'undefined' ? window : typeof (self) !== 'undefined' ? self : globalThis;
 if (typeof GL !== 'undefined') {
@@ -133,7 +134,7 @@ if (typeof GL !== 'undefined') {
             }
         */
 
-    LiteGraph.registerNodeType(`shader::${type}`, node_ctor);
+    registerNodeType(`shader::${type}`, node_ctor);
   }
 
   function getShaderNodeVarName(node, name) {
@@ -643,7 +644,7 @@ if (typeof GL !== 'undefined') {
       }\n\
     ';
   }
-  LiteGraph.registerNodeType('texture/shaderGraph', LGraphShaderGraph);
+  registerNodeType('texture/shaderGraph', LGraphShaderGraph);
 
   function shaderNodeFromFunction(classname, params, return_type, code) {
     // TODO

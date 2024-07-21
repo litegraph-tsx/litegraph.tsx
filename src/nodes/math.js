@@ -1,6 +1,7 @@
 import { LiteGraph } from '@/litegraph';
 import { LGraphSettings } from '@/settings';
 import { LGraphStyles } from '../core/styles';
+import { registerNodeType } from '../core/nodes';
 
 class Converter {
   constructor() {
@@ -76,7 +77,7 @@ class Converter {
 
   static desc = 'type A to type B';
 }
-LiteGraph.registerNodeType('math/converter', Converter);
+registerNodeType('math/converter', Converter);
 
 class Bypass {
   constructor() {
@@ -94,7 +95,7 @@ class Bypass {
 
   static desc = 'removes the type';
 }
-LiteGraph.registerNodeType('math/bypass', Bypass);
+registerNodeType('math/bypass', Bypass);
 
 class ToNumber {
   constructor() {
@@ -111,7 +112,7 @@ class ToNumber {
 
   static desc = 'Cast to number';
 }
-LiteGraph.registerNodeType('math/to_number', ToNumber);
+registerNodeType('math/to_number', ToNumber);
 
 class MathRange {
   constructor() {
@@ -196,7 +197,7 @@ class MathRange {
 
   static desc = 'Convert a number from one range to another';
 }
-LiteGraph.registerNodeType('math/range', MathRange);
+registerNodeType('math/range', MathRange);
 
 class MathRand {
   constructor() {
@@ -237,7 +238,7 @@ class MathRand {
 
   static desc = 'Random number';
 }
-LiteGraph.registerNodeType('math/rand', MathRand);
+registerNodeType('math/rand', MathRand);
 
 // basic continuous noise
 class MathNoise {
@@ -308,7 +309,7 @@ class MathNoise {
 
   static data = null;
 }
-LiteGraph.registerNodeType('math/noise', MathNoise);
+registerNodeType('math/noise', MathNoise);
 
 // generates spikes every random time
 class MathSpikes {
@@ -350,7 +351,7 @@ class MathSpikes {
 
   static desc = 'spike every random time';
 }
-LiteGraph.registerNodeType('math/spikes', MathSpikes);
+registerNodeType('math/spikes', MathSpikes);
 
 class MathClamp {
   constructor() {
@@ -390,7 +391,7 @@ class MathClamp {
 
   static desc = 'Clamp number between min and max';
 }
-LiteGraph.registerNodeType('math/clamp', MathClamp);
+registerNodeType('math/clamp', MathClamp);
 
 class MathLerp {
   constructor() {
@@ -429,7 +430,7 @@ class MathLerp {
 
   static desc = 'Linear Interpolation';
 }
-LiteGraph.registerNodeType('math/lerp', MathLerp);
+registerNodeType('math/lerp', MathLerp);
 
 class MathAbs {
   constructor() {
@@ -450,7 +451,7 @@ class MathAbs {
 
   static desc = 'Absolute';
 }
-LiteGraph.registerNodeType('math/abs', MathAbs);
+registerNodeType('math/abs', MathAbs);
 
 class MathFloor {
   constructor() {
@@ -471,7 +472,7 @@ class MathFloor {
 
   static desc = 'Floor number to remove fractional part';
 }
-LiteGraph.registerNodeType('math/floor', MathFloor);
+registerNodeType('math/floor', MathFloor);
 
 class MathFrac {
   constructor() {
@@ -492,7 +493,7 @@ class MathFrac {
 
   static desc = 'Returns fractional part';
 }
-LiteGraph.registerNodeType('math/frac', MathFrac);
+registerNodeType('math/frac', MathFrac);
 
 class MathSmoothStep {
   constructor() {
@@ -523,7 +524,7 @@ class MathSmoothStep {
 
   static desc = 'Smoothstep';
 }
-LiteGraph.registerNodeType('math/smoothstep', MathSmoothStep);
+registerNodeType('math/smoothstep', MathSmoothStep);
 
 class MathScale {
   constructor() {
@@ -544,7 +545,7 @@ class MathScale {
 
   static desc = 'v * factor';
 }
-LiteGraph.registerNodeType('math/scale', MathScale);
+registerNodeType('math/scale', MathScale);
 
 class Gate {
   constructor() {
@@ -563,7 +564,7 @@ class Gate {
 
   static desc = 'if v is true, then outputs A, otherwise B';
 }
-LiteGraph.registerNodeType('math/gate', Gate);
+registerNodeType('math/gate', Gate);
 
 class MathAverageFilter {
   constructor() {
@@ -621,7 +622,7 @@ class MathAverageFilter {
 
   static desc = 'Average Filter';
 }
-LiteGraph.registerNodeType('math/average', MathAverageFilter);
+registerNodeType('math/average', MathAverageFilter);
 
 class MathTendTo {
   constructor() {
@@ -650,7 +651,7 @@ class MathTendTo {
 
   static desc = 'moves the output value always closer to the input';
 }
-LiteGraph.registerNodeType('math/tendTo', MathTendTo);
+registerNodeType('math/tendTo', MathTendTo);
 
 class MathOperation {
   constructor() {
@@ -760,7 +761,7 @@ class MathOperation {
 
   static size = [100, 60];
 }
-LiteGraph.registerNodeType('math/operation', MathOperation);
+registerNodeType('math/operation', MathOperation);
 
 LiteGraph.registerSearchboxExtra('math/operation', 'MAX', {
   properties: { OP: 'max' },
@@ -842,7 +843,7 @@ class MathCompare {
 
   static desc = 'compares between two values';
 }
-LiteGraph.registerNodeType('math/compare', MathCompare);
+registerNodeType('math/compare', MathCompare);
 
 LiteGraph.registerSearchboxExtra('math/compare', '==', {
   outputs: [['A==B', 'boolean']],
@@ -946,7 +947,7 @@ class MathCondition {
     values: MathCondition.values,
   };
 }
-LiteGraph.registerNodeType('math/condition', MathCondition);
+registerNodeType('math/condition', MathCondition);
 
 class MathBranch {
   constructor() {
@@ -974,7 +975,7 @@ class MathBranch {
 
   static desc = 'If condition is true, outputs IN in true, otherwise in false';
 }
-LiteGraph.registerNodeType('math/branch', MathBranch);
+registerNodeType('math/branch', MathBranch);
 
 class MathAccumulate {
   constructor() {
@@ -1002,7 +1003,7 @@ class MathAccumulate {
 
   static desc = 'Increments a value every time';
 }
-LiteGraph.registerNodeType('math/accumulate', MathAccumulate);
+registerNodeType('math/accumulate', MathAccumulate);
 
 class MathTrigonometry {
   constructor() {
@@ -1078,7 +1079,7 @@ class MathTrigonometry {
 
   static desc = 'Sin Cos Tan';
 }
-LiteGraph.registerNodeType('math/trigonometry', MathTrigonometry);
+registerNodeType('math/trigonometry', MathTrigonometry);
 
 LiteGraph.registerSearchboxExtra('math/trigonometry', 'SIN()', {
   outputs: [['sin', 'number']],
@@ -1171,7 +1172,7 @@ class MathFormula {
 
   static size = [160, 100];
 }
-LiteGraph.registerNodeType('math/formula', MathFormula);
+registerNodeType('math/formula', MathFormula);
 
 class Math3DVec2ToXY {
   constructor() {
@@ -1194,7 +1195,7 @@ class Math3DVec2ToXY {
 
   static desc = 'vector 2 to components';
 }
-LiteGraph.registerNodeType('math3d/vec2-to-xy', Math3DVec2ToXY);
+registerNodeType('math3d/vec2-to-xy', Math3DVec2ToXY);
 
 class Math3DXYToVec2 {
   constructor() {
@@ -1225,7 +1226,7 @@ class Math3DXYToVec2 {
 
   static desc = 'components to vector2';
 }
-LiteGraph.registerNodeType('math3d/xy-to-vec2', Math3DXYToVec2);
+registerNodeType('math3d/xy-to-vec2', Math3DXYToVec2);
 
 class Math3DVec3ToXYZ {
   constructor() {
@@ -1250,7 +1251,7 @@ class Math3DVec3ToXYZ {
 
   static desc = 'vector 3 to components';
 }
-LiteGraph.registerNodeType('math3d/vec3-to-xyz', Math3DVec3ToXYZ);
+registerNodeType('math3d/vec3-to-xyz', Math3DVec3ToXYZ);
 
 class Math3DXYZToVec3 {
   constructor() {
@@ -1286,7 +1287,7 @@ class Math3DXYZToVec3 {
 
   static desc = 'components to vector3';
 }
-LiteGraph.registerNodeType('math3d/xyz-to-vec3', Math3DXYZToVec3);
+registerNodeType('math3d/xyz-to-vec3', Math3DXYZToVec3);
 
 class Math3DVec4ToXYZW {
   constructor() {
@@ -1313,7 +1314,7 @@ class Math3DVec4ToXYZW {
 
   static desc = 'vector 4 to components';
 }
-LiteGraph.registerNodeType('math3d/vec4-to-xyzw', Math3DVec4ToXYZW);
+registerNodeType('math3d/vec4-to-xyzw', Math3DVec4ToXYZW);
 
 class Math3DXYZWToVec4 {
   constructor() {
@@ -1361,4 +1362,4 @@ class Math3DXYZWToVec4 {
 
   static desc = 'components to vector4';
 }
-LiteGraph.registerNodeType('math3d/xyzw-to-vec4', Math3DXYZWToVec4);
+registerNodeType('math3d/xyzw-to-vec4', Math3DXYZWToVec4);
