@@ -68,3 +68,4 @@ https://github.com/jagenjo/litegraph.js/commit/6a0e0124751e433dc17cbbddb414308f0
 4. `Show node title in search and also search title`
 https://github.com/jagenjo/litegraph.js/commit/5925961fa15f41dcf8f8265d051785b83b126645
 
+
