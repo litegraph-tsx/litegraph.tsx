@@ -1,6 +1,6 @@
-import { LiteGraph } from "@/litegraph.js";
-import { AudioSynth } from "@libs/audiosynth.js";
-import { MidiParser } from "@libs/midi-parser.js";
+import { LiteGraph } from "../core/litegraph.js";
+import { AudioSynth } from "../libs/audiosynth.js";
+import { MidiParser } from "../libs/midi-parser.js";
 
 var MIDI_COLOR = "#243";
 

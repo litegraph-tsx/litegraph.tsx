@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
-import { LGraphNode, LiteGraph } from "@/litegraph.js";
+import { LGraphNode, LiteGraph } from "./core/litegraph.js";
 
 describe("register node types", () => {
   let Sum;
