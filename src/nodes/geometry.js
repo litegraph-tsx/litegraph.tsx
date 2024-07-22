@@ -302,8 +302,10 @@ class LGraphPoints3D {
         total_area += Math.sqrt(s * (s - aL) * (s - bL) * (s - cL));
         areas[i] = total_area;
       }
-      for (var i = 0; i < num_triangles; ++i) // normalize
-      { areas[i] /= total_area; }
+      for (var i = 0; i < num_triangles; ++i) {
+        // normalize
+        areas[i] /= total_area;
+      }
     }
 
     for (var i = 0; i < size; i += 3) {
@@ -352,8 +354,8 @@ class LGraphPoints3D {
     const temp = vec3.create();
     let i = 0;
     let tries = 0;
-    while (i < size && tries < points.length * 10) // limit to avoid problems
-    {
+    while (i < size && tries < points.length * 10) {
+      // limit to avoid problems
       tries += 1;
       const r = vec3.random(temp); // random point inside the aabb
       r[0] = (r[0] * 2 - 1) * aabb[3] + aabb[0];
@@ -361,8 +363,10 @@ class LGraphPoints3D {
       r[2] = (r[2] * 2 - 1) * aabb[5] + aabb[2];
       origin.set(r);
       const hit = octree.testRay(origin, direction, 0, 10000, true, GL.Octree.ALL);
-      if (!hit || hit.length % 2 == 0) // not inside
-      { continue; }
+      if (!hit || hit.length % 2 == 0) {
+        // not inside
+        continue;
+      }
       points.set(r, i);
       i += 3;
     }
@@ -780,8 +784,8 @@ class LGraphGeometryExtrude {
       for (let i = 0, l = vertices.length; i < l; i += 3) {
         tempA[0] = vertices[i]; tempA[1] = vertices[i + 1]; tempA[2] = vertices[i + 2];
 
-        if (i + 3 < l) // loop
-        {
+        if (i + 3 < l) {
+          // loop
           tempB[0] = vertices[i + 3]; tempB[1] = vertices[i + 4]; tempB[2] = vertices[i + 5];
         } else {
           tempB[0] = vertices[0]; tempB[1] = vertices[1]; tempB[2] = vertices[2];
@@ -1110,8 +1114,10 @@ if (typeof GL !== 'undefined') {
         const buffer_data = geometry[i];
 
         const info = GL.Mesh.common_buffers[i];
-        if (!info && i != 'indices') // unknown buffer
-        { continue; }
+        if (!info && i != 'indices') {
+          // unknown buffer
+          continue;
+        }
         const spacing = info ? info.spacing : 3;
         var mesh_buffer = this.mesh.vertexBuffers[i];
 

@@ -282,8 +282,7 @@ class LGSillyClient {
       if (data.type == 1) {
         // EVENT slot
         if (
-          data.data.object_class
-                      && LiteGraph[data.data.object_class]
+          data.data.object_class && LiteGraph[data.data.object_class]
         ) {
           let obj = null;
           try {
@@ -295,8 +294,8 @@ class LGSillyClient {
         } else {
           that.triggerSlot(0, data.data);
         }
-      } // for FLOW slots
-      else {
+      } else {
+        // for FLOW slots
         that._last_received_data[data.channel || 0] = data.data;
       }
       that.boxcolor = '#AFA';

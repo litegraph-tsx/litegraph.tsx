@@ -580,7 +580,6 @@ if (global.glMatrix) {
     static desc = 'remap a 3D range';
   }
   LiteGraph.registerNodeType('math3d/remap_range', Math3DRemapRange);
-} // glMatrix
-else if (LiteGraph.debug) {
+} else if (LiteGraph.debug) { // glMatrix
   console.warn('No glmatrix found, some Math3D nodes may not work');
 }

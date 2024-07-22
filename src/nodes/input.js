@@ -202,10 +202,10 @@ class GamepadInput {
         if (j < 12) {
           xbox.buttons[GamepadInput.mapping_array[j]] = gamepad.buttons[j].pressed;
           if (gamepad.buttons[j].was_pressed) { this.trigger(`${GamepadInput.mapping_array[j]}_button_event`); }
-        } else // mapping of XBOX
-        {
-          switch (j) // I use a switch to ensure that a player with another gamepad could play
-          {
+        } else {
+          // mapping of XBOX
+          switch (j) {
+            // I use a switch to ensure that a player with another gamepad could play
             case 12:
               if (gamepad.buttons[j].pressed) {
                 xbox.hat += 'up';

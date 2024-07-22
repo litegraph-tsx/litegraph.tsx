@@ -4567,8 +4567,8 @@ class LGraphTextureCurve {
     const tex = this.getInputData(0);
 
     let temp = this._temp_texture;
-    if (!tex) // generate one texture, nothing else
-    {
+    if (!tex) {
+      // generate one texture, nothing else
       if (this._must_update || !this._curve_texture) this.updateCurve();
       this.setOutputData(0, this._curve_texture);
       return;
@@ -5229,8 +5229,8 @@ class LGraphTextureCanvas2D {
       canvas.height = height;
     }
 
-    if (ctx == gl) // using Canvas2DtoWebGL
-    {
+    if (ctx == gl) {
+      // using Canvas2DtoWebGL
       temp.drawTo(() => {
         gl.start2D();
         if (properties.clear) {
@@ -5252,8 +5252,8 @@ class LGraphTextureCanvas2D {
         }
         gl.finish2D();
       });
-    } else // rendering to offscreen canvas and uploading to texture
-    {
+    } else {
+      // rendering to offscreen canvas and uploading to texture
       if (properties.clear) ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       try {
