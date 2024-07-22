@@ -30,13 +30,13 @@
 
 - [x] Shifted build over to vite, and drop espresso
 
-- [ ] Split litegraph.js into class files
+- [x] Notify migration of ES6 classes along with version as it affects 3 spots in ComfyUI for ContextMenu
 
 ## ES6 Class Step (0.7)
 
-- [ ] Enable ES6 classes in LiteGraph
+- [ ] Split litegraph.js into class files
 
-- [ ] Notify migration of ES6 classes along with version as it affects 3 spots in ComfyUI for ContextMenu
+- [ ] Enable ES6 classes in LiteGraph
 
 - [ ] Automated class conversion using lebab
 
