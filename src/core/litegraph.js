@@ -5949,7 +5949,8 @@ LGraphCanvas.prototype.processMouseDown = function(e) {
     return;
   }
 
-  this.adjustMouseEvent(e);
+  // this.adjustMouseEvent(e);
+  e = this.copyAdjustedMouseEvent(e);
 
   var ref_window = this.getCanvasWindow();
   var document = ref_window.document;
@@ -6455,7 +6456,8 @@ LGraphCanvas.prototype.processMouseMove = function(e) {
   }
 
   LGraphCanvas.active_canvas = this;
-  this.adjustMouseEvent(e);
+  // this.adjustMouseEvent(e);
+  e = this.copyAdjustedMouseEvent(e);
   var mouse = [e.clientX, e.clientY];
   this.mouse[0] = mouse[0];
   this.mouse[1] = mouse[1];
@@ -6732,7 +6734,8 @@ LGraphCanvas.prototype.processMouseUp = function(e) {
     LiteGraph.pointerListenerRemove(document,"up", this._mouseup_callback,true);
   }
 
-  this.adjustMouseEvent(e);
+  // this.adjustMouseEvent(e);
+  e = this.copyAdjustedMouseEvent(e);
   var now = LiteGraph.getTime();
   e.click_time = now - this.last_mouseclick;
   this.last_mouse_dragging = false;
@@ -7018,7 +7021,8 @@ LGraphCanvas.prototype.processMouseWheel = function(e) {
 
   var delta = e.wheelDeltaY != null ? e.wheelDeltaY : e.detail * -60;
 
-  this.adjustMouseEvent(e);
+  // this.adjustMouseEvent(e);
+  e = this.copyAdjustedMouseEvent(e);
 
   var x = e.clientX;
   var y = e.clientY;
@@ -7392,7 +7396,8 @@ LGraphCanvas.prototype.pasteFromClipboard = function(isConnectUnselected = false
      **/
 LGraphCanvas.prototype.processDrop = function(e) {
   e.preventDefault();
-  this.adjustMouseEvent(e);
+  // this.adjustMouseEvent(e);
+  e = this.copyAdjustedMouseEvent(e);
   var x = e.clientX;
   var y = e.clientY;
   var is_inside = !this.viewport || ( this.viewport && x >= this.viewport[0] && x < (this.viewport[0] + this.viewport[2]) && y >= this.viewport[1] && y < (this.viewport[1] + this.viewport[3]) );
@@ -7688,10 +7693,121 @@ LGraphCanvas.prototype.centerOnNode = function(node) {
   this.setDirty(true, true);
 };
 
+LGraphCanvas.prototype.copyAdjustedMouseEvent = function(eventObj, overrideObj){
+  if(!overrideObj || typeof(overrideObj)!=="object"){ overrideObj = {}; }
+
+  // Common properties for all events
+  const commonProperties = [
+    'type', 'bubbles', 'cancelable', 'composed', 'timeStamp', 'defaultPrevented',
+    'isTrusted', 'srcElement', 'target', 'currentTarget', 'eventPhase', 'cancelBubble', 'returnValue'
+  ];
+  // Event-specific properties
+  const eventPropertiesByType = {
+    MouseEvent: [
+      'altKey', 'button', 'buttons', 'clientX', 'clientY', 'ctrlKey', 'metaKey',
+      'movementX', 'movementY', 'offsetX', 'offsetY', 'pageX', 'pageY', 'relatedTarget',
+      'screenX', 'screenY', 'shiftKey', 'x', 'y', 'which'
+    ],
+    KeyboardEvent: [
+      'code', 'key', 'location', 'repeat', 'isComposing', 'charCode', 'keyCode', 'which'
+    ],
+    TouchEvent: [
+      'touches', 'targetTouches', 'changedTouches', 'altKey', 'metaKey', 'ctrlKey', 'shiftKey'
+    ],
+    FocusEvent: [
+      'relatedTarget'
+    ],
+    UIEvent: [
+      'detail', 'view'
+    ],
+    WheelEvent: [
+      'deltaX', 'deltaY', 'deltaZ', 'deltaMode'
+    ],
+    ClipboardEvent: [
+      'clipboardData'
+    ]
+  };
+
+  // const eventProperties = [...commonProperties, ...(eventPropertiesByType[eventType] || [])];
+  let eventProperties = [...commonProperties];
+  for(const kT in eventPropertiesByType){
+    // Object.assign(eventProperties,eventPropertiesByType[kT]);
+    eventProperties = [...eventProperties, ...(eventPropertiesByType[kT] || [])];
+  }
+  // console.debug("eventProperties", eventProperties);
+
+  // Create a new event of the same type ? Or a plain object ?
+  // const eventType = eventObj.constructor.name;
+  const clonedEventInit = {};
+  // Copy the properties from the original event object
+  eventProperties.forEach(prop => {
+    if (prop in eventObj) {
+      clonedEventInit[prop] = eventObj[prop];
+    }else if(typeof(eventObj[prop])!=="undefined"){
+      clonedEventInit[prop] = eventObj[prop];
+    }
+  });
+  // Override properties with the ones from overrideObj
+  Object.keys(overrideObj).forEach(prop => {
+    clonedEventInit[prop] = overrideObj[prop];
+  });
+  let clonedEvent;
+  clonedEvent = Object.assign({}, clonedEventInit);
+  // bind the events
+  clonedEvent.stopPropagation = (function(){
+    // console.debug("innerEVENTCopy stopPropagation",eventObj);
+    eventObj.stopPropagation();
+  }); //.bind(eventObj.stopPropagation);
+
+  clonedEvent.stopImmediatePropagation = (function(){
+    // console.debug("innerEVENTCopy stopImmediatePropagation",eventObj);
+    eventObj.stopImmediatePropagation();
+  }); //.bind(eventObj.stopImmediatePropagation);
+
+  clonedEvent.preventDefault = (function(){
+    // console.debug("innerEVENTCopy preventDefault",eventObj);
+    eventObj.preventDefault();
+  }); //.bind(eventObj.preventDefault);
+
+  this.adjustMouseEvent(clonedEvent);
+
+  // console.debug(eventObj, "->COPIED_ADJUSTED->", clonedEvent);
+
+  // --- NO ---
+  // Create the new event with the appropriate constructor
+  /* switch (eventType) {
+    case 'MouseEvent':
+      clonedEvent = new MouseEvent(eventObj.type, clonedEventInit);
+      break;
+    case 'KeyboardEvent':
+      clonedEvent = new KeyboardEvent(eventObj.type, clonedEventInit);
+      break;
+    case 'TouchEvent':
+      clonedEvent = new TouchEvent(eventObj.type, clonedEventInit);
+      break;
+    case 'FocusEvent':
+      clonedEvent = new FocusEvent(eventObj.type, clonedEventInit);
+      break;
+    case 'UIEvent':
+      clonedEvent = new UIEvent(eventObj.type, clonedEventInit);
+      break;
+    case 'WheelEvent':
+      clonedEvent = new WheelEvent(eventObj.type, clonedEventInit);
+      break;
+    case 'ClipboardEvent':
+      clonedEvent = new ClipboardEvent(eventObj.type, clonedEventInit);
+      break;
+    default:
+      clonedEvent = new Event(eventObj.type, clonedEventInit);
+  } */
+
+  return clonedEvent;
+}
+
 /**
-     * adds some useful properties to a mouse event, like the position in graph coordinates
-     * @method adjustMouseEvent
-     **/
+ * adds some useful properties to a mouse event, like the position in graph coordinates
+ * @method adjustMouseEvent
+ **/
 LGraphCanvas.prototype.adjustMouseEvent = function(e) {
   var clientX_rel = 0;
   var clientY_rel = 0;
@@ -11126,7 +11242,7 @@ LGraphCanvas.prototype.createDefaultNodeForSlot = function(optPass) { // addNode
     }else{
       // is not not connected
     }
-    nodeNewType = false;
+    let nodeNewType = false;
     if(typeof slotTypesDefault[fromSlotType] == "object" || Array.isArray(slotTypesDefault[fromSlotType])) {
       for(var typeX in slotTypesDefault[fromSlotType]){
         if (opts.nodeType == slotTypesDefault[fromSlotType][typeX] || opts.nodeType == "AUTO"){
@@ -11995,7 +12111,7 @@ LGraphCanvas.prototype.showSearchBox = function(event, options) {
       if (options.show_general_after_typefiltered
                     && (sIn.value || sOut.value) 
       ){
-        filtered_extra = [];
+        let filtered_extra = [];
         for (var i in LiteGraph.registered_node_types) {
           if( inner_test_filter(i, {inTypeOverride: sIn&&sIn.value?"*":false, outTypeOverride: sOut&&sOut.value?"*":false}) )
             filtered_extra.push(i);
@@ -12012,7 +12128,7 @@ LGraphCanvas.prototype.showSearchBox = function(event, options) {
       if ((sIn.value || sOut.value) && 
                     ( (helper.childNodes.length == 0 && options.show_general_if_none_on_typefilter) )
       ){
-        filtered_extra = [];
+        let filtered_extra = [];
         for (var i in LiteGraph.registered_node_types) {
           if( inner_test_filter(i, {skipFilter: true}) )
             filtered_extra.push(i);
@@ -13718,7 +13834,7 @@ function ContextMenu(values, options) {
   var eventClass = null;
   if(options.event) //use strings because comparing classes between windows doesnt work
     eventClass = options.event.constructor.name;
-  if ( eventClass !== "MouseEvent" &&
+  /* if ( eventClass !== "MouseEvent" &&
             eventClass !== "CustomEvent" &&
             eventClass !== "PointerEvent"
   ) {
@@ -13726,7 +13842,7 @@ function ContextMenu(values, options) {
       "Event passed to ContextMenu is not of type MouseEvent or CustomEvent. Ignoring it. ("+eventClass+")"
     );
     options.event = null;
-  }
+  } */
 
   var root = document.createElement("div");
   root.className = "litegraph litecontextmenu litemenubar-panel";
