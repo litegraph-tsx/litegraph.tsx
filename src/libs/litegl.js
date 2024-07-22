@@ -9347,22 +9347,22 @@ Texture.cubemap_camera_parameters = [
         for (var i = inst.length - 1; i >= 0; --i) {
           var v = inst[i];
           if (expand_parameters) {
-            if (v && v[0].apply(v[1], params) === true)// || event.stop)
-            { return true; } // stopPropagation
-          } else {
-            if (v && v[0].call(v[1], event_type, params) === true)// || event.stop)
-            { return true; } // stopPropagation
+            if (v && v[0].apply(v[1], params) === true) { // || event.stop)
+              return true;
+            }
+          } else if (v && v[0].call(v[1], event_type, params) === true) { // || event.stop)
+            return true; // stopPropagation
           }
         }
       } else {
         for (var i = 0, l = inst.length; i < l; ++i) {
           var v = inst[i];
           if (expand_parameters) {
-            if (v && v[0].apply(v[1], params) === true)// || event.stop)
-            { return true; } // stopPropagation
-          } else {
-            if (v && v[0].call(v[1], event_type, params) === true)// || event.stop)
-            { return true; } // stopPropagation
+            if (v && v[0].apply(v[1], params) === true) { // || event.stop)
+              return true;
+            }
+          } else if (v && v[0].call(v[1], event_type, params) === true) { // || event.stop)
+            return true; // stopPropagation
           }
         }
       }

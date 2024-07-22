@@ -905,12 +905,12 @@ export class LGraphCanvas {
               this.node_dragged = node;
             }
             this.processNodeSelected(node, e);
-          } else { // double-click
+          } else if (!node.is_selected) { // double-click
             /**
-                             * Don't call the function if the block is already selected.
-                             * Otherwise, it could cause the block to be unselected while its panel is open.
-                             */
-            if (!node.is_selected) this.processNodeSelected(node, e);
+             * Don't call the function if the block is already selected.
+             * Otherwise, it could cause the block to be unselected while its panel is open.
+             */
+            this.processNodeSelected(node, e);
           }
 
           this.dirty_canvas = true;
@@ -1512,22 +1512,18 @@ export class LGraphCanvas {
               this.connecting_node.connectByTypeOutput(this.connecting_slot, node, connType);
             }
           }
-
-          // }
-        } else {
+        } else if (LiteGraph.release_link_on_empty_shows_menu) {
           // add menu when releasing link in empty space
-          if (LiteGraph.release_link_on_empty_shows_menu) {
-            if (e.shiftKey && this.allow_searchbox) {
-              if (this.connecting_output) {
-                this.showSearchBox(e, { node_from: this.connecting_node, slot_from: this.connecting_output, type_filter_in: this.connecting_output.type });
-              } else if (this.connecting_input) {
-                this.showSearchBox(e, { node_to: this.connecting_node, slot_from: this.connecting_input, type_filter_out: this.connecting_input.type });
-              }
-            } else if (this.connecting_output) {
-              this.showConnectionMenu({ nodeFrom: this.connecting_node, slotFrom: this.connecting_output, e });
+          if (e.shiftKey && this.allow_searchbox) {
+            if (this.connecting_output) {
+              this.showSearchBox(e, { node_from: this.connecting_node, slot_from: this.connecting_output, type_filter_in: this.connecting_output.type });
             } else if (this.connecting_input) {
-              this.showConnectionMenu({ nodeTo: this.connecting_node, slotTo: this.connecting_input, e });
+              this.showSearchBox(e, { node_to: this.connecting_node, slot_from: this.connecting_input, type_filter_out: this.connecting_input.type });
             }
+          } else if (this.connecting_output) {
+            this.showConnectionMenu({ nodeFrom: this.connecting_node, slotFrom: this.connecting_output, e });
+          } else if (this.connecting_input) {
+            this.showConnectionMenu({ nodeTo: this.connecting_node, slotTo: this.connecting_input, e });
           }
         }
 
@@ -1547,8 +1543,8 @@ export class LGraphCanvas {
         var node = this.node_dragged;
         if (
           node
-                        && e.click_time < 300
-                        && LiteGraph.isInsideRectangle(e.canvasX, e.canvasY, node.pos[0], node.pos[1] - LiteGraph.NODE_TITLE_HEIGHT, LiteGraph.NODE_TITLE_HEIGHT, LiteGraph.NODE_TITLE_HEIGHT)
+          && e.click_time < 300
+          && LiteGraph.isInsideRectangle(e.canvasX, e.canvasY, node.pos[0], node.pos[1] - LiteGraph.NODE_TITLE_HEIGHT, LiteGraph.NODE_TITLE_HEIGHT, LiteGraph.NODE_TITLE_HEIGHT)
         ) {
           node.collapse();
         }
