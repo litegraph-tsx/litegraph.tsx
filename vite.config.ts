@@ -16,9 +16,7 @@ const getPackageNameCamelCase = () => {
 };
 
 const fileName = {
-  es: `${getPackageName()}.mjs`,
-  cjs: `${getPackageName()}.cjs`,
-  iife: `${getPackageName()}.iife.js`,
+  es: `litegraph.core.js`,
 };
 
 const formats = Object.keys(fileName) as Array<keyof typeof fileName>;
@@ -26,7 +24,7 @@ const formats = Object.keys(fileName) as Array<keyof typeof fileName>;
 export default defineConfig({
   base: "./",
   build: {
-    outDir: "./build/dist",
+    outDir: "./build",
     lib: {
       entry: path.resolve(__dirname, "src/core/litegraph.js"),
       name: getPackageNameCamelCase(),
