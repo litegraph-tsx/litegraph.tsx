@@ -3683,39 +3683,35 @@ export class LGraphCanvas {
 
     // full node shape
     // if(node.flags.collapsed)
-    {
-      ctx.beginPath();
-      if (shape == LiteGraph.BOX_SHAPE || low_quality) {
-        ctx.fillRect(area[0], area[1], area[2], area[3]);
-      } else if (
-        shape == LiteGraph.ROUND_SHAPE
-                    || shape == LiteGraph.CARD_SHAPE
-      ) {
-        ctx.roundRect(
-          area[0],
-          area[1],
-          area[2],
-          area[3],
-          shape == LiteGraph.CARD_SHAPE ? [this.round_radius, this.round_radius, 0, 0] : [this.round_radius],
-        );
-      } else if (shape == LiteGraph.CIRCLE_SHAPE) {
-        ctx.arc(
-          size[0] * 0.5,
-          size[1] * 0.5,
-          size[0] * 0.5,
-          0,
-          Math.PI * 2,
-        );
-      }
-      ctx.fill();
-
-      // separator
-      if (!node.flags.collapsed && render_title) {
-        ctx.shadowColor = 'transparent';
-        ctx.fillStyle = 'rgba(0,0,0,0.2)';
-        ctx.fillRect(0, -1, area[2], 2);
-      }
+    ctx.beginPath();
+    if (shape == LiteGraph.BOX_SHAPE || low_quality) {
+      ctx.fillRect(area[0], area[1], area[2], area[3]);
+    } else if (shape == LiteGraph.ROUND_SHAPE || shape == LiteGraph.CARD_SHAPE) {
+      ctx.roundRect(
+        area[0],
+        area[1],
+        area[2],
+        area[3],
+        shape == LiteGraph.CARD_SHAPE ? [this.round_radius, this.round_radius, 0, 0] : [this.round_radius],
+      );
+    } else if (shape == LiteGraph.CIRCLE_SHAPE) {
+      ctx.arc(
+        size[0] * 0.5,
+        size[1] * 0.5,
+        size[0] * 0.5,
+        0,
+        Math.PI * 2,
+      );
     }
+    ctx.fill();
+
+    // separator
+    if (!node.flags.collapsed && render_title) {
+      ctx.shadowColor = 'transparent';
+      ctx.fillStyle = 'rgba(0,0,0,0.2)';
+      ctx.fillRect(0, -1, area[2], 2);
+    }
+    // }
     ctx.shadowColor = 'transparent';
 
     if (node.onDrawBackground) {

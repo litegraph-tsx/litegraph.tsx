@@ -67,7 +67,6 @@ export default [
       'no-empty': ['off'],
       'no-eval': ['off'],
       'no-extend-native': ['off'],
-      'no-lone-blocks': ['off'],
       'no-loop-func': ['off'],
       'no-mixed-operators': ['off'],
       'no-multi-assign': ['off'],

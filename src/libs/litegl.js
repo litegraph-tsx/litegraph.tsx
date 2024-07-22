@@ -5333,10 +5333,9 @@ Texture.cubemap_camera_parameters = [
             }
             else
             */
-        {
-          gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, target_texture.handler, 0);
-          this.toViewport(shader);
-        }
+
+        gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, target_texture.handler, 0);
+        this.toViewport(shader);
       } else // copying a depth texture is harder
       {
         const color_renderbuffer = gl._color_renderbuffer = gl._color_renderbuffer || gl.createRenderbuffer();
