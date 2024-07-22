@@ -474,20 +474,31 @@ String.prototype.replaceAll = function(words){
     if (origin.prototype) // copy prototype properties
     {
       const prop_names = Object.getOwnPropertyNames(origin.prototype);
-      for (var i = 0; i < prop_names.length; ++i) // only enumerables
-      {
-        const name = prop_names[i];
-        // if(!origin.prototype.hasOwnProperty(name))
-        //    continue;
-
-        if (target.prototype.hasOwnProperty(name)) // avoid overwritting existing ones
-        { continue; }
-
-        // copy getters
-        if (origin.prototype.__lookupGetter__(name)) { target.prototype.__defineGetter__(name, origin.prototype.__lookupGetter__(name)); } else { target.prototype[name] = origin.prototype[name]; }
-
-        // and setters
-        if (origin.prototype.__lookupSetter__(name)) { target.prototype.__defineSetter__(name, origin.prototype.__lookupSetter__(name)); }
+      for (const name of prop_names.filter((name) => !target.prototype.hasOwnProperty(name))) {
+        if (Object.getOwnPropertyDescriptor(origin.prototype, name)) {
+          const descriptor = Object.getOwnPropertyDescriptor(origin.prototype, name);
+          if (descriptor.get) {
+            Object.defineProperty(target.prototype, name, {
+              get: descriptor.get,
+              enumerable: descriptor.enumerable,
+              configurable: true,
+            });
+          } else if (descriptor.set) {
+            Object.defineProperty(target.prototype, name, {
+              set: descriptor.set,
+              enumerable: descriptor.enumerable,
+              configurable: true,
+            });
+          } else {
+            const value = origin.prototype[name];
+            Object.defineProperty(target.prototype, name, {
+              value,
+              writable: true,
+              enumerable: descriptor.enumerable,
+              configurable: true,
+            });
+          }
+        }
       }
     }
 

@@ -78,7 +78,6 @@ export default [
       'no-param-reassign': ['off'],
       'no-plusplus': ['off'],
       'no-restricted-globals': ['off'],
-      'no-restricted-properties': ['off'],
       'no-restricted-syntax': ['off'],
       'no-return-assign': ['off'],
       'no-sequences': ['off'],
