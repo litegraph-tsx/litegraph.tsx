@@ -163,7 +163,7 @@ export const LiteGraph = {
    */
   registerNodeType(type, base_class) {
     if (!base_class.prototype) {
-      throw 'Cannot register a simple object, it must be a class with a prototype';
+      throw new Error('Cannot register a simple object, it must be a class with a prototype');
     }
     base_class.type = type;
 
@@ -265,7 +265,7 @@ export const LiteGraph = {
       ? this.registered_node_types[type]
       : type;
     if (!base_class) {
-      throw `node type not found: ${type}`;
+      throw new Error(`node type not found: ${type}`);
     }
     delete this.registered_node_types[base_class.type];
     if (base_class.constructor.name) {

@@ -84,11 +84,9 @@ export default [
       'no-return-assign': ['off'],
       'no-sequences': ['off'],
       'no-shadow': ['off'],
-      'no-throw-literal': ['off'],
       'no-underscore-dangle': ['off'],
       'no-unused-expressions': ['off'],
       'no-use-before-define': ['off'],
-      'no-useless-concat': ['off'],
       'no-var': ['off'],
       'no-void': ['off'],
       'prefer-const': ['off'],
@@ -111,5 +109,5 @@ export default [
         caughtErrorsIgnorePattern: '^_',
       }],
     },
-  }
+  },
 ];

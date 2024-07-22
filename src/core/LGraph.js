@@ -117,7 +117,7 @@ export class LGraph {
    */
   attachCanvas(graphcanvas) {
     if (graphcanvas.constructor != LGraphCanvas) {
-      throw 'attachCanvas expects a LGraphCanvas instance';
+      throw new Error('attachCanvas expects a LGraphCanvas instance');
     }
     if (graphcanvas.graph && graphcanvas.graph != this) {
       graphcanvas.graph.detachCanvas(graphcanvas);
@@ -663,7 +663,7 @@ export class LGraph {
     }
 
     if (this._nodes.length >= LiteGraph.MAX_NUMBER_OF_NODES) {
-      throw 'LiteGraph: max number of nodes in a graph reached';
+      throw new Error('LiteGraph: max number of nodes in a graph reached');
     }
 
     // give him an id

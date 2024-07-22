@@ -238,11 +238,11 @@ export class LGraphCanvas {
    */
   openSubgraph(graph) {
     if (!graph) {
-      throw 'graph cannot be null';
+      throw new TypeError('graph cannot be null');
     }
 
     if (this.graph == graph) {
-      throw 'graph cannot be the same';
+      throw new Error('graph cannot be the same');
     }
 
     this.clear();
@@ -306,7 +306,7 @@ export class LGraphCanvas {
       if (canvas.constructor === String) {
         canvas = document.getElementById(canvas);
         if (!canvas) {
-          throw 'Error creating LiteGraph canvas: Canvas not found';
+          throw new Error('Error creating LiteGraph canvas: Canvas not found');
         }
       }
     }
@@ -344,10 +344,9 @@ export class LGraphCanvas {
 
     if (canvas.getContext == null) {
       if (canvas.localName != 'canvas') {
-        throw `Element supplied for LGraphCanvas must be a <canvas> element, you passed a ${
-          canvas.localName}`;
+        throw new Error(`Element supplied for LGraphCanvas must be a <canvas> element, you passed a ${canvas.localName}`);
       }
-      throw "This browser doesn't support Canvas";
+      throw new Error("This browser doesn't support Canvas");
     }
 
     const ctx = (this.ctx = canvas.getContext('2d'));
@@ -514,10 +513,10 @@ export class LGraphCanvas {
    */
   enableWebGL() {
     if (typeof GL === 'undefined') {
-      throw 'litegl.js must be included to use a WebGL canvas';
+      throw new Error('litegl.js must be included to use a WebGL canvas');
     }
     if (typeof enableWebGLCanvas === 'undefined') {
-      throw 'webglCanvas.js must be included to use this feature';
+      throw new Error('gl-matrix-min.js must be included to use this feature');
     }
 
     this.gl = this.ctx = enableWebGLCanvas(this.canvas);
@@ -7713,14 +7712,13 @@ export class LGraphCanvas {
    */
   static onMenuNodeColors(value, options, e, menu, node) {
     if (!node) {
-      throw 'no node for color';
+      throw new Error('no node for color');
     }
 
     const values = [];
     values.push({
       value: null,
-      content:
-                    "<span style='display: block; padding-left: 4px;'>No color</span>",
+      content: "<span style='display: block; padding-left: 4px;'>No color</span>",
     });
 
     for (const i in LGraphCanvas.node_colors) {
@@ -7793,7 +7791,7 @@ export class LGraphCanvas {
    */
   static onMenuNodeShapes(value, options, e, menu, node) {
     if (!node) {
-      throw 'no node passed';
+      throw new Error('no node passed');
     }
 
     new LiteGraph.ContextMenu(LiteGraph.VALID_SHAPES, {
@@ -7842,7 +7840,7 @@ export class LGraphCanvas {
    */
   static onMenuNodeRemove(value, options, e, menu, node) {
     if (!node) {
-      throw 'no node passed';
+      throw new Error('no node passed');
     }
 
     const { graph } = node;

@@ -1402,7 +1402,7 @@ export class LGraphNode {
       console.warn('LiteGraph addWidget(...) without a callback or property assigned');
     }
     if (type == 'combo' && !w.options.values) {
-      throw "LiteGraph addWidget('combo',...) requires to pass values in options: { values:['red','blue'] }";
+      throw new Error("LiteGraph addWidget('combo',...) requires to pass values in options: { values:['red','blue'] }");
     }
     this.widgets.push(w);
     this.setSize(this.computeSize());
@@ -1874,7 +1874,7 @@ export class LGraphNode {
       target_node = this.graph.getNodeById(target_node);
     }
     if (!target_node) {
-      throw 'target node is null';
+      throw new TypeError('target node is null');
     }
 
     // avoid loopback
@@ -2073,7 +2073,7 @@ export class LGraphNode {
         target_node = this.graph.getNodeById(target_node);
       }
       if (!target_node) {
-        throw 'Target Node not found';
+        throw new Error('Target Node not found');
       }
 
       for (var i = 0, l = output.links.length; i < l; i++) {

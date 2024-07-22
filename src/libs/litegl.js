@@ -10,8 +10,8 @@ var global = typeof (window) !== 'undefined' ? window : (typeof (self) !== 'unde
 (function (global) {
   const GL = global.GL = {};
 
-  if (typeof (glMatrix) === 'undefined') { throw ('litegl.js requires gl-matrix to work. It must be included before litegl.'); } else
-    if (!global.vec2) { throw ('litegl.js does not support gl-matrix 3.0, download 2.8 https://github.com/toji/gl-matrix/releases/tag/v2.8.1'); }
+  if (typeof (glMatrix) === 'undefined') { throw new Error('litegl.js requires gl-matrix to work. It must be included before litegl.'); } else
+    if (!global.vec2) { throw new Error('litegl.js does not support gl-matrix 3.0, download 2.8 https://github.com/toji/gl-matrix/releases/tag/v2.8.1'); }
 
   // polyfill
   global.requestAnimationFrame = global.requestAnimationFrame || global.mozRequestAnimationFrame || global.webkitRequestAnimationFrame || function (callback) { setTimeout(callback, 1000 / 60); };
@@ -327,7 +327,7 @@ var global = typeof (window) !== 'undefined' ? window : (typeof (self) !== 'unde
 * @return {Object}
 */
   global.cloneObject = GL.cloneObject = function (o, t) {
-    if (o.constructor !== Object) { throw ('cloneObject only can clone pure javascript objects, not classes'); }
+    if (o.constructor !== Object) { throw new Error('cloneObject only can clone pure javascript objects, not classes'); }
 
     t = t || {};
 
@@ -1394,7 +1394,7 @@ global.halfFloatToFloat = function( h )
   if (typeof (global) !== 'undefined') { global.DDS = DDS; }
 
   /* this file adds some extra functions to gl-matrix library */
-  if (typeof (glMatrix) === 'undefined') { throw ('You must include glMatrix on your project'); }
+  if (typeof (glMatrix) === 'undefined') { throw new Error('You must include glMatrix on your project'); }
 
   Math.clamp = function (v, a, b) { return (a > v ? a : (b < v ? b : v)); };
 
@@ -2159,10 +2159,10 @@ quat.fromEuler = function(out, vec) {
     const { gl } = this;
     if (!gl) { return; }
 
-    if (!this.data) { throw ('No data supplied'); }
+    if (!this.data) { throw new Error('No data supplied'); }
 
     let { data } = this;
-    if (!data.buffer) { throw ('Buffers must be typed arrays'); }
+    if (!data.buffer) { throw new Error('Buffers must be typed arrays'); }
 
     // I store some stuff inside the WebGL buffer instance, it is supported
     this.buffer = this.buffer || gl.createBuffer();
@@ -2181,7 +2181,7 @@ quat.fromEuler = function(out, vec) {
       case Int32Array: this.buffer.gl_type = gl.INT; break;
       case Uint32Array: this.buffer.gl_type = gl.UNSIGNED_INT; break;
       case Float32Array: this.buffer.gl_type = gl.FLOAT; break;
-      default: throw ('unsupported buffer type');
+      default: throw new Error('unsupported buffer type');
     }
 
     if (this.target == gl.ARRAY_BUFFER && (this.buffer.gl_type == gl.INT || this.buffer.gl_type == gl.UNSIGNED_INT)) {
@@ -2203,7 +2203,7 @@ quat.fromEuler = function(out, vec) {
 * @param {number} offset offset in bytes
 */
   GL.Buffer.prototype.setData = function (data, offset) {
-    if (!data.buffer) { throw ('Data must be typed array'); }
+    if (!data.buffer) { throw new Error('Data must be typed array'); }
     offset = offset || 0;
 
     if (!this.data) {
@@ -2211,7 +2211,7 @@ quat.fromEuler = function(out, vec) {
       this.upload();
       return;
     }
-    if (this.data.length < data.length) { throw ('buffer is not big enough, you cannot set data to a smaller buffer'); }
+    if (this.data.length < data.length) { throw new Error('buffer is not big enough, you cannot set data to a smaller buffer'); }
 
     if (this.data != data) {
       if (this.data.length == data.length) {
@@ -2235,10 +2235,10 @@ quat.fromEuler = function(out, vec) {
 * @param {number} size sizes in bytes
 */
   GL.Buffer.prototype.uploadRange = function (start, size) {
-    if (!this.data) { throw ('No data stored in this buffer'); }
+    if (!this.data) { throw new Error('No data stored in this buffer'); }
 
     const { data } = this;
-    if (!data.buffer) { throw ('Buffers must be typed arrays'); }
+    if (!data.buffer) { throw new Error('Buffers must be typed arrays'); }
 
     // cut fragment to upload (no way to avoid GC here, no function to specify the size in WebGL 1.0, but there is one in WebGL 2.0)
     const view = new Uint8Array(this.data.buffer, start, size);
@@ -2363,7 +2363,7 @@ quat.fromEuler = function(out, vec) {
   Object.defineProperty(Mesh.prototype, 'bounding', {
     set(v) {
       if (!v) { return; }
-      if (v.length < 13) { throw ('Bounding must use the BBox bounding format of 13 floats: center, halfsize, min, max, radius'); }
+      if (v.length < 13) { throw new Error('Bounding must use the BBox bounding format of 13 floats: center, halfsize, min, max, radius'); }
       this._bounding.set(v);
     },
     get() {
@@ -2479,7 +2479,7 @@ quat.fromEuler = function(out, vec) {
 
     if (!attribute && common) { attribute = common.attribute; }
 
-    if (!attribute) { throw ('Buffer added to mesh without attribute name'); }
+    if (!attribute) { throw new Error('Buffer added to mesh without attribute name'); }
 
     if (!buffer_spacing && common) {
       if (common && common.spacing) { buffer_spacing = common.spacing; } else { buffer_spacing = 3; }
@@ -2487,11 +2487,11 @@ quat.fromEuler = function(out, vec) {
 
     if (!buffer_data) {
       const num = this.getNumVertices();
-      if (!num) { throw ('Cannot create an empty buffer in a mesh without vertices (vertices are needed to know the size)'); }
+      if (!num) { throw new Error('Cannot create an empty buffer in a mesh without vertices (vertices are needed to know the size)'); }
       buffer_data = new (GL.Mesh.default_datatype)(num * buffer_spacing);
     }
 
-    if (!buffer_data.buffer) { throw ('Buffer data MUST be typed array'); }
+    if (!buffer_data.buffer) { throw new Error('Buffer data MUST be typed array'); }
 
     // used to ensure the buffers are held in the same gl context as the mesh
     const buffer = this.vertexBuffers[name] = new GL.Buffer(gl.ARRAY_BUFFER, buffer_data, buffer_spacing, stream_type, this.gl);
@@ -3822,7 +3822,7 @@ Mesh.prototype.draw = function(shader, mode, range_start, range_length)
     format = format.toLowerCase();
     const parser = GL.Mesh.parsers[format];
     if (parser) { return parser.call(null, data, { mesh: this }); }
-    throw (`GL.Mesh.parse: no parser found for format ${format}`);
+    throw new Error(`GL.Mesh.parse: no parser found for format ${format}`);
   };
 
   /**
@@ -3836,7 +3836,7 @@ Mesh.prototype.draw = function(shader, mode, range_start, range_length)
     format = format.toLowerCase();
     const encoder = GL.Mesh.encoders[format];
     if (encoder) { return encoder.call(null, this, options); }
-    throw (`GL.Mesh.encode: no encoder found for format ${format}`);
+    throw new Error(`GL.Mesh.encode: no encoder found for format ${format}`);
   };
 
   /**
@@ -4673,10 +4673,10 @@ Mesh.prototype.draw = function(shader, mode, range_start, range_length)
 
     this.has_mipmaps = false;
 
-    if (this.format == gl.DEPTH_COMPONENT && gl.webgl_version == 1 && !gl.extensions.WEBGL_depth_texture) { throw ('Depth Texture not supported'); }
-    if (this.type == gl.FLOAT && !gl.extensions.OES_texture_float && gl.webgl_version == 1) { throw ('Float Texture not supported'); }
+    if (this.format == gl.DEPTH_COMPONENT && gl.webgl_version == 1 && !gl.extensions.WEBGL_depth_texture) { throw new Error('Depth Texture not supported'); }
+    if (this.type == gl.FLOAT && !gl.extensions.OES_texture_float && gl.webgl_version == 1) { throw new Error('Float Texture not supported'); }
     if (this.type == gl.HALF_FLOAT_OES) {
-      if (!gl.extensions.OES_texture_half_float && gl.webgl_version == 1) { throw ('Half Float Texture extension not supported.'); } else if (gl.webgl_version > 1) {
+      if (!gl.extensions.OES_texture_half_float && gl.webgl_version == 1) { throw new Error('Half Float Texture extension not supported.'); } else if (gl.webgl_version > 1) {
         console.warn('using HALF_FLOAT_OES in WebGL2 is deprecated, suing HALF_FLOAT instead');
         this.type = this.format == gl.RGB ? gl.RGB16F : gl.RGBA16F;
       }
@@ -4685,7 +4685,7 @@ Mesh.prototype.draw = function(shader, mode, range_start, range_length)
         && ((this.minFilter != gl.NEAREST && this.minFilter != gl.LINEAR) // uses mipmaps
         || (this.wrapS != gl.CLAMP_TO_EDGE || this.wrapT != gl.CLAMP_TO_EDGE))) // uses wrap
     {
-      if (!options.ignore_pot) { throw ('Cannot use texture-wrap or mipmaps in Non-Power-of-Two textures'); } else {
+      if (!options.ignore_pot) { throw new Error('Cannot use texture-wrap or mipmaps in Non-Power-of-Two textures'); } else {
         this.minFilter = this.magFilter = gl.LINEAR;
         this.wrapS = this.wrapT = gl.CLAMP_TO_EDGE;
       }
@@ -4745,8 +4745,8 @@ Mesh.prototype.draw = function(shader, mode, range_start, range_length)
     } else if (this.texture_type == GL.TEXTURE_CUBE_MAP) {
       for (var i = 0; i < 6; ++i) { gl.texImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, this.internalFormat, this.width, this.height, 0, this.format, this.type, pixel_data ? pixel_data[i] : null); }
     } else if (this.texture_type == GL.TEXTURE_3D) {
-      if (this.gl.webgl_version == 1) { throw ('TEXTURE_3D not supported in WebGL 1. Enable WebGL 2 in the context by passing webgl2:true to the context'); }
-      if (!options.depth) { throw ('3d texture depth must be set in the options.depth'); }
+      if (this.gl.webgl_version == 1) { throw new Error('TEXTURE_3D not supported in WebGL 1. Enable WebGL 2 in the context by passing webgl2:true to the context'); }
+      if (!options.depth) { throw new Error('3d texture depth must be set in the options.depth'); }
       gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, false); // standard does not allow this flags for 3D textures
       gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
       gl.texImage3D(GL.TEXTURE_3D, 0, this.internalFormat, width, height, options.depth, 0, this.format, this.type, pixel_data || null);
@@ -4779,9 +4779,9 @@ Mesh.prototype.draw = function(shader, mode, range_start, range_length)
       this.minFilter = this.magFilter = GL.NEAREST;
 
       if (gl.webgl_version == 2) {
-        if (this.type == GL.UNSIGNED_SHORT) { this.internalFormat = GL.DEPTH_COMPONENT16; } else if (this.type == GL.UNSIGNED_INT) { this.internalFormat = GL.DEPTH_COMPONENT24; } else if (this.type == GL.FLOAT) { this.internalFormat = GL.DEPTH_COMPONENT32F; } else { throw ('unsupported type for a depth texture'); }
+        if (this.type == GL.UNSIGNED_SHORT) { this.internalFormat = GL.DEPTH_COMPONENT16; } else if (this.type == GL.UNSIGNED_INT) { this.internalFormat = GL.DEPTH_COMPONENT24; } else if (this.type == GL.FLOAT) { this.internalFormat = GL.DEPTH_COMPONENT32F; } else { throw new Error('unsupported type for a depth texture'); }
       } else if (gl.webgl_version == 1) {
-        if (this.type == GL.FLOAT) { throw ('WebGL 1.0 does not support float depth textures'); }
+        if (this.type == GL.FLOAT) { throw new Error('WebGL 1.0 does not support float depth textures'); }
         this.internalFormat = GL.DEPTH_COMPONENT;
       }
     } else if (this.format == gl.RGBA) {
@@ -4934,7 +4934,7 @@ Mesh.prototype.draw = function(shader, mode, range_start, range_length)
   Texture.prototype.uploadImage = function (image, options) {
     this.bind();
     const { gl } = this;
-    if (!image) { throw ('uploadImage parameter must be Image'); }
+    if (!image) { throw new Error('uploadImage parameter must be Image'); }
 
     Texture.setUploadOptions(options, gl);
 
@@ -4945,10 +4945,9 @@ Mesh.prototype.draw = function(shader, mode, range_start, range_length)
       this.data = image;
     } catch (e) {
       if (location.protocol == 'file:') {
-        throw 'image not loaded for security reasons (serve this page over "http://" instead)';
+        throw new Error('image not loaded for security reasons (serve this page over "http://" instead)');
       } else {
-        throw 'image not loaded for security reasons (image must originate from the same '
-            + 'domain as this page or use Cross-Origin Resource Sharing)';
+        throw new Error('image not loaded for security reasons (image must originate from the same domain as this page or use Cross-Origin Resource Sharing)');
       }
     }
 
@@ -4970,7 +4969,7 @@ Mesh.prototype.draw = function(shader, mode, range_start, range_length)
 */
   Texture.prototype.uploadData = function (data, options, skip_mipmaps) {
     options = options || {};
-    if (!data) { throw ('no data passed'); }
+    if (!data) { throw new Error('no data passed'); }
     const { gl } = this;
     this.bind();
     Texture.setUploadOptions(options, gl);
@@ -4994,7 +4993,7 @@ Mesh.prototype.draw = function(shader, mode, range_start, range_length)
       gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, false); // standard does not allow this flags for 3D textures
       gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
       gl.texImage3D(this.texture_type, mipmap_level, internal_format, width, height, this.depth >> mipmap_level, 0, this.format, this.type, data);
-    } else if (this.texture_type == GL.TEXTURE_CUBE_MAP) { gl.texImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_X + (options.cubemap_face || 0), mipmap_level, internal_format, width, height, 0, this.format, this.type, data); } else { throw ('cannot uploadData for this texture type'); }
+    } else if (this.texture_type == GL.TEXTURE_CUBE_MAP) { gl.texImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_X + (options.cubemap_face || 0), mipmap_level, internal_format, width, height, 0, this.format, this.type, data); } else { throw new Error('cannot uploadData for this texture type'); }
 
     this.data = data; // should I clone it?
 
@@ -5171,15 +5170,15 @@ Texture.cubemap_camera_parameters = [
     let h = -1;
     let type = null;
 
-    if (!color_textures && !depth_texture) { throw ('Textures missing in drawTo'); }
+    if (!color_textures && !depth_texture) { throw new Error('Textures missing in drawTo'); }
 
     if (color_textures && color_textures.length) {
       for (var i = 0; i < color_textures.length; i++) {
         var t = color_textures[i];
-        if (w == -1) { w = t.width; } else if (w != t.width) { throw ('Cannot use Texture.drawTo if textures have different dimensions'); }
-        if (h == -1) { h = t.height; } else if (h != t.height) { throw ('Cannot use Texture.drawTo if textures have different dimensions'); }
+        if (w == -1) { w = t.width; } else if (w != t.width) { throw new Error('Cannot use Texture.drawTo if textures have different dimensions'); }
+        if (h == -1) { h = t.height; } else if (h != t.height) { throw new Error('Cannot use Texture.drawTo if textures have different dimensions'); }
         if (type == null) // first one defines the type
-        { type = t.type; } else if (type != t.type) { throw ('Cannot use Texture.drawTo if textures have different data type, all must have the same type'); }
+        { type = t.type; } else if (type != t.type) { throw new Error('Cannot use Texture.drawTo if textures have different data type, all must have the same type'); }
       }
     } else {
       w = depth_texture.width;
@@ -5187,7 +5186,7 @@ Texture.cubemap_camera_parameters = [
     }
 
     const ext = gl.extensions.WEBGL_draw_buffers;
-    if (!ext && color_textures && color_textures.length > 1) { throw ('Rendering to several textures not supported'); }
+    if (!ext && color_textures && color_textures.length > 1) { throw new Error('Rendering to several textures not supported'); }
 
     const v = gl.getViewport();
     gl._framebuffer = gl._framebuffer || gl.createFramebuffer();
@@ -5196,7 +5195,7 @@ Texture.cubemap_camera_parameters = [
     gl.viewport(0, 0, w, h);
 
     let renderbuffer = null;
-    if (depth_texture && depth_texture.format !== gl.DEPTH_COMPONENT || depth_texture.type != gl.UNSIGNED_INT) { throw ('Depth texture must be of format: gl.DEPTH_COMPONENT and type: gl.UNSIGNED_INT'); }
+    if (depth_texture && depth_texture.format !== gl.DEPTH_COMPONENT || depth_texture.type != gl.UNSIGNED_INT) { throw new Error('Depth texture must be of format: gl.DEPTH_COMPONENT and type: gl.UNSIGNED_INT'); }
 
     if (depth_texture) {
       gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.TEXTURE_2D, depth_texture.handler, 0);
@@ -5234,7 +5233,7 @@ Texture.cubemap_camera_parameters = [
     }
 
     const complete = gl.checkFramebufferStatus(gl.FRAMEBUFFER);
-    if (complete !== gl.FRAMEBUFFER_COMPLETE) { throw (`FBO not complete: ${complete}`); }
+    if (complete !== gl.FRAMEBUFFER_COMPLETE) { throw new Error(`FBO not complete: ${complete}`); }
 
     callback();
 
@@ -5258,7 +5257,7 @@ Texture.cubemap_camera_parameters = [
   Texture.drawToColorAndDepth = function (color_texture, depth_texture, callback) {
     const { gl } = color_texture; // static function
 
-    if (depth_texture.width != color_texture.width || depth_texture.height != color_texture.height) { throw ('Different size between color texture and depth texture'); }
+    if (depth_texture.width != color_texture.width || depth_texture.height != color_texture.height) { throw new Error('Different size between color texture and depth texture'); }
 
     const v = gl.getViewport();
 
@@ -5292,7 +5291,7 @@ Texture.cubemap_camera_parameters = [
   Texture.prototype.copyTo = function (target_texture, shader, uniforms) {
     const that = this;
     const { gl } = this;
-    if (!target_texture) { throw ('target_texture required'); }
+    if (!target_texture) { throw new Error('target_texture required'); }
 
     // save state
     const previous_fbo = gl.getParameter(gl.FRAMEBUFFER_BINDING);
@@ -5343,7 +5342,7 @@ Texture.cubemap_camera_parameters = [
         gl.framebufferTexture2D(gl.FRAMEBUFFER, attachment_point, gl.TEXTURE_2D, target_texture.handler, 0);
 
         const complete = gl.checkFramebufferStatus(gl.FRAMEBUFFER);
-        if (complete !== gl.FRAMEBUFFER_COMPLETE) { throw (`FBO not complete: ${complete}`); }
+        if (complete !== gl.FRAMEBUFFER_COMPLETE) { throw new Error(`FBO not complete: ${complete}`); }
 
         // enable depth test?
         gl.enable(gl.DEPTH_TEST);
@@ -5403,7 +5402,7 @@ Texture.cubemap_camera_parameters = [
       const that = this;
       const { gl } = this;
 
-      if (this.texture_type != gl.TEXTURE_2D || this.format === gl.DEPTH_COMPONENT || this.format === gl.DEPTH_STENCIL) { throw ('blit only support TEXTURE_2D of RGB or RGBA. use copyTo instead'); }
+      if (this.texture_type != gl.TEXTURE_2D || this.format === gl.DEPTH_COMPONENT || this.format === gl.DEPTH_STENCIL) { throw new Error('blit only support TEXTURE_2D of RGB or RGBA. use copyTo instead'); }
 
       // save state
       const previous_fbo = gl.getParameter(gl.FRAMEBUFFER_BINDING);
@@ -5521,9 +5520,9 @@ Texture.cubemap_camera_parameters = [
 
     // if(this === output_texture && this.texture_type === gl.TEXTURE_CUBE_MAP )
     //    throw("cannot use applyBlur in a texture with itself when blurring a CUBE_MAP");
-    if (temp_texture === output_texture) { throw ('cannot use applyBlur in a texture using as temporary itself'); }
+    if (temp_texture === output_texture) { throw new Error('cannot use applyBlur in a texture using as temporary itself'); }
 
-    if (output_texture && this.texture_type !== output_texture.texture_type) { throw ('cannot use applyBlur with textures of different texture_type'); }
+    if (output_texture && this.texture_type !== output_texture.texture_type) { throw new Error('cannot use applyBlur with textures of different texture_type'); }
 
     // if(this.width != output_texture.width || this.height != output_texture.height)
     //    throw("cannot use applyBlur with an output texture of different size, it doesnt work");
@@ -5684,7 +5683,7 @@ Texture.cubemap_camera_parameters = [
   };
 
   Texture.parseTGA = function (data) {
-    if (!data || data.constructor !== ArrayBuffer) { throw ('TGA: data must be ArrayBuffer'); }
+    if (!data || data.constructor !== ArrayBuffer) { throw new Error('TGA: data must be ArrayBuffer'); }
     data = new Uint8Array(data);
     const TGAheader = new Uint8Array([0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
     const TGAcompare = data.subarray(0, 12);
@@ -5897,7 +5896,7 @@ Texture.cubemap_camera_parameters = [
 */
   Texture.cubemapFromImages = function (images, options) {
     options = options || {};
-    if (images.length != 6) { throw 'missing images to create cubemap'; }
+    if (images.length != 6) { throw new Error('missing images to create cubemap'); }
 
     const { width } = images[0];
     const { height } = images[0];
@@ -5919,10 +5918,9 @@ Texture.cubemap_camera_parameters = [
       texture.data = images;
     } catch (e) {
       if (location.protocol == 'file:') {
-        throw 'image not loaded for security reasons (serve this page over "http://" instead)';
+        throw new Error('image not loaded for security reasons (serve this page over "http://" instead)');
       } else {
-        throw 'image not loaded for security reasons (image must originate from the same '
-            + 'domain as this page or use Cross-Origin Resource Sharing)';
+        throw new Error('image not loaded for security reasons (image must originate from the same domain as this page or use Cross-Origin Resource Sharing)');
       }
     }
     if (options.minFilter && options.minFilter != gl.NEAREST && options.minFilter != gl.LINEAR) {
@@ -6094,7 +6092,7 @@ Texture.cubemap_camera_parameters = [
     const v = gl.getViewport();
     const old_fbo = gl.getParameter(gl.FRAMEBUFFER_BINDING);
 
-    if (this.format == gl.DEPTH_COMPONENT) { throw ('cannot use getPixels in depth textures'); }
+    if (this.format == gl.DEPTH_COMPONENT) { throw new Error('cannot use getPixels in depth textures'); }
 
     gl.disable(gl.DEPTH_TEST);
 
@@ -6148,7 +6146,7 @@ Texture.cubemap_camera_parameters = [
 * @return {Array} the array that has 6 typed arrays containing the pixels
 */
   Texture.prototype.getCubemapPixels = function () {
-    if (this.texture_type !== gl.TEXTURE_CUBE_MAP) { throw ('this texture is not a cubemap'); }
+    if (this.texture_type !== gl.TEXTURE_CUBE_MAP) { throw new Error('this texture is not a cubemap'); }
     return [this.getPixels(0), this.getPixels(1), this.getPixels(2), this.getPixels(3), this.getPixels(4), this.getPixels(5)];
   };
 
@@ -6159,7 +6157,7 @@ Texture.cubemap_camera_parameters = [
 * @param {bool} noflip if pixels should not be flipped according to Y
 */
   Texture.prototype.setCubemapPixels = function (data_array, no_flip) {
-    if (this.texture_type !== gl.TEXTURE_CUBE_MAP) { throw ('this texture is not a cubemap, it should be created with { texture_type: gl.TEXTURE_CUBE_MAP }'); }
+    if (this.texture_type !== gl.TEXTURE_CUBE_MAP) { throw new Error('this texture is not a cubemap, it should be created with { texture_type: gl.TEXTURE_CUBE_MAP }'); }
     for (let i = 0; i < 6; ++i) { this.setPixels(data_array[i], no_flip, i != 5, i); }
   };
 
@@ -6376,7 +6374,7 @@ Texture.cubemap_camera_parameters = [
 
     if (out) {
       out.drawTo(() => {
-        if (a == out || b == out) { throw ('Blend output cannot be the same as the input'); }
+        if (a == out || b == out) { throw new Error('Blend output cannot be the same as the input'); }
         a.bind(0);
         shader.draw(mesh, gl.TRIANGLES);
       });
@@ -6390,7 +6388,7 @@ Texture.cubemap_camera_parameters = [
 
   Texture.cubemapToTexture2D = function (cubemap_texture, size, target_texture, keep_type, yaw) {
     if (!cubemap_texture || cubemap_texture.texture_type != gl.TEXTURE_CUBE_MAP) {
-      throw ('No cubemap in convert');
+      throw new Error('No cubemap in convert');
     }
 
     size = size || cubemap_texture.width;
@@ -6547,7 +6545,7 @@ Texture.cubemap_camera_parameters = [
     this.gl = gl;
     this._context_id = gl.context_id;
 
-    if (textures && textures.constructor !== Array) { throw ('FBO textures must be an Array'); }
+    if (textures && textures.constructor !== Array) { throw new Error('FBO textures must be an Array'); }
 
     this.handler = null;
     this.width = -1;
@@ -6584,18 +6582,18 @@ Texture.cubemap_camera_parameters = [
             && depth_texture.format !== GL.DEPTH_STENCIL
             && depth_texture.format !== GL.DEPTH_COMPONENT16
             && depth_texture.format !== GL.DEPTH_COMPONENT24
-            && depth_texture.format !== GL.DEPTH_COMPONENT32F) { throw ('FBO Depth texture must be of format: gl.DEPTH_COMPONENT, gl.DEPTH_STENCIL or gl.DEPTH_COMPONENT16/24/32F (only in webgl2)'); }
+            && depth_texture.format !== GL.DEPTH_COMPONENT32F) { throw new Error('FBO Depth texture must be of format: gl.DEPTH_COMPONENT, gl.DEPTH_STENCIL or gl.DEPTH_COMPONENT16/24/32F (only in webgl2)'); }
 
       if (depth_texture.type != GL.UNSIGNED_SHORT
             && depth_texture.type != GL.UNSIGNED_INT
             && depth_texture.type != GL.UNSIGNED_INT_24_8_WEBGL
-            && depth_texture.type != GL.FLOAT) { throw ('FBO Depth texture must be of type: gl.UNSIGNED_SHORT, gl.UNSIGNED_INT, gl.UNSIGNED_INT_24_8_WEBGL'); }
+            && depth_texture.type != GL.FLOAT) { throw new Error('FBO Depth texture must be of type: gl.UNSIGNED_SHORT, gl.UNSIGNED_INT, gl.UNSIGNED_INT_24_8_WEBGL'); }
     }
 
     // test if is already binded
     let same = this.depth_texture == depth_texture;
     if (same && color_textures) {
-      if (color_textures.constructor !== Array) { throw ('FBO: color_textures parameter must be an array containing all the textures to be binded in the color'); }
+      if (color_textures.constructor !== Array) { throw new Error('FBO: color_textures parameter must be an array containing all the textures to be binded in the color'); }
       if (color_textures.length == this.color_textures.length) {
         for (var i = 0; i < color_textures.length; ++i) {
           if (color_textures[i] != this.color_textures[i]) {
@@ -6643,12 +6641,12 @@ Texture.cubemap_camera_parameters = [
     if (color_textures && color_textures.length) {
       for (var i = 0; i < color_textures.length; i++) {
         var t = color_textures[i];
-        if (t.constructor !== GL.Texture) { throw ('FBO can only bind instances of GL.Texture'); }
-        if (w == -1) { w = t.width; } else if (w != t.width) { throw ('Cannot bind textures with different dimensions'); }
-        if (h == -1) { h = t.height; } else if (h != t.height) { throw ('Cannot bind textures with different dimensions'); }
+        if (t.constructor !== GL.Texture) { throw new Error('FBO can only bind instances of GL.Texture'); }
+        if (w == -1) { w = t.width; } else if (w != t.width) { throw new Error('Cannot bind textures with different dimensions'); }
+        if (h == -1) { h = t.height; } else if (h != t.height) { throw new Error('Cannot bind textures with different dimensions'); }
         if (type == null) // first one defines the type
-        { type = t.type; } else if (type != t.type) { throw ('Cannot bind textures to a FBO with different pixel formats'); }
-        if (t.texture_type != gl.TEXTURE_2D) { throw ('Cannot bind a Cubemap to a FBO'); }
+        { type = t.type; } else if (type != t.type) { throw new Error('Cannot bind textures to a FBO with different pixel formats'); }
+        if (t.texture_type != gl.TEXTURE_2D) { throw new Error('Cannot bind a Cubemap to a FBO'); }
       }
     } else {
       w = depth_texture.width;
@@ -6662,7 +6660,7 @@ Texture.cubemap_camera_parameters = [
 
     // draw_buffers allow to have more than one color texture binded in a FBO
     const ext = gl.extensions.WEBGL_draw_buffers;
-    if (gl.webgl_version == 1 && !ext && color_textures && color_textures.length > 1) { throw ('Rendering to several textures not supported by your browser'); }
+    if (gl.webgl_version == 1 && !ext && color_textures && color_textures.length > 1) { throw new Error('Rendering to several textures not supported by your browser'); }
 
     const target = gl.webgl_version == 1 ? gl.FRAMEBUFFER : gl.DRAW_FRAMEBUFFER;
 
@@ -6673,7 +6671,7 @@ Texture.cubemap_camera_parameters = [
 
     // bind a buffer for the depth
     if (depth_texture && depth_texture.constructor === GL.Texture) {
-      if (gl.webgl_version == 1 && !gl.extensions.WEBGL_depth_texture) { throw ('Rendering to depth texture not supported by your browser'); }
+      if (gl.webgl_version == 1 && !gl.extensions.WEBGL_depth_texture) { throw new Error('Rendering to depth texture not supported by your browser'); }
 
       if (this.stencil && depth_texture.format !== gl.DEPTH_STENCIL) { console.warn('Stencil cannot be enabled if there is a depth texture with a DEPTH_STENCIL format'); }
 
@@ -6753,7 +6751,7 @@ Texture.cubemap_camera_parameters = [
     // check completion
     const complete = gl.checkFramebufferStatus(target);
     if (complete !== gl.FRAMEBUFFER_COMPLETE) // 36054: GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT
-    { throw (`FBO not complete: ${complete}`); }
+    { throw new Error(`FBO not complete: ${complete}`); }
 
     // restore state
     gl.bindTexture(gl.TEXTURE_2D, null);
@@ -6768,7 +6766,7 @@ Texture.cubemap_camera_parameters = [
 * @param {boolean} keep_old keeps the previous FBO is one was attached to restore it afterwards
 */
   FBO.prototype.bind = function (keep_old) {
-    if (!this.color_textures.length && !this.depth_texture) { throw ('FBO: no textures attached to FBO'); }
+    if (!this.color_textures.length && !this.depth_texture) { throw new Error('FBO: no textures attached to FBO'); }
     this._old_viewport.set(gl.viewport_data);
 
     if (keep_old) { this._old_fbo_handler = gl.getParameter(gl.FRAMEBUFFER_BINDING); } else { this._old_fbo_handler = null; }
@@ -6882,7 +6880,7 @@ Texture.cubemap_camera_parameters = [
   global.Shader = GL.Shader = function Shader(vertexSource, fragmentSource, macros) {
     if (GL.debug) { console.log('GL.Shader created'); }
 
-    if (!vertexSource || !fragmentSource) { throw ('GL.Shader source code parameter missing'); }
+    if (!vertexSource || !fragmentSource) { throw new Error('GL.Shader source code parameter missing'); }
 
     // used to avoid problems with resources moving between different webgl context
     this._context_id = global.gl.context_id;
@@ -6903,7 +6901,7 @@ Texture.cubemap_camera_parameters = [
     gl.attachShader(this.program, fs, gl);
     gl.linkProgram(this.program);
     if (!gl.getProgramParameter(this.program, gl.LINK_STATUS)) {
-      throw `link error: ${gl.getProgramInfoLog(this.program)}`;
+      throw new Error(`link error: ${gl.getProgramInfoLog(this.program)}`);
     }
 
     this.vs_shader = vs;
@@ -6950,7 +6948,7 @@ Texture.cubemap_camera_parameters = [
     gl.shaderSource(shader, source);
     gl.compileShader(shader);
     if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-      throw `${type == gl.VERTEX_SHADER ? 'Vertex' : 'Fragment'} shader compile error: ${gl.getShaderInfoLog(shader)}`;
+      throw new Error(`${type == gl.VERTEX_SHADER ? 'Vertex' : 'Fragment'} shader compile error: ${gl.getShaderInfoLog(shader)}`);
     }
     return shader;
   };
@@ -7000,7 +6998,7 @@ Texture.cubemap_camera_parameters = [
     gl.attachShader(this.program, fs, gl);
     gl.linkProgram(this.program);
     if (!gl.getProgramParameter(this.program, gl.LINK_STATUS)) {
-      throw `link error: ${gl.getProgramInfoLog(this.program)}`;
+      throw new Error(`link error: ${gl.getProgramInfoLog(this.program)}`);
     }
 
     // store shaders separated
@@ -7419,7 +7417,7 @@ Texture.cubemap_camera_parameters = [
     // bind buffers
     const { gl } = this;
 
-    if (gl.webgl_version == 1 && !gl.extensions.ANGLE_instanced_arrays) { throw ('instancing not supported'); }
+    if (gl.webgl_version == 1 && !gl.extensions.ANGLE_instanced_arrays) { throw new Error('instancing not supported'); }
 
     gl.useProgram(this.program); // this could be removed assuming every shader is called with some uniforms
 
@@ -7580,7 +7578,7 @@ Texture.cubemap_camera_parameters = [
     files = files || Shader.files;
 
     const already_imported = {}; // avoid to import two times the same code
-    if (!files) { throw ('Shader.files not initialized, assign files there'); }
+    if (!files) { throw new Error('Shader.files not initialized, assign files there'); }
 
     const replace_import = function (v) {
       const token = v.split('"');
@@ -8237,7 +8235,7 @@ Texture.cubemap_camera_parameters = [
     if (options.canvas) {
       if (typeof (options.canvas) === 'string') {
         canvas = document.getElementById(options.canvas);
-        if (!canvas) throw (`Canvas element not found: ${options.canvas}`);
+        if (!canvas) throw new Error(`Canvas element not found: ${options.canvas}`);
       } else { canvas = options.canvas; }
     } else {
       let root = null;
@@ -8265,7 +8263,7 @@ Texture.cubemap_camera_parameters = [
     { seq = ['webgl', 'experimental-webgl']; } else if (options.version === 0) // latest
     { seq = ['webgl2', 'experimental-webgl2', 'webgl', 'experimental-webgl']; }
 
-    if (!seq) { throw 'Incorrect WebGL version, must be 1 or 2'; }
+    if (!seq) { throw new Error('Incorrect WebGL version, must be 1 or 2'); }
 
     const context_options = {
       alpha: options.alpha === undefined ? true : options.alpha,
@@ -8282,8 +8280,8 @@ Texture.cubemap_camera_parameters = [
     }
 
     if (!gl) {
-      if (canvas.getContext('webgl')) { throw 'WebGL supported but not with those parameters'; }
-      throw 'WebGL not supported';
+      if (canvas.getContext('webgl')) { throw new Error('WebGL supported but not with those parameters'); }
+      throw new Error('WebGL not supported');
     }
 
     // context globals
@@ -8354,7 +8352,7 @@ Texture.cubemap_camera_parameters = [
     }
 
     // just some checks
-    if (typeof (glMatrix) === 'undefined') { throw ('glMatrix not found, LiteGL requires glMatrix to be included'); }
+    if (typeof (glMatrix) === 'undefined') { throw new Error('glMatrix not found, LiteGL requires glMatrix to be included'); }
 
     let last_click_time = 0;
 
@@ -9171,9 +9169,9 @@ Texture.cubemap_camera_parameters = [
     * @param {Object} target_instance [Optional] instance to call the function (use this instead of .bind method to help removing events)
     * */
     bind(instance, event_type, callback, target_instance) {
-      if (!instance) { throw ('cannot bind event to null'); }
-      if (!callback) { throw ('cannot bind to null callback'); }
-      if (instance.constructor === String) { throw ('cannot bind event to a string'); }
+      if (!instance) { throw new Error('cannot bind event to null'); }
+      if (!callback) { throw new Error('cannot bind to null callback'); }
+      if (instance.constructor === String) { throw new Error('cannot bind event to a string'); }
 
       let events = instance.__levents;
       if (!events) {
@@ -9194,9 +9192,9 @@ Texture.cubemap_camera_parameters = [
     * @param {Object} target_instance [Optional] target_instance that was binded
     * */
     unbind(instance, event_type, callback, target_instance) {
-      if (!instance) { throw ('cannot unbind event to null'); }
-      if (!callback) { throw ('cannot unbind from null callback'); }
-      if (instance.constructor === String) { throw ('cannot bind event to a string'); }
+      if (!instance) { throw new Error('cannot unbind event to null'); }
+      if (!callback) { throw new Error('cannot unbind from null callback'); }
+      if (instance.constructor === String) { throw new Error('cannot bind event to a string'); }
 
       const events = instance.__levents;
       if (!events) { return; }
@@ -9223,7 +9221,7 @@ Texture.cubemap_camera_parameters = [
     * @param {Object} target_instance [Optional] target_instance of the events to remove
     * */
     unbindAll(instance, target_instance, callback) {
-      if (!instance) { throw ('cannot unbind events in null'); }
+      if (!instance) { throw new Error('cannot unbind events in null'); }
 
       const events = instance.__levents;
       if (!events) { return; }
@@ -9256,7 +9254,7 @@ Texture.cubemap_camera_parameters = [
     * @param {String} event name of the event you want to remove all binds
     * */
     unbindAllEvent(instance, event_type) {
-      if (!instance) { throw ('cannot unbind events in null'); }
+      if (!instance) { throw new Error('cannot unbind events in null'); }
 
       const events = instance.__levents;
       if (!events) { return; }
@@ -9273,7 +9271,7 @@ Texture.cubemap_camera_parameters = [
     * @param {Object} target_instance [Optional] instance binded to callback
     * */
     isBind(instance, event_type, callback, target_instance) {
-      if (!instance) { throw ('LEvent cannot have null as instance'); }
+      if (!instance) { throw new Error('LEvent cannot have null as instance'); }
 
       const events = instance.__levents;
       if (!events) { return; }
@@ -9295,7 +9293,7 @@ Texture.cubemap_camera_parameters = [
     * @return {boolean} true is there is at least one
     * */
     hasBind(instance, event_type) {
-      if (!instance) { throw ('LEvent cannot have null as instance'); }
+      if (!instance) { throw new Error('LEvent cannot have null as instance'); }
       const events = instance.__levents;
       if (!events || !events.hasOwnProperty(event_type) || !events[event_type].length) { return false; }
       return true;
@@ -9309,7 +9307,7 @@ Texture.cubemap_camera_parameters = [
     * @return {boolean} true is there is at least one
     * */
     hasBindTo(instance, target) {
-      if (!instance) { throw ('LEvent cannot have null as instance'); }
+      if (!instance) { throw new Error('LEvent cannot have null as instance'); }
       const events = instance.__levents;
 
       // no events binded
@@ -9338,8 +9336,8 @@ Texture.cubemap_camera_parameters = [
     * return {bool} true if the event passed was blocked by any binded callback
     * */
     trigger(instance, event_type, params, reverse_order, expand_parameters) {
-      if (!instance) { throw ('cannot trigger event from null'); }
-      if (instance.constructor === String) { throw ('cannot bind event to a string'); }
+      if (!instance) { throw new Error('cannot trigger event from null'); }
+      if (instance.constructor === String) { throw new Error('cannot bind event to a string'); }
 
       const events = instance.__levents;
       if (!events || !events.hasOwnProperty(event_type)) { return false; }
@@ -9387,8 +9385,8 @@ Texture.cubemap_camera_parameters = [
       let blocked = false;
       for (let i = 0, l = instances.length; i < l; ++i) {
         const instance = instances[i];
-        if (!instance) { throw ('cannot trigger event from null'); }
-        if (instance.constructor === String) { throw ('cannot bind event to a string'); }
+        if (!instance) { throw new Error('cannot trigger event from null'); }
+        if (instance.constructor === String) { throw new Error('cannot bind event to a string'); }
 
         const events = instance.__levents;
         if (!events || !events.hasOwnProperty(event_type)) { continue; }
@@ -9842,7 +9840,7 @@ Texture.cubemap_camera_parameters = [
       const end = vec3.create();
       const origin2 = vec3.create();
       return function (origin, direction, box, model, result, max_dist, in_local) {
-        if (!origin || !direction || !box) { throw ('parameters missing'); }
+        if (!origin || !direction || !box) { throw new Error('parameters missing'); }
         if (model) {
           mat4.invert(inv, model);
           vec3.add(end, origin, direction);
@@ -10090,9 +10088,12 @@ Texture.cubemap_camera_parameters = [
     */
     testPoint2DInPolygon(poly, pt) {
       for (var c = false, i = -1, l = poly.length, j = l - 1; ++i < l; j = i) {
-        ((poly[i][1] <= pt[1] && pt[1] < poly[j][1]) || (poly[j][1] <= pt[1] && pt[1] < poly[i][1]))
-        && (pt[0] < (poly[j][0] - poly[i][0]) * (pt[1] - poly[i][1]) / (poly[j][1] - poly[i][1]) + poly[i][0])
-        && (c = !c);
+        if (
+          (poly[i][1] <= pt[1] && pt[1] < poly[j][1]) || (poly[j][1] <= pt[1] && pt[1] < poly[i][1])
+          && (pt[0] < (poly[j][0] - poly[i][0]) * (pt[1] - poly[i][1]) / (poly[j][1] - poly[i][1]) + poly[i][0])
+        ) {
+          c = !c;
+        }
       }
       return c;
     },
@@ -10643,7 +10644,7 @@ Texture.cubemap_camera_parameters = [
       octree_tested_triangles = 0;
 
       if (!this.root) {
-        throw ('Error: octree not build');
+        throw new Error('Error: octree not build');
       }
 
       origin_temp.set(origin);
@@ -10679,7 +10680,7 @@ Texture.cubemap_camera_parameters = [
     octree_tested_boxes = 0;
     octree_tested_triangles = 0;
 
-    if (!this.root) { throw ('Error: octree not build'); }
+    if (!this.root) { throw new Error('Error: octree not build'); }
 
     // better to use always the radius squared, because all the calculations are going to do that
     const rr = radius * radius;
@@ -11458,7 +11459,9 @@ Texture.cubemap_camera_parameters = [
     if (coordsBuffer) {
       lines.push('');
       const coords = coordsBuffer.data;
-      for (var i = 0; i < coords.length; i += 2) { lines.push(`vt ${coords[i].toFixed(4)} ${coords[i + 1].toFixed(4)} ` + ' 0.0000'); }
+      for (var i = 0; i < coords.length; i += 2) {
+        lines.push(`vt ${coords[i].toFixed(4)} ${coords[i + 1].toFixed(4)}  0.0000`);
+      }
     }
 
     let { groups } = mesh.info;
@@ -11582,7 +11585,9 @@ Texture.cubemap_camera_parameters = [
   Mesh.binary_file_formats.wbin = true;
 
   Mesh.parsers.wbin = Mesh.fromBinary = function (data_array, options) {
-    if (!global.WBin) { throw ('To use binary meshes you need to install WBin.js from https://github.com/jagenjo/litescene.js/blob/master/src/utils/wbin.js '); }
+    if (!global.WBin) {
+      throw new Error('To use binary meshes you need to install WBin.js from https://github.com/jagenjo/litescene.js/blob/master/src/utils/wbin.js ');
+    }
 
     options = options || {};
 
@@ -11641,7 +11646,7 @@ Texture.cubemap_camera_parameters = [
   };
 
   Mesh.prototype.toBinary = function (options) {
-    if (!global.WBin) { throw ('to use Mesh.toBinary you need to have WBin included. Check the repository for wbin.js'); }
+    if (!global.WBin) { throw new Error('to use Mesh.toBinary you need to have WBin included. Check the repository for wbin.js'); }
 
     if (!this.info) { this.info = {}; }
 
@@ -11700,19 +11705,19 @@ Texture.cubemap_camera_parameters = [
     };
 
     const func = Mesh.compressors[format];
-    if (!func) { throw (`compression format not supported:${format}`); }
+    if (!func) { throw new Error(`compression format not supported:${format}`); }
     return func(o);
   };
 
   Mesh.decompress = function (o) {
     if (!o.format) { return; }
     const func = Mesh.decompressors[o.format.type];
-    if (!func) { throw (`decompression format not supported:${o.format.type}`); }
+    if (!func) { throw new Error(`decompression format not supported:${o.format.type}`); }
     return func(o);
   };
 
   Mesh.compressors.bounding_compressed = function (o) {
-    if (!o.vertex_buffers) { throw ('buffers not found'); }
+    if (!o.vertex_buffers) { throw new Error('buffers not found'); }
 
     const min = BBox.getMin(o.bounding);
     const max = BBox.getMax(o.bounding);
@@ -11778,7 +11783,9 @@ Texture.cubemap_camera_parameters = [
 
   Mesh.decompressors.bounding_compressed = function (o) {
     const { bounding } = o;
-    if (!bounding) { throw ('error in mesh decompressing data: bounding not found, cannot use the bounding decompression.'); }
+    if (!bounding) {
+      throw new Error('error in mesh decompressing data: bounding not found, cannot use the bounding decompression.');
+    }
 
     const min = BBox.getMin(bounding);
     const max = BBox.getMax(bounding);

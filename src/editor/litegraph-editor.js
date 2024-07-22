@@ -204,7 +204,7 @@ Editor.prototype.goFullscreen = function () {
   } else if (this.root.webkitRequestFullscreen) {
     this.root.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
   } else {
-    throw 'Fullscreen not supported';
+    throw new Error('Fullscreen not supported');
   }
 
   const self = this;

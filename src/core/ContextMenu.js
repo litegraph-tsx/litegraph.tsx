@@ -303,7 +303,7 @@ export class ContextMenu {
         }
         if (value.submenu) {
           if (!value.submenu.options) {
-            throw 'ContextMenu submenu needs options';
+            throw new Error('ContextMenu submenu needs options');
           }
           const submenu = new that.constructor(value.submenu.options, {
             callback: value.submenu.callback,

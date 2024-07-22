@@ -32,7 +32,7 @@ SillyClient.prototype.connect = function (url, room_name, on_connect, on_message
   room_name = room_name || '';
   const that = this;
   this.url = url;
-  if (!url) { throw ('You must specify the server URL of the SillyServer'); }
+  if (!url) { throw new Error('You must specify the server URL of the SillyServer'); }
 
   if (this.socket) {
     this.socket.onmessage = null;
@@ -195,7 +195,11 @@ SillyClient.prototype.sendMessage = function (msg, target_ids) {
   // pack target info
   if (target_ids) {
     const target_str = `@${target_ids.constructor === Array ? target_ids.join(',') : target_ids}|`;
-    if (msg.constructor === String) { msg = target_str + msg; } else { throw ('targeted not supported in binary messages'); }
+    if (msg.constructor === String) {
+      msg = target_str + msg;
+    } else {
+      throw new Error('targeted not supported in binary messages');
+    }
   }
 
   this.socket.send(msg);
@@ -230,7 +234,7 @@ SillyClient.prototype.getBaseURL = function () {
 
 // To store temporal information in the server
 SillyClient.prototype.storeData = function (key, value, on_complete) {
-  if (!this.url) { throw ('Cannot storeData if not connected to the server'); }
+  if (!this.url) { throw new Error('Cannot storeData if not connected to the server'); }
   const base_url = this.getBaseURL();
 
   return new Promise((resolve, fail) => {
@@ -251,7 +255,9 @@ SillyClient.prototype.storeData = function (key, value, on_complete) {
 
 // To retrieve the temporal information from the server
 SillyClient.prototype.loadData = function (key, on_complete) {
-  if (!this.url) { throw ('Cannot loadData if not connected to the server'); }
+  if (!this.url) {
+    throw new Error('Cannot loadData if not connected to the server');
+  }
   const base_url = this.getBaseURL();
   const req = new XMLHttpRequest();
   return new Promise((resolve, fail) => {
