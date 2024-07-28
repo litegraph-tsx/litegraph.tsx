@@ -2,8 +2,6 @@ import { LiteGraph } from './litegraph'; // only used for overlapBounding
 import { LGraphCanvas } from './LGraphCanvas'; // only used to get pale_blue
 import { LGraphNode } from './LGraphNode'; // only used to inherit two methods at the end of file
 
-const global = typeof (window) !== 'undefined' ? window : typeof (self) !== 'undefined' ? self : globalThis;
-
 /**
  * LGraphGroup class represents a group in a LiteGraph graph.
  *
@@ -145,5 +143,3 @@ export class LGraphGroup {
    */
   setDirtyCanvas = LGraphNode.prototype.setDirtyCanvas;
 }
-
-global.LGraphGroup = LGraphGroup; // OG

@@ -3,8 +3,6 @@ import { DragAndScale } from './DragAndScale';
 import { console } from './Console';
 import { pointerListenerAdd, pointerListenerRemove, PointerSettings } from './pointer_events';
 
-const global = typeof (window) !== 'undefined' ? window : typeof (self) !== 'undefined' ? self : globalThis;
-
 const temp = new Float32Array(4);
 const temp_vec2 = new Float32Array(2);
 const tmp_area = new Float32Array(4); // used by drawNodeShape
@@ -8311,5 +8309,3 @@ export class LGraphCanvas {
     black: { color: '#222', bgcolor: '#000', groupcolor: '#444' },
   };
 }
-
-global.LGraphCanvas = LGraphCanvas;

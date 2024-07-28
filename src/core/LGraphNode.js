@@ -1,8 +1,6 @@
 import { LiteGraph } from './litegraph';
 import { console } from './Console';
 
-const global = typeof (window) !== 'undefined' ? window : typeof (self) !== 'undefined' ? self : globalThis;
-
 /**
  * Base Class for all the node type classes.
  *
@@ -2541,5 +2539,3 @@ export class LGraphNode {
     ];
   }
 }
-
-global.LGraphNode = LGraphNode;

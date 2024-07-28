@@ -12,8 +12,6 @@ import { PointerSettings } from './pointer_events';
 // this variable name is only overridden locally.
 console.level = 5;
 
-const global = typeof (window) !== 'undefined' ? window : typeof (self) !== 'undefined' ? self : globalThis;
-
 /**
  * The LiteGraph singleton. It contains all the registered node classes, tons of settings, and a ball of methods
  * as well as acting as the global namespace.  This perhaps isn't the best design choice, and offshoring and reducing
@@ -1238,5 +1236,3 @@ if (typeof performance !== 'undefined') {
     return new Date().getTime();
   };
 }
-
-global.clamp = clamp;

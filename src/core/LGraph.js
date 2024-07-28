@@ -5,8 +5,6 @@ import { LLink } from './LLink';
 import { LGraphCanvas } from './LGraphCanvas';
 import { console } from './Console';
 
-const global = typeof (window) !== 'undefined' ? window : typeof (self) !== 'undefined' ? self : globalThis;
-
 /**
      * LGraph is the class that contain a full graph. We instantiate one and add nodes to it, and then we can run the execution loop.
      * supported callbacks:
@@ -1616,5 +1614,3 @@ export class LGraph {
 
   static STATUS_RUNNING = 2;
 }
-
-global.LGraph = LGraph; // OG
