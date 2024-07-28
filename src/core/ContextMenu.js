@@ -14,8 +14,7 @@ import { PointerSettings, pointerListenerAdd } from './pointer_events';
  * - event: you can pass a MouseEvent, this way the ContextMenu appears in that position
  */
 export class ContextMenu {
-  constructor(values, options) {
-    options = options || {};
+  constructor(values, options = {}) {
     this.options = options;
     const that = this;
 
@@ -421,27 +420,18 @@ export class ContextMenu {
    * @TODO: Obviously belongs with ContextMenu
    * @method closeAll
    * @memberof ContextMenu
-   * @param {Window} [ref_window=window] - Reference to the window object containing the context menus.
+   * @param {Window} [refWindow=window] - Reference to the window object containing the context menus.
    */
-  static closeAll(ref_window) {
-    ref_window = ref_window || window;
+  static closeAll(refWindow = window) {
+    const elements = refWindow.document.querySelectorAll('.litecontextmenu');
+    if (!elements.length) return;
 
-    const elements = ref_window.document.querySelectorAll('.litecontextmenu');
-    if (!elements.length) {
-      return;
-    }
-
-    const result = [];
-    for (var i = 0; i < elements.length; i++) {
-      result.push(elements[i]);
-    }
-
-    for (var i = 0; i < result.length; i++) {
-      if (result[i].close) {
-        result[i].close();
-      } else if (result[i].parentNode) {
-        result[i].parentNode.removeChild(result[i]);
+    Array.from(elements).forEach((element) => {
+      if (typeof element.close === 'function') {
+        element.close();
+      } else {
+        element.parentNode?.removeChild(element);
       }
-    }
+    });
   }
 }
