@@ -7,7 +7,7 @@ import { LGraphGroup } from './LGraphGroup';
 import { DragAndScale } from './DragAndScale';
 import { LGraphCanvas } from './LGraphCanvas';
 import { console } from './Console';
-import { PointerSettings } from './pointer_events';
+import { PointerSettings, pointerListenerAdd, pointerListenerRemove } from './pointer_events';
 
 // this variable name is only overridden locally.
 console.level = 5;
@@ -1058,129 +1058,14 @@ export const LiteGraph = {
       .filter(Boolean); // split & filter [""]
   },
 
-  /**
-   * Adds an event listener to the specified DOM element for pointer, touch, or mouse events,
-   * based on browser support and event type.
-   * @method pointerListenerAdd
-   * @memberof Utility
-   * @param {HTMLElement} oDOM - The DOM element to which the listener is added.
-   * @param {string} sEvIn - The event type ('down', 'up', 'move', 'over', 'out', 'enter', etc.).
-   * @param {Function} fCall - The callback function to be executed when the event occurs.
-   * @param {boolean} [capture=false] - Indicates whether events of this type will be dispatched to
-   *                                   the registered listener before being dispatched to any EventTarget
-   *                                   beneath it in the DOM tree.
-   */
-  pointerListenerAdd(oDOM, sEvIn, fCall, capture = false) {
-    if (!oDOM || !oDOM.addEventListener || !sEvIn || typeof fCall !== 'function') {
-      console.log(`cant pointerListenerAdd ${oDOM}, ${sEvent}, ${fCall}`);
-      return; // -- break --
-    }
-
-    let sMethod = LiteGraph.pointerevents_method;
-    var sEvent = sEvIn;
-
-    // UNDER CONSTRUCTION
-    // convert pointerevents to touch event when not available
-    if (sMethod == 'pointer' && !window.PointerEvent) {
-      console.warn("sMethod=='pointer' && !window.PointerEvent");
-      console.log(`Converting pointer[${sEvent}] : down move up cancel enter TO touchstart touchmove touchend, etc ..`);
-      switch (sEvent) {
-        case 'down': {
-          sMethod = 'touch';
-          sEvent = 'start';
-          break;
-        }
-        case 'move': {
-          sMethod = 'touch';
-          // sEvent = "move";
-          break;
-        }
-        case 'up': {
-          sMethod = 'touch';
-          sEvent = 'end';
-          break;
-        }
-        case 'cancel': {
-          sMethod = 'touch';
-          // sEvent = "cancel";
-          break;
-        }
-        case 'enter': {
-          console.log('debug: Should I send a move event?'); // ??? Should you?
-          break;
-        }
-        // case "over": case "out": not used at now
-        default: {
-          console.warn(`PointerEvent not available in this browser ? The event ${sEvent} would not be called`);
-        }
-      }
-    }
-
-    switch (sEvent) {
-      // both pointer and move events
-      case 'down':
-      case 'up':
-      case 'move':
-      case 'over':
-      case 'out':
-      case 'enter':
-        oDOM.addEventListener(sMethod + sEvent, fCall, capture);
-        return;
-
-        // only pointerevents
-      case 'leave':
-      case 'cancel':
-      case 'gotpointercapture':
-      case 'lostpointercapture':
-        if (sMethod != 'mouse') {
-          oDOM.addEventListener(sMethod + sEvent, fCall, capture);
-          return;
-        }
-    }
-    oDOM.addEventListener(sEvent, fCall, capture);
+  pointerListenerAdd(...args) {
+    console.warn('LiteGraph.pointerListenerAdd is deprecated.');
+    return pointerListenerAdd(...args);
   },
 
-  /**
-   * Removes an event listener from the specified DOM element for pointer, touch, or mouse events,
-   * based on browser support and event type.
-   * @method pointerListenerRemove
-   * @memberof Utility
-   * @param {HTMLElement} oDOM - The DOM element from which the listener is removed.
-   * @param {string} sEvent - The event type ('down', 'up', 'move', 'over', 'out', 'enter', etc.).
-   * @param {Function} fCall - The callback function to be removed.
-   * @param {boolean} [capture=false] - Indicates whether events of this type were originally registered
-   *                                   as capturing or bubbling.
-   */
-  pointerListenerRemove(oDOM, sEvent, fCall, capture = false) {
-    if (!oDOM || !oDOM.removeEventListener || !sEvent || typeof fCall !== 'function') {
-      console.log(`cant pointerListenerRemove ${oDOM}, ${sEvent}, ${fCall}`);
-      return;
-    }
-    switch (sEvent) {
-      // both pointer and move events
-      case 'down':
-      case 'up':
-      case 'move':
-      case 'over':
-      case 'out':
-      case 'enter':
-        if (LiteGraph.pointerevents_method == 'pointer' || LiteGraph.pointerevents_method == 'mouse') {
-          oDOM.removeEventListener(LiteGraph.pointerevents_method + sEvent, fCall, capture);
-        }
-        return;
-
-        // only pointerevents
-      case 'leave':
-      case 'cancel':
-      case 'gotpointercapture':
-      case 'lostpointercapture':
-        if (LiteGraph.pointerevents_method == 'pointer') {
-          oDOM.removeEventListener(LiteGraph.pointerevents_method + sEvent, fCall, capture);
-        }
-        return;
-    }
-    // not "pointer" || "mouse"
-    oDOM.removeEventListener(sEvent, fCall, capture);
+  pointerListenerRemove(...args) {
+    console.warn('LiteGraph.pointerListenerRemove is deprecated.');
+    return pointerListenerRemove(...args);
   },
 };
 
