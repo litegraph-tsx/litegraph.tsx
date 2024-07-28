@@ -988,25 +988,8 @@ export const LiteGraph = {
    * @param {Window} [ref_window=window] - Reference to the window object containing the context menus.
    */
   closeAllContextMenus(ref_window) {
-    ref_window = ref_window || window;
-
-    const elements = ref_window.document.querySelectorAll('.litecontextmenu');
-    if (!elements.length) {
-      return;
-    }
-
-    const result = [];
-    for (var i = 0; i < elements.length; i++) {
-      result.push(elements[i]);
-    }
-
-    for (var i = 0; i < result.length; i++) {
-      if (result[i].close) {
-        result[i].close();
-      } else if (result[i].parentNode) {
-        result[i].parentNode.removeChild(result[i]);
-      }
-    }
+    console.warn('LiteGraph.closeAllContextMenus is deprecated.  Use ContextMenu.closeAll');
+    ContextMenu.closeAll(ref_window);
   },
 
   /**

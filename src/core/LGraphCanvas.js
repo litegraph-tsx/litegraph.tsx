@@ -1,4 +1,5 @@
 import { LiteGraph, clamp } from './litegraph';
+import { ContextMenu } from './ContextMenu';
 import { DragAndScale } from './DragAndScale';
 import { console } from './Console';
 import { pointerListenerAdd, pointerListenerRemove, PointerSettings } from './pointer_events';
@@ -669,7 +670,7 @@ export class LGraphCanvas {
 
     this.canvas.focus();
 
-    LiteGraph.closeAllContextMenus(ref_window);
+    ContextMenu.closeAll(ref_window);
 
     if (this.onMouse) {
       if (this.onMouse(e) == true) return;

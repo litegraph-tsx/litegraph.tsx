@@ -332,32 +332,29 @@ export class ContextMenu {
    * @param {Event} e - The event that triggered the menu closure.
    * @param {boolean} ignore_parent_menu - Whether to ignore the parent menu when closing.
    */
-  close(e, ignore_parent_menu) {
-    if (this.root.parentNode) {
-      this.root.parentNode.removeChild(this.root);
-    }
-    if (this.parentMenu && !ignore_parent_menu) {
+  close(event, ignoreParentMenu = false) {
+    // Remove the root element from its parent
+    this.root.parentNode?.removeChild(this.root);
+
+    // Handle parent menu closure if applicable
+    if (this.parentMenu && !ignoreParentMenu) {
       this.parentMenu.lock = false;
       this.parentMenu.current_submenu = null;
-      if (e === undefined) {
+
+      if (event === undefined) {
         this.parentMenu.close();
-      } else if (
-        e
-                    && !ContextMenu.isCursorOverElement(e, this.parentMenu.root)
-      ) {
-        ContextMenu.trigger(this.parentMenu.root, `${PointerSettings.pointerevents_method}leave`, e);
+      } else if (event && !ContextMenu.isCursorOverElement(event, this.parentMenu.root)) {
+        ContextMenu.trigger(this.parentMenu.root, `${PointerSettings.pointerevents_method}leave`, event);
       }
     }
-    if (this.current_submenu) {
-      this.current_submenu.close(e, true);
-    }
 
+    // Close the current submenu if it exists
+    this.current_submenu?.close(event, true);
+
+    // Clear any existing closing timer
     if (this.root.closing_timer) {
       clearTimeout(this.root.closing_timer);
     }
-
-    // TODO implement : LiteGraph.contextMenuClosed(); :: keep track of opened / closed / current ContextMenu
-    // on key press, allow filtering/selecting the context menu elements
   }
 
   /**
@@ -368,16 +365,23 @@ export class ContextMenu {
    * @param {any} origin - The origin of the event.
    * @returns {CustomEvent} The created CustomEvent object.
    */
-  static trigger(element, event_name, params, origin) {
-    const evt = document.createEvent('CustomEvent');
-    evt.initCustomEvent(event_name, true, true, params); // canBubble, cancelable, detail
-    evt.srcElement = origin;
+  static trigger(element, eventName, params, origin) {
+    // Create a new CustomEvent
+    const evt = new CustomEvent(eventName, {
+      bubbles: true,
+      cancelable: true,
+      detail: params,
+    });
+
+    // Attach the 'origin' value to the detail object if needed
+    evt.detail = { ...params, origin };
+
+    // Dispatch the event
     if (element.dispatchEvent) {
       element.dispatchEvent(evt);
     } else if (element.__events) {
       element.__events.dispatchEvent(evt);
     }
-    // else nothing seems binded here so nothing to do
     return evt;
   }
 
@@ -386,10 +390,7 @@ export class ContextMenu {
    * @returns {ContextMenu} The top-level context menu instance.
    */
   getTopMenu() {
-    if (this.options.parentMenu) {
-      return this.options.parentMenu.getTopMenu();
-    }
-    return this;
+    return this.options.parentMenu?.getTopMenu() ?? this;
   }
 
   /**
@@ -397,10 +398,7 @@ export class ContextMenu {
    * @returns {MouseEvent} The first MouseEvent associated with the menu.
    */
   getFirstEvent() {
-    if (this.options.parentMenu) {
-      return this.options.parentMenu.getFirstEvent();
-    }
-    return this.options.event;
+    return this.options.parentMenu?.getFirstEvent() ?? this.options.event;
   }
 
   /**
@@ -410,20 +408,40 @@ export class ContextMenu {
    * @returns {boolean} True if the cursor is over the element, false otherwise.
    */
   static isCursorOverElement(event, element) {
-    const left = event.clientX;
-    const top = event.clientY;
-    const rect = element.getBoundingClientRect();
-    if (!rect) {
-      return false;
+    const { clientX, clientY } = event;
+    const {
+      top, right, bottom, left,
+    } = element.getBoundingClientRect();
+
+    return (clientX > left && clientX < right && clientY > top && clientY < bottom);
+  }
+
+  /**
+   * Closes all context menus of class 'litecontextmenu' within a specified window or the global window.
+   * @TODO: Obviously belongs with ContextMenu
+   * @method closeAll
+   * @memberof ContextMenu
+   * @param {Window} [ref_window=window] - Reference to the window object containing the context menus.
+   */
+  static closeAll(ref_window) {
+    ref_window = ref_window || window;
+
+    const elements = ref_window.document.querySelectorAll('.litecontextmenu');
+    if (!elements.length) {
+      return;
     }
-    if (
-      top > rect.top
-                && top < rect.top + rect.height
-                && left > rect.left
-                && left < rect.left + rect.width
-    ) {
-      return true;
+
+    const result = [];
+    for (var i = 0; i < elements.length; i++) {
+      result.push(elements[i]);
     }
-    return false;
+
+    for (var i = 0; i < result.length; i++) {
+      if (result[i].close) {
+        result[i].close();
+      } else if (result[i].parentNode) {
+        result[i].parentNode.removeChild(result[i]);
+      }
+    }
   }
 }
