@@ -1,5 +1,3 @@
-import { LiteGraph } from './litegraph'; // only used for overlapBounding
-import { LGraphCanvas } from './LGraphCanvas'; // only used to get pale_blue
 import { LGraphNode } from './LGraphNode'; // only used to inherit two methods at the end of file
 
 /**
@@ -22,9 +20,7 @@ export class LGraphGroup {
   _ctor(title) {
     this.title = title || 'Group';
     this.font_size = 24;
-    this.color = LGraphCanvas.node_colors.pale_blue
-      ? LGraphCanvas.node_colors.pale_blue.groupcolor
-      : '#AAA';
+    this.color = '#3f789e'; // !! DUPLICATE from LGraphCanvas.js
     this._bounding = new Float32Array([10, 10, 140, 80]);
     this._pos = this._bounding.subarray(0, 2);
     this._size = this._bounding.subarray(2, 4);
@@ -119,7 +115,7 @@ export class LGraphGroup {
     for (let i = 0; i < nodes.length; ++i) {
       const node = nodes[i];
       node.getBounding(node_bounding);
-      if (!LiteGraph.overlapBounding(this._bounding, node_bounding)) {
+      if (!this.overlapBounding(this._bounding, node_bounding)) {
         continue;
       } // out of the visible area
       this._nodes.push(node);
@@ -142,4 +138,31 @@ export class LGraphGroup {
    * @param {boolean} force - Whether to force the canvas to redraw immediately.
    */
   setDirtyCanvas = LGraphNode.prototype.setDirtyCanvas;
+
+  /**
+   * !! DUPLICATE from LiteGraph.js !!
+   * Checks if two bounding boxes overlap.
+   * The bounding boxes are defined by their coordinates [startx, starty, width, height].
+   * @method overlapBounding
+   * @memberof LGraph
+   * @param {number[]} a - Coordinates of the first bounding box [startx, starty, width, height].
+   * @param {number[]} b - Coordinates of the second bounding box [startx, starty, width, height].
+   * @returns {boolean} `true` if the bounding boxes `a` and `b` overlap, otherwise `false`.
+   */
+  overlapBounding(a, b) {
+    const A_end_x = a[0] + a[2];
+    const A_end_y = a[1] + a[3];
+    const B_end_x = b[0] + b[2];
+    const B_end_y = b[1] + b[3];
+
+    if (
+      a[0] > B_end_x
+              || a[1] > B_end_y
+              || A_end_x < b[0]
+              || A_end_y < b[1]
+    ) {
+      return false;
+    }
+    return true;
+  }
 }
