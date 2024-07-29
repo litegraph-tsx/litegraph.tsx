@@ -101,7 +101,6 @@ export class ContextMenu {
     }
 
     root.addEventListener('wheel', on_mouse_wheel, true);
-    root.addEventListener('mousewheel', on_mouse_wheel, true);
 
     this.root = root;
 
