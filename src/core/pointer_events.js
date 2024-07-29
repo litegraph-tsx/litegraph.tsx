@@ -1,3 +1,8 @@
+/**
+ * This file is now entirely deprecated.
+ * Future effort should simply use appropriate pointer* events and DOM addEventListener/removeEventListener as appropriate.
+*/
+
 export const PointerSettings = {
   pointerevents_method: 'pointer', // "mouse"|"pointer" use mouse for retrocompatibility issues? (none found @ now)
   // TODO implement pointercancel, gotpointercapture, lostpointercapture, (pointerover, pointerout if necessary)
