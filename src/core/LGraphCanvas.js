@@ -2,7 +2,7 @@ import { LiteGraph, clamp } from './litegraph';
 import { ContextMenu } from './ContextMenu';
 import { DragAndScale } from './DragAndScale';
 import { console } from './Console';
-import { pointerListenerAdd, pointerListenerRemove, PointerSettings } from './pointer_events';
+import { PointerSettings } from './pointer_events';
 
 const temp = new Float32Array(4);
 const temp_vec2 = new Float32Array(2);
@@ -403,18 +403,13 @@ export class LGraphCanvas {
     // touch events -- TODO IMPLEMENT
     // this._touch_callback = this.touchHandler.bind(this);
 
-    pointerListenerAdd(canvas, 'down', this._mousedown_callback, true); // down do not need to store the binded
-    canvas.addEventListener('mousewheel', this._mousewheel_callback, false);
+    canvas.addEventListener(`${PointerSettings.pointerevents_method}down`, this._mousedown_callback, true); // down do not need to store the binded
+    canvas.addEventListener('wheel', this._mousewheel_callback, false);
 
-    pointerListenerAdd(canvas, 'up', this._mouseup_callback, true); // CHECK: ??? binded or not
-    pointerListenerAdd(canvas, 'move', this._mousemove_callback);
+    canvas.addEventListener(`${PointerSettings.pointerevents_method}up`, this._mouseup_callback, true); // CHECK: ??? binded or not
+    canvas.addEventListener(`${PointerSettings.pointerevents_method}move`, this._mousemove_callback);
 
     canvas.addEventListener('contextmenu', this._doNothing);
-    canvas.addEventListener(
-      'DOMMouseScroll',
-      this._mousewheel_callback,
-      false,
-    );
 
     // touch events -- THIS WAY DOES NOT WORK, finish implementing pointerevents, than clean the touchevents
     /* if( 'touchstart' in document.documentElement )
@@ -457,17 +452,11 @@ export class LGraphCanvas {
     const ref_window = this.getCanvasWindow();
     const { document } = ref_window;
 
-    pointerListenerRemove(this.canvas, 'move', this._mousedown_callback);
-    pointerListenerRemove(this.canvas, 'up', this._mousedown_callback);
-    pointerListenerRemove(this.canvas, 'down', this._mousedown_callback);
-    this.canvas.removeEventListener(
-      'mousewheel',
-      this._mousewheel_callback,
-    );
-    this.canvas.removeEventListener(
-      'DOMMouseScroll',
-      this._mousewheel_callback,
-    );
+    this.canvas.removeEventListener(`${PointerSettings.pointerevents_method}move`, this._mousedown_callback);
+    this.canvas.removeEventListener(`${PointerSettings.pointerevents_method}up`, this._mousedown_callback);
+    this.canvas.removeEventListener(`${PointerSettings.pointerevents_method}down`, this._mousedown_callback);
+    this.canvas.removeEventListener('wheel', this._mousewheel_callback);
+
     this.canvas.removeEventListener('keydown', this._key_callback);
     document.removeEventListener('keyup', this._key_callback);
     this.canvas.removeEventListener('contextmenu', this._doNothing);
@@ -639,9 +628,9 @@ export class LGraphCanvas {
 
     // move mouse move event to the window in case it drags outside of the canvas
     if (!this.options.skip_events) {
-      pointerListenerRemove(this.canvas, 'move', this._mousemove_callback);
-      pointerListenerAdd(ref_window.document, 'move', this._mousemove_callback, true); // catch for the entire window
-      pointerListenerAdd(ref_window.document, 'up', this._mouseup_callback, true);
+      this.canvas.removeEventListener(`${PointerSettings.pointerevents_method}move`, this._mousemove_callback);
+      ref_window.document.addEventListener(`${PointerSettings.pointerevents_method}move`, this._mousemove_callback, true); // catch for the entire window
+      ref_window.document.addEventListener(`${PointerSettings.pointerevents_method}up`, this._mouseup_callback, true);
     }
 
     if (!is_inside) {
@@ -1361,9 +1350,9 @@ export class LGraphCanvas {
     // restore the mousemove event back to the canvas
     if (!this.options.skip_events) {
       console.debug('pointerevents: processMouseUp adjustEventListener');
-      pointerListenerRemove(document, 'move', this._mousemove_callback, true);
-      pointerListenerAdd(this.canvas, 'move', this._mousemove_callback, true);
-      pointerListenerRemove(document, 'up', this._mouseup_callback, true);
+      document.removeEventListener(`${PointerSettings.pointerevents_method}move`, this._mousemove_callback, true);
+      this.canvas.addEventListener(`${PointerSettings.pointerevents_method}move`, this._mousemove_callback, true);
+      document.removeEventListener(`${PointerSettings.pointerevents_method}up`, this._mouseup_callback, true);
     }
 
     this.adjustMouseEvent(e);
@@ -6099,11 +6088,11 @@ export class LGraphCanvas {
 
     let dialogCloseTimer = null;
     let prevent_timeout = false;
-    pointerListenerAdd(dialog, 'leave', (e) => {
+    dialog.addEventListener(`${PointerSettings.pointerevents_method}leave`, (e) => {
       if (prevent_timeout) return;
       if (LiteGraph.dialog_close_on_mouse_leave) if (!dialog.is_modified && LiteGraph.dialog_close_on_mouse_leave) dialogCloseTimer = setTimeout(dialog.close, LiteGraph.dialog_close_on_mouse_leave_delay); // dialog.close();
     });
-    pointerListenerAdd(dialog, 'enter', (e) => {
+    dialog.addEventListener(`${PointerSettings.pointerevents_method}enter`, (e) => {
       if (LiteGraph.dialog_close_on_mouse_leave) if (dialogCloseTimer) clearTimeout(dialogCloseTimer);
     });
     const selInDia = dialog.querySelectorAll('select');
@@ -6273,13 +6262,13 @@ export class LGraphCanvas {
     if (options.hide_on_mouse_leave) {
       let prevent_timeout = false;
       let timeout_close = null;
-      pointerListenerAdd(dialog, 'enter', (e) => {
+      dialog.addEventListener(`${PointerSettings.pointerevents_method}enter`, (e) => {
         if (timeout_close) {
           clearTimeout(timeout_close);
           timeout_close = null;
         }
       });
-      pointerListenerAdd(dialog, 'leave', (e) => {
+      dialog.addEventListener(`${PointerSettings.pointerevents_method}leave`, (e) => {
         if (prevent_timeout) {
           return;
         }
