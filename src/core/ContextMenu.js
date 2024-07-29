@@ -1,5 +1,5 @@
 import { console } from './Console';
-import { PointerSettings, pointerListenerAdd } from './pointer_events';
+import { PointerSettings } from './pointer_events';
 
 /**
  * ContextMenu from LiteGUI
@@ -30,14 +30,10 @@ export class ContextMenu {
       }
     }
 
-    let eventClass = null;
-    if (options.event) // use strings because comparing classes between windows doesnt work
-    { eventClass = options.event.constructor.name; }
-    if (eventClass !== 'MouseEvent'
-                && eventClass !== 'CustomEvent'
-                && eventClass !== 'PointerEvent'
-    ) {
-      console.error(`Event passed to ContextMenu is not of type MouseEvent or CustomEvent. Ignoring it. (${eventClass})`);
+    const eventClass = options.event?.constructor.name;
+    const validEventClasses = ['MouseEvent', 'CustomEvent', 'PointerEvent'];
+    if (!validEventClasses.includes(eventClass)) {
+      console.error(`Event passed to ContextMenu is not of type MouseEvent, CustomEvent, or PointerEvent. Ignoring it. (${eventClass})`);
       options.event = null;
     }
 
@@ -51,56 +47,39 @@ export class ContextMenu {
       root.style.pointerEvents = 'auto';
     }, 100); // delay so the mouse up event is not caught by this element
 
-    // this prevents the default context browser menu to open in case this menu was created when pressing right button
-    pointerListenerAdd(
-      root,
-      'up',
-      (e) => {
-        console.log('pointerevents: ContextMenu up root prevent');
-        e.preventDefault();
-        return true;
-      },
-      true,
-    );
-    root.addEventListener(
-      'contextmenu',
-      (e) => {
-        if (e.button != 2) {
-          // right button
-          return false;
-        }
-        e.preventDefault();
-        return false;
-      },
-      true,
-    );
+    root.addEventListener(`${PointerSettings.pointerevents_method}up`, (event) => {
+      console.log('pointerevents: ContextMenu up root prevent');
+      event.preventDefault();
+      return true;
+    });
 
-    pointerListenerAdd(
-      root,
-      'down',
-      (e) => {
-        console.log('pointerevents: ContextMenu down');
-        if (e.button == 2) {
-          that.close();
-          e.preventDefault();
-          return true;
-        }
-      },
-      true,
-    );
+    root.addEventListener('contextmenu', (event) => {
+      if (event.button !== 2) return;
+      event.preventDefault();
+    });
 
-    function on_mouse_wheel(e) {
+    root.addEventListener(`${PointerSettings.pointerevents_method}down`, (event) => {
+      console.log('pointerevents: ContextMenu down');
+      if (event.button !== 2) return;
+      that.close();
+      event.preventDefault();
+      return true;
+    });
+
+    options.scroll_speed ??= 0.1;
+    root.addEventListener('wheel', (e) => {
       const pos = parseInt(root.style.top);
       root.style.top = `${(pos + e.deltaY * options.scroll_speed).toFixed()}px`;
       e.preventDefault();
       return true;
-    }
+    }, true);
 
-    if (!options.scroll_speed) {
-      options.scroll_speed = 0.1;
-    }
-
-    root.addEventListener('wheel', on_mouse_wheel, true);
+    root.addEventListener(`${PointerSettings.pointerevents_method}enter`, (event) => {
+      // console.log("pointerevents: ContextMenu enter");
+      if (root.closing_timer) {
+        clearTimeout(root.closing_timer);
+      }
+    });
 
     this.root = root;
 
@@ -123,26 +102,6 @@ export class ContextMenu {
       this.addItem(name, value, options);
       num++;
     }
-
-    // close on leave? touch enabled devices won't work TODO use a global device detector and condition on that
-    /* pointerListenerAdd(root,"leave", function(e) {
-                  console.log("pointerevents: ContextMenu leave");
-                if (that.lock) {
-                    return;
-                }
-                if (root.closing_timer) {
-                    clearTimeout(root.closing_timer);
-                }
-                root.closing_timer = setTimeout(that.close.bind(that, e), 500);
-                //that.close(e);
-            }); */
-
-    pointerListenerAdd(root, 'enter', (e) => {
-      // console.log("pointerevents: ContextMenu enter");
-      if (root.closing_timer) {
-        clearTimeout(root.closing_timer);
-      }
-    });
 
     // insert before checking position
     let root_document = document;
@@ -243,16 +202,14 @@ export class ContextMenu {
       element.addEventListener('click', inner_onclick);
     }
     if (!disabled && options.autoopen) {
-      pointerListenerAdd(element, 'enter', inner_over);
-    }
-
-    function inner_over(e) {
-      const { value } = this;
-      if (!value || !value.has_submenu) {
-        return;
-      }
-      // if it is a submenu, autoopen like the item was clicked
-      inner_onclick.call(this, e);
+      element.addEventListener(`${PointerSettings.pointerevents_method}enter`, (event) => {
+        const { value } = this;
+        if (!value || !value.has_submenu) {
+          return;
+        }
+        // if it is a submenu, autoopen like the item was clicked
+        inner_onclick.call(this, event);
+      });
     }
 
     // menu option clicked
