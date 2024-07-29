@@ -6,6 +6,35 @@
 
 :root {
 	--node-title-height:30;
+	--node-title-text-y:20;
+	--node-slot-height:20;
+	--node-widget-height:20;
+	--node-width:140;
+	--node-min-width:50;
+	--node-collapsed-radius:10;
+	--node-collapsed-width:80;
+
+	--node-text-size:14;
+	--node-subtext-size:12;
+	--default-group-font:24;
+
+	--node-title-color:#999;
+	--node-selected-title-color:#FFF;
+	--node-text-color:#AAA;
+	--node-default-color:#333;
+	--node-default-bgcolor:#353535;
+	--node-default-boxcolor:#666;
+	--node-box-outline-color:#FFF;
+	--default-shadow-color:rgba(0,0,0,0.5);
+
+	--widget-bgcolor:#222;
+	--widget-outline-color:#666;
+	--widget-text-color:#DDD;
+	--widget-secondary-text-color:#999;
+
+	--link-color:#9A9;
+	--event-link-color:#A86;
+	--connecting-link-color:#AFA;
 }
 
 .lgraphcanvas {

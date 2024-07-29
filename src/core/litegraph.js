@@ -21,6 +21,8 @@ export const LiteGraph = {
   VERSION: 0.4,
 
   CANVAS_GRID_SIZE: 10,
+  NODE_DEFAULT_SHAPE: 'box',
+
   NODE_TITLE_HEIGHT: 30,
   NODE_TITLE_TEXT_Y: 20,
   NODE_SLOT_HEIGHT: 20,
@@ -29,6 +31,7 @@ export const LiteGraph = {
   NODE_MIN_WIDTH: 50,
   NODE_COLLAPSED_RADIUS: 10,
   NODE_COLLAPSED_WIDTH: 80,
+
   NODE_TITLE_COLOR: '#999',
   NODE_SELECTED_TITLE_COLOR: '#FFF',
   NODE_TEXT_SIZE: 14,
@@ -37,7 +40,6 @@ export const LiteGraph = {
   NODE_DEFAULT_COLOR: '#333',
   NODE_DEFAULT_BGCOLOR: '#353535',
   NODE_DEFAULT_BOXCOLOR: '#666',
-  NODE_DEFAULT_SHAPE: 'box',
   NODE_BOX_OUTLINE_COLOR: '#FFF',
   DEFAULT_SHADOW_COLOR: 'rgba(0,0,0,0.5)',
   DEFAULT_GROUP_FONT: 24,
@@ -47,9 +49,20 @@ export const LiteGraph = {
   WIDGET_TEXT_COLOR: '#DDD',
   WIDGET_SECONDARY_TEXT_COLOR: '#999',
 
-  LINK_COLOR: '#9A9',
-  EVENT_LINK_COLOR: '#A86',
-  CONNECTING_LINK_COLOR: '#AFA',
+  get LINK_COLOR() {
+    console.trace('Deprecated, use CSS --link-color.');
+    return this.getStyleProperty('--link-color');
+  },
+
+  get EVENT_LINK_COLOR() {
+    console.trace('Deprecated, use CSS --event-link-color.');
+    return this.getStyleProperty('--event-link-color');
+  },
+
+  get CONNECTING_LINK_COLOR() {
+    console.trace('Deprecated, use CSS --connecting-link-color.');
+    return this.getStyleProperty('--connecting-link-color');
+  },
 
   MAX_NUMBER_OF_NODES: 1000, // avoid infinite loops
   DEFAULT_POSITION: [100, 100], // default node position
@@ -1051,7 +1064,7 @@ export const LiteGraph = {
   },
 
   getStyleProperty(propertyName, element = window.document.documentElement) {
-    return getComputedStyle(element)?.getPropertyValue(propertyName)?.trim();
+    return getComputedStyle(element)?.getPropertyValue(propertyName);
   },
   setStyleProperty(propertyName, value, element = window.document.documentElement) {
     getComputedStyle(element)?.setProperty(propertyName, value);
