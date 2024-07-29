@@ -1,5 +1,5 @@
 import { console } from './Console';
-import { pointerListenerAdd, pointerListenerRemove, PointerSettings } from './pointer_events';
+import { PointerSettings } from './pointer_events';
 
 /**
  * Class for managing scaling and offset operations on an element, with support for dragging and zooming.
@@ -34,18 +34,10 @@ export class DragAndScale {
   bindEvents(element) {
     this.last_mouse = new Float32Array(2);
 
-    this._binded_mouse_callback = this.onMouse.bind(this);
-
-    pointerListenerAdd(element, 'down', this._binded_mouse_callback);
-    pointerListenerAdd(element, 'move', this._binded_mouse_callback);
-    pointerListenerAdd(element, 'up', this._binded_mouse_callback);
-
-    element.addEventListener(
-      'mousewheel',
-      this._binded_mouse_callback,
-      false,
-    );
-    element.addEventListener('wheel', this._binded_mouse_callback, false);
+    element.addEventListener(`${PointerSettings.pointerevents_method}down`, this.onMouse);
+    element.addEventListener(`${PointerSettings.pointerevents_method}move`, this.onMouse);
+    element.addEventListener(`${PointerSettings.pointerevents_method}up`, this.onMouse);
+    element.addEventListener('wheel', this.onMouse, false);
   }
 
   /**
@@ -104,9 +96,9 @@ export class DragAndScale {
 
     if (e.type == `${PointerSettings.pointerevents_method}down` && is_inside) {
       this.dragging = true;
-      pointerListenerRemove(canvas, 'move', this._binded_mouse_callback);
-      pointerListenerAdd(document, 'move', this._binded_mouse_callback);
-      pointerListenerAdd(document, 'up', this._binded_mouse_callback);
+      canvas.removeEventListener(`${PointerSettings.pointerevents_method}move`, this._binded_mouse_callback);
+      document.addEventListener(`${PointerSettings.pointerevents_method}move`, this._binded_mouse_callback);
+      document.addEventListener(`${PointerSettings.pointerevents_method}down`, this._binded_mouse_callback);
     } else if (e.type == `${PointerSettings.pointerevents_method}move`) {
       if (!ignore) {
         const deltax = x - this.last_mouse[0];
@@ -117,9 +109,9 @@ export class DragAndScale {
       }
     } else if (e.type == `${PointerSettings.pointerevents_method}up`) {
       this.dragging = false;
-      pointerListenerRemove(document, 'move', this._binded_mouse_callback);
-      pointerListenerRemove(document, 'up', this._binded_mouse_callback);
-      pointerListenerAdd(canvas, 'move', this._binded_mouse_callback);
+      document.addEventListener(`${PointerSettings.pointerevents_method}move`, this._binded_mouse_callback);
+      document.addEventListener(`${PointerSettings.pointerevents_method}up`, this._binded_mouse_callback);
+      canvas.addEventListener(`${PointerSettings.pointerevents_method}move`, this._binded_mouse_callback);
     } else if (is_inside
                 && (e.type == 'mousewheel'
                 || e.type == 'wheel'
