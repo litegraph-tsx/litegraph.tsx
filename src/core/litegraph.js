@@ -1103,7 +1103,7 @@ LiteGraph.LGraphCanvas = LGraphCanvas;
 
 // Bind this here because otherwise LiteGraph.EVENT_LINK_COLOR doesn't resolve:
 LGraphCanvas.link_type_colors = {
-  '-1': LiteGraph.EVENT_LINK_COLOR,
+  '-1': LiteGraph.getStyleProperty('--event-link-color'),
   number: '#AAA',
   node: '#DCA',
 };

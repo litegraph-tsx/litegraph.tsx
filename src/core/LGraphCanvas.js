@@ -40,7 +40,7 @@ export class LGraphCanvas {
     this.title_text_font = `${LiteGraph.NODE_TEXT_SIZE}px Arial`;
     this.inner_text_font = `normal ${LiteGraph.NODE_SUBTEXT_SIZE}px Arial`;
     this.node_title_color = LiteGraph.NODE_TITLE_COLOR;
-    this.default_link_color = LiteGraph.LINK_COLOR;
+    this.default_link_color = LiteGraph.getStyleProperty('--link-color');
     this.default_connection_color = {
       input_off: '#778',
       input_on: '#7F7', // "#BBD"
@@ -2576,10 +2576,10 @@ export class LGraphCanvas {
 
         switch (connType) {
           case LiteGraph.EVENT:
-            link_color = LiteGraph.EVENT_LINK_COLOR;
+            link_color = LiteGraph.getStyleProperty('--event-link-color');
             break;
           default:
-            link_color = LiteGraph.CONNECTING_LINK_COLOR;
+            link_color = LiteGraph.getStyleProperty('--connecting-link-color');
         }
 
         // the connection being dragged by the mouse
