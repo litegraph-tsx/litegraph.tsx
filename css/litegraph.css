@@ -4,6 +4,10 @@
 @import url('./searchbox.css');
 @import url('./dialog.css');
 
+:root {
+	--node-title-height:30;
+}
+
 .lgraphcanvas {
     /*cursor: crosshair;*/
     user-select: none;
@@ -88,3 +92,4 @@
 	background-color: #698;
 	cursor: pointer;
 } 
+

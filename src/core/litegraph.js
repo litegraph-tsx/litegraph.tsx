@@ -21,7 +21,6 @@ export const LiteGraph = {
   VERSION: 0.4,
 
   CANVAS_GRID_SIZE: 10,
-
   NODE_TITLE_HEIGHT: 30,
   NODE_TITLE_TEXT_Y: 20,
   NODE_SLOT_HEIGHT: 20,
@@ -988,7 +987,7 @@ export const LiteGraph = {
    * @param {Window} [ref_window=window] - Reference to the window object containing the context menus.
    */
   closeAllContextMenus(ref_window) {
-    console.warn('LiteGraph.closeAllContextMenus is deprecated.  Use ContextMenu.closeAll');
+    console.trace('LiteGraph.closeAllContextMenus is deprecated.  Use ContextMenu.closeAll');
     ContextMenu.closeAll(ref_window);
   },
 
@@ -1042,13 +1041,20 @@ export const LiteGraph = {
   },
 
   pointerListenerAdd(...args) {
-    console.warn('LiteGraph.pointerListenerAdd is deprecated.');
+    console.trace('LiteGraph.pointerListenerAdd is deprecated.');
     return pointerListenerAdd(...args);
   },
 
   pointerListenerRemove(...args) {
-    console.warn('LiteGraph.pointerListenerRemove is deprecated.');
+    console.trace('LiteGraph.pointerListenerRemove is deprecated.');
     return pointerListenerRemove(...args);
+  },
+
+  getStyleProperty(propertyName, element = window.document.documentElement) {
+    return getComputedStyle(element)?.getPropertyValue(propertyName)?.trim();
+  },
+  setStyleProperty(propertyName, value, element = window.document.documentElement) {
+    getComputedStyle(element)?.setProperty(propertyName, value);
   },
 };
 
