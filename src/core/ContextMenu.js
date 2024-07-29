@@ -83,12 +83,8 @@ export class ContextMenu {
 
     this.root = root;
 
-    // title
     if (options.title) {
-      const element = document.createElement('div');
-      element.className = 'litemenu-title';
-      element.innerHTML = options.title;
-      root.appendChild(element);
+      this.setTitle(options.title);
     }
 
     // entries
@@ -149,6 +145,15 @@ export class ContextMenu {
     if (options.scale) {
       root.style.transform = `scale(${options.scale})`;
     }
+  }
+
+  setTitle(title) {
+    if (!this.titleElement) {
+      this.titleElement = document.createElement('div');
+      this.titleElement.className = 'litemenu-title';
+      this.root.appendChild(this.titleElement);
+    }
+    this.titleElement.textContent = title;
   }
 
   /**
